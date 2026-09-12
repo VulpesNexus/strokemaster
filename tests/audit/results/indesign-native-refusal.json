@@ -1,0 +1,39 @@
+{
+  "schema": 1,
+  "host": "InDesign",
+  "version": "21.5.1.73",
+  "plugin_sha256": "15b802ebfb38f567eb3aa586e995c0a1afff47efd078f3e2a0443596b54df4c4",
+  "scope": "all 20 frames, PNG export at 600 ppi",
+  "correction_active": false,
+  "images": [
+    {
+      "file": "native.png",
+      "same_shape": true,
+      "changed_pixels": 0,
+      "absent_sha256": "7d2992317fb720aa0de1e13b766309381cabd6e9fb557144dc90dd791b1622b2",
+      "refusal_sha256": "7d2992317fb720aa0de1e13b766309381cabd6e9fb557144dc90dd791b1622b2"
+    },
+    {
+      "file": "reference.png",
+      "same_shape": true,
+      "changed_pixels": 0,
+      "absent_sha256": "19877d68099ddbc7a3f0492dc0109191717c98ac40061814501958e3962fa8f4",
+      "refusal_sha256": "19877d68099ddbc7a3f0492dc0109191717c98ac40061814501958e3962fa8f4"
+    },
+    {
+      "file": "mask.png",
+      "same_shape": true,
+      "changed_pixels": 0,
+      "absent_sha256": "55b06bea26127e05b7898e69a0427b7815a87b836ea3eda3cf44dcbfee55ff7c",
+      "refusal_sha256": "55b06bea26127e05b7898e69a0427b7815a87b836ea3eda3cf44dcbfee55ff7c"
+    }
+  ],
+  "passed": true,
+  "loaded_module_observed_after_test": {
+    "processId": 103864,
+    "moduleCount": 1,
+    "diskHashes": [
+      "15B802EBFB38F567EB3AA586E995C0A1AFFF47EFD078F3E2A0443596B54DF4C4"
+    ]
+  }
+}

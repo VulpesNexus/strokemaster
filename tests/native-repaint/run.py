@@ -1,0 +1,49 @@
+"""Build/run the native refusal test with MSVC; never load Adobe or write to its SDK."""
+import os
+from pathlib import Path
+import subprocess
+import sys
+
+
+def main():
+    repo = Path(__file__).resolve().parents[2]
+    out = repo / "build" / "native-refusal"
+    out.mkdir(parents=True, exist_ok=True)
+    # A fresh environment mapping removes duplicate PATH/Path entries inherited from
+    # some supervisors; MSBuild/.NET cannot accept both. Values are never logged.
+    env = dict(os.environ)
+    vswhere = Path(env["ProgramFiles(x86)".upper()]) / "Microsoft Visual Studio/Installer/vswhere.exe"
+    installations = subprocess.check_output(
+        [str(vswhere), "-all", "-products", "*", "-requires", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
+         "-property", "installationPath"], env=env, text=True,
+    ).splitlines()
+    vcvars = None
+    for installation in installations:
+        candidate = Path(installation) / "VC/Auxiliary/Build/vcvars64.bat"
+        if candidate.is_file():
+            vcvars = candidate
+            break
+    if vcvars is None:
+        raise RuntimeError("Visual Studio C++ toolchain not found")
+    # Only fixed repository-relative arguments and a discovered, quoted vcvars path
+    # enter cmd. Supply a raw Windows command line: list2cmdline's backslash-quote
+    # escaping is not cmd.exe syntax for the nested /c program.
+    command = (
+        f'call "{vcvars}" -vcvars_ver=14.42 >nul && '
+        'cl /nologo /EHsc /std:c++17 /W4 /WX /Itests\\native-repaint '
+        'tests\\native-repaint\\NativeRepaintTests.cpp '
+        '/Febuild\\native-refusal\\NativeRepaintTests.exe '
+        '/Fobuild\\native-refusal\\NativeRepaintTests.obj && '
+        'build\\native-refusal\\NativeRepaintTests.exe'
+    )
+    result = subprocess.run(
+        'cmd.exe /d /s /c "' + command + '"', cwd=repo, env=env,
+        text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+    )
+    (out / "tests.log").write_text(result.stdout, encoding="utf-8")
+    print(result.stdout, end="")
+    return result.returncode
+
+
+if __name__ == "__main__":
+    sys.exit(main())

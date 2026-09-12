@@ -1,0 +1,1212 @@
+{
+  "schema": 1,
+  "host": "InDesign",
+  "version": "21.5.1.73",
+  "baseline_commit": "c4596837a5e0ea10a68f7b94e2dd368032341334",
+  "old_plugin_sha256": "d476f565ae57fa9257111d5d86f4e8a313c9efb7bc85d8912e9b5842ec80f342",
+  "ppi": 600,
+  "collection_passed": true,
+  "product_passed": false,
+  "plugin_contribution": {
+    "a": "native.png",
+    "b": "native.png",
+    "ppi": 600.0,
+    "erode_px": 6,
+    "page_changed_px": 133440,
+    "frames": [
+      {
+        "key": "VC00",
+        "name": "unstroked first line, stroked second",
+        "palette": null,
+        "note": null,
+        "changed_px": 1668,
+        "max_channel_diff": 179,
+        "ink_px": 196087,
+        "interior_px": 11600,
+        "interior_changed_px": 10,
+        "interior_nonzero_px": 10,
+        "interior_max_channel_diff": 159,
+        "edge_changed_px": 1658,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 82.52,
+        "interior_dlum": -0.091,
+        "interior_changed_dlum": -106.03
+      },
+      {
+        "key": "VC01",
+        "name": "stroked first line, unstroked second",
+        "palette": null,
+        "note": null,
+        "changed_px": 1321,
+        "max_channel_diff": 255,
+        "ink_px": 195829,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 1321,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC02",
+        "name": "both stroked",
+        "palette": null,
+        "note": null,
+        "changed_px": 14651,
+        "max_channel_diff": 255,
+        "ink_px": 259303,
+        "interior_px": 11600,
+        "interior_changed_px": 3762,
+        "interior_nonzero_px": 3762,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10889,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.614,
+        "interior_changed_dlum": -254.74
+      },
+      {
+        "key": "VC03",
+        "name": "both unstroked",
+        "palette": null,
+        "note": null,
+        "changed_px": 0,
+        "max_channel_diff": 0,
+        "ink_px": 35492,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 0,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC04",
+        "name": "alternating three lines",
+        "palette": null,
+        "note": null,
+        "changed_px": 1508,
+        "max_channel_diff": 179,
+        "ink_px": 199067,
+        "interior_px": 16956,
+        "interior_changed_px": 10,
+        "interior_nonzero_px": 10,
+        "interior_max_channel_diff": 159,
+        "edge_changed_px": 1498,
+        "interior_lum_a": 56.52,
+        "interior_lum_b": 56.46,
+        "interior_dlum": -0.063,
+        "interior_changed_dlum": -106.03
+      },
+      {
+        "key": "VC05",
+        "name": "different stroke weights",
+        "palette": null,
+        "note": null,
+        "changed_px": 14651,
+        "max_channel_diff": 255,
+        "ink_px": 209755,
+        "interior_px": 11600,
+        "interior_changed_px": 3762,
+        "interior_nonzero_px": 3762,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10889,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.614,
+        "interior_changed_dlum": -254.74
+      },
+      {
+        "key": "VC06",
+        "name": "different stroke and fill colors",
+        "palette": null,
+        "note": null,
+        "changed_px": 2177,
+        "max_channel_diff": 237,
+        "ink_px": 260101,
+        "interior_px": 11600,
+        "interior_changed_px": 60,
+        "interior_nonzero_px": 60,
+        "interior_max_channel_diff": 156,
+        "edge_changed_px": 2117,
+        "interior_lum_a": 84.58,
+        "interior_lum_b": 84.62,
+        "interior_dlum": 0.041,
+        "interior_changed_dlum": 7.95
+      },
+      {
+        "key": "VC07",
+        "name": "None with positive stored weight",
+        "palette": null,
+        "note": null,
+        "changed_px": 1668,
+        "max_channel_diff": 179,
+        "ink_px": 196089,
+        "interior_px": 11600,
+        "interior_changed_px": 10,
+        "interior_nonzero_px": 10,
+        "interior_max_channel_diff": 159,
+        "edge_changed_px": 1658,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 82.52,
+        "interior_dlum": -0.091,
+        "interior_changed_dlum": -106.03
+      },
+      {
+        "key": "VC08",
+        "name": "zero weight with Paper stroke color",
+        "palette": null,
+        "note": null,
+        "changed_px": 1668,
+        "max_channel_diff": 179,
+        "ink_px": 196073,
+        "interior_px": 11600,
+        "interior_changed_px": 10,
+        "interior_nonzero_px": 10,
+        "interior_max_channel_diff": 159,
+        "edge_changed_px": 1658,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 82.52,
+        "interior_dlum": -0.091,
+        "interior_changed_dlum": -106.03
+      },
+      {
+        "key": "VC09",
+        "name": "0 percent text opacity",
+        "palette": null,
+        "note": null,
+        "changed_px": 0,
+        "max_channel_diff": 0,
+        "ink_px": 0,
+        "interior_px": 0,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": null,
+        "edge_changed_px": 0
+      },
+      {
+        "key": "VC10",
+        "name": "character mixed stroke states",
+        "palette": null,
+        "note": null,
+        "changed_px": 4024,
+        "max_channel_diff": 255,
+        "ink_px": 211449,
+        "interior_px": 11600,
+        "interior_changed_px": 820,
+        "interior_nonzero_px": 820,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 3204,
+        "interior_lum_a": 63.06,
+        "interior_lum_b": 45.22,
+        "interior_dlum": -17.838,
+        "interior_changed_dlum": -252.35
+      },
+      {
+        "key": "VC11",
+        "name": "thin benign round strokes",
+        "palette": null,
+        "note": null,
+        "changed_px": 2964,
+        "max_channel_diff": 221,
+        "ink_px": 42056,
+        "interior_px": 12488,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 2964,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC12",
+        "name": "thin benign miter strokes",
+        "palette": null,
+        "note": null,
+        "changed_px": 2964,
+        "max_channel_diff": 221,
+        "ink_px": 42056,
+        "interior_px": 12488,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 2964,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC13",
+        "name": "thick nonoverlapping lines",
+        "palette": null,
+        "note": null,
+        "changed_px": 2964,
+        "max_channel_diff": 255,
+        "ink_px": 385700,
+        "interior_px": 12488,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 2964,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC14",
+        "name": "underline decoration",
+        "palette": null,
+        "note": null,
+        "changed_px": 14651,
+        "max_channel_diff": 255,
+        "ink_px": 259305,
+        "interior_px": 11600,
+        "interior_changed_px": 3762,
+        "interior_nonzero_px": 3762,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10889,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.614,
+        "interior_changed_dlum": -254.74
+      },
+      {
+        "key": "VC15",
+        "name": "strikethrough decoration",
+        "palette": null,
+        "note": null,
+        "changed_px": 19983,
+        "max_channel_diff": 255,
+        "ink_px": 259433,
+        "interior_px": 11600,
+        "interior_changed_px": 5430,
+        "interior_nonzero_px": 5430,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 14553,
+        "interior_lum_a": 95.54,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -95.537,
+        "interior_changed_dlum": -204.09
+      },
+      {
+        "key": "VC16",
+        "name": "stroke tint zero",
+        "palette": null,
+        "note": null,
+        "changed_px": 14651,
+        "max_channel_diff": 255,
+        "ink_px": 259303,
+        "interior_px": 11600,
+        "interior_changed_px": 3762,
+        "interior_nonzero_px": 3762,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10889,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.614,
+        "interior_changed_dlum": -254.74
+      },
+      {
+        "key": "VC17",
+        "name": "None plus zero weight",
+        "palette": null,
+        "note": null,
+        "changed_px": 1668,
+        "max_channel_diff": 179,
+        "ink_px": 196087,
+        "interior_px": 11600,
+        "interior_changed_px": 10,
+        "interior_nonzero_px": 10,
+        "interior_max_channel_diff": 159,
+        "edge_changed_px": 1658,
+        "interior_lum_a": 82.61,
+        "interior_lum_b": 82.52,
+        "interior_dlum": -0.091,
+        "interior_changed_dlum": -106.03
+      },
+      {
+        "key": "VC18",
+        "name": "rotated frame",
+        "palette": null,
+        "note": null,
+        "changed_px": 18699,
+        "max_channel_diff": 255,
+        "ink_px": 333558,
+        "interior_px": 14284,
+        "interior_changed_px": 4677,
+        "interior_nonzero_px": 4677,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 14022,
+        "interior_lum_a": 82.62,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.624,
+        "interior_changed_dlum": -252.34
+      },
+      {
+        "key": "VC19",
+        "name": "baseline shift boundary",
+        "palette": null,
+        "note": null,
+        "changed_px": 14975,
+        "max_channel_diff": 255,
+        "ink_px": 265217,
+        "interior_px": 12089,
+        "interior_changed_px": 3948,
+        "interior_nonzero_px": 3948,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 11027,
+        "interior_lum_a": 83.24,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -83.237,
+        "interior_changed_dlum": -254.88
+      }
+    ],
+    "schema": 2,
+    "mask_kind": "external_fill_only",
+    "fill_compositing_verified": false,
+    "mask_file": "mask.png"
+  },
+  "old_plugin_vs_reference": {
+    "a": "native.png",
+    "b": "reference.png",
+    "ppi": 600.0,
+    "erode_px": 6,
+    "page_changed_px": 156878,
+    "frames": [
+      {
+        "key": "VC00",
+        "name": "unstroked first line, stroked second",
+        "palette": null,
+        "note": null,
+        "changed_px": 14137,
+        "max_channel_diff": 255,
+        "ink_px": 195994,
+        "interior_px": 11600,
+        "interior_changed_px": 3759,
+        "interior_nonzero_px": 3759,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10378,
+        "interior_lum_a": 82.52,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.523,
+        "interior_changed_dlum": -254.66
+      },
+      {
+        "key": "VC01",
+        "name": "stroked first line, unstroked second",
+        "palette": null,
+        "note": null,
+        "changed_px": 1321,
+        "max_channel_diff": 255,
+        "ink_px": 196069,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 1321,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC02",
+        "name": "both stroked",
+        "palette": null,
+        "note": null,
+        "changed_px": 3221,
+        "max_channel_diff": 255,
+        "ink_px": 259172,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 3221,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC03",
+        "name": "both unstroked",
+        "palette": null,
+        "note": null,
+        "changed_px": 0,
+        "max_channel_diff": 0,
+        "ink_px": 35492,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 0,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC04",
+        "name": "alternating three lines",
+        "palette": null,
+        "note": null,
+        "changed_px": 13977,
+        "max_channel_diff": 255,
+        "ink_px": 199002,
+        "interior_px": 16956,
+        "interior_changed_px": 3759,
+        "interior_nonzero_px": 3759,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10218,
+        "interior_lum_a": 56.46,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -56.456,
+        "interior_changed_dlum": -254.66
+      },
+      {
+        "key": "VC05",
+        "name": "different stroke weights",
+        "palette": null,
+        "note": null,
+        "changed_px": 3221,
+        "max_channel_diff": 255,
+        "ink_px": 209623,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 3221,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC06",
+        "name": "different stroke and fill colors",
+        "palette": null,
+        "note": null,
+        "changed_px": 2177,
+        "max_channel_diff": 237,
+        "ink_px": 260101,
+        "interior_px": 11600,
+        "interior_changed_px": 60,
+        "interior_nonzero_px": 60,
+        "interior_max_channel_diff": 156,
+        "edge_changed_px": 2117,
+        "interior_lum_a": 84.62,
+        "interior_lum_b": 84.58,
+        "interior_dlum": -0.041,
+        "interior_changed_dlum": -7.95
+      },
+      {
+        "key": "VC07",
+        "name": "None with positive stored weight",
+        "palette": null,
+        "note": null,
+        "changed_px": 14137,
+        "max_channel_diff": 255,
+        "ink_px": 195994,
+        "interior_px": 11600,
+        "interior_changed_px": 3759,
+        "interior_nonzero_px": 3759,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10378,
+        "interior_lum_a": 82.52,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.523,
+        "interior_changed_dlum": -254.66
+      },
+      {
+        "key": "VC08",
+        "name": "zero weight with Paper stroke color",
+        "palette": null,
+        "note": null,
+        "changed_px": 14137,
+        "max_channel_diff": 255,
+        "ink_px": 195980,
+        "interior_px": 11600,
+        "interior_changed_px": 3759,
+        "interior_nonzero_px": 3759,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10378,
+        "interior_lum_a": 82.52,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.523,
+        "interior_changed_dlum": -254.66
+      },
+      {
+        "key": "VC09",
+        "name": "0 percent text opacity",
+        "palette": null,
+        "note": null,
+        "changed_px": 0,
+        "max_channel_diff": 0,
+        "ink_px": 0,
+        "interior_px": 0,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": null,
+        "edge_changed_px": 0
+      },
+      {
+        "key": "VC10",
+        "name": "character mixed stroke states",
+        "palette": null,
+        "note": null,
+        "changed_px": 8584,
+        "max_channel_diff": 255,
+        "ink_px": 211466,
+        "interior_px": 11600,
+        "interior_changed_px": 2059,
+        "interior_nonzero_px": 2059,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 6525,
+        "interior_lum_a": 45.22,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -45.221,
+        "interior_changed_dlum": -254.77
+      },
+      {
+        "key": "VC11",
+        "name": "thin benign round strokes",
+        "palette": null,
+        "note": null,
+        "changed_px": 2964,
+        "max_channel_diff": 221,
+        "ink_px": 42796,
+        "interior_px": 12488,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 2964,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC12",
+        "name": "thin benign miter strokes",
+        "palette": null,
+        "note": null,
+        "changed_px": 2964,
+        "max_channel_diff": 221,
+        "ink_px": 42794,
+        "interior_px": 12488,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 2964,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC13",
+        "name": "thick nonoverlapping lines",
+        "palette": null,
+        "note": null,
+        "changed_px": 2964,
+        "max_channel_diff": 255,
+        "ink_px": 386298,
+        "interior_px": 12488,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 2964,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC14",
+        "name": "underline decoration",
+        "palette": null,
+        "note": null,
+        "changed_px": 24188,
+        "max_channel_diff": 255,
+        "ink_px": 259172,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 24188,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC15",
+        "name": "strikethrough decoration",
+        "palette": null,
+        "note": null,
+        "changed_px": 24310,
+        "max_channel_diff": 255,
+        "ink_px": 259369,
+        "interior_px": 11600,
+        "interior_changed_px": 3300,
+        "interior_nonzero_px": 3300,
+        "interior_max_channel_diff": 237,
+        "edge_changed_px": 21010,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 25.72,
+        "interior_dlum": 25.723,
+        "interior_changed_dlum": 90.42
+      },
+      {
+        "key": "VC16",
+        "name": "stroke tint zero",
+        "palette": null,
+        "note": null,
+        "changed_px": 3221,
+        "max_channel_diff": 255,
+        "ink_px": 259172,
+        "interior_px": 11600,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 3221,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC17",
+        "name": "None plus zero weight",
+        "palette": null,
+        "note": null,
+        "changed_px": 14137,
+        "max_channel_diff": 255,
+        "ink_px": 195994,
+        "interior_px": 11600,
+        "interior_changed_px": 3759,
+        "interior_nonzero_px": 3759,
+        "interior_max_channel_diff": 255,
+        "edge_changed_px": 10378,
+        "interior_lum_a": 82.52,
+        "interior_lum_b": 0.0,
+        "interior_dlum": -82.523,
+        "interior_changed_dlum": -254.66
+      },
+      {
+        "key": "VC18",
+        "name": "rotated frame",
+        "palette": null,
+        "note": null,
+        "changed_px": 4891,
+        "max_channel_diff": 227,
+        "ink_px": 333406,
+        "interior_px": 14284,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 4891,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      },
+      {
+        "key": "VC19",
+        "name": "baseline shift boundary",
+        "palette": null,
+        "note": null,
+        "changed_px": 3127,
+        "max_channel_diff": 255,
+        "ink_px": 264923,
+        "interior_px": 12089,
+        "interior_changed_px": 0,
+        "interior_nonzero_px": 0,
+        "interior_max_channel_diff": 0,
+        "edge_changed_px": 3127,
+        "interior_lum_a": 0.0,
+        "interior_lum_b": 0.0,
+        "interior_dlum": 0.0
+      }
+    ],
+    "schema": 2,
+    "mask_kind": "external_fill_only",
+    "fill_compositing_verified": false,
+    "mask_file": "mask.png"
+  },
+  "artifact_sha256": {
+    "victims-baseline": {
+      "fixture.indd": "62712653dc2e5065d1cb05221388020e2c266971f4794b2ea231b7102e57a2df",
+      "host.json": "fcf62de0d1046ebba45dcefc000cd0d7225fce0d0a74bb04bb3e44e605edc52f",
+      "manifest.json": "f86da999ba5b600009c8b39b3ee15eb2044c603f85f295693bb8e379d4bef060",
+      "mask.png": "55b06bea26127e05b7898e69a0427b7815a87b836ea3eda3cf44dcbfee55ff7c",
+      "native.png": "4249cce4a9795fe63d9f0ceee30449aab809e16b05437b73f4ef544f1b61dc6d",
+      "reference.png": "19877d68099ddbc7a3f0492dc0109191717c98ac40061814501958e3962fa8f4"
+    },
+    "victims-noplugin": {
+      "fixture.indd": "ce53e5145a6f42c2828124ad89063af30148190ff488f8bffcb09443b394414f",
+      "host.json": "66fd4ad2876ee3497ec2833cab9e4e7d2f7b4fbf06a2c3d0205a5c9b0f7d325e",
+      "manifest.json": "f86da999ba5b600009c8b39b3ee15eb2044c603f85f295693bb8e379d4bef060",
+      "mask.png": "55b06bea26127e05b7898e69a0427b7815a87b836ea3eda3cf44dcbfee55ff7c",
+      "native.png": "7d2992317fb720aa0de1e13b766309381cabd6e9fb557144dc90dd791b1622b2",
+      "reference.png": "19877d68099ddbc7a3f0492dc0109191717c98ac40061814501958e3962fa8f4"
+    }
+  },
+  "host_collection": {
+    "victims-baseline": {
+      "schema": 1,
+      "version": "21.5.1.73",
+      "passed": true,
+      "frames": [
+        {
+          "key": "VC00",
+          "name": "unstroked first line, stroked second",
+          "bounds": [
+            19.999999999999,
+            20,
+            184.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC01",
+          "name": "stroked first line, unstroked second",
+          "bounds": [
+            19.999999999999,
+            215,
+            184.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC02",
+          "name": "both stroked",
+          "bounds": [
+            19.999999999999,
+            410,
+            184.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC03",
+          "name": "both unstroked",
+          "bounds": [
+            19.999999999999,
+            605,
+            184.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC04",
+          "name": "alternating three lines",
+          "bounds": [
+            214.999999999999,
+            20,
+            379.999999999999,
+            190
+          ],
+          "sourceCharacters": 8
+        },
+        {
+          "key": "VC05",
+          "name": "different stroke weights",
+          "bounds": [
+            214.999999999999,
+            215,
+            379.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC06",
+          "name": "different stroke and fill colors",
+          "bounds": [
+            214.999999999999,
+            410,
+            379.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC07",
+          "name": "None with positive stored weight",
+          "bounds": [
+            214.999999999999,
+            605,
+            379.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC08",
+          "name": "zero weight with Paper stroke color",
+          "bounds": [
+            409.999999999999,
+            20,
+            574.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC09",
+          "name": "0 percent text opacity",
+          "bounds": [
+            409.999999999999,
+            215,
+            574.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC10",
+          "name": "character mixed stroke states",
+          "bounds": [
+            409.999999999999,
+            410,
+            574.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC11",
+          "name": "thin benign round strokes",
+          "bounds": [
+            409.999999999999,
+            605,
+            574.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC12",
+          "name": "thin benign miter strokes",
+          "bounds": [
+            604.999999999999,
+            20,
+            769.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC13",
+          "name": "thick nonoverlapping lines",
+          "bounds": [
+            604.999999999999,
+            215,
+            769.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC14",
+          "name": "underline decoration",
+          "bounds": [
+            604.999999999999,
+            410,
+            769.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC15",
+          "name": "strikethrough decoration",
+          "bounds": [
+            604.999999999999,
+            605,
+            769.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC16",
+          "name": "stroke tint zero",
+          "bounds": [
+            799.999999999999,
+            20,
+            964.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC17",
+          "name": "None plus zero weight",
+          "bounds": [
+            799.999999999999,
+            215,
+            964.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC18",
+          "name": "rotated frame",
+          "bounds": [
+            788.170286418394,
+            410.827214156967,
+            975.223944923964,
+            602.136347501444
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC19",
+          "name": "baseline shift boundary",
+          "bounds": [
+            799.999999999999,
+            605,
+            964.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        }
+      ],
+      "oracle": "separate centered doubled strokes before original fills",
+      "glyphPositionsUnchanged": true,
+      "log": "liveBefore=Throwaway.indd|saved=true|modified=false\npdfExportPreferences restore: fails=0 diff=0 unverified=14 [openDocumentPassword: The property is not applicable in the current state.; changeSecurityPassword: Cannot Access Password Property; disallowPrinting: The property is not applicable in the current state.; disallowChanging: The property is not applicable in the current state.; disallowCopying: The property is not applicable in the current state.; disallowNotes: The property is not applicable in the current state.; disallowFormFillIn: The property is not applicable in the current state.; disallowExtractionForAccessibility: The property is not applicable in the current state.; disallowDocumentAssembly: The property is not applicable in the current state.; disallowHiResPrinting: The property is not applicable in the current state.; disallowPlaintextMetadata: The property is not applicable in the current state.; simulateOverprint: The property is not applicable in the current state.; ignoreSpreadOverrides: The property is not applicable in the current state.; appliedFlattenerPreset: The property is not applicable in the current state.]\npngExportPreferences restore: fails=0 diff=0 unverified=0\nepsExportPreferences restore: fails=0 diff=0 unverified=1 [appliedFlattenerPreset: unsupported preference value (object)]\nliveAfter=Throwaway.indd|saved=true|modified=false (unchanged)\nelapsed ms=10480"
+    },
+    "victims-noplugin": {
+      "schema": 1,
+      "version": "21.5.1.73",
+      "passed": true,
+      "frames": [
+        {
+          "key": "VC00",
+          "name": "unstroked first line, stroked second",
+          "bounds": [
+            19.999999999999,
+            20,
+            184.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC01",
+          "name": "stroked first line, unstroked second",
+          "bounds": [
+            19.999999999999,
+            215,
+            184.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC02",
+          "name": "both stroked",
+          "bounds": [
+            19.999999999999,
+            410,
+            184.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC03",
+          "name": "both unstroked",
+          "bounds": [
+            19.999999999999,
+            605,
+            184.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC04",
+          "name": "alternating three lines",
+          "bounds": [
+            214.999999999999,
+            20,
+            379.999999999999,
+            190
+          ],
+          "sourceCharacters": 8
+        },
+        {
+          "key": "VC05",
+          "name": "different stroke weights",
+          "bounds": [
+            214.999999999999,
+            215,
+            379.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC06",
+          "name": "different stroke and fill colors",
+          "bounds": [
+            214.999999999999,
+            410,
+            379.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC07",
+          "name": "None with positive stored weight",
+          "bounds": [
+            214.999999999999,
+            605,
+            379.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC08",
+          "name": "zero weight with Paper stroke color",
+          "bounds": [
+            409.999999999999,
+            20,
+            574.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC09",
+          "name": "0 percent text opacity",
+          "bounds": [
+            409.999999999999,
+            215,
+            574.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC10",
+          "name": "character mixed stroke states",
+          "bounds": [
+            409.999999999999,
+            410,
+            574.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC11",
+          "name": "thin benign round strokes",
+          "bounds": [
+            409.999999999999,
+            605,
+            574.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC12",
+          "name": "thin benign miter strokes",
+          "bounds": [
+            604.999999999999,
+            20,
+            769.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC13",
+          "name": "thick nonoverlapping lines",
+          "bounds": [
+            604.999999999999,
+            215,
+            769.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC14",
+          "name": "underline decoration",
+          "bounds": [
+            604.999999999999,
+            410,
+            769.999999999999,
+            580
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC15",
+          "name": "strikethrough decoration",
+          "bounds": [
+            604.999999999999,
+            605,
+            769.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC16",
+          "name": "stroke tint zero",
+          "bounds": [
+            799.999999999999,
+            20,
+            964.999999999999,
+            190
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC17",
+          "name": "None plus zero weight",
+          "bounds": [
+            799.999999999999,
+            215,
+            964.999999999999,
+            385
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC18",
+          "name": "rotated frame",
+          "bounds": [
+            788.170286418394,
+            410.827214156967,
+            975.223944923964,
+            602.136347501444
+          ],
+          "sourceCharacters": 5
+        },
+        {
+          "key": "VC19",
+          "name": "baseline shift boundary",
+          "bounds": [
+            799.999999999999,
+            605,
+            964.999999999999,
+            775
+          ],
+          "sourceCharacters": 5
+        }
+      ],
+      "oracle": "separate centered doubled strokes before original fills",
+      "glyphPositionsUnchanged": true,
+      "log": "liveBefore=\npdfExportPreferences restore: fails=0 diff=0 unverified=14 [openDocumentPassword: The property is not applicable in the current state.; changeSecurityPassword: Cannot Access Password Property; disallowPrinting: The property is not applicable in the current state.; disallowChanging: The property is not applicable in the current state.; disallowCopying: The property is not applicable in the current state.; disallowNotes: The property is not applicable in the current state.; disallowFormFillIn: The property is not applicable in the current state.; disallowExtractionForAccessibility: The property is not applicable in the current state.; disallowDocumentAssembly: The property is not applicable in the current state.; disallowHiResPrinting: The property is not applicable in the current state.; disallowPlaintextMetadata: The property is not applicable in the current state.; simulateOverprint: The property is not applicable in the current state.; ignoreSpreadOverrides: The property is not applicable in the current state.; appliedFlattenerPreset: The property is not applicable in the current state.]\npngExportPreferences restore: fails=0 diff=0 unverified=0\nepsExportPreferences restore: fails=0 diff=0 unverified=1 [appliedFlattenerPreset: unsupported preference value (object)]\nliveAfter= (unchanged)\nelapsed ms=10083"
+    }
+  }
+}
