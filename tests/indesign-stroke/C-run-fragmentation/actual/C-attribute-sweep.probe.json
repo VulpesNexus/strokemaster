@@ -1,0 +1,1017 @@
+{
+ "pdf": "C-attribute-sweep.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "key": "C00",
+   "name": "C00 control: no override",
+   "variant": "control: no override",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=315)"
+   ]
+  },
+  {
+   "key": "C01",
+   "name": "C01 fill color Magenta",
+   "variant": "fill color Magenta",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C02",
+   "name": "C02 fill tint 50",
+   "variant": "fill tint 50",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C03",
+   "name": "C03 stroke color Magenta",
+   "variant": "stroke color Magenta",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C04",
+   "name": "C04 stroke tint 50",
+   "variant": "stroke tint 50",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C05",
+   "name": "C05 stroke weight 5",
+   "variant": "stroke weight 5",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=10 j=1 M=4",
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C06",
+   "name": "C06 stroke weight 4 set locally (same value as style)",
+   "variant": "stroke weight 4 set locally (same value as style)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=315)"
+   ]
+  },
+  {
+   "key": "C07",
+   "name": "C07 join Miter",
+   "variant": "join Miter",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=0 M=4",
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C08",
+   "name": "C08 miter limit 10 with round join (no visual effect)",
+   "variant": "miter limit 10 with round join (no visual effect)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=10",
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C09",
+   "name": "C09 stroke alignment Center",
+   "variant": "stroke alignment Center",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 5,
+     "order": "S F FS S F",
+     "stroke_state": [
+      "w=4 j=1 M=4",
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C10",
+   "name": "C10 overprint stroke",
+   "variant": "overprint stroke",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C11",
+   "name": "C11 overprint fill",
+   "variant": "overprint fill",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C12",
+   "name": "C12 font change (Minion Pro\tBold)",
+   "variant": "font change (Minion Pro\tBold)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C13",
+   "name": "C13 point size 23.9",
+   "variant": "point size 23.9",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C14",
+   "name": "C14 horizontal scale 99 %",
+   "variant": "horizontal scale 99 %",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C15",
+   "name": "C15 vertical scale 101 %",
+   "variant": "vertical scale 101 %",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C16",
+   "name": "C16 baseline shift 0.5 pt",
+   "variant": "baseline shift 0.5 pt",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C17",
+   "name": "C17 tracking 20",
+   "variant": "tracking 20",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=315)"
+   ]
+  },
+  {
+   "key": "C18",
+   "name": "C18 manual kerning -50 before character 3",
+   "variant": "manual kerning -50 before character 3",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=315)"
+   ]
+  },
+  {
+   "key": "C19",
+   "name": "C19 language English: UK",
+   "variant": "language English: UK",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 6,
+     "order": "S S S F F F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=315)"
+   ]
+  },
+  {
+   "key": "C20",
+   "name": "C20 skew -10",
+   "variant": "skew -10",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C21",
+   "name": "C21 character rotation 10",
+   "variant": "character rotation 10",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=315)"
+   ]
+  },
+  {
+   "key": "C22",
+   "name": "C22 empty character style",
+   "variant": "empty character style",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=315)"
+   ]
+  },
+  {
+   "key": "C23",
+   "name": "C23 character style with fill Magenta",
+   "variant": "character style with fill Magenta",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=135)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C24",
+   "name": "C24 underline",
+   "variant": "underline",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "S(w=1.2 j=0 M=10 pts=2)",
+    "f(w=1.2 j=0 M=10 pts=135)",
+    "f(w=1.2 j=0 M=10 pts=45)",
+    "f(w=1.2 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C25",
+   "name": "C25 underline color set, underline off (no visual effect)",
+   "variant": "underline color set, underline off (no visual effect)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=0 M=10 pts=135)",
+    "f(w=1.2 j=0 M=10 pts=45)",
+    "f(w=1.2 j=0 M=10 pts=135)"
+   ]
+  },
+  {
+   "key": "C26",
+   "name": "C26 strikethrough",
+   "variant": "strikethrough",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "S(w=1.2 j=1 M=4 pts=2)",
+    "f(w=1.2 j=1 M=4 pts=135)",
+    "f(w=1.2 j=1 M=4 pts=45)",
+    "f(w=1.2 j=1 M=4 pts=135)"
+   ]
+  },
+  {
+   "key": "C27",
+   "name": "C27 Lowercase on a lowercase letter (no visual effect)",
+   "variant": "Lowercase on a lowercase letter (no visual effect)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=135)",
+    "f(w=1.2 j=1 M=4 pts=45)",
+    "f(w=1.2 j=1 M=4 pts=135)"
+   ]
+  },
+  {
+   "key": "C28",
+   "name": "C28 Small Caps",
+   "variant": "Small Caps",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=135)",
+    "f(w=1.2 j=1 M=4 pts=44)",
+    "f(w=1.2 j=1 M=4 pts=135)"
+   ]
+  },
+  {
+   "key": "C29",
+   "name": "C29 Superscript",
+   "variant": "Superscript",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=135)",
+    "f(w=1.2 j=1 M=4 pts=45)",
+    "f(w=1.2 j=1 M=4 pts=135)"
+   ]
+  },
+  {
+   "key": "C30",
+   "name": "C30 No Break (no visual effect)",
+   "variant": "No Break (no visual effect)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C31",
+   "name": "C31 OpenType slashed zero on a letter (no visual effect)",
+   "variant": "OpenType slashed zero on a letter (no visual effect)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C32",
+   "name": "C32 OpenType oldstyle figures on a letter (no visual effect)",
+   "variant": "OpenType oldstyle figures on a letter (no visual effect)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C33c",
+   "name": "C33c control for C33: text with fi",
+   "variant": "control for C33: text with fi",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=291)"
+   ]
+  },
+  {
+   "key": "C33",
+   "name": "C33 ligatures off on fi",
+   "variant": "ligatures off on fi",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=308)"
+   ]
+  },
+  {
+   "key": "C34c",
+   "name": "C34c control for C34: text with st",
+   "variant": "control for C34: text with st",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=298)"
+   ]
+  },
+  {
+   "key": "C34",
+   "name": "C34 discretionary ligatures on st",
+   "variant": "discretionary ligatures on st",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=317)"
+   ]
+  },
+  {
+   "key": "C35",
+   "name": "C35 GREP style applying the empty character style to character 3",
+   "variant": "GREP style applying the empty character style to character 3",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C36",
+   "name": "C36 GREP style applying the magenta character style to character 3",
+   "variant": "GREP style applying the magenta character style to character 3",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=135)",
+    "f(w=1.2 j=1 M=4 pts=45)",
+    "f(w=1.2 j=1 M=4 pts=135)"
+   ]
+  },
+  {
+   "key": "C37",
+   "name": "C37 nested style applying the empty character style through 4 characters",
+   "variant": "nested style applying the empty character style through 4 characters",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C38",
+   "name": "C38 conditional text condition, indicators hidden",
+   "variant": "conditional text condition, indicators hidden",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=135)",
+    "f(w=1.2 j=1 M=4 pts=45)",
+    "f(w=1.2 j=1 M=4 pts=135)"
+   ]
+  },
+  {
+   "key": "C39",
+   "name": "C39 hyperlink text source on character 3",
+   "variant": "hyperlink text source on character 3",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C40",
+   "name": "C40 XML tag on character 3",
+   "variant": "XML tag on character 3",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C41",
+   "name": "C41 OpenType stylistic set 1",
+   "variant": "OpenType stylistic set 1",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C42c",
+   "name": "C42c control for C42: variable font Bahnschrift",
+   "variant": "control for C42: variable font Bahnschrift",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=231)"
+   ]
+  },
+  {
+   "key": "C42",
+   "name": "C42 variable font axis on character 3 (Bahnschrift)",
+   "variant": "variable font axis on character 3 (Bahnschrift)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=99)",
+    "f(w=1.2 j=1 M=4 pts=33)",
+    "f(w=1.2 j=1 M=4 pts=99)"
+   ]
+  },
+  {
+   "key": "C43",
+   "name": "C43 fill color Black set locally (same value as style)",
+   "variant": "fill color Black set locally (same value as style)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C44",
+   "name": "C44 kerning method Optical on character 3",
+   "variant": "kerning method Optical on character 3",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=315)"
+   ]
+  },
+  {
+   "key": "C45",
+   "name": "C45 stroke tint 100 set explicitly (style uses the swatch tint)",
+   "variant": "stroke tint 100 set explicitly (style uses the swatch tint)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=135)",
+    "f(w=1.2 j=1 M=4 pts=45)",
+    "f(w=1.2 j=1 M=4 pts=135)"
+   ]
+  },
+  {
+   "key": "C46",
+   "name": "C46 variable font named instance Bold on character 3 (Bahnschrift)",
+   "variant": "variable font named instance Bold on character 3 (Bahnschrift)",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1.2 j=1 M=4 pts=99)",
+    "f(w=1.2 j=1 M=4 pts=33)",
+    "f(w=1.2 j=1 M=4 pts=99)"
+   ]
+  }
+ ]
+}

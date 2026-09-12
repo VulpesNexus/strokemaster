@@ -1,0 +1,7 @@
+| Entry | Variant | Runs per line | Objects in paint order | Stroke state | Paths | Measurement |
+| --- | --- | --- | --- | --- | --- | --- |
+| (item) | fixture text frame | 13 / 14 / 1 | S F S F S F S F S F S F S F S F S F S F S F S F S F / S F S F S F S F S F S F S F S F S F S F S F S F S F S F / S F | w=6 j=1 M=4 | S(w=0.6 j=0 M=10 pts=2); S(w=0.6 j=1 M=4 pts=2); f(w=0.6 j=1 M=4 pts=187); f(w=0.6 j=1 M=4 pts=91) … | {"fill_core_px": 149278, "hidden_fill_px": 6916, "hidden_fill_px_strokes_first": 0} |
+| (item) | fixture text frame | 0 / 0 / 0 |  /  /  |  | f(w=1 j=0 M=10 pts=1728); S(w=4 j=1 M=4 pts=1773); f(w=4 j=1 M=4 pts=1863); S(w=4 j=1 M=4 pts=1909) … | {"fill_core_px": 110840, "hidden_fill_px": 110647, "hidden_fill_px_strokes_first": 110647} |
+| (item) | fixture text frame | 1 / 1 | S F / S F | w=8 j=0 M=4 | f(w=1 j=0 M=10 pts=2016); f(w=1 j=0 M=10 pts=1525) | {"fill_core_px": 87567, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| (item) | fixture text frame | 2 / 2 / 2 | S F S F / S F S F / S F S F | w=14 j=1 M=4 | f(w=1 j=0 M=10 pts=1518); f(w=1 j=0 M=10 pts=1714); f(w=1 j=0 M=10 pts=1168); f(w=1 j=0 M=10 pts=1518) … | {"fill_core_px": 123358, "hidden_fill_px": 24, "hidden_fill_px_strokes_first": 0} |
+| (item) | fixture text frame | 0 / 0 / 0 |  /  /  |  | f(w=1 j=0 M=10 pts=1518); f(w=1 j=0 M=10 pts=1714); f(w=1 j=0 M=10 pts=1168); f(w=1 j=0 M=10 pts=1518) … | {"fill_core_px": 116504, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |

@@ -1,0 +1,17 @@
+| Entry | Variant | Runs per line | Objects in paint order | Stroke state | Paths | Measurement |
+| --- | --- | --- | --- | --- | --- | --- |
+| A01 two paragraphs, stroke 8 outside | two paragraphs; descenders above ascenders | 1 / 1 | S F / S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=275); f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64347, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| A02 forced line break | one paragraph, forced line break | 1 / 1 | S S F F / S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=275); f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64347, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| A03 soft wrap | one paragraph wrapped by frame width | 1 / 1 | S F / S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=275); f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64347, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| A04 center alignment, stroke 16 | Center alignment at twice the weight (same outer extent) | 1 / 1 | FS / FS | w=16 j=1 M=4 |  | {"fill_core_px": 62497, "hidden_fill_px": 62497, "hidden_fill_px_strokes_first": 62497} |
+| A05 control, leading 60 | control: lines far apart, no overlap expected | 1 / 1 | S F / S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=275); f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64348, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| A09a stroke 3 | weight sweep: 3 pt | 1 / 1 | S F / S F | w=6 j=1 M=4 | f(w=1 j=0 M=10 pts=275); f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64348, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| A09b stroke 5 | weight sweep: 5 pt | 1 / 1 | S F / S F | w=10 j=1 M=4 | f(w=1 j=0 M=10 pts=275); f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64348, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| A08 lower (created first) | unthreaded pair: lower frame, behind | 1 | S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64348, "hidden_fill_px": 2163, "hidden_fill_px_strokes_first": 0} |
+| A08 upper (created second, in front) | unthreaded pair: upper frame, in front | 1 | S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=240); f(w=1 j=0 M=10 pts=275) |  |
+| A06 lower, story start | threaded: story line 1 in the lower frame | 1 | S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64348, "hidden_fill_px": 2163, "hidden_fill_px_strokes_first": 0} |
+| A06 upper, story continues (in front) | threaded: story line 2 in the upper frame, upper frame in front | 1 | S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=240); f(w=1 j=0 M=10 pts=275) |  |
+| A07 lower, story start (in front) | threaded: story line 1 in the lower frame, lower frame in front | 1 | S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 64348, "hidden_fill_px": 1657, "hidden_fill_px_strokes_first": 0} |
+| A07 upper, story continues (behind) | threaded: story line 2 in the upper frame, upper frame behind | 1 | S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=275); f(w=1 j=0 M=10 pts=240) |  |
+| A10 two runs on line 1 | line 1 split into three runs by a fill color change | 3 / 1 | S F S F S F / S F | w=16 j=1 M=4 | f(w=1 j=0 M=10 pts=140); f(w=1 j=0 M=10 pts=45); f(w=1 j=0 M=10 pts=90); f(w=1 j=0 M=10 pts=240) | {"fill_core_px": 57979, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |
+| A11 frame text opacity 90 | frame-level text transparency (opacity 90 %) | 1 / 1 | S F / S F | w=16 j=1 M=4 | f(w=16 j=1 M=4 pts=275); f(w=16 j=1 M=4 pts=240) | {"fill_core_px": 63300, "hidden_fill_px": 0, "hidden_fill_px_strokes_first": 0} |

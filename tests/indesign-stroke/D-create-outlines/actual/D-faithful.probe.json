@@ -1,0 +1,213 @@
+{
+ "pdf": "D-faithful.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "name": "F01 Outside 4 pt round",
+   "variant": "F01 Outside 4 pt round: live text",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 1322,
+   "pair_white_px": [
+    201438,
+    201966
+   ],
+   "pair_black_px": [
+    79914,
+    79948
+   ],
+   "pair_outline_paths": [
+    "S(w=8 j=1 M=4 pts=163)",
+    "f(w=8 j=1 M=4 pts=161)"
+   ]
+  },
+  {
+   "name": "F01 Outside 4 pt round (converted copy) (faithful outlines)",
+   "variant": "F01 Outside 4 pt round: faithful outlines",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "S(w=8 j=1 M=4 pts=163)",
+    "f(w=8 j=1 M=4 pts=161)"
+   ]
+  },
+  {
+   "name": "F02 Center 8 pt round",
+   "variant": "F02 Center 8 pt round: live text",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 901,
+   "pair_white_px": [
+    284626,
+    284938
+   ],
+   "pair_black_px": [
+    0,
+    0
+   ],
+   "pair_outline_paths": [
+    "f(w=8 j=1 M=4 pts=161)",
+    "S(w=8 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "F02 Center 8 pt round (converted copy) (faithful outlines)",
+   "variant": "F02 Center 8 pt round: faithful outlines",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "f(w=8 j=1 M=4 pts=161)",
+    "S(w=8 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "F03 Outside 4 pt miter limit 10",
+   "variant": "F03 Outside 4 pt miter limit 10: live text",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=10"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 1350,
+   "pair_white_px": [
+    206156,
+    206816
+   ],
+   "pair_black_px": [
+    79914,
+    79948
+   ],
+   "pair_outline_paths": [
+    "S(w=8 j=0 M=10 pts=163)",
+    "f(w=8 j=0 M=10 pts=161)"
+   ]
+  },
+  {
+   "name": "F03 Outside 4 pt miter limit 10 (converted copy) (faithful outlines)",
+   "variant": "F03 Outside 4 pt miter limit 10: faithful outlines",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "S(w=8 j=0 M=10 pts=163)",
+    "f(w=8 j=0 M=10 pts=161)"
+   ]
+  },
+  {
+   "name": "F04 Outside 8 pt two lines at 24 pt",
+   "variant": "F04 Outside 8 pt two lines at 24 pt: live text",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 10859,
+   "pair_white_px": [
+    390557,
+    388304
+   ],
+   "pair_black_px": [
+    60270,
+    61833
+   ],
+   "pair_outline_paths": [
+    "S(w=16 j=1 M=4 pts=248)",
+    "S(w=16 j=1 M=4 pts=282)",
+    "f(w=16 j=1 M=4 pts=275)",
+    "f(w=16 j=1 M=4 pts=240)"
+   ]
+  },
+  {
+   "name": "F04 Outside 8 pt two lines at 24 pt (converted copy) (faithful outlines)",
+   "variant": "F04 Outside 8 pt two lines at 24 pt: faithful outlines",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "S(w=16 j=1 M=4 pts=248)",
+    "S(w=16 j=1 M=4 pts=282)",
+    "f(w=16 j=1 M=4 pts=275)",
+    "f(w=16 j=1 M=4 pts=240)"
+   ]
+  },
+  {
+   "name": "F05 Outside 4 pt counters",
+   "variant": "F05 Outside 4 pt counters: live text",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 1975,
+   "pair_white_px": [
+    344420,
+    345420
+   ],
+   "pair_black_px": [
+    147416,
+    147444
+   ],
+   "pair_outline_paths": [
+    "S(w=8 j=1 M=4 pts=402)",
+    "f(w=8 j=1 M=4 pts=395)"
+   ]
+  },
+  {
+   "name": "F05 Outside 4 pt counters (converted copy) (faithful outlines)",
+   "variant": "F05 Outside 4 pt counters: faithful outlines",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "S(w=8 j=1 M=4 pts=402)",
+    "f(w=8 j=1 M=4 pts=395)"
+   ]
+  }
+ ]
+}

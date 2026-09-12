@@ -1,0 +1,697 @@
+{
+ "pdf": "N-transparency.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "key": "N00",
+   "name": "N00 control: Normal, opaque, solid",
+   "variant": "control: Normal, opaque, solid",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=186)",
+    "f(w=1 j=0 M=10 pts=186)"
+   ],
+   "fill_core_px": 54382,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N01",
+   "name": "N01 text blend Multiply",
+   "variant": "text blend Multiply",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 9500,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N02",
+   "name": "N02 text blend Screen",
+   "variant": "text blend Screen",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 9500,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N03",
+   "name": "N03 text blend Overlay",
+   "variant": "text blend Overlay",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N04",
+   "name": "N04 text blend Darken",
+   "variant": "text blend Darken",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N05",
+   "name": "N05 text blend Lighten",
+   "variant": "text blend Lighten",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N06",
+   "name": "N06 text blend Difference",
+   "variant": "text blend Difference",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 47610,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N07",
+   "name": "N07 text opacity 50 %",
+   "variant": "text opacity 50 %",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N08",
+   "name": "N08 text blend Multiply at 50 %",
+   "variant": "text blend Multiply at 50 %",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N09",
+   "name": "N09 object blend Multiply",
+   "variant": "object blend Multiply",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N10",
+   "name": "N10 object opacity 50 %",
+   "variant": "object opacity 50 %",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N11",
+   "name": "N11 gradient fill, solid stroke",
+   "variant": "gradient fill, solid stroke",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 16950,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N12",
+   "name": "N12 solid fill, gradient stroke",
+   "variant": "solid fill, gradient stroke",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=186)",
+    "f(w=1 j=0 M=10 pts=186)"
+   ],
+   "fill_core_px": 44882,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N13",
+   "name": "N13 gradient fill and gradient stroke",
+   "variant": "gradient fill and gradient stroke",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 16949,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N14",
+   "name": "N14 overprint fill",
+   "variant": "overprint fill",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=186)",
+    "f(w=1 j=0 M=10 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N15",
+   "name": "N15 overprint stroke",
+   "variant": "overprint stroke",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=186)",
+    "f(w=1 j=0 M=10 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N16",
+   "name": "N16 overprint fill and stroke",
+   "variant": "overprint fill and stroke",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=186)",
+    "f(w=1 j=0 M=10 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N17",
+   "name": "N17 spot color fill, overprint",
+   "variant": "spot color fill, overprint",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=186)",
+    "f(w=1 j=0 M=10 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N18",
+   "name": "N18 drop shadow on text",
+   "variant": "drop shadow on text",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=4)",
+    "f(w=1 j=0 M=10 pts=186)",
+    "f(w=1 j=0 M=10 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N19",
+   "name": "N19 feather on text",
+   "variant": "feather on text",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=16 j=1 M=4 pts=186)",
+    "f(w=16 j=1 M=4 pts=186)"
+   ],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N20",
+   "name": "N20 CONTROL: Center stroke, blend Multiply",
+   "variant": "CONTROL: Center stroke, blend Multiply",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N21",
+   "name": "N21 CONTROL: no stroke, blend Multiply",
+   "variant": "CONTROL: no stroke, blend Multiply",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "N22",
+   "name": "N22 CONTROL: no stroke, gradient fill",
+   "variant": "CONTROL: no stroke, gradient fill",
+   "status": "applied",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 16680,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  }
+ ]
+}

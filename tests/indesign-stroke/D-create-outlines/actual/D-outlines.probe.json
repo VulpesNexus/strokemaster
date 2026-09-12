@@ -1,0 +1,335 @@
+{
+ "pdf": "D-outlines.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "name": "D01 Outside 4 pt round",
+   "variant": "D01 Outside 4 pt, Round: live text",
+   "role": "text",
+   "row": 1,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 179527,
+   "pair_white_px": [
+    201438,
+    187579
+   ],
+   "pair_black_px": [
+    79915,
+    931
+   ],
+   "pair_outline_paths": [
+    "f(w=1 j=0 M=10 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "",
+   "variant": "D01 Outside 4 pt, Round: outlines",
+   "role": "outlines",
+   "row": 1,
+   "result": {
+    "cls": "Polygon",
+    "strokeAlignment": "CENTER_ALIGNMENT",
+    "strokeWeight": "4",
+    "endJoin": "ROUND_END_JOIN",
+    "endCap": "BUTT_END_CAP",
+    "miterLimit": "4",
+    "fillColor": "<Color Black>",
+    "fillTint": "-1",
+    "strokeColor": "<Color Paper>",
+    "strokeTint": "-1",
+    "overprintFill": "true",
+    "overprintStroke": "<n/a>",
+    "strokeType": "<StrokeStyle Solid>",
+    "paths": 6,
+    "children": 0
+   },
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "D02 Center 8 pt round",
+   "variant": "D02 Center 8 pt, Round: live text",
+   "role": "text",
+   "row": 2,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 98781,
+   "pair_white_px": [
+    284626,
+    187579
+   ],
+   "pair_black_px": [
+    0,
+    931
+   ],
+   "pair_outline_paths": [
+    "f(w=8 j=1 M=4 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "",
+   "variant": "D02 Center 8 pt, Round: outlines",
+   "role": "outlines",
+   "row": 2,
+   "result": {
+    "cls": "Polygon",
+    "strokeAlignment": "CENTER_ALIGNMENT",
+    "strokeWeight": "4",
+    "endJoin": "ROUND_END_JOIN",
+    "endCap": "BUTT_END_CAP",
+    "miterLimit": "4",
+    "fillColor": "<Color Black>",
+    "fillTint": "-1",
+    "strokeColor": "<Color Paper>",
+    "strokeTint": "-1",
+    "overprintFill": "true",
+    "overprintStroke": "<n/a>",
+    "strokeType": "<StrokeStyle Solid>",
+    "paths": 6,
+    "children": 0
+   },
+   "lines": [],
+   "paths": [
+    "f(w=8 j=1 M=4 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "D03 Outside 4 pt miter limit 10",
+   "variant": "D03 Outside 4 pt, Miter, limit 10: live text",
+   "role": "text",
+   "row": 3,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=10"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 182859,
+   "pair_white_px": [
+    206156,
+    189040
+   ],
+   "pair_black_px": [
+    79914,
+    899
+   ],
+   "pair_outline_paths": [
+    "f(w=1 j=0 M=10 pts=161)",
+    "S(w=4 j=0 M=10 pts=163)"
+   ]
+  },
+  {
+   "name": "",
+   "variant": "D03 Outside 4 pt, Miter, limit 10: outlines",
+   "role": "outlines",
+   "row": 3,
+   "result": {
+    "cls": "Polygon",
+    "strokeAlignment": "CENTER_ALIGNMENT",
+    "strokeWeight": "4",
+    "endJoin": "MITER_END_JOIN",
+    "endCap": "BUTT_END_CAP",
+    "miterLimit": "10",
+    "fillColor": "<Color Black>",
+    "fillTint": "-1",
+    "strokeColor": "<Color Paper>",
+    "strokeTint": "-1",
+    "overprintFill": "true",
+    "overprintStroke": "<n/a>",
+    "strokeType": "<StrokeStyle Solid>",
+    "paths": 6,
+    "children": 0
+   },
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=161)",
+    "S(w=4 j=0 M=10 pts=163)"
+   ]
+  },
+  {
+   "name": "D04 two lines",
+   "variant": "D04 two paragraphs: live text",
+   "role": "text",
+   "row": 4,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 359058,
+   "pair_white_px": [
+    402876,
+    375160
+   ],
+   "pair_black_px": [
+    159826,
+    1862
+   ],
+   "pair_outline_paths": [
+    "f(w=1 j=0 M=10 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)",
+    "f(w=4 j=1 M=4 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "",
+   "variant": "D04 two paragraphs: outlines",
+   "role": "outlines",
+   "row": 4,
+   "result": {
+    "cls": "Group",
+    "strokeAlignment": "CENTER_ALIGNMENT",
+    "strokeWeight": "4",
+    "endJoin": "ROUND_END_JOIN",
+    "endCap": "BUTT_END_CAP",
+    "miterLimit": "4",
+    "fillColor": "<Color Black>",
+    "fillTint": "-1",
+    "strokeColor": "<Color Paper>",
+    "strokeTint": "-1",
+    "overprintFill": "true",
+    "overprintStroke": "<n/a>",
+    "strokeType": "<StrokeStyle Solid>",
+    "children": 2
+   },
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)",
+    "f(w=4 j=1 M=4 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)"
+   ]
+  },
+  {
+   "name": "D05 Outside 4 pt, outlines set to Outside",
+   "variant": "D05 Outside 4 pt, outlines then alignment set to Outside: live text",
+   "role": "text",
+   "row": 5,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 79149,
+   "pair_white_px": [
+    201438,
+    212607
+   ],
+   "pair_black_px": [
+    79913,
+    38018
+   ],
+   "pair_outline_paths": [
+    "f(w=1 j=0 M=10 pts=237)",
+    "S(w=4 j=1 M=4 pts=237)"
+   ]
+  },
+  {
+   "name": "",
+   "variant": "D05 Outside 4 pt, outlines then alignment set to Outside: outlines",
+   "role": "outlines",
+   "row": 5,
+   "result": {
+    "cls": "Polygon",
+    "strokeAlignment": "OUTSIDE_ALIGNMENT",
+    "strokeWeight": "4",
+    "endJoin": "ROUND_END_JOIN",
+    "endCap": "BUTT_END_CAP",
+    "miterLimit": "4",
+    "fillColor": "<Color Black>",
+    "fillTint": "-1",
+    "strokeColor": "<Color Paper>",
+    "strokeTint": "-1",
+    "overprintFill": "true",
+    "overprintStroke": "<n/a>",
+    "strokeType": "<StrokeStyle Solid>",
+    "paths": 6,
+    "children": 0
+   },
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=237)",
+    "S(w=4 j=1 M=4 pts=237)"
+   ]
+  },
+  {
+   "name": "",
+   "variant": "D06 inline outlines",
+   "role": "outlines",
+   "row": 6,
+   "result": {
+    "cls": "Polygon",
+    "strokeAlignment": "CENTER_ALIGNMENT",
+    "strokeWeight": "4",
+    "endJoin": "ROUND_END_JOIN",
+    "endCap": "BUTT_END_CAP",
+    "miterLimit": "4",
+    "fillColor": "<Color Black>",
+    "fillTint": "-1",
+    "strokeColor": "<Color Paper>",
+    "strokeTint": "-1",
+    "overprintFill": "true",
+    "overprintStroke": "<n/a>",
+    "strokeType": "<StrokeStyle Solid>",
+    "paths": 6,
+    "children": 0
+   },
+   "lines": [],
+   "paths": [
+    "f(w=4 j=1 M=4 pts=161)",
+    "S(w=4 j=1 M=4 pts=163)"
+   ]
+  }
+ ]
+}

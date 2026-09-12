@@ -1,0 +1,345 @@
+{
+ "pdf": "A-minimal.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "name": "A01 two paragraphs, stroke 8 outside",
+   "variant": "two paragraphs; descenders above ascenders",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 1536,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A02 forced line break",
+   "variant": "one paragraph, forced line break",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 4,
+     "order": "S S F F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 1536,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A03 soft wrap",
+   "variant": "one paragraph wrapped by frame width",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 1536,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A04 center alignment, stroke 16",
+   "variant": "Center alignment at twice the weight (same outer extent)",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 62497,
+   "hidden_fill_px_strokes_first": 62497
+  },
+  {
+   "name": "A05 control, leading 60",
+   "variant": "control: lines far apart, no overlap expected",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A09a stroke 3",
+   "variant": "weight sweep: 3 pt",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A09b stroke 5",
+   "variant": "weight sweep: 5 pt",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=10 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=10 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A08 lower (created first)",
+   "variant": "unthreaded pair: lower frame, behind",
+   "group": "A08",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 2126,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A08 upper (created second, in front)",
+   "variant": "unthreaded pair: upper frame, in front",
+   "group": "A08",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": []
+  },
+  {
+   "name": "A06 lower, story start",
+   "variant": "threaded: story line 1 in the lower frame",
+   "group": "A06",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 2126,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A06 upper, story continues (in front)",
+   "variant": "threaded: story line 2 in the upper frame, upper frame in front",
+   "group": "A06",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": []
+  },
+  {
+   "name": "A07 lower, story start (in front)",
+   "variant": "threaded: story line 1 in the lower frame, lower frame in front",
+   "group": "A07",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 62497,
+   "hidden_fill_px": 1536,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A07 upper, story continues (behind)",
+   "variant": "threaded: story line 2 in the upper frame, upper frame behind",
+   "group": "A07",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": []
+  },
+  {
+   "name": "A10 two runs on line 1",
+   "variant": "line 1 split into three runs by a fill color change",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 56442,
+   "hidden_fill_px": 3244,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "A11 frame text opacity 90",
+   "variant": "frame-level text transparency (opacity 90 %)",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 61368,
+   "hidden_fill_px": 1506,
+   "hidden_fill_px_strokes_first": 0
+  }
+ ]
+}

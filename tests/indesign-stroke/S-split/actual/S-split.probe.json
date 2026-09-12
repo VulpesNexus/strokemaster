@@ -1,0 +1,304 @@
+{
+ "pdf": "S-split.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "key": "S01c",
+   "name": "S01c uniform: black fill, Paper 8 pt Outside [control]",
+   "variant": "uniform: black fill, Paper 8 pt Outside (control)",
+   "role": "control",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=278)",
+    "f(w=1 j=0 M=10 pts=198)"
+   ],
+   "fill_core_px": 56679,
+   "hidden_fill_px": 1,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "S01t",
+   "name": "S01t uniform: black fill, Paper 8 pt Outside [split]",
+   "variant": "uniform: black fill, Paper 8 pt Outside (split)",
+   "role": "split",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 3,
+     "order": "S F F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 3,
+     "order": "S F F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=278)",
+    "f(w=1 j=0 M=10 pts=198)"
+   ],
+   "fill_core_px": 53829,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 52973
+  },
+  {
+   "key": "S02c",
+   "name": "S02c varied fill: one magenta character on line one [control]",
+   "variant": "varied fill: one magenta character on line one (control)",
+   "role": "control",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=140)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=93)",
+    "f(w=1 j=0 M=10 pts=198)"
+   ],
+   "fill_core_px": 50267,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "S02t",
+   "name": "S02t varied fill: one magenta character on line one [split]",
+   "variant": "varied fill: one magenta character on line one (split)",
+   "role": "split",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 5,
+     "order": "S F F F F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 3,
+     "order": "S F F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=278)",
+    "f(w=1 j=0 M=10 pts=198)"
+   ],
+   "fill_core_px": 47796,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 47025
+  },
+  {
+   "key": "S03c",
+   "name": "S03c varied stroke: one character at 5 pt magenta stroke [control]",
+   "variant": "varied stroke: one character at 5 pt magenta stroke (control)",
+   "role": "control",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 6,
+     "order": "S F S F S F",
+     "stroke_state": [
+      "w=10 j=1 M=4",
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=140)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=93)",
+    "f(w=1 j=0 M=10 pts=198)"
+   ],
+   "fill_core_px": 56680,
+   "hidden_fill_px": 5,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "S03t",
+   "name": "S03t varied stroke: one character at 5 pt magenta stroke [split]",
+   "variant": "varied stroke: one character at 5 pt magenta stroke (split)",
+   "role": "split",
+   "lines": [
+    {
+     "runs": 3,
+     "objects": 9,
+     "order": "S F S F S F F F F",
+     "stroke_state": [
+      "w=10 j=1 M=4",
+      "w=16 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 3,
+     "order": "S F F",
+     "stroke_state": [
+      "w=16 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=140)",
+    "f(w=1 j=0 M=10 pts=45)",
+    "f(w=1 j=0 M=10 pts=93)",
+    "f(w=1 j=0 M=10 pts=198)"
+   ],
+   "fill_core_px": 54173,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 47025
+  },
+  {
+   "key": "S04c",
+   "name": "S04c CONTROL: no stroke at all (split must refuse) [control]",
+   "variant": "CONTROL: no stroke at all (split must refuse) (control)",
+   "role": "control",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 54702,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "S04t",
+   "name": "S04t CONTROL: no stroke at all (split must refuse) [split]",
+   "variant": "CONTROL: no stroke at all (split must refuse) (split)",
+   "role": "split",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "F",
+     "stroke_state": []
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 54702,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "key": "S05c",
+   "name": "S05c Center alignment (split acts; records what it does) [control]",
+   "variant": "Center alignment (split acts; records what it does) (control)",
+   "role": "control",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 54702,
+   "hidden_fill_px": 54702,
+   "hidden_fill_px_strokes_first": 54702
+  },
+  {
+   "key": "S05t",
+   "name": "S05t Center alignment (split acts; records what it does) [split]",
+   "variant": "Center alignment (split acts; records what it does) (split)",
+   "role": "split",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 54702,
+   "hidden_fill_px": 54702,
+   "hidden_fill_px_strokes_first": 54702
+  }
+ ]
+}

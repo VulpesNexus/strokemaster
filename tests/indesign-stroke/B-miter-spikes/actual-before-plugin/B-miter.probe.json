@@ -1,0 +1,784 @@
+{
+ "pdf": "B-miter.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "name": "B1 text miter limit 1",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 1",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 1,
+   "readBackMiterLimit": 1,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=1"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 0,
+   "max_stroke_reach_pt": 4.1,
+   "white_px": 494664
+  },
+  {
+   "name": "B1 text miter limit 1.5",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 1.5",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 1.5,
+   "readBackMiterLimit": 1.5,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=1.5"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 7365,
+   "max_stroke_reach_pt": 5.66,
+   "white_px": 529266
+  },
+  {
+   "name": "B1 text miter limit 2",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 2",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 2,
+   "readBackMiterLimit": 2,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=2"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 7931,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 530712
+  },
+  {
+   "name": "B1 text miter limit 3",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 3",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 3,
+   "readBackMiterLimit": 3,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=3"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 8299,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 531141
+  },
+  {
+   "name": "B1 text miter limit 4",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 4",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 4,
+   "readBackMiterLimit": 4,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 8299,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 531141
+  },
+  {
+   "name": "B1 text miter limit 10",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 10",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 10,
+   "readBackMiterLimit": 10,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=10"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 8299,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 531141
+  },
+  {
+   "name": "B1 text miter limit 100",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 100",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 100,
+   "readBackMiterLimit": 100,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=100"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 8299,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 531141
+  },
+  {
+   "name": "B1 text miter limit 500",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 500",
+   "section": 1,
+   "weight": 4,
+   "requestedMiterLimit": 500,
+   "readBackMiterLimit": 500,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=500"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 8286,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 531136
+  },
+  {
+   "name": "B2 center alignment 8 pt, limit 4",
+   "variant": "text, Center 8 pt, Miter, limit 4",
+   "section": 2,
+   "weight": 4,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 8286,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 690835
+  },
+  {
+   "name": "B2 center alignment 8 pt, limit 1",
+   "variant": "text, Center 8 pt, Miter, limit 1",
+   "section": 2,
+   "weight": 4,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 1,
+     "order": "FS",
+     "stroke_state": [
+      "w=8 j=0 M=1"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 0,
+   "max_stroke_reach_pt": 4.1,
+   "white_px": 654362
+  },
+  {
+   "name": "B2 weight 1, limit 4",
+   "variant": "text, Outside 1 pt, Miter, limit 4",
+   "section": 2,
+   "weight": 1,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=2 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 258,
+   "max_stroke_reach_pt": 1.64,
+   "white_px": 146859
+  },
+  {
+   "name": "B2 weight 2, limit 4",
+   "variant": "text, Outside 2 pt, Miter, limit 4",
+   "section": 2,
+   "weight": 2,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=4 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 2412,
+   "max_stroke_reach_pt": 3.36,
+   "white_px": 292894
+  },
+  {
+   "name": "B2 weight 6, limit 4",
+   "variant": "text, Outside 6 pt, Miter, limit 4",
+   "section": 2,
+   "weight": 6,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=12 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 16879,
+   "max_stroke_reach_pt": 11.81,
+   "white_px": 699848
+  },
+  {
+   "name": "B2 weight 8, limit 4",
+   "variant": "text, Outside 8 pt, Miter, limit 4",
+   "section": 2,
+   "weight": 8,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=16 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 28955,
+   "max_stroke_reach_pt": 16.7,
+   "white_px": 851921
+  },
+  {
+   "name": "B3 wedge 10 deg outside",
+   "variant": "page-item wedge, apex 10 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 10,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=8)",
+    "S(w=4 j=0 M=4 pts=9)"
+   ],
+   "apex_extension_pt": 2.2,
+   "theory_pt": {
+    "miter": 45.89,
+    "bevel": 0.35,
+    "round": 4.0,
+    "miter_ratio": 11.474
+   }
+  },
+  {
+   "name": "B3 wedge 15 deg outside",
+   "variant": "page-item wedge, apex 15 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 15,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=8)",
+    "S(w=4 j=0 M=4 pts=9)"
+   ],
+   "apex_extension_pt": 2.3,
+   "theory_pt": {
+    "miter": 30.65,
+    "bevel": 0.52,
+    "round": 4.0,
+    "miter_ratio": 7.661
+   }
+  },
+  {
+   "name": "B3 wedge 20 deg outside",
+   "variant": "page-item wedge, apex 20 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 20,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=8)",
+    "S(w=4 j=0 M=4 pts=9)"
+   ],
+   "apex_extension_pt": 2.4,
+   "theory_pt": {
+    "miter": 23.04,
+    "bevel": 0.69,
+    "round": 4.0,
+    "miter_ratio": 5.759
+   }
+  },
+  {
+   "name": "B3 wedge 25 deg outside",
+   "variant": "page-item wedge, apex 25 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 25,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=8)",
+    "S(w=4 j=0 M=4 pts=9)"
+   ],
+   "apex_extension_pt": 2.4,
+   "theory_pt": {
+    "miter": 18.48,
+    "bevel": 0.87,
+    "round": 4.0,
+    "miter_ratio": 4.62
+   }
+  },
+  {
+   "name": "B3 wedge 28 deg outside",
+   "variant": "page-item wedge, apex 28 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 28,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=8)",
+    "S(w=4 j=0 M=4 pts=9)"
+   ],
+   "apex_extension_pt": 2.5,
+   "theory_pt": {
+    "miter": 16.53,
+    "bevel": 0.97,
+    "round": 4.0,
+    "miter_ratio": 4.134
+   }
+  },
+  {
+   "name": "B3 wedge 30 deg outside",
+   "variant": "page-item wedge, apex 30 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 30,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=9)",
+    "S(w=4 j=0 M=4 pts=10)"
+   ],
+   "apex_extension_pt": 15.3,
+   "theory_pt": {
+    "miter": 15.45,
+    "bevel": 1.04,
+    "round": 4.0,
+    "miter_ratio": 3.864
+   }
+  },
+  {
+   "name": "B3 wedge 35 deg outside",
+   "variant": "page-item wedge, apex 35 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 35,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=9)",
+    "S(w=4 j=0 M=4 pts=10)"
+   ],
+   "apex_extension_pt": 13.2,
+   "theory_pt": {
+    "miter": 13.3,
+    "bevel": 1.2,
+    "round": 4.0,
+    "miter_ratio": 3.326
+   }
+  },
+  {
+   "name": "B3 wedge 40 deg outside",
+   "variant": "page-item wedge, apex 40 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 40,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=9)",
+    "S(w=4 j=0 M=4 pts=10)"
+   ],
+   "apex_extension_pt": 11.6,
+   "theory_pt": {
+    "miter": 11.7,
+    "bevel": 1.37,
+    "round": 4.0,
+    "miter_ratio": 2.924
+   }
+  },
+  {
+   "name": "B3 wedge 50 deg outside",
+   "variant": "page-item wedge, apex 50 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 50,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=9)",
+    "S(w=4 j=0 M=4 pts=10)"
+   ],
+   "apex_extension_pt": 9.4,
+   "theory_pt": {
+    "miter": 9.46,
+    "bevel": 1.69,
+    "round": 4.0,
+    "miter_ratio": 2.366
+   }
+  },
+  {
+   "name": "B3 wedge 60 deg outside",
+   "variant": "page-item wedge, apex 60 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 60,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=9)",
+    "S(w=4 j=0 M=4 pts=10)",
+    "f(w=4 j=0 M=4 pts=4)",
+    "S(w=4 j=0 M=4 pts=10)"
+   ],
+   "apex_extension_pt": 7.9,
+   "theory_pt": {
+    "miter": 8.0,
+    "bevel": 2.0,
+    "round": 4.0,
+    "miter_ratio": 2.0
+   }
+  },
+  {
+   "name": "B3 wedge 90 deg outside",
+   "variant": "page-item wedge, apex 90 deg, outside 4 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 90,
+   "align": "outside",
+   "weight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=4)",
+    "S(w=4 j=0 M=4 pts=10)"
+   ]
+  },
+  {
+   "name": "B3 wedge 10 deg center",
+   "variant": "page-item wedge, apex 10 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 10,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 0.4,
+   "theory_pt": {
+    "miter": 45.89,
+    "bevel": 0.35,
+    "round": 4.0,
+    "miter_ratio": 11.474
+   }
+  },
+  {
+   "name": "B3 wedge 15 deg center",
+   "variant": "page-item wedge, apex 15 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 15,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 0.5,
+   "theory_pt": {
+    "miter": 30.65,
+    "bevel": 0.52,
+    "round": 4.0,
+    "miter_ratio": 7.661
+   }
+  },
+  {
+   "name": "B3 wedge 20 deg center",
+   "variant": "page-item wedge, apex 20 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 20,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 0.7,
+   "theory_pt": {
+    "miter": 23.04,
+    "bevel": 0.69,
+    "round": 4.0,
+    "miter_ratio": 5.759
+   }
+  },
+  {
+   "name": "B3 wedge 25 deg center",
+   "variant": "page-item wedge, apex 25 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 25,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 0.9,
+   "theory_pt": {
+    "miter": 18.48,
+    "bevel": 0.87,
+    "round": 4.0,
+    "miter_ratio": 4.62
+   }
+  },
+  {
+   "name": "B3 wedge 28 deg center",
+   "variant": "page-item wedge, apex 28 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 28,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 1.0,
+   "theory_pt": {
+    "miter": 16.53,
+    "bevel": 0.97,
+    "round": 4.0,
+    "miter_ratio": 4.134
+   }
+  },
+  {
+   "name": "B3 wedge 30 deg center",
+   "variant": "page-item wedge, apex 30 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 30,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 15.3,
+   "theory_pt": {
+    "miter": 15.45,
+    "bevel": 1.04,
+    "round": 4.0,
+    "miter_ratio": 3.864
+   }
+  },
+  {
+   "name": "B3 wedge 35 deg center",
+   "variant": "page-item wedge, apex 35 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 35,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 13.2,
+   "theory_pt": {
+    "miter": 13.3,
+    "bevel": 1.2,
+    "round": 4.0,
+    "miter_ratio": 3.326
+   }
+  },
+  {
+   "name": "B3 wedge 40 deg center",
+   "variant": "page-item wedge, apex 40 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 40,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 11.6,
+   "theory_pt": {
+    "miter": 11.7,
+    "bevel": 1.37,
+    "round": 4.0,
+    "miter_ratio": 2.924
+   }
+  },
+  {
+   "name": "B3 wedge 50 deg center",
+   "variant": "page-item wedge, apex 50 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 50,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 9.4,
+   "theory_pt": {
+    "miter": 9.46,
+    "bevel": 1.69,
+    "round": 4.0,
+    "miter_ratio": 2.366
+   }
+  },
+  {
+   "name": "B3 wedge 60 deg center",
+   "variant": "page-item wedge, apex 60 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 60,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ],
+   "apex_extension_pt": 7.9,
+   "theory_pt": {
+    "miter": 8.0,
+    "bevel": 2.0,
+    "round": 4.0,
+    "miter_ratio": 2.0
+   }
+  },
+  {
+   "name": "B3 wedge 90 deg center",
+   "variant": "page-item wedge, apex 90 deg, center 8 pt, Miter, limit 4",
+   "section": 3,
+   "angle": 90,
+   "align": "center",
+   "weight": 8,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=3)",
+    "S(w=8 j=0 M=4 pts=4)"
+   ]
+  },
+  {
+   "name": "B4 source text, limit 4",
+   "variant": "text source for outlines",
+   "section": 4,
+   "weight": 4,
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "spike_px_beyond_weight": 8286,
+   "max_stroke_reach_pt": 6.8,
+   "white_px": 531136
+  },
+  {
+   "name": "",
+   "variant": "outlines of limit-4 text, as converted",
+   "section": 4,
+   "weight": 4,
+   "cls": "Polygon",
+   "strokeAlignment": "CENTER_ALIGNMENT",
+   "strokeWeight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=4 j=0 M=4 pts=475)",
+    "S(w=4 j=0 M=4 pts=487)"
+   ],
+   "spike_px_beyond_weight": 0,
+   "max_stroke_reach_pt": 3.36,
+   "white_px": 452819
+  },
+  {
+   "name": "",
+   "variant": "outlines of limit-4 text, alignment set to Outside",
+   "section": 4,
+   "weight": 4,
+   "cls": "Polygon",
+   "strokeAlignment": "OUTSIDE_ALIGNMENT",
+   "strokeWeight": 4,
+   "lines": [],
+   "paths": [
+    "f(w=8 j=0 M=4 pts=807)",
+    "S(w=4 j=0 M=4 pts=818)"
+   ],
+   "spike_px_beyond_weight": 25,
+   "max_stroke_reach_pt": 4.9,
+   "white_px": 526313
+  }
+ ]
+}

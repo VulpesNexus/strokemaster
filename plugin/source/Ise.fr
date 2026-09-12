@@ -1,0 +1,102 @@
+//========================================================================================
+//
+//  Resources for the InDesign Stroke Engine plugin.
+//
+//  Declares the plugin and one boss: a global text adornment, registered through the API's
+//  global text adornment service. InDesign then calls it for every wax run in every text
+//  frame, once per draw pass the adornment asks for.
+//
+//========================================================================================
+
+//===========================
+//  General includes:
+//===========================
+#include "LocaleIndex.h"
+#include "PMLocaleIds.h"
+#include "StringTable.fh"
+#include "objectmodeltypes.fh"
+#include "ShuksanID.h"
+#include "BuildNumber.h"
+#include "TextID.h"
+#include "PlugInModel_UIAttributes.h"
+
+//===========================
+//  Project includes:
+//===========================
+#include "IseID.h"
+
+#ifdef __ODFRC__
+
+/*
+// Plugin version definition.
+*/
+resource PluginVersion (kSDKDefPluginVersionResourceID)
+{
+    kTargetVersion,
+    kIsePluginID,
+    kSDKDefPlugInMajorVersionNumber, kSDKDefPlugInMinorVersionNumber,
+    kSDKDefHostMajorVersionNumber, kSDKDefHostMinorVersionNumber,
+    kIseLastMajorFormatChange, kIseLastMinorFormatChange,
+    { kInDesignProduct, kInCopyProduct },
+    { kWildFS },
+    kUIPlugIn,
+    kIseVersion
+};
+
+/*
+// Shown in the Missing Plug-in dialog if a document that used this plugin is opened without it.
+// This plugin adds no document data, so it is here only for completeness.
+*/
+resource ExtraPluginInfo(1)
+{
+    kIseCompanyValue,
+    kIseMissingPluginURLValue,
+    kIseMissingPluginAlertValue,
+};
+
+/*
+// Boss class definitions.
+*/
+resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
+{{{
+    /** Repaints text fills after the frame's text pass. The boss carries the API's global
+        text adornment service implementation, which registers it with the text drawing code,
+        plus this plugin's adornment implementation.
+    */
+    Class
+    {
+        kIseFillRepaintAdornmentBoss,
+        kInvalidClass,
+        {
+            /** Registers the boss as a provider of the global text adornment service.
+                (API-provided implementation.)
+            */
+            IID_IK2SERVICEPROVIDER, kGlobalTextAdornmentServiceImpl,
+            /** The drawing behavior. See IseFillRepaintAdornment.cpp. */
+            IID_IGLOBALTEXTADORNMENT, kIseFillRepaintAdornmentImpl,
+        }
+    },
+}}};
+
+/*
+// Implementation definition: which implementation IDs this library can manufacture.
+//
+// The class description table above says that implementation kIseFillRepaintAdornmentImpl
+// provides IID_IGLOBALTEXTADORNMENT on the boss, but it does not say where that implementation
+// comes from. Without this resource InDesign knows the boss and its interfaces and still has
+// no way to create it, so the boss is never instantiated and the adornment never runs, while
+// the library itself loads normally. Of the 262 plugins installed with InDesign, 260 carry one
+// of these.
+//
+// IseFactoryList.h is read twice: the C++ compiler expands REGISTER_PMINTERFACE into the
+// factory that creates the class, and the resource compiler expands it into the entry below.
+*/
+resource FactoryList (kSDKDefFactoryListResourceID)
+{
+    kImplementationIDSpace,
+    {
+#include "IseFactoryList.h"
+    }
+};
+
+#endif // __ODFRC__

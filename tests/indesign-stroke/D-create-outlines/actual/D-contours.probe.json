@@ -1,0 +1,123 @@
+{
+ "pdf": "D-contours.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "name": "K01 live text",
+   "variant": "K01: live text; copy: contours as converted",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 229196,
+   "pair_white_px": [
+    344423,
+    386571
+   ],
+   "pair_black_px": [
+    147417,
+    19030
+   ],
+   "pair_outline_paths": [
+    "f(w=1 j=0 M=10 pts=449)",
+    "S(w=4 j=1 M=4 pts=449)"
+   ]
+  },
+  {
+   "name": "K01 outlines, Outside, contours as converted",
+   "variant": "K01: contours as converted",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=449)",
+    "S(w=4 j=1 M=4 pts=449)"
+   ]
+  },
+  {
+   "name": "K02 live text",
+   "variant": "K02: live text; copy: inner contours reversed",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 237022,
+   "pair_white_px": [
+    344420,
+    385626
+   ],
+   "pair_black_px": [
+    147417,
+    116618
+   ],
+   "pair_outline_paths": [
+    "f(w=1 j=0 M=10 pts=447)",
+    "S(w=4 j=1 M=4 pts=449)"
+   ]
+  },
+  {
+   "name": "K02 outlines, Outside, inner contours reversed",
+   "variant": "K02: inner contours reversed",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=447)",
+    "S(w=4 j=1 M=4 pts=449)"
+   ]
+  },
+  {
+   "name": "K03 live text",
+   "variant": "K03: live text; copy: all contours reversed",
+   "role": "text",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "pair_diff_px": 229199,
+   "pair_white_px": [
+    344420,
+    386583
+   ],
+   "pair_black_px": [
+    147416,
+    19016
+   ],
+   "pair_outline_paths": [
+    "f(w=1 j=0 M=10 pts=447)",
+    "S(w=4 j=1 M=4 pts=449)"
+   ]
+  },
+  {
+   "name": "K03 outlines, Outside, all contours reversed",
+   "variant": "K03: all contours reversed",
+   "role": "outlines",
+   "lines": [],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=447)",
+    "S(w=4 j=1 M=4 pts=449)"
+   ]
+  }
+ ]
+}

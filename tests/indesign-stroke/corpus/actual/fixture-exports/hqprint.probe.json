@@ -1,0 +1,166 @@
+{
+ "pdf": "hqprint.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 13,
+     "objects": 26,
+     "order": "S F S F S F S F S F S F S F S F S F S F S F S F S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 14,
+     "objects": 28,
+     "order": "S F S F S F S F S F S F S F S F S F S F S F S F S F S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "S(w=0.6 j=0 M=10 pts=2)",
+    "S(w=0.6 j=1 M=4 pts=2)"
+   ],
+   "fill_core_px": 119902,
+   "hidden_fill_px": 8758,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=1728)",
+    "S(w=4 j=1 M=4 pts=1773)",
+    "f(w=4 j=1 M=4 pts=1863)",
+    "S(w=4 j=1 M=4 pts=1909)",
+    "f(w=4 j=1 M=4 pts=889)",
+    "S(w=4 j=1 M=4 pts=910)"
+   ],
+   "fill_core_px": 110840,
+   "hidden_fill_px": 110647,
+   "hidden_fill_px_strokes_first": 110647
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 81798,
+   "hidden_fill_px": 2,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 2,
+     "objects": 4,
+     "order": "S F S F",
+     "stroke_state": [
+      "w=14 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 2,
+     "objects": 4,
+     "order": "S F S F",
+     "stroke_state": [
+      "w=14 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 2,
+     "objects": 4,
+     "order": "S F S F",
+     "stroke_state": [
+      "w=14 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 117241,
+   "hidden_fill_px": 6557,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    }
+   ],
+   "paths": [],
+   "fill_core_px": 0,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  }
+ ]
+}

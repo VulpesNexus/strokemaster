@@ -1,0 +1,211 @@
+{
+ "pdf": "fixture-plugin.pdf",
+ "app": "21.5.1.73",
+ "frames": [
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 13,
+     "objects": 26,
+     "order": "S F S F S F S F S F S F S F S F S F S F S F S F S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 14,
+     "objects": 28,
+     "order": "S F S F S F S F S F S F S F S F S F S F S F S F S F S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=6 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "S(w=0.6 j=0 M=10 pts=2)",
+    "S(w=0.6 j=1 M=4 pts=2)",
+    "f(w=0.6 j=1 M=4 pts=187)",
+    "f(w=0.6 j=1 M=4 pts=91)",
+    "f(w=0.6 j=1 M=4 pts=167)",
+    "f(w=0.6 j=1 M=4 pts=68)",
+    "f(w=0.6 j=1 M=4 pts=313)",
+    "f(w=0.6 j=1 M=4 pts=74)",
+    "f(w=0.6 j=1 M=4 pts=254)",
+    "f(w=0.6 j=1 M=4 pts=68)",
+    "f(w=0.6 j=1 M=4 pts=76)",
+    "f(w=0.6 j=1 M=4 pts=45)",
+    "f(w=0.6 j=1 M=4 pts=181)",
+    "f(w=0.6 j=1 M=4 pts=46)",
+    "f(w=0.6 j=1 M=4 pts=331)",
+    "f(w=0.6 j=1 M=4 pts=68)",
+    "f(w=0.6 j=1 M=4 pts=18)",
+    "f(w=0.6 j=1 M=4 pts=208)",
+    "f(w=0.6 j=1 M=4 pts=45)",
+    "f(w=0.6 j=1 M=4 pts=267)",
+    "f(w=0.6 j=1 M=4 pts=46)",
+    "f(w=0.6 j=1 M=4 pts=276)",
+    "f(w=0.6 j=1 M=4 pts=41)",
+    "f(w=0.6 j=1 M=4 pts=180)",
+    "f(w=0.6 j=1 M=4 pts=18)",
+    "f(w=0.6 j=1 M=4 pts=242)",
+    "f(w=0.6 j=1 M=4 pts=41)",
+    "f(w=0.6 j=1 M=4 pts=186)",
+    "f(w=0.6 j=1 M=4 pts=74)",
+    "f(w=0.6 j=1 M=4 pts=1521)"
+   ],
+   "fill_core_px": 149278,
+   "hidden_fill_px": 6916,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=1728)",
+    "S(w=4 j=1 M=4 pts=1773)",
+    "f(w=4 j=1 M=4 pts=1863)",
+    "S(w=4 j=1 M=4 pts=1909)",
+    "f(w=4 j=1 M=4 pts=889)",
+    "S(w=4 j=1 M=4 pts=910)"
+   ],
+   "fill_core_px": 110840,
+   "hidden_fill_px": 110647,
+   "hidden_fill_px_strokes_first": 110647
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=4"
+     ]
+    },
+    {
+     "runs": 1,
+     "objects": 2,
+     "order": "S F",
+     "stroke_state": [
+      "w=8 j=0 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=2016)",
+    "f(w=1 j=0 M=10 pts=1525)"
+   ],
+   "fill_core_px": 87567,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 2,
+     "objects": 4,
+     "order": "S F S F",
+     "stroke_state": [
+      "w=14 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 2,
+     "objects": 4,
+     "order": "S F S F",
+     "stroke_state": [
+      "w=14 j=1 M=4"
+     ]
+    },
+    {
+     "runs": 2,
+     "objects": 4,
+     "order": "S F S F",
+     "stroke_state": [
+      "w=14 j=1 M=4"
+     ]
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=1518)",
+    "f(w=1 j=0 M=10 pts=1714)",
+    "f(w=1 j=0 M=10 pts=1168)",
+    "f(w=1 j=0 M=10 pts=1518)",
+    "f(w=1 j=0 M=10 pts=1714)",
+    "f(w=1 j=0 M=10 pts=1168)"
+   ],
+   "fill_core_px": 123358,
+   "hidden_fill_px": 24,
+   "hidden_fill_px_strokes_first": 0
+  },
+  {
+   "name": "",
+   "variant": "fixture text frame",
+   "lines": [
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    },
+    {
+     "runs": 0,
+     "objects": 0,
+     "order": "",
+     "stroke_state": []
+    }
+   ],
+   "paths": [
+    "f(w=1 j=0 M=10 pts=1518)",
+    "f(w=1 j=0 M=10 pts=1714)",
+    "f(w=1 j=0 M=10 pts=1168)",
+    "f(w=1 j=0 M=10 pts=1518)",
+    "f(w=1 j=0 M=10 pts=1714)",
+    "f(w=1 j=0 M=10 pts=1168)"
+   ],
+   "fill_core_px": 116504,
+   "hidden_fill_px": 0,
+   "hidden_fill_px_strokes_first": 0
+  }
+ ]
+}

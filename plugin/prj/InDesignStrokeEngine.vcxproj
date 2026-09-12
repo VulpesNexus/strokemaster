@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  InDesign Stroke Engine plugin.
+
+  Build it with plugin\build-plugin.ps1, which supplies the SDK location and a supported
+  MSVC toolset. Unlike the SDK's sample projects, this one keeps every output inside this
+  repository: OutDir, IntDir, the import library and the program database all live under
+  build\, so building never writes into the SDK folder.
+-->
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectName>InDesignStrokeEngine</ProjectName>
+    <ProjectGuid>{3C7A9E42-5D18-4B6E-9F0C-2A6B1D93C401}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.26100.0</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <PropertyGroup Label="IseDirectories">
+    <!-- Set by build-plugin.ps1; both point at the SDK through an ASCII junction. -->
+    <IseSdkDir Condition="'$(IseSdkDir)' == ''">$(ID_SDK_DIR)</IseSdkDir>
+    <IseSourceDir>$(MSBuildThisFileDirectory)..\source</IseSourceDir>
+    <IseSdkPrjDir>$(IseSdkDir)\build\win\prj</IseSdkPrjDir>
+    <!-- Response files with absolute include paths, written by build-plugin.ps1. The SDK's own
+         copies use paths relative to its project folder and do not work from here. -->
+    <IseCppOptions Condition="'$(IseCppOptions)' == ''">$(IseSdkPrjDir)\SDKCPPOptions.rsp</IseCppOptions>
+    <IseOdfrcOptions Condition="'$(IseOdfrcOptions)' == ''">$(IseSdkPrjDir)\SDKODFRCOptions.rsp</IseOdfrcOptions>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="PropertySheets">
+    <Import Project="$(IseSdkPrjDir)\DebugX64.sdk.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="PropertySheets">
+    <Import Project="$(IseSdkPrjDir)\ReleaseX64.sdk.props" />
+  </ImportGroup>
+  <PropertyGroup>
+    <TargetName>$(ProjectName)</TargetName>
+    <TargetExt>.pln</TargetExt>
+    <!-- MSBuild writes its tracking logs into IntDir by default, where the pre-link step's
+         recursive copy of the compiled resources sweeps them into the plugin's Resources
+         folder. Adobe's installed plugins carry nothing there but idrc_* trees, so the logs
+         are moved aside rather than cleaned up afterward. -->
+    <TLogLocation>$(IntDir)..\..\tlog\$(Configuration)\</TLogLocation>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalOptions>/vmg @"$(IseCppOptions)" %(AdditionalOptions)</AdditionalOptions>
+      <!-- The SDK property sheets add these three as paths relative to the SDK's own project
+           folder, which does not resolve from here, so they are repeated as absolute paths. -->
+      <AdditionalIncludeDirectories>$(IseSourceDir);$(IseSdkDir)\source\sdksamples\common;$(IseSdkDir)\external;$(IseSdkDir)\external\dva\Drover;$(IseSdkDir)\external\dva\third_party\boost_libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <!-- The SDK's headers check that DEBUG and NDEBUG agree with the configuration. -->
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">_CRT_SECURE_NO_DEPRECATE;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">_CRT_SECURE_NO_DEPRECATE;STRICT;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>VCPlugInHeaders.h</PrecompiledHeaderFile>
+      <PrecompiledHeaderOutputFile>$(IntDir)InDesignStrokeEngine.pch</PrecompiledHeaderOutputFile>
+      <ObjectFileName>$(IntDir)</ObjectFileName>
+    </ClCompile>
+    <ResourceCompile>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">_CRT_SECURE_NO_DEPRECATE;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">_CRT_SECURE_NO_DEPRECATE;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <Culture>0x0409</Culture>
+      <AdditionalIncludeDirectories>$(IseSourceDir);$(IseSdkDir)\source\precomp\msvc;$(IseSdkDir)\source\public\includes;$(IseSdkDir)\source\sdksamples\common;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+    <PreLinkEvent>
+      <!-- Merge the compiled resources and copy them next to the plugin, as the SDK samples do.
+           Three things this step needs, none of them obvious:
+             - merge_res.cmd calls cmpmodtime, ConcatRes and atouch by bare name, so the SDK's
+               devtools\bin has to be on PATH or each one fails with "not recognized".
+             - It is invoked through call. A batch file started from a batch file without call
+               never returns, which silently swallows every command after it on the line.
+             - odfrc writes each resource as idrc_<type>\<id>.idrc rather than into the .fres,
+               which stays empty here, and InDesign reads them from a folder named
+               "(<plugin> Resources)" beside the plugin, so the whole tree is copied. -->
+      <Command>set PATH=$(IseSdkDir)\devtools\bin;%PATH%
+call "$(IseSdkDir)\devtools\bin\merge_res.cmd" "$(IntDir)" Ise
+if exist "$(TargetDir)($(TargetName) Resources)\" del /f /s /q "$(TargetDir)($(TargetName) Resources)\*.idrc" &gt;nul 2&gt;&amp;1
+xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Command>
+    </PreLinkEvent>
+    <Link>
+      <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalDependencies>$(UI_PLUGIN_LINKLIST);%(AdditionalDependencies)</AdditionalDependencies>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
+      <!-- Kept inside this repository, unlike the SDK samples, which write these into the SDK. -->
+      <ImportLibrary>$(IntDir)$(TargetName).lib</ImportLibrary>
+      <ProgramDatabaseFile>$(OutDir)$(TargetName).pdb</ProgramDatabaseFile>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+    </Link>
+    <PostBuildEvent>
+      <Command>"$(IseSdkDir)\devtools\bin\restore_res.cmd" "$(IntDir)" Ise</Command>
+    </PostBuildEvent>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="$(IseSourceDir)\IseFillRepaintAdornment.cpp" />
+    <ClCompile Include="$(IseSourceDir)\IseNoStrip.cpp" />
+    <ClCompile Include="$(IseSourceDir)\TriggerResourceDeps.cpp" />
+    <!-- Shared SDK sources, compiled from the SDK rather than copied into this repository. -->
+    <ClCompile Include="$(IseSdkDir)\source\sdksamples\common\SDKPlugInEntrypoint.cpp" />
+    <ClCompile Include="$(IseSdkDir)\source\public\libs\publiclib\statics\PlugInStatics.cpp" />
+    <ClCompile Include="$(IseSdkDir)\source\precomp\msvc\VCPlugInHeaders.cpp">
+      <PrecompiledHeader>Create</PrecompiledHeader>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(IseSourceDir)\IseID.h" />
+    <ClInclude Include="$(IseSourceDir)\IseFactoryList.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="$(IseSourceDir)\Ise.fr">
+      <Command>"$(IseSdkDir)\devtools\bin\odfrc.exe" $(ODFRC_ADDITIONAL_FLAGS) "%(FullPath)" -o "$(IntDir)%(Filename).fres" -i "$(IseSourceDir)" @"$(IseOdfrcOptions)"</Command>
+      <AdditionalInputs>$(IntDir)TriggerResourceDeps.obj;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs>$(IntDir)%(Filename).fres;%(Outputs)</Outputs>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="$(IseSourceDir)\Ise.rc" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>
