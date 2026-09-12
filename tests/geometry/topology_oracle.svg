@@ -1,0 +1,89 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1300" height="980" viewBox="0 0 1300 980">
+<title>Filled-region versus symmetric boundary stroke: synthetic controls</title>
+<rect width="1300" height="980" fill="white"/>
+<text x="42" y="50" font-family="sans-serif" font-size="28" fill="#253547">Positive filled-region buffer: two controlled comparisons</text>
+<text x="42" y="85" font-family="sans-serif" font-size="19" fill="#253547">h = 1.5; miter limit = 4; no external clipping; Boost.Geometry 1.74</text>
+<text x="42" y="115" font-family="sans-serif" font-size="17" fill="#253547">Gray = original fill. Orange = fill + symmetric boundary stroke. Green = positive filled buffer.</text>
+<defs><clipPath id="panel-0-0"><rect x="60" y="187" width="560" height="252"/></clipPath></defs>
+<g clip-path="url(#panel-0-0)">
+<path d="M 369.976964 332.600014 L 550.000000 332.600000 L 592.000000 332.600000 L 592.000000 374.600000 L 592.000000 719.000000 L 592.000000 761.000000 L 550.000000 761.000000 L 130.000000 761.000000 L 88.000000 761.000000 L 88.000000 374.600000 L 88.000000 332.600000 L 310.023036 332.600014 L 340.000000 220.724461 L 369.976964 332.600014 Z M 338.466157 551.000000 L 341.533843 551.000000 L 339.999980 545.275614 L 338.466157 551.000000 Z" fill="#e4a36b" fill-rule="evenodd"/>
+<path d="M 130.000000 719.000000 L 550.000000 719.000000 L 550.000000 374.600000 L 130.000000 374.600000 L 130.000000 719.000000 Z M 340.000000 383.000000 L 396.269330 593.000000 L 283.730670 593.000000 L 340.000000 383.000000 Z" fill="#dce2e9" fill-rule="evenodd"/>
+<path d="M 130.000000 719.000000 L 550.000000 719.000000 L 550.000000 374.600000 L 130.000000 374.600000 L 130.000000 719.000000" fill="none" stroke="#526479" stroke-width="1"/>
+<path d="M 340.000000 383.000000 L 396.269330 593.000000 L 283.730670 593.000000 L 340.000000 383.000000" fill="none" stroke="#526479" stroke-width="1"/>
+<path d="M 60 332.6 H 620" stroke="#34465b" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M 336 299 L 344 299" stroke="#263547" stroke-width="2"/>
+<path d="M 340 295 L 340 303" stroke="#263547" stroke-width="2"/>
+</g>
+<rect x="60" y="187" width="560" height="252" fill="none" stroke="#a9b3be"/>
+<text x="60" y="158" font-family="sans-serif" font-size="20" fill="#253547">Triangular hole / symmetric boundary</text>
+<text x="60" y="180" font-family="sans-serif" font-size="16" fill="#253547">Measured top y = 5.795555</text>
+<text x="50" y="458" font-family="sans-serif" font-size="13" fill="#253547">-10</text>
+<text x="190" y="458" font-family="sans-serif" font-size="13" fill="#253547">-5</text>
+<text x="330" y="458" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="470" y="458" font-family="sans-serif" font-size="13" fill="#253547">5</text>
+<text x="610" y="458" font-family="sans-serif" font-size="13" fill="#253547">10</text>
+<text x="37" y="388" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="37" y="304" font-family="sans-serif" font-size="13" fill="#253547">3</text>
+<text x="37" y="220" font-family="sans-serif" font-size="13" fill="#253547">6</text>
+<defs><clipPath id="panel-0-1"><rect x="680" y="187" width="560" height="252"/></clipPath></defs>
+<g clip-path="url(#panel-0-1)">
+<path d="M 708.000000 719.000000 L 708.000000 374.600000 L 708.000000 332.600000 L 750.000000 332.600000 L 1170.000000 332.600000 L 1212.000000 332.600000 L 1212.000000 374.600000 L 1212.000000 719.000000 L 1212.000000 761.000000 L 1170.000000 761.000000 L 750.000000 761.000000 L 708.000000 761.000000 L 708.000000 719.000000 Z M 958.466157 551.000000 L 961.533843 551.000000 L 959.999980 545.275614 L 958.466157 551.000000 Z" fill="#62b7a6" fill-rule="evenodd"/>
+<path d="M 750.000000 719.000000 L 1170.000000 719.000000 L 1170.000000 374.600000 L 750.000000 374.600000 L 750.000000 719.000000 Z M 960.000000 383.000000 L 1016.269330 593.000000 L 903.730670 593.000000 L 960.000000 383.000000 Z" fill="#dce2e9" fill-rule="evenodd"/>
+<path d="M 750.000000 719.000000 L 1170.000000 719.000000 L 1170.000000 374.600000 L 750.000000 374.600000 L 750.000000 719.000000" fill="none" stroke="#526479" stroke-width="1"/>
+<path d="M 960.000000 383.000000 L 1016.269330 593.000000 L 903.730670 593.000000 L 960.000000 383.000000" fill="none" stroke="#526479" stroke-width="1"/>
+<path d="M 680 332.6 H 1240" stroke="#34465b" stroke-width="1" stroke-dasharray="7 5"/>
+<path d="M 956 299 L 964 299" stroke="#263547" stroke-width="2"/>
+<path d="M 960 295 L 960 303" stroke="#263547" stroke-width="2"/>
+</g>
+<rect x="680" y="187" width="560" height="252" fill="none" stroke="#a9b3be"/>
+<text x="680" y="158" font-family="sans-serif" font-size="20" fill="#253547">Triangular hole / filled region</text>
+<text x="680" y="180" font-family="sans-serif" font-size="16" fill="#253547">Measured top y = 1.800000</text>
+<text x="670" y="458" font-family="sans-serif" font-size="13" fill="#253547">-10</text>
+<text x="810" y="458" font-family="sans-serif" font-size="13" fill="#253547">-5</text>
+<text x="950" y="458" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="1090" y="458" font-family="sans-serif" font-size="13" fill="#253547">5</text>
+<text x="1230" y="458" font-family="sans-serif" font-size="13" fill="#253547">10</text>
+<text x="657" y="388" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="657" y="304" font-family="sans-serif" font-size="13" fill="#253547">3</text>
+<text x="657" y="220" font-family="sans-serif" font-size="13" fill="#253547">6</text>
+<text x="60" y="486" font-family="sans-serif" font-size="17" fill="#253547">Hole: the cross at (0, 3) is inside only the symmetric result; ordinary outside corners remain.</text>
+<defs><clipPath id="panel-1-0"><rect x="60" y="577" width="560" height="252"/></clipPath></defs>
+<g clip-path="url(#panel-1-0)">
+<path d="M 522.000000 722.600000 L 522.000000 764.600000 L 522.000000 997.000000 L 522.000000 1039.000000 L 480.000000 1039.000000 L 200.000000 1039.000000 L 158.000000 1039.000000 L 158.000000 764.600000 L 158.000000 722.600000 L 522.000000 722.600000 Z" fill="#e4a36b" fill-rule="evenodd"/>
+<path d="M 200.000000 997.000000 L 480.000000 997.000000 L 480.000000 764.600000 L 342.250773 764.600000 L 340.000000 773.000000 L 337.749227 764.600000 L 200.000000 764.600000 L 200.000000 997.000000 Z" fill="#dce2e9" fill-rule="evenodd"/>
+<path d="M 200.000000 997.000000 L 480.000000 997.000000 L 480.000000 764.600000 L 342.250773 764.600000 L 340.000000 773.000000 L 337.749227 764.600000 L 200.000000 764.600000 L 200.000000 997.000000" fill="none" stroke="#526479" stroke-width="1"/>
+<path d="M 60 722.6 H 620" stroke="#34465b" stroke-width="1" stroke-dasharray="7 5"/>
+</g>
+<rect x="60" y="577" width="560" height="252" fill="none" stroke="#a9b3be"/>
+<text x="60" y="548" font-family="sans-serif" font-size="20" fill="#253547">Narrow notch / symmetric boundary</text>
+<text x="60" y="570" font-family="sans-serif" font-size="16" fill="#253547">Measured top y = 1.800000</text>
+<text x="50" y="848" font-family="sans-serif" font-size="13" fill="#253547">-10</text>
+<text x="190" y="848" font-family="sans-serif" font-size="13" fill="#253547">-5</text>
+<text x="330" y="848" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="470" y="848" font-family="sans-serif" font-size="13" fill="#253547">5</text>
+<text x="610" y="848" font-family="sans-serif" font-size="13" fill="#253547">10</text>
+<text x="37" y="778" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="37" y="694" font-family="sans-serif" font-size="13" fill="#253547">3</text>
+<text x="37" y="610" font-family="sans-serif" font-size="13" fill="#253547">6</text>
+<defs><clipPath id="panel-1-1"><rect x="680" y="577" width="560" height="252"/></clipPath></defs>
+<g clip-path="url(#panel-1-1)">
+<path d="M 1142.000000 722.600000 L 1142.000000 764.600000 L 1142.000000 997.000000 L 1142.000000 1039.000000 L 1100.000000 1039.000000 L 820.000000 1039.000000 L 778.000000 1039.000000 L 778.000000 997.000000 L 778.000000 764.600000 L 778.000000 722.600000 L 1142.000000 722.600000 Z" fill="#62b7a6" fill-rule="evenodd"/>
+<path d="M 820.000000 997.000000 L 1100.000000 997.000000 L 1100.000000 764.600000 L 962.250773 764.600000 L 960.000000 773.000000 L 957.749227 764.600000 L 820.000000 764.600000 L 820.000000 997.000000 Z" fill="#dce2e9" fill-rule="evenodd"/>
+<path d="M 820.000000 997.000000 L 1100.000000 997.000000 L 1100.000000 764.600000 L 962.250773 764.600000 L 960.000000 773.000000 L 957.749227 764.600000 L 820.000000 764.600000 L 820.000000 997.000000" fill="none" stroke="#526479" stroke-width="1"/>
+<path d="M 680 722.6 H 1240" stroke="#34465b" stroke-width="1" stroke-dasharray="7 5"/>
+</g>
+<rect x="680" y="577" width="560" height="252" fill="none" stroke="#a9b3be"/>
+<text x="680" y="548" font-family="sans-serif" font-size="20" fill="#253547">Narrow notch / filled region</text>
+<text x="680" y="570" font-family="sans-serif" font-size="16" fill="#253547">Measured top y = 1.800000</text>
+<text x="670" y="848" font-family="sans-serif" font-size="13" fill="#253547">-10</text>
+<text x="810" y="848" font-family="sans-serif" font-size="13" fill="#253547">-5</text>
+<text x="950" y="848" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="1090" y="848" font-family="sans-serif" font-size="13" fill="#253547">5</text>
+<text x="1230" y="848" font-family="sans-serif" font-size="13" fill="#253547">10</text>
+<text x="657" y="778" font-family="sans-serif" font-size="13" fill="#253547">0</text>
+<text x="657" y="694" font-family="sans-serif" font-size="13" fill="#253547">3</text>
+<text x="657" y="610" font-family="sans-serif" font-size="13" fill="#253547">6</text>
+<text x="60" y="876" font-family="sans-serif" font-size="17" fill="#253547">Notch control: both results agree; no material excess is claimed.</text>
+<text x="42" y="936" font-family="sans-serif" font-size="16" fill="#253547">Dashed y = 1.8 is an analytic reference, not a clipping plane. Upper-region detail; equal axis scale.</text>
+<text x="42" y="963" font-family="sans-serif" font-size="15" fill="#253547">Synthetic polygon evidence only. No glyphs, embedded font programs, host rendering, or ImageGen.</text>
+</svg>

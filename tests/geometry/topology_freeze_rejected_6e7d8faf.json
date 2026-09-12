@@ -1,0 +1,91 @@
+{
+  "schema": 1,
+  "snapshot_sha256": "6e7d8faf5a519cca33f9869ab90d2dc82904a68b9edbb727f4cfc681ff3a9170",
+  "baseline_commit": "c4596837a5e0ea10a68f7b94e2dd368032341334",
+  "review_status": "reviewer P1/P2 fixes await independent re-review; array API implemented",
+  "supersedes_snapshot_sha256": "7058e8ec92490f9e8d409e47db4b49b109de29bcf895b30c17bce540b7176981",
+  "freeze_meaning": "Hash snapshot only; no commit, SDK vendoring, or filesystem locking",
+  "files": {
+    "tools/topology_region.cpp": {
+      "sha256": "f4460f15bb624b6fe0e4383380ca30871172339e8e9d234f5fbdfde9583038ce",
+      "bytes": 22374
+    },
+    "tools/build_topology.py": {
+      "sha256": "53187fd610df8239bed12d9c51c1d43da51c0e64825a2660fe3afc4c4e4d192f",
+      "bytes": 2765
+    },
+    "tools/topology_region_core.h": {
+      "sha256": "97f01eb213e30463bd6161ee2341e3725d284182fadff13c2f2092dc0d17ffa7",
+      "bytes": 2985
+    },
+    "tests/geometry/test_topology_region.py": {
+      "sha256": "79bf3f82e6d321cbfcf6abbc5bb6a4336ebd4c02ae4b9a07547d53a5a20f5c66",
+      "bytes": 19761
+    },
+    "tests/geometry/measure_topology_region.py": {
+      "sha256": "0c48a9e3d7738a9bcad5fc89b568460b42f910ac75982eee5212f809ca181c21",
+      "bytes": 6625
+    },
+    "tests/geometry/test_topology_retention.py": {
+      "sha256": "e509304d9040b94e52f4e700c3a0c373dd049c5492dcaac8848b4b7c12d4fd38",
+      "bytes": 1963
+    },
+    "tests/geometry/test_topology_core.py": {
+      "sha256": "3e2c41c075189424f4400bc9b7360139074f8e952e745bfed145a7d809c5f66f",
+      "bytes": 730
+    },
+    "tests/geometry/topology_core_smoke.cpp": {
+      "sha256": "27cbed1974f35b2a41d13964ad330b57a679540d4c00543bb3be8c5e6bbe6c23",
+      "bytes": 5061
+    },
+    "tests/geometry/build_core_api.py": {
+      "sha256": "c7f8d473c0940fe83b8ff1be1c709ad6ef762615785a223a6ab310dbe677035f",
+      "bytes": 2303
+    },
+    "tests/geometry/TOPOLOGY_CORE_API.md": {
+      "sha256": "aa6b83ade63a9ebb991973b15e79c95c330809b3a1e9a22203dd70db333aec80",
+      "bytes": 7689
+    },
+    "tests/geometry/topology_api_equivalence.json": {
+      "sha256": "13909df69bff149f5a4d4cf2d7cf1cd4590333dadb094bbbfcc87499e82e44a4",
+      "bytes": 697
+    },
+    "TOPOLOGY_GEOMETRY_DESIGN.md": {
+      "sha256": "ff29eb39c4327339d07e4d08a35e5c056627e551fbd88c63a93a5f24f79c1a34",
+      "bytes": 27057
+    },
+    "tests/geometry/freeze_topology.py": {
+      "sha256": "d2ca721a3d29ebc234c89a50e0e6bb512a1198b03c5a0a89d48941960f63833f",
+      "bytes": 9811
+    },
+    "tests/geometry/topology_evidence.json": {
+      "sha256": "494d4676c14e6bcf413bd8dda6d1bfc7aaa5eba5b9a336c2559ed3872c0e66a7",
+      "bytes": 13185
+    },
+    "tests/geometry/topology_oracle.svg": {
+      "sha256": "3b8b1e1d682da794d91d3c025ac7831b57a20ad8f4aa09c0980ba31a42b45ebc",
+      "bytes": 10357
+    },
+    "tests/geometry/topology_oracle.png": {
+      "sha256": "628c1978c07814ed305e8197b544619ddaeff35d961ba2a4be1e3dfd10937f4a",
+      "bytes": 59744
+    },
+    "tests/geometry/topology_build/.gitignore": {
+      "sha256": "240a3e0d37d2e86b614063f5347eb02d4f99ca6c254de6b82871ff8d95532a7d",
+      "bytes": 14
+    }
+  },
+  "local_build_artifacts": {
+    "topology_region.exe": "77b0330ca1a173cafa26dde76fe2466ba18509010c51984d94951afd24969350",
+    "compile.log": "d9923115a7e8fce37ea775387abb7f0af0ad2e134a2a8f696818315a8d40f9c5",
+    "core_api/topology_core_smoke.exe": "6c4e499650ab2b7b7d823ee3903dcd6af69d928b3cd1ef7de64d707b0e8d9378",
+    "core_api/compile.log": "f4cc4ab94f5835f838b068e89174853df825d2546097b1f7715191f77c008f96"
+  },
+  "limits": {
+    "vertices_per_polygon_list": 20000,
+    "polygons_per_list": 256,
+    "curve_support": false,
+    "font_programs_included": false,
+    "native_ready_for_production": false
+  }
+}

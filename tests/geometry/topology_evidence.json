@@ -1,0 +1,1782 @@
+{
+  "status": "PASS",
+  "scope": "Explicit-role linear filled-region buffer, optional external envelope, and symmetric boundary comparison; no host or font proof",
+  "boost_version": 107400,
+  "overlay_mode": "default_rescale",
+  "source_hashes_sha256": {
+    "tools/topology_region.cpp": "3bab6ab77ef58acd9aade359b6f58c5cd7a29cb61f653419d9de1d5979559c42",
+    "tools/build_topology.py": "53187fd610df8239bed12d9c51c1d43da51c0e64825a2660fe3afc4c4e4d192f",
+    "tools/topology_region_core.h": "97f01eb213e30463bd6161ee2341e3725d284182fadff13c2f2092dc0d17ffa7",
+    "tests/geometry/test_topology_region.py": "79bf3f82e6d321cbfcf6abbc5bb6a4336ebd4c02ae4b9a07547d53a5a20f5c66",
+    "tests/geometry/measure_topology_region.py": "e77aee828e23d5b64b81b153b556302f7ebf49049f3065c082651fdd4b374cfe",
+    "tests/geometry/test_topology_retention.py": "1c94c79abdabdb6be16d68bae3b135840f3dbd63b77f595ad9cdd9f47b192227",
+    "tests/geometry/test_topology_core.py": "3e2c41c075189424f4400bc9b7360139074f8e952e745bfed145a7d809c5f66f",
+    "tests/geometry/topology_core_smoke.cpp": "3aaa9e062621490af1c954928240e74aeaeb8bdd2e4adb755b1e570e8844357b",
+    "tests/geometry/build_core_api.py": "c7f8d473c0940fe83b8ff1be1c709ad6ef762615785a223a6ab310dbe677035f",
+    "tests/geometry/TOPOLOGY_CORE_API.md": "4bf75505e5a913d77679254af3f51801a97ae08f896696a44fb60da648aa0094",
+    "tests/geometry/topology_api_equivalence.json": "b74500e05b1a11acbf87fe933e78ec7d1737101da6fdf1bb1e0a19c2e19c5c69",
+    "tests/geometry/topology_union_regression.json": "17ba1a714b377d9fc590705240dc5de5471ccd296c406e3ae45893b87b29e56a",
+    "tests/geometry/topology_freeze_rejected_6e7d8faf.json": "765d2a01b6ef904829b43ae9fe24cec4e31139311d936e07e31cca70553cc999"
+  },
+  "executable_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+  "core_api_executable_sha256": "9f48ae6b2f7d9f15bd38b1f99f87ea8cee5a51a65a9c85e0b20de3cc49f02e1f",
+  "core_api_smoke": {
+    "ok": true,
+    "checks": 43
+  },
+  "review_regressions": {
+    "count": 7,
+    "status": "included in this run; pre-union repair awaits independent re-review"
+  },
+  "input_union_regression": {
+    "rejected_snapshot": "6e7d8faf5a519cca33f9869ab90d2dc82904a68b9edbb727f4cfc681ff3a9170",
+    "request": {
+      "source": [
+        "POLYGON((0 0,1 0,1 1,0 1,0 0))"
+      ],
+      "envelope": [
+        "POLYGON((-100000 -100000,1.01 -100000,1.01 100000,-100000 100000,-100000 -100000))",
+        "POLYGON((1.025 -100000,100000 -100000,100000 100000,1.025 100000,1.025 -100000))",
+        "POLYGON((1.01 -100000,1.025 -100000,1.025 0.51,1.01 0.51,1.01 -100000))",
+        "POLYGON((1.01 0.525,1.025 0.525,1.025 100000,1.01 100000,1.01 0.525))"
+      ],
+      "h": 0.1,
+      "probes": [
+        [
+          1.0175,
+          0.5175
+        ]
+      ]
+    },
+    "analytic_area": 1.439775,
+    "regression_run": {
+      "tests": 7,
+      "assertion_failures": 25,
+      "errors": 0,
+      "detail": "24 union-order checks failed pre-union-guard expectation; expected-input check failed; tighter decomposition passed"
+    },
+    "long_decimal_before": {
+      "error": "source/envelope: overlay grid=0.01 exceeds normalized 9.9999999999999995e-07"
+    },
+    "before": {
+      "error": "source/envelope: overlay grid=0.01 exceeds normalized 9.9999999999999995e-07"
+    },
+    "after": {
+      "error": "envelope union: overlay grid=0.02 exceeds normalized 9.9999999999999995e-07"
+    },
+    "tight_decomposition": {
+      "orders": 24,
+      "all_ok": true,
+      "max_area_error": 4.440892098500626e-16,
+      "all_centers_excluded": true
+    },
+    "before_permutations": {
+      "orders": 24,
+      "successful_orders": [
+        2,
+        3,
+        5,
+        8,
+        9,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        19,
+        21,
+        22,
+        23
+      ],
+      "results": [
+        {
+          "error": "source/envelope: overlay grid=0.01 exceeds normalized 9.9999999999999995e-07"
+        },
+        {
+          "error": "union: empty or nonpositive region"
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "error": "union: empty or nonpositive region"
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "error": "source/envelope: overlay grid=0.01 exceeds normalized 9.9999999999999995e-07"
+        },
+        {
+          "error": "union: empty or nonpositive region"
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "error": "union: empty or nonpositive region"
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "error": "union: empty or nonpositive region"
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "error": "union: empty or nonpositive region"
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        },
+        {
+          "ok": true,
+          "boost_version": 107400,
+          "overlay_mode": "default_rescale",
+          "envelope_source": "explicit",
+          "scale": 1,
+          "source_area": 1,
+          "area": 1.4400000000000004,
+          "outside_area_normalized": 0,
+          "lost_fill_area_normalized": 0,
+          "clipped_area_normalized": 0,
+          "expected_error_normalized": -1,
+          "components": 1,
+          "holes": 0,
+          "geometry": [
+            [
+              [
+                [
+                  -0.1,
+                  0
+                ],
+                [
+                  -0.1,
+                  1
+                ],
+                [
+                  -0.1,
+                  1.1
+                ],
+                [
+                  0,
+                  1.1
+                ],
+                [
+                  1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1.1
+                ],
+                [
+                  1.1,
+                  1
+                ],
+                [
+                  1.1,
+                  0
+                ],
+                [
+                  1.1,
+                  -0.1
+                ],
+                [
+                  1,
+                  -0.1
+                ],
+                [
+                  0,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  -0.1
+                ],
+                [
+                  -0.1,
+                  0
+                ]
+              ]
+            ]
+          ],
+          "probes": [
+            true
+          ]
+        }
+      ],
+      "first_success_request": {
+        "source": [
+          "POLYGON((0 0,1 0,1 1,0 1,0 0))"
+        ],
+        "envelope": [
+          "POLYGON((-100000 -100000,1.01 -100000,1.01 100000,-100000 100000,-100000 -100000))",
+          "POLYGON((1.01 -100000,1.025 -100000,1.025 0.51,1.01 0.51,1.01 -100000))",
+          "POLYGON((1.025 -100000,100000 -100000,100000 100000,1.025 100000,1.025 -100000))",
+          "POLYGON((1.01 0.525,1.025 0.525,1.025 100000,1.01 100000,1.01 0.525))"
+        ],
+        "h": 0.1,
+        "probes": [
+          [
+            1.0175,
+            0.5175
+          ]
+        ]
+      }
+    }
+  },
+  "cli_api_equivalence": {
+    "requests": 223,
+    "differences": [],
+    "kind": "Historical pre-extraction capture replayed after the pre-union precision repair; not recomputed by measurement runner",
+    "before_cpp_sha256": "a5983c4f92897c00d6d7687a8ccea4a3f2e2c8f7f73827fbd8ed370b260d3122",
+    "after_source_sha256": {
+      "tools/topology_region.cpp": "3bab6ab77ef58acd9aade359b6f58c5cd7a29cb61f653419d9de1d5979559c42",
+      "tools/topology_region_core.h": "97f01eb213e30463bd6161ee2341e3725d284182fadff13c2f2092dc0d17ffa7"
+    },
+    "capture_sha256": "22e6a0497bc42cec19e8717a33963271c540d963697c3382815d464257a093f5",
+    "capture_location": "tests/geometry/topology_build/cli_fixed_before_api.json (local review capture; not required to rerun tests)"
+  },
+  "compiler_warning_count": 12,
+  "tests": 37,
+  "failures": 0,
+  "errors": 0,
+  "skips": 0,
+  "successful_requests_checked": 139,
+  "max_normalized_analytic_area_error": 1.1520001885756415e-07,
+  "test_wall_seconds": 45.04992730007507,
+  "clip_request": {
+    "source": [
+      "POLYGON((0 0,8 -1,8 1,0 0))"
+    ],
+    "envelope": [
+      "POLYGON((-1 -2,9 -2,9 2,-1 2,-1 -2))"
+    ],
+    "h": 1,
+    "limit": 20
+  },
+  "clip_measurement": {
+    "ok": true,
+    "boost_version": 107400,
+    "overlay_mode": "default_rescale",
+    "envelope_source": "explicit",
+    "scale": 8,
+    "source_area": 8,
+    "area": 30.01459559566411,
+    "outside_area_normalized": 8.298883562769325e-09,
+    "lost_fill_area_normalized": 0,
+    "clipped_area_normalized": 0.09961690386517588,
+    "expected_error_normalized": -1,
+    "components": 1,
+    "holes": 0
+  },
+  "clip_independent_rectangle_vertex_excursion": 2.579626823262515e-07,
+  "thin_stem_request": {
+    "source": [
+      "POLYGON((0 0,10 0,10 0.0001,0 0.0001,0 0))"
+    ],
+    "envelope": [
+      "POLYGON((-100 -100,100 -100,100 100,-100 100,-100 -100))"
+    ],
+    "h": 0.1
+  },
+  "thin_stem_measurement": {
+    "ok": true,
+    "boost_version": 107400,
+    "overlay_mode": "default_rescale",
+    "envelope_source": "explicit",
+    "scale": 10,
+    "source_area": 0.001,
+    "area": 2.04102,
+    "outside_area_normalized": 0,
+    "lost_fill_area_normalized": 0,
+    "clipped_area_normalized": 0,
+    "expected_error_normalized": -1,
+    "components": 1,
+    "holes": 0
+  },
+  "round_convergence": [
+    {
+      "circle_points": 16,
+      "area": 29.06146745892071,
+      "area_error_from_disk_dilation": 0.0801251946690833,
+      "analytic_chord_sagitta": 0.01921471959676957
+    },
+    {
+      "circle_points": 32,
+      "area": 29.12144515225805,
+      "area_error_from_disk_dilation": 0.020147501331742035,
+      "analytic_chord_sagitta": 0.004815273327803071
+    },
+    {
+      "circle_points": 64,
+      "area": 29.136548490545938,
+      "area_error_from_disk_dilation": 0.005044163043855576,
+      "analytic_chord_sagitta": 0.001204543794827595
+    },
+    {
+      "circle_points": 128,
+      "area": 29.140331156954748,
+      "area_error_from_disk_dilation": 0.0012614966350454893,
+      "analytic_chord_sagitta": 0.00030118130379575003
+    },
+    {
+      "circle_points": 256,
+      "area": 29.141277250932756,
+      "area_error_from_disk_dilation": 0.00031540265703711157,
+      "analytic_chord_sagitta": 7.529816085549701e-05
+    }
+  ],
+  "closed_region_comparisons": [
+    {
+      "request": {
+        "source": [
+          "POLYGON((-7.5 -12,7.5 -12,7.5 0.29999999999999999,-7.5 0.29999999999999999,-7.5 -12),(0 0,2.0096189432334204 -7.5,-2.0096189432334204 -7.5,0 0))"
+        ],
+        "h": 1.5,
+        "limit": 4,
+        "compare_boundary": true
+      },
+      "result": {
+        "ok": true,
+        "boost_version": 107400,
+        "overlay_mode": "default_rescale",
+        "envelope_source": "filled_region_buffer",
+        "scale": 15,
+        "source_area": 169.42785792574938,
+        "area": 275.38880062563067,
+        "outside_area_normalized": 0,
+        "lost_fill_area_normalized": 0,
+        "clipped_area_normalized": 0,
+        "expected_error_normalized": -1,
+        "components": 1,
+        "holes": 1,
+        "geometry": [
+          [
+            [
+              [
+                -9,
+                -12
+              ],
+              [
+                -9,
+                0.3000000000000007
+              ],
+              [
+                -9,
+                1.8000000000000007
+              ],
+              [
+                -7.5,
+                1.8000000000000007
+              ],
+              [
+                7.5,
+                1.8000000000000007
+              ],
+              [
+                9,
+                1.8000000000000007
+              ],
+              [
+                9,
+                0.3000000000000007
+              ],
+              [
+                9,
+                -12
+              ],
+              [
+                9,
+                -13.5
+              ],
+              [
+                7.5,
+                -13.5
+              ],
+              [
+                -7.5,
+                -13.5
+              ],
+              [
+                -9,
+                -13.5
+              ],
+              [
+                -9,
+                -12
+              ]
+            ],
+            [
+              [
+                -0.05478010687250112,
+                -6
+              ],
+              [
+                0.05478010687250112,
+                -6
+              ],
+              [
+                -7.185184749403106e-07,
+                -5.795557639281867
+              ],
+              [
+                -0.05478010687250112,
+                -6
+              ]
+            ]
+          ]
+        ],
+        "symmetric_excess_area_normalized": 0.01901184475683476,
+        "symmetric_geometry": [
+          [
+            [
+              [
+                1.0706058570148222,
+                1.7999995044742771
+              ],
+              [
+                7.5,
+                1.8000000000000007
+              ],
+              [
+                9,
+                1.8000000000000007
+              ],
+              [
+                9,
+                0.3000000000000007
+              ],
+              [
+                9,
+                -12
+              ],
+              [
+                9,
+                -13.5
+              ],
+              [
+                7.5,
+                -13.5
+              ],
+              [
+                -7.5,
+                -13.5
+              ],
+              [
+                -9,
+                -13.5
+              ],
+              [
+                -9,
+                0.3000000000000007
+              ],
+              [
+                -9,
+                1.8000000000000007
+              ],
+              [
+                -1.0706058570148214,
+                1.7999995044742771
+              ],
+              [
+                1.7763568394002505e-15,
+                5.795554957734417
+              ],
+              [
+                1.0706058570148222,
+                1.7999995044742771
+              ]
+            ],
+            [
+              [
+                -0.05478010687250112,
+                -6
+              ],
+              [
+                0.05478010687250112,
+                -6
+              ],
+              [
+                -7.185184749403106e-07,
+                -5.795557639281867
+              ],
+              [
+                -0.05478010687250112,
+                -6
+              ]
+            ]
+          ]
+        ],
+        "probes": []
+      },
+      "filled_top": 1.8000000000000007,
+      "fill_plus_symmetric_boundary_top": 5.795554957734417
+    },
+    {
+      "request": {
+        "source": [
+          "POLYGON((-5 -8,5 -8,5 0.29999999999999999,0.0803847577293368 0.29999999999999999,0 0,-0.0803847577293368 0.29999999999999999,-5 0.29999999999999999,-5 -8))"
+        ],
+        "h": 1.5,
+        "limit": 4,
+        "compare_boundary": true
+      },
+      "result": {
+        "ok": true,
+        "boost_version": 107400,
+        "overlay_mode": "default_rescale",
+        "envelope_source": "filled_region_buffer",
+        "scale": 10,
+        "source_area": 82.9758845726812,
+        "area": 146.9,
+        "outside_area_normalized": 0,
+        "lost_fill_area_normalized": 0,
+        "clipped_area_normalized": 0,
+        "expected_error_normalized": -1,
+        "components": 1,
+        "holes": 0,
+        "geometry": [
+          [
+            [
+              [
+                6.5,
+                1.8000000000000007
+              ],
+              [
+                6.5,
+                0.3000000000000007
+              ],
+              [
+                6.5,
+                -8
+              ],
+              [
+                6.5,
+                -9.5
+              ],
+              [
+                5,
+                -9.5
+              ],
+              [
+                -5,
+                -9.5
+              ],
+              [
+                -6.5,
+                -9.5
+              ],
+              [
+                -6.5,
+                -8
+              ],
+              [
+                -6.5,
+                0.3000000000000007
+              ],
+              [
+                -6.5,
+                1.8000000000000007
+              ],
+              [
+                6.5,
+                1.8000000000000007
+              ]
+            ]
+          ]
+        ],
+        "symmetric_excess_area_normalized": 0,
+        "symmetric_geometry": [
+          [
+            [
+              [
+                6.5,
+                1.8000000000000007
+              ],
+              [
+                6.5,
+                0.3000000000000007
+              ],
+              [
+                6.5,
+                -8
+              ],
+              [
+                6.5,
+                -9.5
+              ],
+              [
+                5,
+                -9.5
+              ],
+              [
+                -5,
+                -9.5
+              ],
+              [
+                -6.5,
+                -9.5
+              ],
+              [
+                -6.5,
+                0.3000000000000007
+              ],
+              [
+                -6.5,
+                1.8000000000000007
+              ],
+              [
+                6.5,
+                1.8000000000000007
+              ]
+            ]
+          ]
+        ],
+        "probes": []
+      },
+      "filled_top": 1.8000000000000007,
+      "fill_plus_symmetric_boundary_top": 1.8000000000000007
+    }
+  ],
+  "timing": {
+    "requests": 100,
+    "process_count": 1,
+    "wall_seconds": 0.2228126998525113,
+    "includes": "process startup, JSON I/O, validation, buffer, and overlays; four-vertex rectangle only"
+  },
+  "limitations": [
+    "Native W geometry and fill semantics unverified; positive filled buffer is the closed-region proposal",
+    "No envelope semantics for open unfilled paths",
+    "Numerical budgets are not exact containment proof",
+    "No native or extreme-font pass",
+    "reviewer identified P1/P2; fixes await independent re-review"
+  ]
+}

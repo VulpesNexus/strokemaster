@@ -1,0 +1,12 @@
+{
+  "requests": 223,
+  "differences": [],
+  "kind": "Historical pre-extraction capture replayed after the pre-union precision repair; not recomputed by measurement runner",
+  "before_cpp_sha256": "a5983c4f92897c00d6d7687a8ccea4a3f2e2c8f7f73827fbd8ed370b260d3122",
+  "after_source_sha256": {
+    "tools/topology_region.cpp": "3bab6ab77ef58acd9aade359b6f58c5cd7a29cb61f653419d9de1d5979559c42",
+    "tools/topology_region_core.h": "97f01eb213e30463bd6161ee2341e3725d284182fadff13c2f2092dc0d17ffa7"
+  },
+  "capture_sha256": "22e6a0497bc42cec19e8717a33963271c540d963697c3382815d464257a093f5",
+  "capture_location": "tests/geometry/topology_build/cli_fixed_before_api.json (local review capture; not required to rerun tests)"
+}
