@@ -127,7 +127,13 @@ Set the miter limit in the document's text styles to a value chosen from the mea
 
 ### SDK/native-plugin fix
 
-Shortening long miters to a fixed length while keeping every other miter (the `miter-clip` behavior in SVG 2) has no PDF or PostScript operator, so it has to be drawn as geometry. That means stroke geometry built with the SDK's offset-path engine, which accepts a join type and a miter limit, drawn from the adornment in I2.
+Shortening long miters while keeping every other miter (the `miter-clip` behavior in SVG 2) has no PDF or PostScript operator, so it has to be drawn as geometry. *tools/stroke_outline.py* builds that geometry and is validated against Adobe's own expansion.
+
+Delivery differs by host, and the difference is the same one fixtures A and C ran into.
+
+- **Illustrator can carry it live.** The SDK's `AILiveEffectSuite` registers a live effect, and one of its four style-filter flags, `kStrokeFilter`, replaces the default stroke behavior outright, which is how brushes are implemented. Effects live in the art style, so they re-run on every edit, apply to live type, and can be saved as graphic styles. `kOutlinedStrokeInputArt` is documented as not implemented, so the effect receives the path and its stroke parameters and builds the outline itself, which is what this repository's builder already does.
+- **InDesign cannot.** It has no Appearance panel and no live effect for path geometry, and a custom stroke style controls only the along-path pattern: the DOM's `DashedStrokeStyle` exposes a dash array, corner adjustment, and end cap, and no join property at all. The only live route is an adornment redrawing corrected geometry, with the same per-machine cost as I1.
+- **Anything leaving the machine needs expanded outlines**, because PDF (ISO 32000-1, table 55), PostScript, and SVG 1.1 each offer exactly three joins, and a scan of the installed applications finds no `miter-clip` anywhere in either one.
 
 ### Engine-level fix
 
@@ -143,7 +149,15 @@ A clipped-miter implementation replaces native stroking for the affected text, w
 
 ### Verdict
 
-ROOT CAUSE PROVEN, FIX NOT YET IMPLEMENTED. The mechanism isn't a defect in the join math. What is missing is a join rule that shortens instead of beveling, and that target behavior is a design decision.
+ROOT CAUSE PROVEN. RULE DECIDED AND VALIDATED, NOT YET DELIVERED IN A HOST.
+
+The mechanism isn't a defect in the join math. PostScript, PDF, and SVG 1.1 all govern the miter with a **threshold**: a corner just inside the limit keeps its whole point and one just outside loses it entirely, so the only dial available moves the cliff rather than removing it. Measured by sweeping every degree, the native rule at limit 4 changes reach by 23.95 pt between 28 and 29 degrees on an 8 pt half-width.
+
+What was missing is a **clamp**, and that target is now decided: no corner may protrude further than a right angle would, which is a clip at sqrt(2) times the half-width (*tools/miter_rule.py*). Its largest step anywhere in the same sweep is 0.0975 pt, and reach divided by half-width is identical across half-widths of 4, 8, and 12, so it is continuous in the angle and exactly proportional to the weight.
+
+Measured on a 50 pt Times W with a 16 pt centered stroke, whose three counter apexes sit at 38.5 to 39.1 degrees and whose eleven other corners are right angles: the native rule reaches 24.27 pt where the stroke itself reaches 8.00, and the clamp caps that at 11.31 while leaving every right angle untouched. The outline builder reproduces Illustrator's own Expand of the same stroke to within 95 pixels out of 86,650, or 0.11 percent, all of it a one-pixel seam.
+
+What remains is delivery, not geometry.
 
 ## Fixture C: character-run stroke fragmentation
 

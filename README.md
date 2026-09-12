@@ -60,6 +60,9 @@ Each build script creates its own document without touching open ones. It saves 
 
 - *python tools/stroke_probe.py tests/indesign-stroke/\<issue\>/actual \<stem\>* lists the paint objects InDesign exported for every frame and writes the measurements the manifest asks for into *\<stem\>.probe.md*.
 - *python tools/compare_renders.py \<a.png\> \<b.png\> \<manifest.json\> \<out-stem\>* compares two renders of one document frame by frame, separating a repaint's antialiased edge from a real change of color.
+- *python tools/stroke_outline.py render \<paths.json\> \<out.png\>* builds a stroke's outline from a path under each join rule, and *validate* compares a plain miter against Adobe's own expansion of the same stroke.
+- *python tools/miter_geometry.py \<out-dir\>* checks the join formulas against fixture B's measured wedges and draws the rules side by side. Both tools take the rule itself from *tools/miter_rule.py*, which is the only place it is defined.
+- *powershell -NoProfile -File tools\run-ai-jsx.ps1 ai-dump-paths.jsx -ArgJson "{\\"out\\":\\"C:/tmp/p.json\\"}"* writes Illustrator path geometry to JSON for the two tools above. Illustrator is a separate application from InDesign, so it has its own runner.
 - *python tools/make_expected.py tests/indesign-stroke/\<issue\> \<stem\>* writes the expected output: the same PDF with each frame's Outside strokes painted before its fills.
 - *python tools/scan_identifiable.py \<path\>* checks files for this machine's user name, computer name, and home directory before they are added to the repository.
 
