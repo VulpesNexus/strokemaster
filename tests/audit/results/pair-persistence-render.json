@@ -1,0 +1,794 @@
+{
+  "schema": 1,
+  "host": "InDesign",
+  "version": "21.5.1.73",
+  "plugin_sha256": "15b802ebfb38f567eb3aa586e995c0a1afff47efd078f3e2a0443596b54df4c4",
+  "scope": "Two reciprocal split pairs; uniform and varied Outside strokes. Lower fill matches stroke color and tint. Sampled state through INDD reopen, IDML import, and final INDD reopen.",
+  "ppi": 600,
+  "changed_pixels": 0,
+  "host_result": {
+    "schema": 1,
+    "host": "InDesign",
+    "version": "21.5.1.73",
+    "passed": true,
+    "checks": [
+      {
+        "name": "uniform split succeeds",
+        "passed": true
+      },
+      {
+        "name": "varied split succeeds",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 0",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 0",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 1",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 1",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 2",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 2",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 3",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 3",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/4",
+        "passed": true
+      },
+      {
+        "name": "exactly two pair tokens",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907553-1112080383-299696127",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907540-1550188543-398393343",
+        "passed": true
+      },
+      {
+        "name": "four paired frames",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 0",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 0",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 1",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 1",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 2",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 2",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 3",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 3",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/4",
+        "passed": true
+      },
+      {
+        "name": "exactly two pair tokens",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907553-1112080383-299696127",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907540-1550188543-398393343",
+        "passed": true
+      },
+      {
+        "name": "four paired frames",
+        "passed": true
+      },
+      {
+        "name": "INDD preserves pair identity and sampled character fields",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 0",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 0",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 1",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 1",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 2",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 2",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 3",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 3",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/4",
+        "passed": true
+      },
+      {
+        "name": "exactly two pair tokens",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907553-1112080383-299696127",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907540-1550188543-398393343",
+        "passed": true
+      },
+      {
+        "name": "four paired frames",
+        "passed": true
+      },
+      {
+        "name": "IDML preserves pair identity and sampled character fields",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 0",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 0",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 0/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 1",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 1",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 1/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 1/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 2",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 2",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/0",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/1",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/2",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/3",
+        "passed": true
+      },
+      {
+        "name": "true None and zero top stroke 2/4",
+        "passed": true
+      },
+      {
+        "name": "ISE3 pair label 3",
+        "passed": true
+      },
+      {
+        "name": "unique pair member 3",
+        "passed": true
+      },
+      {
+        "name": "nonempty composed frame 3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/0",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/1",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/2",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/3",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke color 3/4",
+        "passed": true
+      },
+      {
+        "name": "bottom fill matches stroke tint 3/4",
+        "passed": true
+      },
+      {
+        "name": "exactly two pair tokens",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907553-1112080383-299696127",
+        "passed": true
+      },
+      {
+        "name": "reciprocal pair $p1789239907540-1550188543-398393343",
+        "passed": true
+      },
+      {
+        "name": "four paired frames",
+        "passed": true
+      },
+      {
+        "name": "final INDD preserves pair identity and sampled character fields",
+        "passed": true
+      }
+    ],
+    "sampledCharacterFields": [
+      "contents",
+      "horizontalOffset",
+      "baseline",
+      "fillColor.name",
+      "fillTint",
+      "strokeColor.name",
+      "strokeWeight",
+      "strokeTint"
+    ],
+    "sampledFrameFields": [
+      "ISE_SPLIT token and role"
+    ],
+    "pairIdentityAndSampledFieldsPreserved": true,
+    "renderEquality": "requires external exact comparison",
+    "log": "pdfExportPreferences restore: fails=0 diff=0 unverified=14 [openDocumentPassword: The property is not applicable in the current state.; changeSecurityPassword: Cannot Access Password Property; disallowPrinting: The property is not applicable in the current state.; disallowChanging: The property is not applicable in the current state.; disallowCopying: The property is not applicable in the current state.; disallowNotes: The property is not applicable in the current state.; disallowFormFillIn: The property is not applicable in the current state.; disallowExtractionForAccessibility: The property is not applicable in the current state.; disallowDocumentAssembly: The property is not applicable in the current state.; disallowHiResPrinting: The property is not applicable in the current state.; disallowPlaintextMetadata: The property is not applicable in the current state.; simulateOverprint: The property is not applicable in the current state.; ignoreSpreadOverrides: The property is not applicable in the current state.; appliedFlattenerPreset: The property is not applicable in the current state.]\npngExportPreferences restore: fails=0 diff=0 unverified=0\nepsExportPreferences restore: fails=0 diff=0 unverified=1 [appliedFlattenerPreset: unsupported preference value (object)]\nelapsed ms=1718"
+  },
+  "images": {
+    "before.png": "1d79f5a038dc21163b9510a9f32064fb8111d54ef81969967dd9a7a6467e69df",
+    "after.png": "1d79f5a038dc21163b9510a9f32064fb8111d54ef81969967dd9a7a6467e69df"
+  },
+  "probe_sha256": "0ea4db6e6086697967bcc666d273d7c0e993fff4dc06cd6c0024f38c90e84562"
+}

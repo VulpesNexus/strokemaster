@@ -1,0 +1,41 @@
+{
+  "schema": 1,
+  "host": "InDesign",
+  "plugin": "absent",
+  "host_result": {
+    "schema": 1,
+    "version": "21.5.1.73",
+    "passed": true,
+    "frames": 20,
+    "characterStateAndPositionsPreserved": true,
+    "renderEquality": "requires external comparison",
+    "log": "liveBefore=\npdfExportPreferences restore: fails=0 diff=0 unverified=14 [openDocumentPassword: The property is not applicable in the current state.; changeSecurityPassword: Cannot Access Password Property; disallowPrinting: The property is not applicable in the current state.; disallowChanging: The property is not applicable in the current state.; disallowCopying: The property is not applicable in the current state.; disallowNotes: The property is not applicable in the current state.; disallowFormFillIn: The property is not applicable in the current state.; disallowExtractionForAccessibility: The property is not applicable in the current state.; disallowDocumentAssembly: The property is not applicable in the current state.; disallowHiResPrinting: The property is not applicable in the current state.; disallowPlaintextMetadata: The property is not applicable in the current state.; simulateOverprint: The property is not applicable in the current state.; ignoreSpreadOverrides: The property is not applicable in the current state.; appliedFlattenerPreset: The property is not applicable in the current state.]\npngExportPreferences restore: fails=0 diff=0 unverified=0\nepsExportPreferences restore: fails=0 diff=0 unverified=1 [appliedFlattenerPreset: unsupported preference value (object)]\nliveAfter= (unchanged)\nelapsed ms=4176"
+  },
+  "render_comparison": {
+    "png_shape": [
+      4167,
+      3333,
+      3
+    ],
+    "png_nonzero_pixels": 0,
+    "pdf_raster_nonzero_channels": 0,
+    "pdf_text_equal": true,
+    "sha256": {
+      "direct.png": "b28492596e1fc2ad00c62c91ea92ec323064462fe6b70847be0d68dd9736d1bd",
+      "reopened.png": "b28492596e1fc2ad00c62c91ea92ec323064462fe6b70847be0d68dd9736d1bd",
+      "direct.pdf": "e4b0c249fd0f505136998759db71aef3cf3e53a7cab033a64026198457d1a919",
+      "reopened.pdf": "18cdd1b2c471baaa42c61c7d56cc5bbb44825110d58abaf716840d83cc6eee76"
+    },
+    "pdf_renderer": {
+      "name": "MuPDF via PyMuPDF",
+      "pymupdf_version": "1.28.2",
+      "resolution_ppi": 288,
+      "alpha": false
+    },
+    "png_resolution_ppi": 300
+  },
+  "comparison_packages": {
+    "numpy": "2.5.3",
+    "pillow": "12.3.0"
+  }
+}

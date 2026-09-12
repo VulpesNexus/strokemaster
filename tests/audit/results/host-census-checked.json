@@ -1,0 +1,99 @@
+{
+  "schema": 1,
+  "host": "InDesign",
+  "version": "21.5.1.73",
+  "plugin_sha256": "15b802ebfb38f567eb3aa586e995c0a1afff47efd078f3e2a0443596b54df4c4",
+  "scope": "Hardened 20-case collection and sampled-field persistence; all native correction disabled",
+  "collection": {
+    "census": {
+      "passed": true,
+      "script_sha256": "5fb771cb3d491fbfeb5304aa074c190dd0040471840b01062f24cc663f06d895",
+      "raw_record_sha256": "9f19171d7c1b0125205de469457cff1dd98d0f8950bf45126607e0fc1668a9b0",
+      "sampledCharacterFields": [
+        "contents",
+        "horizontalOffset",
+        "baseline"
+      ],
+      "sampledFrameFields": null,
+      "frame_count": 20,
+      "restoration_log": [
+        "pdfExportPreferences restore: fails=0 diff=0 unverified=14 [openDocumentPassword: The property is not applicable in the current state.; changeSecurityPassword: Cannot Access Password Property; disallowPrinting: The property is not applicable in the current state.; disallowChanging: The property is not applicable in the current state.; disallowCopying: The property is not applicable in the current state.; disallowNotes: The property is not applicable in the current state.; disallowFormFillIn: The property is not applicable in the current state.; disallowExtractionForAccessibility: The property is not applicable in the current state.; disallowDocumentAssembly: The property is not applicable in the current state.; disallowHiResPrinting: The property is not applicable in the current state.; disallowPlaintextMetadata: The property is not applicable in the current state.; simulateOverprint: The property is not applicable in the current state.; ignoreSpreadOverrides: The property is not applicable in the current state.; appliedFlattenerPreset: The property is not applicable in the current state.]",
+        "pngExportPreferences restore: fails=0 diff=0 unverified=0",
+        "epsExportPreferences restore: fails=0 diff=0 unverified=1 [appliedFlattenerPreset: unsupported preference value (object)]"
+      ],
+      "renderValidationRequired": true,
+      "maskBackgroundTintReadback": -1,
+      "maskBackgroundColorName": "Black",
+      "maskBackgroundTintResolution": "unresolved inherited/overridden"
+    },
+    "persistence": {
+      "passed": true,
+      "script_sha256": "3afb3bedc33c1a1499fe61055dcf18a648e680206d78bf459b558dddc8a6804d",
+      "raw_record_sha256": "ca76f855ae4db5e58ee44499e666c7fcde98236bacc26c9c95bd0b9483ff4386",
+      "sampledCharacterFields": [
+        "contents",
+        "horizontalOffset",
+        "baseline",
+        "strokeColor.name",
+        "strokeWeight",
+        "fillColor.name",
+        "strokeTint",
+        "endJoin"
+      ],
+      "sampledFrameFields": [
+        "name"
+      ],
+      "frame_count": 20,
+      "restoration_log": [
+        "pdfExportPreferences restore: fails=0 diff=0 unverified=14 [openDocumentPassword: The property is not applicable in the current state.; changeSecurityPassword: Cannot Access Password Property; disallowPrinting: The property is not applicable in the current state.; disallowChanging: The property is not applicable in the current state.; disallowCopying: The property is not applicable in the current state.; disallowNotes: The property is not applicable in the current state.; disallowFormFillIn: The property is not applicable in the current state.; disallowExtractionForAccessibility: The property is not applicable in the current state.; disallowDocumentAssembly: The property is not applicable in the current state.; disallowHiResPrinting: The property is not applicable in the current state.; disallowPlaintextMetadata: The property is not applicable in the current state.; simulateOverprint: The property is not applicable in the current state.; ignoreSpreadOverrides: The property is not applicable in the current state.; appliedFlattenerPreset: The property is not applicable in the current state.]",
+        "pngExportPreferences restore: fails=0 diff=0 unverified=0",
+        "epsExportPreferences restore: fails=0 diff=0 unverified=1 [appliedFlattenerPreset: unsupported preference value (object)]"
+      ]
+    }
+  },
+  "comparison": {
+    "schema": 1,
+    "comparisons": [
+      {
+        "file": "native.png",
+        "shape": [
+          8333,
+          6667,
+          3
+        ],
+        "changed_pixels": 0,
+        "sha256": "7d2992317fb720aa0de1e13b766309381cabd6e9fb557144dc90dd791b1622b2"
+      },
+      {
+        "file": "reference.png",
+        "shape": [
+          8333,
+          6667,
+          3
+        ],
+        "changed_pixels": 0,
+        "sha256": "19877d68099ddbc7a3f0492dc0109191717c98ac40061814501958e3962fa8f4"
+      },
+      {
+        "file": "mask.png",
+        "shape": [
+          8333,
+          6667,
+          3
+        ],
+        "changed_pixels": 0,
+        "sha256": "55b06bea26127e05b7898e69a0427b7815a87b836ea3eda3cf44dcbfee55ff7c"
+      }
+    ],
+    "persistence_png_changed_pixels": 0,
+    "persistence_pdf_changed_channels": 0,
+    "pdf_text_equal": true,
+    "mask_corner_rgb": [
+      0,
+      0,
+      0
+    ],
+    "mask_same_as_previous_validated_oracle": true
+  },
+  "interpretation": "All three 600 ppi census images are byte-identical to the no-plugin control. The unresolved mask-background tint readback is admitted only after exact image equality and a black corner-pixel check. PNG300/PDF288 persistence is equal for sampled fixtures, not universal appearance coverage."
+}
