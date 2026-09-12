@@ -1,0 +1,8 @@
+{
+  "status": "PROPOSED: compile-only, not loaded",
+  "plugin": "StrokeMasterProposedProbe",
+  "entryPoint": "PluginMain",
+  "architecture": "x64",
+  "sha256": "4e595bfa0e6501c7f333e001abc3c5d610e24c93af7392b547eb0af97dd60b39",
+  "piplEmbedded": true
+}

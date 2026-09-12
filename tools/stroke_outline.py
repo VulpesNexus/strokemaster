@@ -1,59 +1,12 @@
-"""Build a stroke's outline from a path, with a choice of join rule, and check it against Adobe.
+"""Experimental stroke-outline raster tools with tested local join geometry.
 
-Usage:
-    python tools/stroke_outline.py render   <paths.json> <out.png> [glyph-index] [half-width]
-    python tools/stroke_outline.py validate <paths.json> <out.png> [half-width]
-
-The input is what tools/jsx/ai-dump-paths.jsx writes: each path's points, with anchors and both
-Bezier handles.
-
-Why this exists: PostScript and PDF offer three joins, and the miter is governed by a THRESHOLD.
-A join is mitered while 1 / sin(theta / 2) <= limit and becomes a full bevel past it, so a corner
-just inside the limit keeps its whole point while one just outside loses it entirely. On real
-type that is visible as spikes on the acute corners and blunt stumps on the ones just past the
-limit, and the only dial available, the miter limit, moves the cliff rather than removing it.
-
-A clamped miter removes the cliff: keep the miter, but cut its tip off flat once it would reach
-further than clip_ratio times the stroke's half-width. It cannot be expressed as a PDF or
-PostScript line join, each of which defines exactly three, so it has to be built as geometry,
-which is what this does.
-
-The behavior is ordinary elsewhere: GDI+, Direct2D, WPF, XPS, FreeType and Qt all clamp by
-default, and have since GDI+ shipped. It is not a web standard any more, though. SVG 2 specified
-it as stroke-linejoin: miter-clip in 2018, no browser implemented it, and the Working Group
-removed it on 18 March 2026, so do not cite it under that name. See docs/MITER_JOIN_HISTORY.md.
-
-Nothing here is fitted to a particular glyph or size. Every quantity is derived per corner from
-the path and the stroke width, so the same code answers for any font, any weight, and any angle.
-
-The default clamp is sqrt(2), the ratio a right angle produces, which states the rule as "no
-corner may protrude further than a right-angled corner would". A right angle is therefore the
-reference and is left alone: the clamp acts below 90 degrees and not at or above it.
-
-Measured by sweeping every degree from 1 to 179 through join_polygon itself and taking the
-farthest point each join actually returns: the native rule at limit 4 changes reach by 23.95 pt
-between 28 and 29 degrees on an 8 pt half-width, where it stops mitering and bevels instead,
-while this clamp's largest step anywhere in the sweep is 0.0975 pt. Reach divided by half-width
-is identical across half-widths of 4, 8, and 12 to five decimal places. Continuous in the angle,
-and exactly proportional to the weight.
-
-(An earlier sweep reported that cliff as 30.02 pt. It computed the beveled case analytically as
-the distance to the chord's midpoint rather than to the join's farthest point, which understates
-where a bevel actually reaches and so overstated the jump. 23.95 pt is the measured figure.)
-
-Two details decide whether it works on real type:
-
-  Corners come from the anchors, not from the flattening. Once a curve is flattened every vertex
-  has a small angle change, and applying a join rule to those would facet the curved parts. Only
-  anchors whose incoming and outgoing tangents actually diverge are corners.
-
-  Tangents come from the Bezier handles. On a curved segment the direction at an anchor is set
-  by its handle, so measuring toward the neighboring anchor would invent corners where the
-  outline is smooth and understate the ones that are real.
-
-Verified against Illustrator's own Expand on a 50 pt Times W with a 16 pt centered stroke: the
-region this computes and the region Illustrator produced differ by 95 pixels out of 86,650, or
-0.11 percent, all of it a one-pixel seam along the boundary.
+Input paths contain anchors and Bezier handles. Fixed 24-step flattening and
+absolute handle/corner thresholds remain experimental. Handles classify corners;
+actual joins use adjacent flattened chords. Contours are always closed, and
+holes, open caps, self-intersections, and Boolean topology are not resolved.
+The existing validate command compares conventional miters with a saved Adobe
+expansion; it does not validate clipping or certify whole-stroke production use.
+Lengths, including hw (half the full stroke width), use input-coordinate units.
 """
 import json
 import math
@@ -65,10 +18,9 @@ SUB = 24           # flattening steps per curved segment
 CORNER_DEG = 0.75  # tangent divergence above which an anchor counts as a corner
 SS = 3             # supersampling factor for rasterizing
 
-# The rule and its constants live in miter_rule.py, so this file and tools/miter_geometry.py
-# cannot come to disagree about what the clamp is.
+# Local joins share the Python kernel; JSX is cross-checked separately.
 from miter_rule import (CLIP_DEFAULT, CLIP_EPS, RIGHT_ANGLE_RATIO,  # noqa: E402,F401
-                        interior_angle, miter_ratio)
+                        interior_angle, miter_ratio, join_boundary)
 
 
 def bez(p0, p1, p2, p3, t):
@@ -119,61 +71,17 @@ def flatten(pts, tag_corners=True):
 
 
 def join_polygon(v, u, w, hw, mode, clip_ratio=CLIP_DEFAULT, limit=4.0):
-    """The filled wedge that closes the outer side of one corner.
+    """Filled local outer join, or None for straight travel; invalid inputs raise ValueError.
 
-    mode is 'miter' (threshold, what PDF does), 'bevel', 'round', or 'clip' (the clamp).
+    u/w are incoming/outgoing unit directions. clip_ratio and limit use half-width
+    units; clipping bounds the bisector projection, not every radial distance.
     """
-    cross = u[0] * w[1] - u[1] * w[0]
-    if abs(cross) < 1e-12:
-        return None
-    # The join is built on the outside of the turn, which is the side the corner opens away from.
-    if cross < 0:
-        n1, n2 = (-u[1], u[0]), (-w[1], w[0])
-    else:
-        n1, n2 = (u[1], -u[0]), (w[1], -w[0])
-    p1 = (v[0] + n1[0] * hw, v[1] + n1[1] * hw)
-    p2 = (v[0] + n2[0] * hw, v[1] + n2[1] * hw)
-
-    if mode == 'bevel':
-        return [v, p1, p2]
-    if mode == 'round':
-        a1, a2 = math.atan2(n1[1], n1[0]), math.atan2(n2[1], n2[0])
-        while a2 - a1 > math.pi:
-            a2 -= 2 * math.pi
-        while a1 - a2 > math.pi:
-            a2 += 2 * math.pi
-        arc = [v]
-        for k in range(13):
-            a = a1 + (a2 - a1) * k / 12.0
-            arc.append((v[0] + math.cos(a) * hw, v[1] + math.sin(a) * hw))
-        return arc
-
-    bx, by = n1[0] + n2[0], n1[1] + n2[1]
-    bl = math.hypot(bx, by)
-    if bl < 1e-9:
-        return [v, p1, p2]
-    b = (bx / bl, by / bl)
-    ratio = miter_ratio(interior_angle(u, w))
-    tip_at = hw * ratio
-    tip = (v[0] + b[0] * tip_at, v[1] + b[1] * tip_at)
-
-    if mode == 'miter':
-        return [v, p1, tip, p2] if ratio <= limit else [v, p1, p2]
-
-    cap = hw * clip_ratio
-    if tip_at <= cap * (1.0 + CLIP_EPS):
-        return [v, p1, tip, p2]
-    # Cut the miter off flat at the cap. Interpolating along both miter edges keeps the corner
-    # pointing in the same direction and tapers continuously as the angle closes, which is the
-    # whole difference from a bevel.
-    t = (cap - hw) / (tip_at - hw) if tip_at > hw else 0.0
-    a = (p1[0] + (tip[0] - p1[0]) * t, p1[1] + (tip[1] - p1[1]) * t)
-    c = (p2[0] + (tip[0] - p2[0]) * t, p2[1] + (tip[1] - p2[1]) * t)
-    return [v, p1, a, c, p2]
+    boundary = join_boundary(v, u, w, hw, mode, clip_ratio, limit)
+    return [tuple(v)] + boundary if boundary else None
 
 
 def stroke_shapes(pts, hw, mode, clip_ratio=CLIP_DEFAULT, limit=4.0):
-    """Every polygon whose union is the stroked region: one per segment, one per vertex."""
+    """Experimental closed-contour pieces; no whole-stroke topology guarantee."""
     flat = flatten(pts)
     n = len(flat)
     shapes = []
@@ -220,9 +128,9 @@ def render(json_path, out_path, index=0, hw=8.0):
     doc = json.load(open(json_path, encoding='utf-8'))
     path = [p for p in doc['paths'] if p['index'] == index][0]
     pts, gb = path['pts'], path['gb']
-    rules = [('miter L4', 'miter', 0, 4.0), ('miter L2', 'miter', 0, 2.0),
+    rules = [('miter L4', 'miter', CLIP_DEFAULT, 4.0), ('miter L2', 'miter', CLIP_DEFAULT, 2.0),
              ('clip 1.0', 'clip', 1.0, 4.0), ('clip sqrt2', 'clip', CLIP_DEFAULT, 4.0),
-             ('clip 2.0', 'clip', 2.0, 4.0), ('round', 'round', 0, 4.0)]
+             ('clip 2.0', 'clip', 2.0, 4.0), ('round', 'round', CLIP_DEFAULT, 4.0)]
     scale, pad = 5.0, hw + 22
     pw = int(((gb[2] - gb[0]) + pad * 2) * scale)
     ph = int(((gb[1] - gb[3]) + pad * 2) * scale)
@@ -254,7 +162,7 @@ def validate(json_path, out_path, hw=8.0):
     tx = _transform(gb, pad, scale, SS)
 
     def mine(d):
-        for poly in stroke_shapes(glyph['pts'], hw, 'miter', 0, 4.0):
+        for poly in stroke_shapes(glyph['pts'], hw, 'miter', CLIP_DEFAULT, 4.0):
             d.polygon([tx(q) for q in poly], fill=255)
         d.polygon([tx(q) for q in contour(glyph['pts'])], fill=255)
 

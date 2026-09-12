@@ -3,8 +3,9 @@
 // Load with $.evalFile after setting $.global.ISE_ARGS; the library copies the arguments
 // and deletes that global at once. The library itself lives in $.global.ISE_LIB, which
 // the caller deletes when the build returns.
-// Every run snapshots the application export preferences by value and restores them,
-// and only ever touches documents it created or opened itself.
+// Export preference primitives and arrays are copied by value; immutable Enumerators are
+// retained. Other objects and unreadable properties are reported as unverified.
+// Cleanup closes only explicitly tracked documents that were not open when the run began.
 
 $.global.ISE_LIB = (function () {
     var lib = {};
@@ -26,32 +27,78 @@ $.global.ISE_LIB = (function () {
         } catch (e) { return '<err>'; }
     };
 
+    function isEnum(v) {
+        return v !== null && v !== undefined && v.constructor && v.constructor.name === 'Enumerator';
+    }
+
+    // Never keep a mutable reference as though it were a value snapshot. Cyclic arrays and
+    // host objects have no supported copy contract here, so report them instead of guessing.
+    function copyValue(v, parents) {
+        var t = typeof v;
+        if (v === null || t === 'undefined' || t === 'string' || t === 'number' || t === 'boolean' || isEnum(v)) { return v; }
+        if (v instanceof Array) {
+            var i, out = new Array(v.length);
+            parents = parents || [];
+            for (i = 0; i < parents.length; i++) {
+                if (parents[i] === v) { throw new Error('cyclic array'); }
+            }
+            parents.push(v);
+            for (i = 0; i < v.length; i++) {
+                if (i in v) { out[i] = copyValue(v[i], parents); }
+            }
+            parents.pop();
+            return out;
+        }
+        throw new Error('unsupported preference value (' + t + ')');
+    }
+
+    function sameValue(a, b) {
+        if (a === b) { return a !== 0 || 1 / a === 1 / b; }
+        if (typeof a !== typeof b) { return false; }
+        if (typeof a === 'number' && isNaN(a) && isNaN(b)) { return true; }
+        if (a instanceof Array && b instanceof Array) {
+            if (a.length !== b.length) { return false; }
+            for (var i = 0; i < a.length; i++) {
+                if ((i in a) !== (i in b) || ((i in a) && !sameValue(a[i], b[i]))) { return false; }
+            }
+            return true;
+        }
+        return !!(isEnum(a) && isEnum(b) && String(a) === String(b));
+    }
+
     function snap(o) {
-        var s = { order: [], vals: {} }, p = o.reflect.properties;
+        var s = { order: [], vals: {}, unverified: [] }, p = o.reflect.properties;
         for (var i = 0; i < p.length; i++) {
             var n = p[i].name;
             if (SKIPP[n] || p[i].type === 'readonly') { continue; }
-            try { s.vals[n] = o[n]; s.order.push(n); } catch (e) {}
+            try { s.vals[n] = copyValue(o[n]); s.order.push(n); }
+            catch (e) { s.unverified.push(n + ': ' + e.message); }
         }
         return s;
     }
 
     function restore(o, s, first) {
-        var fails = [], done = {}, diff = [], i, n;
+        var fails = [], done = {}, diff = [], unverified = s.unverified.slice(0), i, n;
         for (i = 0; i < first.length; i++) {
             n = first[i];
-            if (s.vals.hasOwnProperty(n)) { try { o[n] = s.vals[n]; } catch (e) { fails.push(n + ': ' + e.message); } done[n] = 1; }
+            if (s.vals.hasOwnProperty(n)) { try { o[n] = copyValue(s.vals[n]); } catch (e) { fails.push(n + ': ' + e.message); } done[n] = 1; }
         }
         for (i = 0; i < s.order.length; i++) {
             n = s.order[i];
             if (done[n]) { continue; }
-            try { if (lib.str(o[n]) !== lib.str(s.vals[n])) { o[n] = s.vals[n]; } } catch (e) { fails.push(n + ': ' + e.message); }
+            try { if (!sameValue(o[n], s.vals[n])) { o[n] = copyValue(s.vals[n]); } } catch (e) { fails.push(n + ': ' + e.message); }
         }
         for (i = 0; i < s.order.length; i++) {
             n = s.order[i];
-            try { if (lib.str(o[n]) !== lib.str(s.vals[n])) { diff.push(n + ' now=' + lib.str(o[n]) + ' saved=' + lib.str(s.vals[n])); } } catch (e) {}
+            try { if (!sameValue(o[n], s.vals[n])) { diff.push(n + ' now=' + lib.str(o[n]) + ' saved=' + lib.str(s.vals[n])); } }
+            catch (e) { unverified.push(n + ': verification failed: ' + e.message); }
         }
-        return 'fails=' + fails.length + (fails.length ? ' [' + fails.join('; ') + ']' : '') + ' diff=' + diff.length + (diff.length ? ' [' + diff.join('; ') + ']' : '');
+        return 'fails=' + fails.length + (fails.length ? ' [' + fails.join('; ') + ']' : '') + ' diff=' + diff.length + (diff.length ? ' [' + diff.join('; ') + ']' : '') +
+            ' unverified=' + unverified.length + (unverified.length ? ' [' + unverified.join('; ') + ']' : '');
+    }
+
+    function sameDocument(a, b) {
+        return a === b || (a.id !== undefined && a.id === b.id);
     }
 
     lib.liveState = function () {
@@ -75,6 +122,8 @@ $.global.ISE_LIB = (function () {
     lib.run = function (fn) {
         var t0 = new Date().getTime();
         var before = lib.liveState();
+        var existing = [];
+        for (var di = 0; di < app.documents.length; di++) { existing.push(app.documents[di]); }
         lib.L('liveBefore=' + before);
         var snaps = [
             { name: 'pdfExportPreferences', s: snap(app.pdfExportPreferences), first: ['standardsCompliance', 'acrobatCompatibility'] },
@@ -84,7 +133,13 @@ $.global.ISE_LIB = (function () {
         var oldUIL = app.scriptPreferences.userInteractionLevel;
         app.scriptPreferences.userInteractionLevel = UserInteractionLevels.NEVER_INTERACT;
         var opened = [];
-        lib.track = function (doc) { opened.push(doc); return doc; };
+        lib.track = function (doc) {
+            for (var d = 0; d < existing.length; d++) {
+                if (sameDocument(doc, existing[d])) { throw new Error('Refusing to take ownership of an already open document: ' + doc.name); }
+            }
+            opened.push(doc);
+            return doc;
+        };
         try {
             fn(lib);
         } catch (e) {
@@ -227,22 +282,22 @@ $.global.ISE_LIB = (function () {
     lib.saveExport = function (doc, issueDir, stem, ppi) {
         ppi = ppi || 300;
         var mdir = issueDir + '/minimal', adir = issueDir + '/actual';
-        new Folder(mdir).create();
-        new Folder(adir).create();
-        // A document already open on the target path makes save fail with "because it is already
-        // open", and the run carries on regardless: the exports beside it are then new while the
-        // .indd is whatever was there before, which is worse than either failing or succeeding.
-        // The file is about to be overwritten either way, so close it first and say so.
+        // A target already open in another document belongs to that document's caller. Refuse
+        // the build without closing it, whether or not it has unsaved changes.
         var target = new File(mdir + '/' + stem + '.indd');
+        var targetPath = String(target.fsName).replace(/\\/g, '/').toLowerCase();
         for (var di = app.documents.length - 1; di >= 0; di--) {
             var other = app.documents[di], same = false;
-            try { same = (other !== doc && other.fullName && other.fullName.fsName === target.fsName); } catch (e) { same = false; }
+            try { same = (!sameDocument(other, doc) && other.fullName && String(other.fullName.fsName).replace(/\\/g, '/').toLowerCase() === targetPath); } catch (e) { same = false; }
             if (same) {
-                lib.L('closing a document already open on ' + stem + '.indd (modified=' + other.modified + ')');
-                try { other.close(SaveOptions.NO); } catch (e2) { lib.L('could not close it: ' + e2.message); }
+                throw new Error('Refusing to overwrite a target open in another document: ' + target.fsName);
             }
         }
-        lib.timed('save ' + stem, function () { doc.save(target); });
+        new Folder(mdir).create();
+        if (!lib.timed('save ' + stem, function () { doc.save(target); })) {
+            throw new Error('Save failed for ' + stem + '; exports and manifest were not written.');
+        }
+        new Folder(adir).create();
         lib.timed('pdf ' + stem, function () {
             doc.exportFile(ExportFormat.PDF_TYPE, new File(adir + '/' + stem + '.pdf'), false, app.pdfExportPresets.itemByName('[High Quality Print]'));
         });

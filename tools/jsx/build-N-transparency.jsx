@@ -3,7 +3,7 @@
 //
 // This fixture exists to answer one question: does repainting a run's fill in the foreground
 // pass change anything it should not, when the fill is not a plain opaque solid? A second paint
-// of an opaque Normal fill is idempotent, but a blend mode, a partial opacity or an overprint
+// of even an opaque Normal fill can change partial pixel coverage. A blend mode, opacity or overprint
 // composites against what is already there, so a second paint of the same ink can land at a
 // different color than the first. That is a harm, not a correction, and it is invisible to any
 // measurement that only counts covered pixels.
@@ -105,8 +105,8 @@
                 return blend(tf, 'contentTransparencySettings', BlendMode.MULTIPLY, null) + ' center';
             }],
             ['N21', 'CONTROL: no stroke, blend Multiply', 'mid', function (tf, s) {
-                // Setting the weight to zero would switch a 1 pt black stroke back on
-                // (docs/INDESIGN_STROKE_INVESTIGATION.md); clearing the color is the whole edit.
+                // None suppresses paint; this control does not require zeroing retained weight.
+                // The takeover text-range probe separately verifies explicit None plus zero.
                 s.texts[0].strokeColor = doc.swatches.itemByName('None');
                 return blend(tf, 'contentTransparencySettings', BlendMode.MULTIPLY, null) + ' no stroke';
             }],

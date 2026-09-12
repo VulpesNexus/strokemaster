@@ -1,0 +1,169 @@
+{
+  "status": "PROVISIONAL_JOIN_ONLY",
+  "source": "build\\takeover\\extreme.json",
+  "source_sha256": "ee3e508b3f8b992ac5646b3de1b7e7f28d3488b99ae9cd90c771aed84e3290e3",
+  "source_bytes": 2612642,
+  "extractor_metadata": {
+    "version": "30.7.0",
+    "build": "114R",
+    "source": "disposable copy"
+  },
+  "half_width": 1.5,
+  "full_width": 3.0,
+  "clip_ratio": 1.4142135623730951,
+  "axial_cap": 2.121320343559643,
+  "native_model_limit": 4,
+  "width_provenance": "Takeover supervisor PDF census measured w=3, j=0, M=4; PDF not reparsed by this benchmark",
+  "raw_contours": 3336,
+  "ordered_geometry_fingerprints": 3336,
+  "cyclic_and_reversal_geometry_fingerprints": 3336,
+  "canonical_multiplicity_histogram": {
+    "1": 3336
+  },
+  "closed_histogram": {
+    "True": 3336
+  },
+  "stroke_width_histogram": {
+    "0": 3336
+  },
+  "area_sign_histogram": {
+    "positive": 2082,
+    "negative": 1207,
+    "zero": 47
+  },
+  "counts": {
+    "axial_longer_than_native": 904,
+    "axial_same_as_native_within_1e_10": 5756,
+    "axial_shorter_than_native": 4121,
+    "clip_flat": 5025,
+    "clip_radial_exceeds_axial_cap": 5025,
+    "clip_retained_miter": 5756,
+    "corner_candidates": 10960,
+    "flat_clip_vs_native_bevel": 904,
+    "flat_clip_vs_native_miter": 4121,
+    "flattened_vertices": 337294,
+    "input_anchors": 20308,
+    "native_bevel": 904,
+    "native_miter": 9877,
+    "retained_clip_vs_native_miter": 5756,
+    "smooth_vertices_excluded": 326334,
+    "valid_local_joins": 10781
+  },
+  "explicit_join_failures": {
+    "cusp or unresolved turn: outward side is undefined": 179
+  },
+  "contours_with_join_failures": 92,
+  "failed_joins_by_contour_anchor_count": {
+    "2": 24,
+    "3": 38,
+    "4": 22,
+    "5": 20,
+    "6": 8,
+    "7": 2,
+    "8": 4,
+    "9": 6,
+    "10": 2,
+    "11": 1,
+    "13": 1,
+    "17": 1,
+    "21": 1,
+    "43": 1,
+    "150": 1,
+    "153": 4,
+    "181": 1,
+    "413": 1,
+    "512": 2,
+    "639": 2,
+    "651": 4,
+    "782": 5,
+    "833": 15,
+    "902": 13
+  },
+  "failure_examples_first_five": [
+    {
+      "path_index": 9,
+      "flat_index": 27,
+      "vertex": [
+        166.599609375,
+        789.943359375
+      ],
+      "error": "cusp or unresolved turn: outward side is undefined"
+    },
+    {
+      "path_index": 52,
+      "flat_index": 51,
+      "vertex": [
+        166.240234375,
+        794.4912109375
+      ],
+      "error": "cusp or unresolved turn: outward side is undefined"
+    },
+    {
+      "path_index": 63,
+      "flat_index": 76,
+      "vertex": [
+        166.072265625,
+        794.587890625
+      ],
+      "error": "cusp or unresolved turn: outward side is undefined"
+    },
+    {
+      "path_index": 100,
+      "flat_index": 1,
+      "vertex": [
+        165.171875,
+        788.083984375
+      ],
+      "error": "cusp or unresolved turn: outward side is undefined"
+    },
+    {
+      "path_index": 100,
+      "flat_index": 2,
+      "vertex": [
+        165.171875,
+        788.1796875
+      ],
+      "error": "cusp or unresolved turn: outward side is undefined"
+    }
+  ],
+  "unclipped_miter_ratio": {
+    "min": 1.0000000026529168,
+    "median": 1.414213562373095,
+    "p95_nearest_rank": 6.334741043579194,
+    "max": 498740398602.5703
+  },
+  "clip_axial_extent": {
+    "min": 1.5000000039793426,
+    "median": 2.1213203435596197,
+    "p95_nearest_rank": 2.121320343559682,
+    "max": 2.1213203435897885
+  },
+  "native_axial_extent": {
+    "min": 2.959951728165322e-12,
+    "median": 1.7722456446544594,
+    "p95_nearest_rank": 3.9196888946291457,
+    "max": 5.994807484528787
+  },
+  "clip_radial_extent": {
+    "min": 1.5000000039793429,
+    "median": 2.1213203435596424,
+    "p95_nearest_rank": 2.42738944179967,
+    "max": 2.5980762113508966
+  },
+  "native_radial_extent": {
+    "min": 1.4999999999999563,
+    "median": 1.7722456446544592,
+    "p95_nearest_rank": 3.9196888946291453,
+    "max": 5.994807484528787
+  },
+  "max_flat_plane_residual": 5.639932965095795e-14,
+  "max_offset_line_residual": 5.728750807065808e-14,
+  "limitations": [
+    "Exact coordinate fingerprints ignore index, bounds, area, and style; no rounding or translation deduplication.",
+    "Cyclic starts and traversal reversal swap incoming/outgoing handles for fingerprinting.",
+    "Corner tags use anchor handles; measured joins use flattened chords (24 fixed subdivisions).",
+    "All joins are hypothetical strokes around extracted contours, which may already contain expanded Appearance.",
+    "No whole glyph, hole topology, visible area, raster, or actual host stroke comparison is established.",
+    "Area sign is descriptive only; it does not identify holes without containment and fill rules."
+  ]
+}

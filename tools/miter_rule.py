@@ -1,93 +1,192 @@
-"""The join rule itself: one definition of the clamp, shared by everything that applies it.
+"""Local outer-join geometry in a Cartesian plane; see MITER_GEOMETRY_CONTRACT.md.
 
-Two tools need this arithmetic. tools/miter_geometry.py checks the formulas against measured
-wedges and draws the rules side by side; tools/stroke_outline.py builds real stroke outlines from
-a path. Each used to carry its own copy of the constants, which is how two files quietly come to
-disagree: one of them once spelled the clamp as 1.4142, fractionally smaller than the square root
-it stands for, and so clipped the very right angle it exists to leave alone.
-
-The rule, in one sentence: keep the miter, but never let a corner protrude further than a right
-angle would.
-
-Background. PostScript, PDF, and SVG 1.1 all offer three joins and govern the miter with a
-LIMIT, which is a threshold: the join is mitered while 1 / sin(theta / 2) <= limit and becomes a
-full bevel past it. A corner just inside the limit keeps its whole point and one just outside
-loses it entirely, so the only available dial moves the cliff rather than removing it. Measured
-on an 8 pt half-width, the native rule changes reach by 23.95 pt between 28 and 29 degrees.
-
-A clamp removes the cliff: the miter is kept and its tip cut off flat once it would reach further
-than clip_ratio times the half-width. Largest step anywhere in a 1 to 179 degree sweep: 0.0975 pt
-at the same half-width.
-
-clip_ratio is measured in half-widths. That is the convention Microsoft's graphics stack uses,
-where the clamp has been the plain miter join since GDI+: WPF's documentation describes the
-miter limit as "the limit on the ratio of the miter length to HALF this pen's Thickness".
-FreeType and Qt clamp by default too. Beware the naming, which reads backwards in three of the
-four major APIs: GDI+'s LineJoinMiterClipped bevels while its plain LineJoinMiter clips, Qt's
-MiterJoin clips while SvgMiterJoin bevels, and FreeType's MITER_VARIABLE clips while MITER_FIXED
-bevels.
-
-Do not call this "SVG 2's miter-clip". SVG 2 did specify exactly this behavior under that name
-in 2018, but no browser implemented it and the Working Group removed it on 18 March 2026. See
-docs/MITER_JOIN_HISTORY.md.
+Lengths use the same units as the input vertex. hw is half the full stroke width;
+clip_ratio and limit are dimensionless ratios to hw. A clip bounds the outward
+bisector projection, not the radial distance of every corner. No host semantics,
+whole-path topology, or curve-offset accuracy are established here.
 """
 import math
 
-# A right angle's miter reaches sqrt(2) times the half-width. Clamping there states the rule as
-# "no corner may protrude further than a right-angled corner would", which is independent of the
-# font, the size, and the stroke weight.
 RIGHT_ANGLE_RATIO = math.sqrt(2.0)
 CLIP_DEFAULT = RIGHT_ANGLE_RATIO
-
-# The clamp comparison carries a relative tolerance. Written exactly, a 90 degree corner's ratio
-# and a sqrt(2) clamp are the same number, so whether it clips depends on the last bit of a
-# square root. Without this the boundary landed at 91 degrees and every right angle was clipped
-# by about 5e-8 of the stroke width.
+# Relative branch tolerance; retained tips may exceed the axial cap by this ratio.
 CLIP_EPS = 1e-9
+UNIT_EPS = 1e-12
+
+
+def _number(value, name):
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError(name + ' must be a finite number')
+    try:
+        valid = math.isfinite(value)
+    except OverflowError:
+        valid = False
+    if not valid:
+        raise ValueError(name + ' must be a finite number')
+    return value
+
+
+def _positive(value, name):
+    _number(value, name)
+    if value <= 0:
+        raise ValueError(name + ' must be positive')
+    return value
+
+
+def _ratio(value, name):
+    _number(value, name)
+    if value < 1:
+        raise ValueError(name + ' must be at least 1 (relative to half-width)')
+    return value
+
+
+def _point(value, name):
+    if not isinstance(value, (tuple, list)) or len(value) != 2:
+        raise ValueError(name + ' must contain two finite numbers')
+    return (_number(value[0], name), _number(value[1], name))
+
+
+def _unit(value, name):
+    x, y = _point(value, name)
+    length = math.hypot(x, y)
+    if not math.isfinite(length) or abs(length - 1) > UNIT_EPS:
+        raise ValueError(name + ' must be a unit direction')
+    return (x / length, y / length)
+
+
+def _sine(interior_deg):
+    _number(interior_deg, 'interior angle')
+    if not 0 < interior_deg <= 180:
+        raise ValueError('interior angle must be in (0, 180] degrees')
+    s = math.sin(math.radians(interior_deg) / 2)
+    if s == 0:
+        raise ValueError('interior angle is below representable resolution')
+    return s
+
+
+def _finite(value):
+    if not math.isfinite(value):
+        raise ValueError('geometry exceeds finite coordinate range')
+    return value
 
 
 def interior_angle(u, w):
-    """The angle between two segments meeting at a corner, from their unit tangents.
-
-    180 degrees is a straight continuation; a small angle is a sharp point.
-    """
-    dot = max(-1.0, min(1.0, u[0] * w[0] + u[1] * w[1]))
-    return 180.0 - math.degrees(math.acos(dot))
+    """Interior angle in degrees from incoming/outgoing unit directions."""
+    u, w = _unit(u, 'incoming direction'), _unit(w, 'outgoing direction')
+    # atan2 avoids subtracting an acos result from 180 near a cusp.
+    return math.degrees(2 * math.atan2(math.hypot(u[0]+w[0], u[1]+w[1]),
+                                     math.hypot(u[0]-w[0], u[1]-w[1])))
 
 
 def miter_ratio(interior_deg):
-    """Miter length over stroke width: the quantity a miter limit is compared against."""
-    s = math.sin(math.radians(interior_deg) / 2.0)
-    return float('inf') if s < 1e-9 else 1.0 / s
+    """Unclipped tip distance divided by HALF the full stroke width."""
+    return _finite(1 / _sine(interior_deg))
 
 
 def miter_reach(hw, interior_deg):
-    """How far an unclamped miter tip sits from the vertex."""
-    return hw * miter_ratio(interior_deg)
+    """Unclipped tip's axial distance, in the same length units as hw."""
+    return _finite(_positive(hw, 'half-width') / _sine(interior_deg))
 
 
 def bevel_reach(hw, interior_deg):
-    """How far the middle of a bevel's flat sits from the vertex."""
-    return hw * math.sin(math.radians(interior_deg) / 2.0)
+    """Axial distance of the bevel midpoint; endpoints have radial distance hw."""
+    return _finite(_positive(hw, 'half-width') * _sine(interior_deg))
 
 
 def round_reach(hw, _interior_deg=None):
-    """A round join is an arc of the stroke's own radius, so it reaches exactly the half-width."""
-    return hw
+    """Radius of the ideal round join, in length units; polygon arcs approximate it."""
+    if _interior_deg is not None:
+        _sine(_interior_deg)
+    return _positive(hw, 'half-width')
 
 
 def clipped_reach(hw, interior_deg, clip_ratio=CLIP_DEFAULT):
-    """The clamp: the miter tip, but never further than clip_ratio times the half-width."""
-    return min(miter_reach(hw, interior_deg), hw * clip_ratio)
+    """Axial extent including the same threshold tolerance as the polygon code."""
+    _positive(hw, 'half-width')
+    _ratio(clip_ratio, 'clip ratio')
+    s = _sine(interior_deg)
+    cap = _finite(hw * clip_ratio)
+    return cap if s < (1 / clip_ratio) / (1 + CLIP_EPS) else _finite(hw / s)
 
 
 def native_reach(hw, interior_deg, limit=4.0):
-    """What PostScript and PDF do: miter under the limit, full bevel past it."""
-    if miter_ratio(interior_deg) <= limit:
-        return miter_reach(hw, interior_deg)
-    return bevel_reach(hw, interior_deg)
+    """Conventional miter/bevel threshold model's axial extent, in length units."""
+    _positive(hw, 'half-width')
+    _ratio(limit, 'miter limit')
+    s = _sine(interior_deg)
+    return _finite(hw / s) if s >= 1 / limit else hw * s
 
 
 def is_clamped(interior_deg, clip_ratio=CLIP_DEFAULT):
-    """True when the clamp actually acts on this corner, tolerance included."""
-    return miter_ratio(interior_deg) > clip_ratio * (1.0 + CLIP_EPS)
+    """Whether the clipping branch acts, with dimensionless relative tolerance."""
+    _ratio(clip_ratio, 'clip ratio')
+    return _sine(interior_deg) < (1 / clip_ratio) / (1 + CLIP_EPS)
+
+
+def join_boundary(vertex, d_in, d_out, hw, mode, clip_ratio=CLIP_DEFAULT,
+                  limit=4.0, round_steps=12):
+    """Outer boundary for one join; [] for straight travel, ValueError for cusps.
+
+    Inputs are finite, hw > 0, both ratios >= 1, and directions unit to 1e-12.
+    Near-cusp clipping intersects offset lines with the axial plane without
+    constructing the unbounded tip. Round joins retain fixed subdivisions.
+    """
+    vertex = _point(vertex, 'vertex')
+    u, w = _unit(d_in, 'incoming direction'), _unit(d_out, 'outgoing direction')
+    _positive(hw, 'half-width')
+    _ratio(clip_ratio, 'clip ratio')
+    _ratio(limit, 'miter limit')
+    if mode not in ('clip', 'miter', 'bevel', 'round'):
+        raise ValueError('unknown join mode')
+    if isinstance(round_steps, bool) or not isinstance(round_steps, int) or round_steps < 1:
+        raise ValueError('round steps must be a positive integer')
+    cap = _finite(hw * clip_ratio) if mode == 'clip' else None
+    cross = u[0]*w[1] - u[1]*w[0]
+    dot = u[0]*w[0] + u[1]*w[1]
+    if cross == 0:
+        if dot < 0:
+            raise ValueError('cusp or unresolved turn: outward side is undefined')
+        return []
+    side = 1 if cross < 0 else -1
+    n1, n2 = (-side*u[1], side*u[0]), (-side*w[1], side*w[0])
+
+    def point(x, y):
+        return (_finite(vertex[0] + x), _finite(vertex[1] + y))
+
+    p1, p2 = point(hw*n1[0], hw*n1[1]), point(hw*n2[0], hw*n2[1])
+    if mode == 'bevel':
+        return [p1, p2]
+    if mode == 'round':
+        a1, a2 = math.atan2(n1[1], n1[0]), math.atan2(n2[1], n2[0])
+        while a2-a1 > math.pi:
+            a2 -= 2*math.pi
+        while a1-a2 > math.pi:
+            a2 += 2*math.pi
+        arc = [point(hw*math.cos(a1+(a2-a1)*k/round_steps),
+                     hw*math.sin(a1+(a2-a1)*k/round_steps)) for k in range(round_steps+1)]
+        arc[0], arc[-1] = p1, p2
+        return arc
+
+    sx, sy = u[0]+w[0], u[1]+w[1]
+    dx, dy = u[0]-w[0], u[1]-w[1]
+    s, c = math.hypot(sx, sy)/2, math.hypot(dx, dy)/2
+    if s == 0 or c == 0:
+        raise ValueError('turn is below representable resolution')
+    # Use the well-conditioned pair: differences near a cusp, sums near straight.
+    if dot < 0:
+        bx, by = dx/(2*c), dy/(2*c)
+    else:
+        bx, by = -side*sy/(2*s), side*sx/(2*s)
+    if mode == 'miter' and s < 1/limit:
+        return [p1, p2]
+    if mode == 'miter' or s >= (1/clip_ratio)/(1+CLIP_EPS):
+        reach = _finite(hw/s)
+        return [p1, point(bx*reach, by*reach), p2]
+
+    # In the (bisector, lateral) frame the offset line is s*axial+c*lateral=hw.
+    # Setting axial=cap gives lateral=hw*(1-L*s)/c; no distant tip is needed.
+    lateral = _finite(hw*((1-clip_ratio*s)/c))
+    ex, ey = -side*by, side*bx
+    a = point(cap*bx+lateral*ex, cap*by+lateral*ey)
+    b = point(cap*bx-lateral*ex, cap*by-lateral*ey)
+    return [p1, a, b, p2]

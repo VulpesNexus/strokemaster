@@ -1,0 +1,19 @@
+{
+  "dpi": 864,
+  "crop_pdf_points": [
+    90,
+    190,
+    178,
+    230
+  ],
+  "shape": [
+    480,
+    1056,
+    3
+  ],
+  "mupdf_ink_pixels": 91295,
+  "poppler_ink_pixels": 104555,
+  "threshold_xor_pixels": 23454,
+  "mupdf_only": 5097,
+  "poppler_only": 18357
+}

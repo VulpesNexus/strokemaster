@@ -1,0 +1,66 @@
+{
+  "version": "21.5.1.73",
+  "checks": [
+    {
+      "name": "ordinary page-two source accepted",
+      "passed": true
+    },
+    {
+      "name": "failure injected after staging",
+      "passed": true
+    },
+    {
+      "name": "source text preserved after staged failure",
+      "passed": true
+    },
+    {
+      "name": "staged failure removes only temporary art",
+      "passed": true
+    },
+    {
+      "name": "conversion returns a group",
+      "passed": true
+    },
+    {
+      "name": "original replaced only after validation",
+      "passed": true
+    },
+    {
+      "name": "outlines remain on page two",
+      "passed": true
+    },
+    {
+      "name": "painted width and empty fill/stroke roles preserved",
+      "passed": true
+    },
+    {
+      "name": "background frame refused",
+      "passed": true
+    },
+    {
+      "name": "refusal preserves source and item count",
+      "passed": true
+    },
+    {
+      "name": "document count preserved",
+      "passed": true
+    },
+    {
+      "name": "user document 0 preserved",
+      "passed": true
+    },
+    {
+      "name": "UI restored",
+      "passed": true
+    }
+  ],
+  "notes": [
+    "faithful: prepared source painted width=6 paths=1 adoptedStrokeSiblings=1 copy id=302 valid=true fresh=true contained=false sameSpread=true samePage=true sameLayer=true boundsEqual=true geometryEqual=true parent=Spread:224 root=301",
+    "Error: Error: injected logger failure at line 25; staged art rolled back",
+    "faithful: prepared source painted width=6 paths=1 adoptedStrokeSiblings=1 copy id=353 valid=true fresh=true contained=false sameSpread=true samePage=true sameLayer=true boundsEqual=true geometryEqual=true parent=Spread:224 root=352",
+    "Error: faithful: frame background/stroke unsupported; not converted"
+  ],
+  "error": null,
+  "passed": true,
+  "raw_result_sha256": "25ea88d840dd3ba095d3504192a031fee354538bc26607fe1b64ea915bf1166d"
+}

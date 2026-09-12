@@ -4,6 +4,8 @@ The per-defect report of the InDesign stroke engine investigation, for InDesign 
 
 This report reflects the state after phases A through G. Fixture D has a Phase F script prototype, and the native plugin for fixtures A and C is built, installed into InDesign 2026, and measured: interception candidate I1 as a global text adornment, described under fixture A. Its results and its costs are recorded there rather than summarized here.
 
+Takeover qualification, 2026-09-12: historical “verified” verdicts apply only to recorded fixtures. They do not establish production readiness. [The audit](../PROJECT_TAKEOVER_AUDIT.md) identifies unsafe script paths, the inaccurate clipping implementation, an invalid glyph-core mask, and missing host coverage. Those findings supersede broader conclusions below.
+
 Fixture N (*tests/indesign-stroke/N-transparency/*) is not a defect reproducer. It asks the opposite question, whether the plugin harms output that carries a blend mode, a partial opacity, a gradient, or an overprint, by rendering one saved document twice under two renderers. Its results are folded into fixture A's risks below.
 
 ## Summary
@@ -65,7 +67,7 @@ Three of these are no longer predictions. Measured on *A-minimal*, comparing the
 - **Fills are painted twice, and the second pass darkens antialiased glyph edges.** Measured, not estimated: the fill core grows by a nearly constant amount per document, 62,497 to 64,347 px on A01 to A03, 56,442 to 57,979 px on A10, and 61,368 to 63,300 px on A11, while the fill area itself grows by 4,118 px on every B1 entry. The amount tracks glyph perimeter rather than stroke weight, so it is a one-pixel ring along the fill boundary. It is invisible at reading size, but it is a real change to output and it is the price of this design.
 - **Every Outside-stroked run in the document is repainted, not only damaged ones.** Fixture B, an unrelated defect, shifts measurably as a result: `white_px` falls by about 1,490 on each entry and `spike_px_beyond_weight` by 2 to 10 %. The miter geometry is untouched and the spikes remain, 8,109 px beyond weight against 8,299 before, but the control did not hold cleanly. That shift is the edge ring alone and nothing else: B's entries are single-run lines, and re-measuring them after the run-placement defect below was fixed reproduced all thirteen entries to the pixel.
 - **Cross-frame overlap is not corrected, by construction.** An adornment is scoped to one parcel, so A06, A07, and A08 keep their damage. Their measured hidden fill rises slightly, 2,126 to 2,163 and 1,536 to 1,657, because the enlarged fill core intersects the unchanged stroke of the frame in front. Changing the order across frames would change page-item stacking and must not be done.
-- **Transparency, blend modes, gradients, and overprint do not composite twice.** This was the largest outstanding prediction against I1, and it is now measured rather than assumed (fixture N). InDesign draws text carrying a blend mode or a partial opacity inside a transparency group, and the repaint lands inside that same group, so the group is still composited onto the page once and painting opaque ink twice inside it is idempotent (*STROKE_MECHANISMS.md*, M8). The mean luminance of the glyph core, taken 3 px inside its edge so the repaint's own ring is excluded, is unchanged to two decimal places under 50 % text opacity and 50 % object opacity (166.95), Overlay (253.00), Darken (99.38), Lighten (255.00), overprint of fill, stroke, or both (172.46), a drop shadow (152.41), and a feather (172.02); under Multiply it moves from 99.11 to 99.07. Gradient-filled runs are repainted too, emitted as a clip and a shading rather than a path fill. A11, at 90 % frame text opacity, corrects fully.
+- **Transparency safety is not established generally.** Fixture N shows corrective painting inside sampled transparency groups and additional gradient shading operators. Its reported “glyph core” mask included halo and effect pixels, so the luminance averages cannot establish unchanged glyph-fill colors. A fill-only reference and single-pass compositing comparison are required (*STROKE_MECHANISMS.md*, M8).
 - **Runtime cost is small on these documents, and screen redraw is still not timed directly.** Seven repetitions each, re-exporting the corpus document: PDF export 1,171 ms without the plugin against 1,181 ms with it, and 300 ppi raster export 1,093 ms against 1,120 ms, about 0.9 % and 2.5 %. Raster export drives the same drawing code as the screen and is the closest available proxy, but it is a proxy.
 - I2 depends on the undocumented timing of port use inside the run draw.
 
@@ -149,15 +151,15 @@ A clipped-miter implementation replaces native stroking for the affected text, w
 
 ### Verdict
 
-ROOT CAUSE PROVEN. RULE DECIDED AND VALIDATED, NOT YET DELIVERED IN A HOST.
+CONVENTIONAL MITER MECHANISM SUPPORTED BY OUTPUT. CLIPPING POLICY APPROVED FOR INVESTIGATION; PREVIOUS IMPLEMENTATION AND VALIDATION WERE INSUFFICIENT.
 
 The mechanism isn't a defect in the join math. PostScript, PDF, and SVG 1.1 all govern the miter with a **threshold**: a corner just inside the limit keeps its whole point and one just outside loses it entirely, so the only dial available moves the cliff rather than removing it. Measured by sweeping every degree, the native rule at limit 4 changes reach by 23.95 pt between 28 and 29 degrees on an 8 pt half-width.
 
-What was missing is a **clamp**, and that target is now decided: no corner may protrude further than a right angle would, which is a clip at sqrt(2) times the half-width (*tools/miter_rule.py*). Its largest step anywhere in the same sweep is 0.0975 pt, and reach divided by half-width is identical across half-widths of 4, 8, and 12, so it is continuous in the angle and exactly proportional to the weight.
+The proposed flat clip is at √2 times the half-width along the corner bisector. This is an axial bound, not a radial bound on every endpoint and not a global glyph-envelope constraint. The takeover found incorrect interpolation in all three previous polygon implementations. Their 0.0975 pt statistic describes the old implementation and is not validation of the intended plane.
 
-Measured on a 50 pt Times W with a 16 pt centered stroke, whose three counter apexes sit at 38.5 to 39.1 degrees and whose eleven other corners are right angles: the native rule reaches 24.27 pt where the stroke itself reaches 8.00, and the clamp caps that at 11.31 while leaving every right angle untouched. The outline builder reproduces Illustrator's own Expand of the same stroke to within 95 pixels out of 86,650, or 0.11 percent, all of it a one-pixel seam.
+The historical Times W comparison reported 95 differing raster pixels out of 86,650, but it exercised ordinary miter expansion, not clipped joins. It is a finite comparison at a particular raster scale. Independent join tests and the extreme-font benchmark now belong to the takeover evidence; they do not certify curve stroking, topology resolution, or native host integration.
 
-What remains is delivery, not geometry.
+Geometry, host integration, and delivery all remain engineering work. See [the takeover audit](../PROJECT_TAKEOVER_AUDIT.md), [open questions](../OPEN_QUESTIONS.md), and [the geometry contract](MITER_GEOMETRY_CONTRACT.md).
 
 ## Fixture C: character-run stroke fragmentation
 
@@ -293,12 +295,12 @@ Two rows are now scored from measurement, I1 and the shadow story; the rest are 
 | Command responder plugin (I5) | ● | ● | Not applicable | Not applicable | ● | ● | ● | ◐ | ● | ◐ | ● |
 | Outside alignment on converted paths | ○ | ○ | Not applicable | Not applicable | ● | ● | ● | ● | ● | ● | ● |
 
-## Blocked on decisions
+## Previous checkpoints
 
 1. **Plugin toolchain: settled.** Visual Studio 2022 was updated and the MSVC v14.42 toolset added, which the SDK's precompiled-header shim accepts (`_MSC_VER` 1942). The plugin builds from *plugin/build-plugin.ps1*; everything that had to be worked out along the way is in *INDESIGN_STROKE_SDK_MAP.md* under "Building against this SDK".
 2. **Plugin testing: settled.** The plugin is installed in *Plug-Ins/InDesignStrokeEngine/*, a folder of its own, so removing it is one deletion. Writing there needs administrator rights, so each install raises a prompt. InDesign was restarted for it, which is safe here because the author's document is saved and copied twice, to *corpus/pristine/* and *corpus/actual/*.
-3. **On-screen checks: settled.** The author's screenshots show all four defects rendering identically in the GPU preview, the CPU preview, *Overprint Preview*, and with GPU Performance off. The display path is not involved, and the images are in *tests/indesign-stroke/corpus/actual/screen*.
-4. **Startup hook.** Installing *ise-create-outlines-hook.jsx* as a startup script would make the D correction permanent.
+3. **Historical on-screen checks.** The author's screenshots show the original defects in several display modes. They do not certify every corrected rendering path or exclude renderer-specific differences. The images are in *tests/indesign-stroke/corpus/actual/screen*.
+4. **Startup hook superseded.** The user requested the outlining correction in the main script. Use its explicit `outline` command for evaluation; do not install the older menu hook as a startup script.
 
 ## Still open
 

@@ -2,7 +2,7 @@
 
 This fixture does not reproduce a defect. It exists to answer the opposite question: when the plugin repaints a run's fill in the foreground pass, does it change anything it should not?
 
-Repainting an opaque Normal fill on top of itself is idempotent, so it cannot be seen. A fill that carries a blend mode, a partial opacity, or an overprint composites against what is already beneath it, so painting the same ink a second time could land at a different color than the first. That would be a harm rather than a correction, and no measurement that counts covered pixels would ever notice it.
+Takeover correction, 2026-09-12: the original comparison eroded all non-background ink, including the stroke halo and effects. Its “core” was not an independent glyph-fill mask. The numerical observations below are retained as historical ink-mask measurements; their compositing verdicts are withdrawn. Even opaque fills can change at partially covered edges or when differently colored runs overlap.
 
 ## Files
 
@@ -28,9 +28,9 @@ Two palettes are used. The *classic* palette is Black on a Paper stroke, compara
 
 ## Results
 
-Measured from InDesign's own PNG export at 300 ppi. "Core lum" is the mean luminance of the glyph body after eroding 3 px away from its edge, so the one-pixel repaint ring at the fill boundary is excluded. A double composite would move it by tens of levels.
+Historical measurements from InDesign's PNG export at 300 ppi. The old “Core lum” includes eroded stroke/effect ink and is not a measurement solely of the glyph body. Unchanged averages do not prove unchanged per-pixel fill color. The table's final column records the old interpretation for traceability, not the current conclusion.
 
-| Variant | Core lum, no plugin → plugin | Verdict |
+| Variant | Historical ink-mask luminance, no plugin → plugin | Withdrawn interpretation |
 | --- | --- | --- |
 | N01 blend Multiply | 99.11 → 99.07 | No double composite |
 | N02 blend Screen | 247.78 → 247.13 | No double composite |
@@ -53,11 +53,11 @@ Measured from InDesign's own PNG export at 300 ppi. "Core lum" is the mean lumin
 | N19 feather on text | 172.02 → 172.02 | Identical |
 | N20, N21, N22 controls | unchanged | 0 pixels changed |
 
-### Why blending does not double-composite
+### Observed transparency grouping and unresolved compositing
 
-InDesign puts text that carries a blend mode or a partial opacity into a **transparency group**, and the adornment's repaint lands inside that same group: the added path fills appear inside the form XObjects */Fm0* to */Fm11* in the exported PDF. The group is composited onto the page once, so painting opaque ink twice inside it is idempotent. This is why N07 and N10 come back exactly equal rather than approximately equal.
+The sampled exported PDF places added path fills inside form XObjects */Fm0* to */Fm11*. This grouping is a useful observation. It does not prove idempotence for every fill, antialiased boundary, overlapping color, or effect stack, nor does an unchanged mask average establish it for N07 or N10.
 
-The residual movement on the classic palette and on the gradient and spot variants is the repaint's own antialiased edge at the fill boundary, which is high contrast when a dark fill meets a white stroke and low contrast when a mid fill meets a mid stroke. That ordering is exactly what the table shows.
+Remeasure using an independently generated fill-only mask and a single-pass reference. The revised comparison tool explicitly distinguishes external fill coverage from its fallback ink heuristic and has a regression showing the original mask's false classification of changed halo pixels. Renderer, export, and compositing conclusions remain separate.
 
 ### Gradients are corrected, and are easy to miss
 

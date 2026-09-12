@@ -1,100 +1,54 @@
 # Where the miter spike comes from
 
-Backstory for fixture B. The short version: the spike is not a bug anyone introduced, it is the documented behavior of a 1985 design decision, the people who made it named the problem at the time, and the one attempt to fix it in a standard was deleted from that standard in March 2026.
+Primary-source audit, September 12, 2026. **High confidence** means the cited specification, source code, or original record directly supports the bounded claim. **Medium confidence** marks indirect retrieval or a narrower historical observation. **Unverified** items remain research leads. This history does not establish this project's geometry correctness or application defaults through runtime tests.
 
-Dates and quotations below are from primary sources where the citation is given. Items that could not be verified are marked as such at the end, and should not be repeated as settled.
+## Adobe's documented rule
 
-## 1985: Adobe names the problem in the same breath as the fix
+**1985 — high confidence.** Adobe's *PostScript Language Tutorial and Cookbook*, §10.2, printed pp. 105–106, describes acute-angle spikes and switching miter joins to bevels. It documents `setmiterlimit` by 1985; it does not establish the invention date or the designers' hardware rationale. The linked copy is Adobe's original publication hosted by a university. [1985 Cookbook](https://webdocs.cs.ualberta.ca/~hayward/papers/BLUEBOOK.pdf#page=109)
 
-`setmiterlimit` is an original PostScript Level 1 operator. Adobe's *PostScript Language Tutorial and Cookbook* (1985), §10.2, describes exactly the effect this project measures:
+**1999 — high confidence.** Adobe's third-edition *PostScript Language Reference*, §8.2, `setmiterlimit`, printed pp. 675–676, defines miter length from the inner-edge intersection to the outer-edge intersection. It compares that length with the full stroke width, uses bevel fallback when the ratio exceeds the limit, and states a default of 10. Its formula is `miterLength / lineWidth = 1 / sin(θ / 2)`. Thus, a permitted miter can remain long before crossing the bevel threshold. [1999 Reference](https://www.adobe.com/jp/print/postscript/pdfs/PLRM.pdf#page=689)
 
-> Mitered joins can present a problem. If two line segments meet at an extremely small angle, the mitered join can produce a spike that extends a considerable distance beyond the intersection of the path segments. To prevent this, the join switches from mitered to beveled when the angle between line segments becomes too acute.
+**PDF — medium confidence for the indexed 2008 text; high for the directly read errata.** Adobe's indexed publication of ISO 32000-1:2008, §8.4.3.5, specifies the same ratio and bevel fallback; Table 55 lists miter, round, and bevel. The PDF Association's 2020-edition errata reproduces the bevel rule while adding a minimum limit of 1.0. The latter verifies the errata text, not an independent reading of the complete 2020 ISO edition. Neither source establishes verbatim inheritance starting in 1993. [Adobe PDF 1.7 specification](https://opensource.adobe.com/dc-acrobat-sdk-docs/standards/pdfstandards/pdf/PDF32000_2008.pdf), [PDF Association errata, §8.4.3.5](https://pdf-issues.pdfa.org/32000-2-2020/clause08.html)
 
-The *PostScript Language Reference Manual* carries the same point into the text that everything later inherits, near-identically in the second edition (1990, §8.2) and the third (1999, §8.2):
+## SVG: adoption, proposal, and removal
 
-> When path segments connect at a sharp angle, a miter join results in a spike that extends well beyond the connection point. The purpose of the miter limit is to cut off such spikes when they become objectionably long.
+- **September 4, 2001 — high confidence.** SVG 1.0 specifies `stroke-miterlimit`, initially 4, as a ratio limit. Its property text lacks the explicit bevel-fallback sentence and trigonometric formula found in SVG 1.1. This is a textual difference, not evidence that SVG 1.0 required clipping. [SVG 1.0](https://www.w3.org/TR/2001/REC-SVG-20010904/painting.html#StrokeMiterlimitProperty)
+- **January 14, 2003 — high confidence.** SVG 1.1 explicitly specifies bevel fallback and `1 / sin(θ / 2)`. These statements already appear in the first edition. [SVG 1.1](https://www.w3.org/TR/2003/REC-SVG11-20030114/painting.html#StrokeMiterlimitProperty)
+- **2013–2014 — high confidence for the bug record.** Mozilla bug 854296 reports truncated miters with Windows hardware acceleration where SVG required bevels. Opened March 25, 2013, at 05:29 UTC; resolved fixed December 18, 2014, at 02:08 UTC, targeting Firefox 37. Bugzilla displays March 24 PDT and December 17 PST, respectively. These are timezone differences, not disproven dates. This concerned `miter` rendering, not implementation of the later `miter-clip` keyword. [Original bug](https://bugzilla.mozilla.org/show_bug.cgi?id=854296)
+- **October 2014 — high confidence.** Amelia Bellamy-Royds discusses continuous truncation, including an October 18 proposal reproduced in her October 19 follow-up. Tavmjong Bah's October 20 reply identifies library support and compatibility as obstacles. His claim about early PostScript CPU constraints explicitly relies on another website; it is not firsthand evidence of Adobe's design rationale. [Bellamy-Royds](https://lists.w3.org/Archives/Public/www-svg/2014Oct/0017.html), [Bah](https://lists.w3.org/Archives/Public/www-svg/2014Oct/0019.html)
+- **February 12, 2015 — high confidence.** The SVG Working Group resolves to add `miter-clip`; the recorded implementation assignment is **ACTION-3735**. [Sydney minutes](https://www.w3.org/2015/02/12-svg-minutes.html#action02)
+- **October 4, 2018 — high confidence.** The SVG 2 Candidate Recommendation includes `miter-clip`: truncation perpendicular to the bisector at `limit × strokeWidth / 2` from the path vertex. A Candidate Recommendation is a standards-process draft, not proof of browser implementation. [Frozen SVG 2 CR, §13.5.5](https://www.w3.org/TR/2018/CR-SVG2-20181004/painting.html#LineJoin)
+- **November 17, 2018 — high confidence.** Issue 592 reports rejection of the new values in Blink, Edge, Firefox, and Safari and asks whether they should be marked at risk. This does not establish the exact date the warning was added. [W3C issue 592](https://github.com/w3c/svgwg/issues/592)
+- **October 1, 2023 — high confidence.** resvg's changelog records `stroke-linejoin=miter-clip` support in 0.36.0. It establishes one implementation, not exclusivity. [resvg changelog](https://github.com/linebender/resvg/blob/main/CHANGELOG.md#0360---2023-10-01)
+- **March 2026 — high confidence.** The Working Group resolves removal on March 5; **PR 1074 merges on March 18, 2026**. That merge date is confirmed, not corrected. The current GitHub Pages editor's draft lists `miter | round | bevel`. The minutes report browser nonimplementation and participants' performance concerns; they do not prove universal impossibility or that no renderer ever implemented clipping. [March 5 minutes](https://www.w3.org/2026/03/05-svg-minutes.html), [PR 1074](https://github.com/w3c/svgwg/pull/1074), [current editor's draft](https://w3c.github.io/svgwg/svg2-draft/painting.html#LineJoin)
 
-So the miter limit exists *because of* the spike. What it does about it, though, is switch to a bevel, and that is the choice this project is working around: the remedy is a threshold, not a clamp.
+**Publication mismatch — high confidence, checked September 12, 2026.** The [svgwg.org copy](https://svgwg.org/svg2-draft/painting.html#LineJoin) still includes the removed values. The [published CSS Fill and Stroke draft](https://www.w3.org/TR/fill-stroke-3/) is dated April 13, 2017, and also contains `miter-clip` algorithm references. This disproves the earlier statement that the feature survives only in the frozen 2018 CR. Use an explicitly dated historical reference when discussing SVG's proposed behavior; do not imply it remains in the current SVG 2 editor's draft.
 
-The ratio the limit is compared against, miter length over line width equal to 1 / sin(theta / 2), is printed in the second edition (1990, p. 509) and repeated in the third. Note Adobe's convention: the miter length runs from where the inner edges intersect to where the outer edges do, measured against the full line width. Later APIs do not all agree, which is a recurring source of confusion.
+## API names and distance conventions
 
-## 1993 onward: PDF inherits it verbatim
+These are specific modes, not product-wide defaults. Bevel fallback and flat truncation differ, and truncation distance depends on the API.
 
-ISO 32000-1:2008, clause 8.4.3.5:
-
-> When two line segments meet at a sharp angle and mitered joins have been specified as the line join style, it is possible for the miter to extend far beyond the thickness of the line stroking the path. The miter limit shall impose a maximum on the ratio of the miter length to the line width. When the limit is exceeded, the join is converted from a miter to a bevel.
-
-Clause 8.4.3.4, table 55, defines exactly three line join styles: miter, round, and bevel. ISO 32000-2:2020 keeps the clause, respelled "Mitre limit", with the bevel sentence intact. There is no clamped variant in either.
-
-## 2001 and 2003: SVG imports the rule
-
-SVG 1.0 (W3C Recommendation, 4 September 2001) introduced `stroke-miterlimit` with an initial value of 4. It does **not** contain the 1 / sin(theta / 2) formula and does **not** say the join converts to a bevel; it says only that the miter "can extend far beyond the thickness of the line".
-
-SVG 1.1 (2003, second edition 2011) added both, importing the PostScript rule wholesale.
-
-## 2007: an Adobe engineer states the real objection
-
-Teri Pettit, then an Illustrator engineer, on the `adobe.illustrator.windows` newsgroup, 10 April 2007, describing what happens past the limit:
-
-> As you can see, as the angle gets more acute, the stroke tip gets farther and farther away from the actual path.
-
-She describes the switch as "a discontinuous jump from very long and sharp to very blunt", says the preferable design would have tips "smoothly stop growing", and attributes the behavior to PostScript's origins and the memory available to RIPs in the early 1980s. This is seven years before anyone proposed changing it in a standard.
-
-## 2013 to 2015: the clamp is proposed, named, and specified
-
-- **25 March 2013.** Patrick Storz, an Inkscape developer, files Mozilla bug 854296: Firefox on Windows *clips* the miter instead of beveling. It is reported as a defect.
-- **9 May 2013.** Steve Schafer raises the discontinuity on the `www-svg` list, noting that Firefox "avoids the discontinuity" while other engines follow the spec.
-- **18 October 2014.** Amelia Bellamy-Royds proposes the clamp on `www-svg`, with an algorithm: "this is contrary to the spirit of a 'limit' attribute… The switch to the extreme bevel when the miter exceeds the limit results in sudden jumps during animation, and ends up bevelling acute angles much more closely than the miter on more oblique angles."
-- **20 October 2014.** Tavmjong Bah gives the causal answer: "The reason for the current behavior is that it is what the underlying graphics libraries support."
-- **18 December 2014.** Bug 854296 is resolved fixed. Firefox's clamp is **removed** to match the spec, two months after the proposal to standardize that very behavior.
-- **12 February 2015.** At the SVG Working Group's Sydney meeting the feature is agreed and named on the spot. Chris Lilley: "the existing one is discontinuous." Bah: "I've played with the cairo line join code… and doing this is trivial." Lilley: "miter-clip." Resolution: "We will add line-join:miter-clip in SVG 2."
-
-## 2018 to 2026: specified, never implemented, then deleted
-
-SVG 2 shipped the feature in its Candidate Recommendation of 4 October 2018, §13.5.5, and marked it at risk two months later. No browser ever implemented it. The only SVG renderer that did is resvg, in version 0.36.0 (1 October 2023).
-
-On 5 March 2026 the Working Group resolved to drop it. Nikolas Zimmermann: "it would also kill performance. Easy to add if rendering engines/libraries would support it but this is not the case and would be very complex to implement on browser level. Likely never ever going to happen." PR #1074 was merged on **18 March 2026**, removing 624 lines. `stroke-linejoin` in SVG 2 now reads `miter | round | bevel`, with miter defined to fall back to bevel.
-
-**A trap when citing this.** The copy served at *svgwg.org* is stale and still shows `miter-clip`. The current text is the GitHub Pages build of `w3c/svgwg`. The feature survives only in the frozen 2018 Candidate Recommendation.
-
-This project therefore should not describe its rule as "SVG 2's miter-clip". The behavior is real and widely implemented, but that particular name now points at a deleted feature.
-
-## What the rest of the industry actually does
-
-There are three behaviors past the limit, not two.
-
-| Behavior | What happens to the point | Where |
+| API or source | Verified distinction | Confidence |
 | --- | --- | --- |
-| Bevel fallback | Lost entirely | PostScript, PDF, SVG, Canvas 2D, Cairo, Skia, Quartz, Java2D, Illustrator, InDesign, CorelDRAW, Affinity |
-| Flat clip at the limit | Kept, tip cut flat | GDI+, Direct2D, XPS, WPF, FreeType, Qt, lyon, tiny-skia, resvg, Blend2D |
-| Apex clamp | Kept, pulled back along the bisector | boost.geometry |
+| [FreeType glyph stroker](https://freetype.org/freetype2/docs/reference/ft2-glyph_stroker.html#ft_stroker_linejoin) | `FT_STROKER_LINEJOIN_MITER_FIXED` falls back to bevel. `MITER_VARIABLE` clips perpendicular to the bisector; plain `MITER` aliases `MITER_VARIABLE`. Both behaviors are available. | High |
+| [Qt 6.10.0 stroker source](https://github.com/qt/qtbase/blob/v6.10.0/src/gui/painting/qstroker.cpp) | In `QStroker::joinPoints`, `MiterJoin` bounds extensions along the offset edges using width × limit and connects their endpoints. `SvgMiterJoin` measures vertex-to-apex distance against width × limit / 2 and falls back to bevel. The first construction is not numerically interchangeable with SVG's bisector-distance clip. | High for this source implementation |
+| [GDI+ `LineJoin`](https://learn.microsoft.com/en-us/windows/win32/api/gdiplusenums/ne-gdiplusenums-linejoin) | `LineJoinMiter` clips; `LineJoinMiterClipped` falls back to bevel. Microsoft measures its clipping distance from the inner corner, using limit × pen width. | High |
+| [Direct2D `D2D1_LINE_JOIN`](https://learn.microsoft.com/en-us/windows/win32/api/d2d1/ne-d2d1-d2d1_line_join) | `MITER_OR_BEVEL` explicitly switches to bevel. Microsoft's enum page describes plain `MITER` only as angular vertices. Mozilla's original [backend documentation patch](https://bugzilla.mozilla.org/attachment.cgi?id=8537232&action=diff) records D2D clamping for plain `MITER`. | High for bevel mode; medium for the historical clamping observation |
 
-The clamp this project implements is the middle row, which is what Microsoft's graphics stack has done since GDI+ shipped with Windows XP. Mike Swanson of Microsoft, 24 March 2006: "In WPF, the miter limit is used to **clamp** the miter length… unlike Illustrator, miter limits in WPF are not treated as a threshold; they simply specify where to limit the miter."
+Qt's [QPen documentation](https://doc.qt.io/qt-6/qpen.html#setMiterLimit) gives a miter limit of 2 and a default bevel join. Direct2D's [GetMiterLimit documentation](https://learn.microsoft.com/en-us/windows/win32/api/d2d1/nf-d2d1-id2d1strokestyle-getmiterlimit) expresses the ratio against half the stroke thickness. Comparing numbers alone is insufficient: identify the distance's endpoints and the selected mode. **High confidence.**
 
-**The naming is treacherous**, and three of the four major APIs read backward:
+## Application evidence and remaining limits
 
-- GDI+: `LineJoinMiterClipped` does *not* clip, it bevels. Plain `LineJoinMiter` clips.
-- FreeType: `MITER_VARIABLE` clips, `MITER_FIXED` bevels, and the plain `MITER` alias means the clipping one.
-- Qt: `MiterJoin` clips, `SvgMiterJoin` bevels.
-- Direct2D: `MITER` clips; `MITER_OR_BEVEL` is the PostScript behavior.
+**High confidence.** Current Adobe help documents bevel fallback for [Illustrator](https://helpx.adobe.com/illustrator/using/stroke-object.html) and [InDesign](https://helpx.adobe.com/ca/indesign/desktop/create-lines-and-shapes/edit-and-style-paths/line-stroke-options-and-settings.html). Illustrator help states a default of 10. **Medium confidence:** an indexed Adobe-authored [Illustrator 2025 JavaScript reference](https://community.adobe.com/havfw69955/attachments/havfw69955/illustrator/426671/1/Illustrator%20JavaScript%20Scripting%20Reference.pdf) states 4 for `strokeMiterLimit`; direct PDF retrieval failed. This is a documentation discrepancy, not proof of a universal runtime default. The prior blanket Adobe-help retrieval failure is stale: the Illustrator page was directly readable during this audit.
 
-Inkscape is often cited as implementing `miter-clip` and does not. It has a Live Path Effect named "Miter Clip", by Liam P. White, shipped in Inkscape 0.92 (1 January 2017), which genuinely truncates; the stroke property was never added, because Inkscape renders through Cairo. Krzysztof Kosinski, 24 February 2016: "We use Cairo for rendering, so there would first need to be support in Cairo for this."
+**High confidence for the report.** [p5.js issue 3035](https://github.com/processing/p5.js/issues/3035), opened June 20, 2018, reports text spikes and demonstrates reducing the miter limit to 2. The retrieved issue body proposes a fix; it does not establish which release shipped it.
 
-## Adobe's own documentation, and its own workaround
+**Unverified research leads retained from the previous history:**
 
-Illustrator and InDesign document the switchover but never explain what it is for. Illustrator's help: "The miter limit controls when the program switches from a mitered (pointed) join to a beveled (squared-off) join." The word "spike" does not appear. The explanation exists only in Adobe's imaging-model specifications, not in the applications' documentation.
-
-Adobe's stated defaults disagree with each other: Illustrator's help says the default miter limit is 10, while Adobe's own Illustrator scripting reference for `strokeMiterLimit` says 4. Measured in this project, InDesign emits 4 for text.
-
-Worth noting for fixture A as much as for B: Egor Chistyakov of Adobe, on Illustrator's feature-request forum, 16 April 2023, recommending the same shape of workaround this project built: "instead of a stroke behind the fill, I use a second fill behind the first one, with an Offset Path effect applied to it. It does NOT produce spikes."
-
-The clearest public reproduction is p5.js issue #3035 (20 June 2018): heavy stroke weights on text produced "odd peaks jutting out of the characters", specifically on A, M, V, and W. The cause was that p5 never set a miter limit, so the browser default of 10 applied. It was fixed by setting it to 2.
-
-## Not verified
-
-- The 1985 *Reference Manual*'s own text. Archive copies are lending-restricted. That `setmiterlimit` is Level 1 rests on the second edition's statement that Level 1 operators are those in the first edition, plus the absence of a Level 2 marker, corroborated by the 1985 Cookbook.
-- Whether the 1 / sin(theta / 2) formula appeared in the 1985 *Reference Manual*. Earliest verified is 1990.
-- The SVG Working Group action number for adding the feature.
-- Chromium's issue for `arcs`; its tracker requires a sign-in.
-- Illustrator and InDesign release notes: every `helpx.adobe.com` page refused automated retrieval, so "no miter-related release note exists" is unproven rather than established. Adobe help wording quoted here came through search indexing rather than direct retrieval.
-- ISO 32000-2:2020's full clause text, verified through the PDF Association's errata rendering rather than the ISO document.
+- Exact 1985 *Reference Manual* wording, earliest appearance of the formula, and the 1990 edition's claimed p. 509 citation; PDF's asserted verbatim continuity from 1993; complete ISO 32000-2:2020 clause coverage.
+- Teri Pettit's April 10, 2007, newsgroup explanation and early-RIP memory rationale; Steve Schafer's claimed May 9, 2013, post; Mike Swanson's March 24, 2006, WPF comparison. These dates and attributions need original records before reuse.
+- Exact date of the SVG at-risk edit and PR 1074's claimed 624 deleted lines. The issue date and merge date above do not establish those details.
+- Inkscape's Liam P. White *Miter Clip* Live Path Effect, its claimed 0.92/January 1, 2017, introduction, and Krzysztof Kosinski's February 24, 2016, Cairo comment. Historical backend limitations do not establish current absence of stroke-property support.
+- Egor Chistyakov's April 16, 2023, Offset Path workaround and claimed Adobe affiliation. A reported workaround cannot guarantee spike-free output for arbitrary geometry. The project's reported InDesign text limit of 4 and equivalence to a particular external clipping rule require local fixture evidence.
+- Previous broad assignments for Canvas, Cairo, Skia, Quartz, Java2D, CorelDRAW, Affinity, XPS, WPF, lyon, tiny-skia, Blend2D, and Boost.Geometry's apex clamp require mode- and version-specific primary evidence. The evidence here supports neither an exhaustive three-behavior taxonomy nor the claim that only resvg supports the SVG keyword.
+- Claims that Adobe application documentation never explains spikes, that no relevant release notes exist, and that Chromium's arcs issue is inaccessible are unestablished global negatives. No exhaustive documentation or browser-implementation census was performed.

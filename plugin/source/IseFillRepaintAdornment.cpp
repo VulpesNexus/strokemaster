@@ -1,7 +1,7 @@
 //========================================================================================
 //
-//  Repaints text fills after a frame's text pass, so that no run's Outside stroke covers an
-//  earlier run's fill.
+//  Repaints eligible stroked text fills after a frame's text pass. This prototype does not
+//  repaint unstroked victim runs and does not replace native stroke generation.
 //
 //  Why this works (docs/STROKE_MECHANISMS.md, M1 to M4): for Outside alignment InDesign paints,
 //  per wax run, a centered stroke of twice the weight and then that same run's fill. Runs are
@@ -10,14 +10,15 @@
 //  used by the frame's active adornments, every wax run in the frame is visited (SDK,
 //  TextDrawPriority.h, lines 36 to 42). An adornment in the foreground pass therefore runs
 //  after all of the frame's native text, and repainting each stroked run's fill there puts
-//  every fill of that frame above every stroke of that frame.
+//  eligible fills above the frame's native strokes. Other fill runs are not included.
 //
 //  Deliberate limits of this prototype:
 //    - Only runs that paint both a fill and a stroke, with the stroke aligned Outside, are
 //      repainted. A Center stroke is painted over its own fill by definition, so it is left
 //      alone.
 //    - The fill is installed from the run's own rendering object, so color, tint, gradient
-//      and overprint match what InDesign painted. Repainting an opaque fill is idempotent.
+//      and overprint state are requested from InDesign. This does not prove identical
+//      compositing: antialiased edges and overlapping differently colored runs need tests.
 //    - Fills are drawn from glyph outlines rather than by showing text again, so exported PDF
 //      does not gain a second copy of searchable text.
 //    - Frames are independent. Stacking order between frames is InDesign's and is untouched.
@@ -251,8 +252,9 @@ bool16 IseFillRepaintAdornment::WantsRepaint(const IWaxRun* waxRun, const IWaxRe
     if (renderData->GetOutlineWidth() <= 0) {
         return kFalse;
     }
-    // Only runs that paint both a fill and a stroke can suffer the defect. Without a database
-    // the render method cannot be resolved, so fall back to the checks above.
+    // Prototype restriction: repaint only runs carrying both paints. An unstroked victim
+    // can also suffer overlap and is currently missed (the takeover V0 regression).
+    // Without a database the render method cannot be resolved; use the checks above.
     if (db != nil && renderData->GetRenderMethod(db) != IWaxRenderData::kFillStroke) {
         return kFalse;
     }

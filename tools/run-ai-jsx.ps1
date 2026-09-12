@@ -49,12 +49,18 @@ if ($ArgJson) {
 
 $js = "`$.global.ISE_AI_ARGS = $argsLiteral; var __r = 'no result'; try { __r = `$.evalFile(new File('$targetJs')); } catch (e) { __r = 'WRAPPER ERROR ' + e.message + ' line ' + e.line; } finally { try { delete `$.global.ISE_AI_ARGS; } catch (e2) {} } __r;"
 
-$ai = New-Object -ComObject Illustrator.Application
+if ($PSVersionTable.PSEdition -ne 'Desktop') {
+    throw 'Run this runner with Windows PowerShell 5.1 (powershell.exe), not pwsh.exe.'
+}
+# Attach to the existing desktop instance. Creating a COM application can start another
+# Illustrator instance and gives no assurance that it contains the intended fixture.
+$ai = [Runtime.InteropServices.Marshal]::GetActiveObject('Illustrator.Application')
 $result = $ai.DoJavaScript($js)
 if ([string]::IsNullOrEmpty($result)) {
     # An empty return and a script that never ran look identical, so say which is unknown rather
     # than reporting success.
-    Write-Output "(no result returned; check for a side effect before assuming the script ran)"
+    throw 'No result returned; script execution status is unknown.'
 } else {
     Write-Output $result
+    if ($result -match '^(ERROR:|WRAPPER ERROR)') { throw 'Illustrator reported a script error.' }
 }

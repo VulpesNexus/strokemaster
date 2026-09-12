@@ -7,22 +7,16 @@ A and B must be renders of the same document at the same resolution: the intende
 export made with the plugin loaded and one made without it, from the same saved .indd, so that
 the renderer is the only variable.
 
-The measurement that matters is not how many pixels changed but *where*. Repainting a run's
-fill on top of its own stroke necessarily redraws the fill's outer edge, and antialiasing makes
-that edge land a fraction of a pixel differently, so a thin ring of changed pixels around every
-stroked glyph is expected and harmless. A fill that composites twice against what is under it,
-because it carries a blend mode, a partial opacity or an overprint, changes color across the
-whole glyph body instead. Eroding the glyph mask away from its edges separates the two:
-
-    edge_changed        changed pixels within the eroded-away border: expected
-    interior_changed    changed pixels in the glyph core: a real appearance change
-    interior_dlum       mean luminance of the core in B minus in A, signed, so that a double
-                        Multiply reads as negative and a double Screen as positive
-
-A control frame that the adornment is supposed to skip must show interior_changed = 0. A frame
-whose only change is the edge ring is corrected without being altered.
+Without --fill-mask, this measures eroded non-background ink, including strokes and effects.
+That mask is NOT a glyph-fill mask and cannot establish fill compositing correctness.
+An independent grayscale fill-only mask (white=fill coverage, black=outside) can be supplied
+at the same pixel size. Only full-coverage pixels survive thresholding and erosion. A mask
+derived from either compared render is not an independent reference. Differences outside
+the core are reported without labeling them harmless. These statistics do not prove that
+the chosen reference itself represents the intended appearance.
 """
 import json
+import argparse
 import os
 import sys
 
@@ -53,24 +47,51 @@ def lum(a):
 
 def crop(img, bounds, pad_x, pad_y, scale):
     y1, x1, y2, x2 = bounds
+    if not all(np.isfinite(v) for v in bounds) or y2 < y1 or x2 < x1:
+        raise ValueError("invalid or reversed frame bounds")
     h, w = img.shape[:2]
-    box = (max(0, int((x1 - pad_x) * scale)), max(0, int((y1 - pad_y) * scale)),
-           min(w, int(round((x2 + pad_x) * scale))), min(h, int(round((y2 + pad_y) * scale))))
+    box = (min(w, max(0, int((x1 - pad_x) * scale))), min(h, max(0, int((y1 - pad_y) * scale))),
+           max(0, min(w, int(round((x2 + pad_x) * scale)))), max(0, min(h, int(round((y2 + pad_y) * scale)))))
     return img[box[1]:box[3], box[0]:box[2]]
 
 
-def main(a_path, b_path, manifest_path, out_stem, ppi=300.0):
-    a_img = np.asarray(Image.open(a_path).convert("RGB")).astype(int)
-    b_img = np.asarray(Image.open(b_path).convert("RGB")).astype(int)
+def interior_mask(ink, erode):
+    if ndimage is None:
+        raise RuntimeError("scipy is required; refusing an uneroded fallback")
+    return ndimage.binary_erosion(ink, iterations=erode)
+
+
+def opaque_image(path, mode):
+    with Image.open(path) as image:
+        if ("A" in image.getbands() or "transparency" in image.info) and np.any(np.asarray(image.convert("RGBA"))[:, :, 3] != 255):
+            raise ValueError("transparent inputs are unsupported; composite against an explicit common backdrop first")
+        return np.asarray(image.convert(mode)).copy()
+
+
+def main(a_path, b_path, manifest_path, out_stem, ppi=300.0, fill_mask_path=None):
+    a_img = opaque_image(a_path, "RGB").astype(int)
+    b_img = opaque_image(b_path, "RGB").astype(int)
     if a_img.shape != b_img.shape:
         raise SystemExit("renders differ in size: %s vs %s" % (a_img.shape, b_img.shape))
-    manifest = json.load(open(manifest_path, encoding="utf-8"))
+    if not np.isfinite(ppi) or ppi <= 0:
+        raise ValueError("ppi must be finite and positive")
+    fill_mask = None
+    if fill_mask_path:
+        fill_mask = opaque_image(fill_mask_path, "L") >= 254
+        if fill_mask.shape != a_img.shape[:2]:
+            raise ValueError("fill mask and renders differ in size")
+    with open(manifest_path, encoding="utf-8") as source:
+        manifest = json.load(source)
     scale = ppi / 72.0
     erode = max(1, int(round(ERODE_PT * scale)))
 
     whole = (np.abs(a_img - b_img).max(axis=2) > DIFF)
     report = {"a": os.path.basename(a_path), "b": os.path.basename(b_path), "ppi": ppi,
-              "erode_px": erode, "page_changed_px": int(whole.sum()), "frames": []}
+              "erode_px": erode, "page_changed_px": int(whole.sum()), "frames": [],
+              "schema": 2,
+              "mask_kind": "external_fill_only" if fill_mask is not None else "estimated_nonbackground_ink",
+              "fill_compositing_verified": False,
+              "mask_file": os.path.basename(fill_mask_path) if fill_mask_path else None}
 
     for fr in manifest["frames"]:
         name = fr.get("name") or "item"
@@ -86,16 +107,17 @@ def main(a_path, b_path, manifest_path, out_stem, ppi=300.0):
         rec["changed_px"] = int(changed.sum())
         rec["max_channel_diff"] = int(diff.max())
 
-        # The backdrop is the page tint, which is by far the most common color in the crop.
+        # Median-color backdrop is a heuristic. Dense ink can dominate it; only an
+        # independent coverage mask supports measurements specifically about glyph fills.
         backdrop = np.median(ca.reshape(-1, 3), axis=0)
         ink = (np.abs(ca - backdrop).max(axis=2) > FG)
-        if ndimage is not None and ink.any():
-            interior = ndimage.binary_erosion(ink, iterations=erode)
-        else:
-            interior = ink
+        coverage = crop(fill_mask, fr["bounds"], PAD_X, PAD_Y, scale) if fill_mask is not None else ink
+        interior = interior_mask(coverage, erode)
         rec["ink_px"] = int(ink.sum())
         rec["interior_px"] = int(interior.sum())
         rec["interior_changed_px"] = int((changed & interior).sum())
+        rec["interior_nonzero_px"] = int(((diff > 0) & interior).sum())
+        rec["interior_max_channel_diff"] = int(diff[interior].max()) if interior.any() else None
         rec["edge_changed_px"] = int((changed & ~interior).sum())
         if interior.any():
             la, lb = lum(ca)[interior], lum(cb)[interior]
@@ -110,7 +132,8 @@ def main(a_path, b_path, manifest_path, out_stem, ppi=300.0):
     with open(out_stem + ".json", "w", encoding="utf-8") as f:
         json.dump(report, f, indent=1)
 
-    md = ["| Entry | Variant | Changed px | Worst channel | Interior changed | Interior dLum | Core lum A -> B |",
+    md = ["Mask: " + report["mask_kind"] + ". These statistics alone do not certify compositing correctness.", "",
+          "| Entry | Variant | Changed px | Worst channel | Mask interior changed | Interior dLum | Interior lum A -> B |",
           "| --- | --- | --- | --- | --- | --- | --- |"]
     for r in report["frames"]:
         md.append("| %s | %s | %s | %s | %s | %s | %s |" % (
@@ -126,9 +149,10 @@ def main(a_path, b_path, manifest_path, out_stem, ppi=300.0):
 
 
 if __name__ == "__main__":
-    argv = [a for a in sys.argv[1:] if not a.startswith("--")]
-    ppi = 300.0
-    for i, a in enumerate(sys.argv):
-        if a == "--ppi":
-            ppi = float(sys.argv[i + 1])
-    main(argv[0], argv[1], argv[2], argv[3], ppi)
+    parser = argparse.ArgumentParser(description=__doc__)
+    for name in ("a", "b", "manifest", "out_stem"):
+        parser.add_argument(name)
+    parser.add_argument("--ppi", type=float, default=300.0)
+    parser.add_argument("--fill-mask", help="Independent white-on-black glyph-fill mask at render size")
+    args = parser.parse_args()
+    main(args.a, args.b, args.manifest, args.out_stem, args.ppi, args.fill_mask)

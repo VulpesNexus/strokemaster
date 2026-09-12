@@ -1,0 +1,52 @@
+{
+  "version": "21.5.1.73",
+  "checks": [
+    {
+      "name": "open output conflict refused",
+      "passed": true
+    },
+    {
+      "name": "modified open document remains valid",
+      "passed": true
+    },
+    {
+      "name": "unsaved sentinel preserved",
+      "passed": true
+    },
+    {
+      "name": "no PDF after conflict",
+      "passed": true
+    },
+    {
+      "name": "cannot take ownership of already open document",
+      "passed": true
+    },
+    {
+      "name": "conflicting document survives failure cleanup",
+      "passed": true
+    },
+    {
+      "name": "repeated headless invocation returns result",
+      "passed": true
+    },
+    {
+      "name": "invocation globals cleaned",
+      "passed": true
+    },
+    {
+      "name": "document count preserved",
+      "passed": true
+    },
+    {
+      "name": "user document 0 preserved",
+      "passed": true
+    },
+    {
+      "name": "UI preference restored",
+      "passed": true
+    }
+  ],
+  "error": null,
+  "passed": true,
+  "raw_result_sha256": "749900d7bc7aa3ecf4c6f99857195d9f1c630de50c67ce9327fb4a79858b303b"
+}

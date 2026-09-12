@@ -1,12 +1,14 @@
 # Using StrokeMaster
 
+Takeover status, 2026-09-13: these are prototype workflows. Conflict handling and pair identity have been repaired and tested in InDesign 21.5.1.73, including IDML import and resync. Rendering and native-plugin support remain bounded by [the audit](../PROJECT_TAKEOVER_AUDIT.md). Keep an original copy when evaluating a new script revision.
+
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
 | Your situation | Use | Why |
 | --- | --- | --- |
 | Only you open the file, and you want the fix to be invisible | The **plugin** | Corrects drawing with no change to the document. Nothing to maintain, and text stays one story. |
-| Someone else opens the file, or it goes to a printer, or you hand over an INDD or IDML | The **split** command | The correction is built out of real frames, so it survives anywhere with nothing installed. |
-| You export PDF and nothing else | Either | A PDF exported with the plugin loaded is already correct everywhere. |
+| Someone else opens the file, or you hand over an INDD or IDML | The **split** command, within its supported appearance | Uses ordinary document frames; recipients need no plugin to render them. Fonts, composition, and synchronization still matter. |
+| You export PDF and nothing else | Either, within the tested envelope | Corrective paths are embedded in the tested exports; recipients do not need the plugin to render those paths. |
 | You are converting type to outlines | The **outline** command | Native *Type > Create Outlines* loses the fill and halves the halo. |
 | You have split frames and need to edit the text | **resync**, or **watch** | Splitting makes two stories; these keep them together. |
 
@@ -18,7 +20,7 @@ Which correction to use depends on one question: **does the file have to look ri
 
 Headless, for scripted pipelines:
 
-    powershell -NoProfile -File tools\run-jsx.ps1 strokemaster.jsx -ArgJson "{\"command\":\"split\"}"
+The headless runner is *tools/run-jsx.ps1*. Until its revised commands have been host-tested, use the existing Scripts panel entry only on disposable copies. Do not copy the earlier backslash-escaped PowerShell JSON example; it was not portable shell quoting.
 
 There is no need to pass `-Engine`. Measured: a headless run reports its engine as `main`, so the `#targetengine` line in the script is ignored on that path, because the directive applies only to the script InDesign compiles itself and *run-jsx.ps1* reaches the file through `$.evalFile`. The watcher survives there regardless, because `main` is persistent: a watch started in one invocation reported `watching=true` from the next. Running the script from the Scripts panel does honor the directive, giving it an engine of its own.
 
@@ -26,23 +28,31 @@ There is no need to pass `-Engine`. Measured: a headless run reports its engine 
 
 **split** — select one or more stroked text frames and run it. Each becomes two frames in the same place: a bottom frame keeping the stroke, with the stroke color as its fill, and a top frame keeping the fill, with no stroke. Every stroke is then painted before every fill, which is the whole correction.
 
-It works per text style range, so a story with a differently colored word or a heavier stroke on one character splits correctly. It refuses, and says so, when there is no stroke, when the stroke is Center-aligned, and when the frame is threaded. A Center stroke is painted over its own fill by design, so moving it underneath would change how the text looks rather than repair it.
+It assigns paint per text style range, including varied strokes. Only Outside strokes move underneath; Center-stroked ranges retain their original treatment on top. It refuses threaded, locked, grouped, or unsupported frames, including frame backgrounds, borders, transparency, and effects. These refusals prevent duplication from silently changing the frame's appearance. Each pair receives a persistent token; frames are never matched merely because they share a position.
 
-**outline** — select text frames and run it instead of *Type > Create Outlines*. It reads the stroke settings first, converts, then rebuilds each path as a stroke copy at the width InDesign actually paints plus a fill copy, grouped in the right order. Frames with mixed stroke or fill settings are left to InDesign and reported.
+**outline** — select text frames and run it instead of *Type > Create Outlines*. It stages conversion on duplicates, validates the resulting paths and stacking, then replaces the original. An error before replacement preserves the original and attempts to remove all temporary art; any incomplete cleanup is explicitly reported. The host transaction test covers a page-two frame, failure after staging, and successful replacement. Outlined text loses text editability by definition.
 
-**resync** — after editing the text in the top frame of a split pair, this rebuilds the bottom frame from it. The text comes across and the stroke stays as it was.
+This conservative converter accepts uniform solid text paint in an unthreaded, non-overset, untransformed frame directly on a page/spread. It refuses mixed paint, frame backgrounds or borders, effects, decorations, text wrap, anchored objects, tables, footnotes, and automatic lists. An unsupported frame stays untouched; it is not silently handed to the native command. Paper/None have inapplicable page-item overprint controls in the tested host; only a false source overprint state is accepted for those swatches. Broader rendering fidelity, undo, and output routes still need regression coverage.
 
-**watch** / **unwatch** — the same thing, automatically, about once a second. InDesign raises no event when text changes, so this polls; it is the only route available.
+**resync** — after editing the top frame, rebuild the bottom from it while retaining its uniform Outside stroke. Explicit resync also propagates formatting-only changes. Pair discovery includes all document pages. The measured page-two pairs survived IDML import and could be edited and resynchronized afterward.
+
+**watch** / **unwatch** — poll for contents changes, including a mismatch already present on the first tick. Automatic watching does not detect formatting-only changes; use **resync** for those. Watching requires the script running in the current InDesign session. It has no save/export event backstop, so explicitly resync and inspect the pair before delivery or export. Direct tick behavior is host-tested; precise idle-event timing is not certified by the new tests.
+
+Duplicating a labeled pair within the same document creates ambiguous tokens. The script reports and skips those frames rather than choosing a mate. Older pair labels are also refused. Preserve the old pair and create a fresh split from an original stroked frame to obtain current labels; do not simply relabel arbitrary superposed frames. IDML retains the new labels in the measured round-trip.
 
 ## What to know before relying on it
 
-- **The plugin is per machine and per version.** It is compiled against the InDesign 2026 SDK and declares host 21.5; it will not load in 2025 or in a future 2027. Documents are unaffected, and render the original way wherever it is absent.
-- **The split is the only correction that travels.** With it, the file is correct on a machine with nothing installed. This is the one to use for handoff.
-- **A split story lives in two frames.** InDesign cannot keep them together itself: linked stories synchronize the text and then overwrite the child's formatting with the parent's, paragraph styles included. That is why **resync** and **watch** exist, and why they need the scripts installed.
+- **The plugin is installed per machine.** The only recorded native target is InDesign 2026, build 21.5.1.73. Other builds require explicit ABI/load/edit/export validation; the version string alone does not prove their loader behavior. Its drawing correction is absent when the plugin is absent.
+- **Split frames are ordinary document objects.** They travel without a plugin, but remain two independent stories. Unsupported frame paint/effects are refused. After sending the file, edits require another resync by someone running the script, or manual maintenance of both stories.
+- **A split story lives in two frames.** The investigated linked-story configuration overwrote the child's formatting. That finite result does not rule out every native mapping or SDK route. The implemented **resync** and **watch** commands require the scripts to run.
 - **resync needs the stroke to be uniform** across the bottom frame. A pair whose stroke varies within the story is reported and skipped rather than guessed at, because character positions recorded before an edit no longer mean anything after one.
-- **The plugin leaves a one-pixel ring** along every repainted fill, from redrawing an antialiased edge. It is invisible at reading size. The split does not have it, because its fills are painted once.
+- **The plugin changes antialiased fill edges** in the recorded raster tests. Visibility depends on scale and colors; a one-pixel result at one raster scale is not a general bound. Splitting avoids this particular second fill pass but introduces other appearance and synchronization risks.
 - **Neither reaches text that is already outlined.** That damage is baked into the paths; convert with **outline** in the first place.
 - **Cross-frame overlap is not corrected** by the plugin, which is scoped to one frame at a time.
+- **Unstroked victim runs are also missed by the current plugin.** A later stroked line can still cover an earlier unstroked line. This is reproduced by the takeover regression; a supported split-frame reference corrects that example.
+- **The native prefix is still a development placeholder.** Prefix allocation, signing, and Creative Cloud listing are separate steps described in [the distribution notes](PLUGIN_DISTRIBUTION.md); the current build is not a Marketplace release.
+
+After replacing the script files, invoke *strokemaster.jsx* again to load the revised libraries. If watching is enabled, run **unwatch**, then **watch** to recreate its listener. Updating these JSX files does not require an InDesign restart. Loading a new native plugin binary does.
 
 ## If something looks wrong
 

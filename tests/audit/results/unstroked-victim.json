@@ -1,0 +1,111 @@
+{
+  "a": "native.png",
+  "b": "split.png",
+  "ppi": 600.0,
+  "erode_px": 6,
+  "page_changed_px": 17355,
+  "frames": [
+    {
+      "key": "V0",
+      "name": "V0",
+      "palette": null,
+      "note": null,
+      "changed_px": 14136,
+      "max_channel_diff": 255,
+      "ink_px": 196469,
+      "interior_px": 11600,
+      "interior_changed_px": 3759,
+      "interior_nonzero_px": 3759,
+      "interior_max_channel_diff": 255,
+      "edge_changed_px": 10377,
+      "interior_lum_a": 82.57,
+      "interior_lum_b": 0.0,
+      "interior_dlum": -82.566,
+      "interior_changed_dlum": -254.79
+    },
+    {
+      "key": "V1",
+      "name": "V1",
+      "palette": null,
+      "note": null,
+      "changed_px": 3219,
+      "max_channel_diff": 255,
+      "ink_px": 259762,
+      "interior_px": 11600,
+      "interior_changed_px": 0,
+      "interior_nonzero_px": 0,
+      "interior_max_channel_diff": 0,
+      "edge_changed_px": 3219,
+      "interior_lum_a": 0.0,
+      "interior_lum_b": 0.0,
+      "interior_dlum": 0.0
+    },
+    {
+      "key": "V2",
+      "name": "V2",
+      "palette": null,
+      "note": null,
+      "changed_px": 0,
+      "max_channel_diff": 0,
+      "ink_px": 35444,
+      "interior_px": 11600,
+      "interior_changed_px": 0,
+      "interior_nonzero_px": 0,
+      "interior_max_channel_diff": 0,
+      "edge_changed_px": 0,
+      "interior_lum_a": 0.0,
+      "interior_lum_b": 0.0,
+      "interior_dlum": 0.0
+    }
+  ],
+  "schema": 2,
+  "mask_kind": "external_fill_only",
+  "fill_compositing_verified": false,
+  "mask_file": "mask.png",
+  "input_sha256": {
+    "mask.png": "421e283b3edfd37c64202762e61b8525fa3f329b1501f305eb8fcf470508f6bc",
+    "native.png": "b81d4b611ab54e1a12fb6c96b990c3887b4365a5025f741fa188d33738de6bca",
+    "split.png": "e28c51bc5966142f8ea99df067e5c4f5e903d57f82a7917c5c3109d892f6cdc8"
+  },
+  "host_result": {
+    "version": "21.5.1.73",
+    "passed": true,
+    "frames": [
+      {
+        "key": "V0",
+        "name": "V0",
+        "bounds": [
+          20,
+          20,
+          120,
+          190
+        ]
+      },
+      {
+        "key": "V1",
+        "name": "V1",
+        "bounds": [
+          20,
+          215,
+          120,
+          385
+        ]
+      },
+      {
+        "key": "V2",
+        "name": "V2",
+        "bounds": [
+          20,
+          410,
+          120,
+          580
+        ]
+      }
+    ],
+    "raw_result_sha256": "f2b0e10a44f23ce4209e28a23f176efec6aed9f724ec4d47f36fde09f0bfbf47"
+  },
+  "loaded_module_observed_after_test": {
+    "name": "INDESIGNSTROKEENGINE.PLN",
+    "disk_sha256": "d476f565ae57fa9257111d5d86f4e8a313c9efb7bc85d8912e9b5842ec80f342"
+  }
+}

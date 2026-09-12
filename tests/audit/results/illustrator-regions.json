@@ -1,0 +1,61 @@
+{
+  "host": "Adobe Illustrator",
+  "version": "30.7.0",
+  "build": "114R",
+  "passed": true,
+  "error": null,
+  "checks": [
+    {
+      "name": "P1 basic width",
+      "passed": true,
+      "value": "16"
+    },
+    {
+      "name": "P1 basic limit",
+      "passed": true,
+      "value": "2"
+    },
+    {
+      "name": "P1 basic join",
+      "passed": true,
+      "value": "StrokeJoin.MITERENDJOIN"
+    },
+    {
+      "name": "P2 cleanup",
+      "passed": true,
+      "value": "0"
+    },
+    {
+      "name": "P2 Bezier handle",
+      "passed": true,
+      "value": "20,40"
+    },
+    {
+      "name": "P3 actual Unite area",
+      "passed": true,
+      "value": "-15000"
+    },
+    {
+      "name": "P2 hole signed area",
+      "passed": true,
+      "value": "-7500"
+    },
+    {
+      "name": "P2 compound cleanup",
+      "passed": true,
+      "value": "0"
+    },
+    {
+      "name": "document count preserved",
+      "passed": true,
+      "value": "1"
+    },
+    {
+      "name": "user document preserved",
+      "passed": true,
+      "value": "1"
+    }
+  ],
+  "limitations": "Appearance stacks, Boolean holes/self-intersections, transforms, and undo remain unverified",
+  "raw_result_sha256": "1034f5250203a0b584ecf839d13b4a6e4c5980928f21424aba0ff3a8fc52622b"
+}

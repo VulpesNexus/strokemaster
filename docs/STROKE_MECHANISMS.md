@@ -2,6 +2,8 @@
 
 Phase E of the InDesign stroke engine investigation: what produces each defect, with the controls that establish it. Evidence labels follow the investigation's ladder: PROVEN, STRONGLY SUPPORTED, PLAUSIBLE, DISPROVEN, and UNKNOWN.
 
+Takeover qualification, 2026-09-12: historical labels below describe finite fixture evidence. [The takeover audit](../PROJECT_TAKEOVER_AUDIT.md) supersedes universal claims, identifies the clipping implementation error, and distinguishes output-level observations from host internals. A second paint pass is not mathematically equivalent to a single reordered fill pass under all compositing conditions.
+
 Unless stated otherwise, measurements come from *tools/stroke_probe.py* on the minimal reproducers in *tests/indesign-stroke/*. They use MuPDF renders at 720 dpi (10 px per point) of InDesign's *[High Quality Print]* PDF export, after removing every text object and path that doesn't belong to the entry being measured. "Hidden fill" counts pixels that are solid fill when strokes are removed but white in the render being measured. "Strokes first" is the same content with the entry's stroke objects moved before its fill objects and nothing else changed. Re-emitting content in its original order is the control for every edit, and the controls rendered identically to the original.
 
 ## M1. Outside text strokes are a doubled centered stroke under each run's own fill
@@ -108,7 +110,7 @@ Character rotation of 10° drew nothing rotated in this configuration, so that v
 
 That behavior is not exotic: it is what Microsoft's graphics stack has done since GDI+, and what FreeType and Qt do by default. What it is not, any more, is a web standard. SVG 2 specified it as `stroke-linejoin: miter-clip` in 2018, no browser implemented it, and the Working Group removed it on 18 March 2026. Describing this project's rule as "SVG 2's miter-clip" would now point at a deleted feature, and the copy of the specification served at *svgwg.org* is stale and still shows it. See *MITER_JOIN_HISTORY.md*.
 
-The design question is now settled. The limit is a **threshold**, and what is wanted is a **clamp**: keep the miter and cut its tip off flat once it would reach further than a chosen multiple of the half-width. The multiple chosen is sqrt(2), the ratio a right angle produces, so the rule reads "no corner may protrude further than a right-angled corner would" and leaves every ordinary corner alone. Sweeping every degree from 1 to 179 at an 8 pt half-width, the native rule changes reach by 23.95 pt between 28 and 29 degrees where it stops mitering, while the clamp's largest step anywhere is 0.0975 pt; reach divided by half-width is identical across half-widths of 4, 8, and 12, so the rule is continuous in the angle and exactly proportional to the weight. It is implemented in *tools/miter_rule.py* and *tools/stroke_outline.py*, whose outlines reproduce Illustrator's own Expand to within 0.11 percent of area. Per-defect consequences and the delivery options are under fixture B in *INDESIGN_STROKE_INVESTIGATION.md*.
+The user approved investigating a flat clip at √2 times the half-width. The takeover found that the previous polygon interpolation did not place the clip on that plane. Its 0.0975 pt sweep statistic therefore does not validate the intended rule. The historical 0.11 percent raster comparison exercised conventional miter mode only. The corrected contract must distinguish distance along the bisector from radial distance: a flat cap's endpoints can lie farther from the vertex than its axial cap. See [the geometry contract](MITER_GEOMETRY_CONTRACT.md) and independent tests before citing corrected clipping results.
 
 ## M6. Create Outlines (fixture D) turns the painted stroke into a centered path stroke at half the painted width, over the fill
 
@@ -144,9 +146,9 @@ The design question is now settled. The limit is a **threshold**, and what is wa
 
 **Status.** PROVEN for what each application exported. This narrows the search: splitting text into per-line and per-run paint units is shared across Adobe's text engines, so it is not specific to InDesign's compositor. What is specific to InDesign is painting a doubled stroke under each unit's own fill to emulate Outside alignment, which is where A and C come from. The behavior is unchanged between InDesign 2025 and 2026, so this is not a recent regression.
 
-## M8. Text carrying a blend mode or a partial opacity is drawn inside a transparency group, which makes a second fill idempotent
+## M8. Transparency-group observations and limits of the repaint oracle
 
-**Claim.** InDesign draws text whose fill carries a blend mode, a partial opacity, a drop shadow, or a feather inside a transparency group, and everything drawn for that text, including a foreground adornment's own painting, lands inside the same group. The group is composited onto the page once, so painting the same opaque ink twice inside it cannot composite twice.
+**Historical interpretation.** The sampled PDF placed corrective painting inside transparency groups. That is evidence about those exports, not proof that every fill, blend mode, effect, and overlapping run is idempotent. Even opaque vector paint has partial coverage on rasterized edges.
 
 **Evidence** (*tests/indesign-stroke/N-transparency/*, one saved document exported with and without the plugin):
 
@@ -155,7 +157,7 @@ The design question is now settled. The limit is a **threshold**, and what is wa
 - The three controls the adornment must skip, a Center stroke, a run with no stroke, and an unstroked gradient fill, change by 0 pixels.
 - A gradient fill is not emitted as a path fill. Over the whole document `f` rises from 2 to 38 and `sh` from 0 to 4, with `W` and `n` each rising by 4: the two gradient-filled frames at two lines apiece. Text-showing operators stay at 86.
 
-**Status.** PROVEN for what was exported and measured. This removes the main predicted risk of a foreground fill repaint. What remains is not compositing but antialiasing: the repaint redraws the fill's outer edge, leaving a one-pixel ring whose visibility tracks the contrast between fill and stroke, largest where a dark fill meets a white stroke and near zero where a mid fill meets a mid stroke.
+**Takeover status.** The reported “glyph core” was derived by eroding all pixels unlike the backdrop, which includes the stroke halo and effects. Those luminance averages cannot establish unchanged glyph-fill color. The exported operator counts remain inspectable evidence; universal compositing safety is UNVERIFIED. A separate fill-only reference mask and single-pass compositing oracle are required. Edge differences and mixed-color overlapping glyphs must be measured independently.
 
 ## Summary
 

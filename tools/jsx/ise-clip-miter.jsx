@@ -1,34 +1,12 @@
-// ise-clip-miter.jsx - build a stroke's outline with a clamped miter join.
-// Pure ASCII: ExtendScript sources are read in the system codepage.
-// Defines $.global.ISE_CLIP; the caller deletes it afterward.
-//
-// This is the ExtendScript port of tools/stroke_outline.py, and it takes the same point format
-// so the two can be compared against each other rather than trusted separately: an array of
-// { a: [x, y], l: [x, y], r: [x, y] }, being the anchor and its two Bezier handles.
-//
-// Why a clamp. PostScript, PDF and SVG 1.1 all govern the miter with a THRESHOLD: a join is
-// mitered while 1 / sin(theta / 2) is at most the limit, and becomes a full bevel past it. So a
-// corner just inside the limit keeps its whole point and one just outside loses it entirely, and
-// the only dial available moves the cliff rather than removing it. Measured at an 8 pt
-// half-width, the native rule changes reach by 23.95 pt between 28 and 29 degrees.
-//
-// The clamp keeps the miter and cuts its tip off flat once it would reach further than
-// clipRatio times the half-width. clipRatio is measured in half-widths, the convention
-// Microsoft's stack uses, where this clamp has been the plain miter join since GDI+; FreeType
-// and Qt clamp by default too. Do not call it SVG 2's miter-clip: that name was specified in
-// 2018, never implemented by a browser, and removed on 18 March 2026
-// (docs/MITER_JOIN_HISTORY.md). The default is the square root of two, the ratio a
-// right angle produces, so the rule reads "no corner may protrude further than a right-angled
-// corner would": ordinary corners are untouched and only acute ones are acted on.
-//
-// Two details decide whether this works on real type rather than on test wedges:
-//
-//   Corners come from the anchors, not from the flattening. Once a curve is flattened every
-//   vertex has a small angle change, and applying a join rule to those would facet the curves.
-//
-//   Tangents come from the Bezier handles. On a curved segment the direction at an anchor is set
-//   by its handle, so measuring toward the neighboring anchor would invent corners where the
-//   outline is smooth and understate the ones that are real.
+// ise-clip-miter.jsx - experimental stroke pieces with tested local joins.
+// Pure ASCII. Defines $.global.ISE_CLIP; the caller deletes it afterward.
+// Lengths use input-coordinate units. hw is half the full stroke width;
+// clipRatio and limit are dimensionless ratios to hw. Clipping limits the
+// outward bisector projection, not the radial distance of all flat corners.
+// Fixed 24-step flattening, absolute handle thresholds, and automatic contour
+// closure remain experimental. Handles classify corners; flattened chords
+// determine the joins. Open caps, holes, and Boolean topology are not resolved.
+// See docs/MITER_GEOMETRY_CONTRACT.md for the join-only validation envelope.
 $.global.ISE_CLIP = (function () {
     var api = {};
 
@@ -36,10 +14,43 @@ $.global.ISE_CLIP = (function () {
     api.CORNER_DEG = 0.75;   // tangent divergence above which an anchor counts as a corner
     api.RIGHT_ANGLE_RATIO = Math.sqrt(2.0);
     api.CLIP_DEFAULT = api.RIGHT_ANGLE_RATIO;
-    // Written exactly, a 90 degree corner's ratio and a sqrt(2) clamp are the same number, so
-    // whether it clips would depend on the last bit of a square root. Without this tolerance the
-    // boundary lands at 91 degrees and every right angle is clipped by a fraction of nothing.
+    // Relative branch tolerance; retained tips may slightly exceed the plane.
     api.CLIP_EPS = 1e-9;
+
+    function number(value, name) {
+        if (typeof value !== 'number' || !isFinite(value)) {
+            throw new Error(name + ' must be a finite number');
+        }
+        return value;
+    }
+    function positive(value, name) {
+        number(value, name);
+        if (value <= 0) { throw new Error(name + ' must be positive'); }
+        return value;
+    }
+    function ratioValue(value, name) {
+        number(value, name);
+        if (value < 1) { throw new Error(name + ' must be at least 1 (relative to half-width)'); }
+        return value;
+    }
+    function finite(value) {
+        if (!isFinite(value)) { throw new Error('geometry exceeds finite coordinate range'); }
+        return value;
+    }
+    // Scaled norm works in ES3 without Math.hypot, avoiding squared overflow/underflow.
+    function norm(x, y) {
+        var scale = Math.max(Math.abs(x), Math.abs(y));
+        if (scale === 0) { return 0; }
+        return scale * Math.sqrt((x / scale) * (x / scale) + (y / scale) * (y / scale));
+    }
+    function direction(v, name) {
+        if (!v || v.length !== 2) { throw new Error(name + ' must contain two numbers'); }
+        var x = number(v[0], name), y = number(v[1], name), length = norm(x, y);
+        if (!isFinite(length) || Math.abs(length - 1) > 1e-12) {
+            throw new Error(name + ' must be a unit direction');
+        }
+        return [x / length, y / length];
+    }
 
     function unit(x, y) {
         var n = Math.sqrt(x * x + y * y);
@@ -63,18 +74,22 @@ $.global.ISE_CLIP = (function () {
         return [unit(dx, dy), unit(ex, ey)];
     };
 
-    /** The angle between two segments meeting at a corner; 180 is a straight continuation. */
+    /** Interior angle in degrees from incoming/outgoing unit directions. */
     api.interiorAngle = function (u, w) {
-        var dot = u[0] * w[0] + u[1] * w[1];
-        if (dot > 1.0) { dot = 1.0; }
-        if (dot < -1.0) { dot = -1.0; }
-        return 180.0 - (Math.acos(dot) * 180.0 / Math.PI);
+        u = direction(u, 'incoming direction'); w = direction(w, 'outgoing direction');
+        return 2 * Math.atan2(norm(u[0] + w[0], u[1] + w[1]),
+                             norm(u[0] - w[0], u[1] - w[1])) * 180 / Math.PI;
     };
 
-    /** Miter length over stroke width: the quantity a miter limit is compared against. */
+    /** Unclipped tip distance divided by HALF the full stroke width. */
     api.miterRatio = function (interiorDeg) {
-        var s = Math.sin(interiorDeg * Math.PI / 360.0);
-        return s < 1e-9 ? Number.MAX_VALUE : 1.0 / s;
+        number(interiorDeg, 'interior angle');
+        if (interiorDeg <= 0 || interiorDeg > 180) {
+            throw new Error('interior angle must be in (0, 180] degrees');
+        }
+        var s = Math.sin((interiorDeg * (Math.PI / 180)) / 2);
+        if (s === 0) { throw new Error('interior angle is below representable resolution'); }
+        return finite(1 / s);
     };
 
     /** The outline as vertices, each flagged as a real corner or a smooth point. */
@@ -98,16 +113,26 @@ $.global.ISE_CLIP = (function () {
         return out;
     };
 
-    /** The filled wedge that closes the outer side of one corner. */
+    /** Filled local outer join; null for straight travel, Error for invalid inputs. */
     api.joinPolygon = function (vx, vy, u, w, hw, mode, clipRatio, limit) {
-        var cross = u[0] * w[1] - u[1] * w[0];
-        if (Math.abs(cross) < 1e-12) { return null; }
-        var n1, n2;
-        if (cross < 0) { n1 = [-u[1], u[0]]; n2 = [-w[1], w[0]]; }
-        else { n1 = [u[1], -u[0]]; n2 = [w[1], -w[0]]; }
-        var p1 = [vx + n1[0] * hw, vy + n1[1] * hw];
-        var p2 = [vx + n2[0] * hw, vy + n2[1] * hw];
-
+        if (clipRatio === undefined) { clipRatio = api.CLIP_DEFAULT; }
+        if (limit === undefined) { limit = 4; }
+        number(vx, 'vertex'); number(vy, 'vertex');
+        u = direction(u, 'incoming direction'); w = direction(w, 'outgoing direction');
+        positive(hw, 'half-width'); ratioValue(clipRatio, 'clip ratio'); ratioValue(limit, 'miter limit');
+        if (mode !== 'clip' && mode !== 'miter' && mode !== 'bevel' && mode !== 'round') {
+            throw new Error('unknown join mode');
+        }
+        var cap = mode === 'clip' ? finite(hw * clipRatio) : null;
+        var cross = u[0] * w[1] - u[1] * w[0], dot = u[0] * w[0] + u[1] * w[1];
+        if (cross === 0) {
+            if (dot < 0) { throw new Error('cusp or unresolved turn: outward side is undefined'); }
+            return null;
+        }
+        var side = cross < 0 ? 1 : -1;
+        var n1 = [-side * u[1], side * u[0]], n2 = [-side * w[1], side * w[0]];
+        function point(x, y) { return [finite(vx + x), finite(vy + y)]; }
+        var p1 = point(hw * n1[0], hw * n1[1]), p2 = point(hw * n2[0], hw * n2[1]);
         if (mode === 'bevel') { return [[vx, vy], p1, p2]; }
         if (mode === 'round') {
             var a1 = Math.atan2(n1[1], n1[0]), a2 = Math.atan2(n2[1], n2[0]), k;
@@ -115,34 +140,32 @@ $.global.ISE_CLIP = (function () {
             while (a1 - a2 > Math.PI) { a2 += 2 * Math.PI; }
             var arc = [[vx, vy]];
             for (k = 0; k <= 12; k++) {
-                var ang = a1 + (a2 - a1) * k / 12.0;
-                arc.push([vx + Math.cos(ang) * hw, vy + Math.sin(ang) * hw]);
+                var ang = a1 + (a2 - a1) * k / 12;
+                arc.push(point(Math.cos(ang) * hw, Math.sin(ang) * hw));
             }
+            arc[1] = p1; arc[arc.length - 1] = p2;
             return arc;
         }
-        var bx = n1[0] + n2[0], by = n1[1] + n2[1];
-        var bl = Math.sqrt(bx * bx + by * by);
-        if (bl < 1e-9) { return [[vx, vy], p1, p2]; }
-        var b = [bx / bl, by / bl];
-        var ratio = api.miterRatio(api.interiorAngle(u, w));
-        var tipAt = hw * ratio;
-        var tip = [vx + b[0] * tipAt, vy + b[1] * tipAt];
-
-        if (mode === 'miter') {
-            return ratio <= limit ? [[vx, vy], p1, tip, p2] : [[vx, vy], p1, p2];
+        var sx = u[0] + w[0], sy = u[1] + w[1], dx = u[0] - w[0], dy = u[1] - w[1];
+        var s = norm(sx, sy) / 2, c = norm(dx, dy) / 2, bx, by;
+        if (s === 0 || c === 0) { throw new Error('turn is below representable resolution'); }
+        if (dot < 0) { bx = dx / (2 * c); by = dy / (2 * c); }
+        else { bx = -side * sy / (2 * s); by = side * sx / (2 * s); }
+        if (mode === 'miter' && s < 1 / limit) { return [[vx, vy], p1, p2]; }
+        if (mode === 'miter' || s >= (1 / clipRatio) / (1 + api.CLIP_EPS)) {
+            var reach = finite(hw / s);
+            return [[vx, vy], p1, point(bx * reach, by * reach), p2];
         }
-        var cap = hw * clipRatio;
-        if (tipAt <= cap * (1.0 + api.CLIP_EPS)) { return [[vx, vy], p1, tip, p2]; }
-        // Cut the miter off flat at the cap. Interpolating along both miter edges keeps the
-        // corner pointing the same way and tapers continuously as the angle closes, which is the
-        // whole difference from a bevel.
-        var t = tipAt > hw ? (cap - hw) / (tipAt - hw) : 0.0;
-        var a = [p1[0] + (tip[0] - p1[0]) * t, p1[1] + (tip[1] - p1[1]) * t];
-        var c = [p2[0] + (tip[0] - p2[0]) * t, p2[1] + (tip[1] - p2[1]) * t];
-        return [[vx, vy], p1, a, c, p2];
+        // Offset line: s*axial + c*lateral = hw. Intersect it with axial = cap.
+        // This avoids materializing the nearly-cusp miter tip.
+        var lateral = finite(hw * ((1 - clipRatio * s) / c));
+        var ex = -side * by, ey = side * bx;
+        var a = point(cap * bx + lateral * ex, cap * by + lateral * ey);
+        var b = point(cap * bx - lateral * ex, cap * by - lateral * ey);
+        return [[vx, vy], p1, a, b, p2];
     };
 
-    /** Every polygon whose union is the stroked region: one per segment, one per vertex. */
+    /** Experimental closed-contour pieces; no whole-stroke topology guarantee. */
     api.strokeShapes = function (pts, hw, mode, clipRatio, limit) {
         if (mode === undefined) { mode = 'clip'; }
         if (clipRatio === undefined) { clipRatio = api.CLIP_DEFAULT; }

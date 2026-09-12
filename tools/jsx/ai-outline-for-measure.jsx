@@ -9,11 +9,10 @@
 // strokeWidth, strokeJoin or strokeMiterLimit at all, and characterAttributes.strokeWeight
 // reports the character default rather than a stroke applied through the object's appearance:
 // on a 50 pt W whose real stroke was 16 pt it read 1. Outlined paths do expose those properties,
-// so outlining a DUPLICATE answers what the stroke actually is, and hands over the glyph
-// geometry to measure, without touching the original.
+// so outlining a DUPLICATE exposes basic path style and glyph geometry. Basic path style
+// does not establish the full Appearance stack. Optional args.pdf exports the copied live art.
 //
-// The duplicate is removed in a finally, so the document is left as it was found whether or not
-// the rest succeeds.
+// All mutations take place in a disposable document, closed in finally. Output files must be new.
 (function () {
     var args = $.global.ISE_AI_ARGS || {};
     var log = [];
@@ -22,6 +21,11 @@
     if (!args.out) { return 'ERROR: no output path given'; }
     if (app.documents.length === 0) { return 'ERROR: no document is open'; }
     var doc = app.activeDocument;
+    var beforeSaved = doc.saved, beforeCount = doc.pageItems.length;
+    var documentCount = app.documents.length, oldUI = app.userInteractionLevel;
+    var output = new File(String(args.out));
+    if (output.exists || !output.parent.exists) { throw new Error('Need a new output file in an existing directory.'); }
+    if (args.pdf && new File(String(args.pdf)).exists) { throw new Error('PDF output already exists.'); }
 
     // ---- pick the source ---------------------------------------------------------------------
     var source = null, how = '';
@@ -54,12 +58,23 @@
     } catch (e2) {}
 
     // ---- outline a duplicate -----------------------------------------------------------------
-    var copy = null, outlined = null, leaves = [];
+    var copy = null, outlined = null, leaves = [], scratch = null, failed = false;
+    var sourceText = source.typename === 'TextFrame' ? String(source.contents) : null;
+    var sourceBounds = String(source.geometricBounds);
     try {
-        copy = source.duplicate();
+        app.userInteractionLevel = UserInteractionLevel.DONTDISPLAYALERTS;
+        scratch = app.documents.add(doc.documentColorSpace, 1000, 1000);
+        copy = source.duplicate(scratch.layers[0], ElementPlacement.PLACEATEND);
+        copy.position = [100, 800];
+        if (args.pdf) {
+            var options = new PDFSaveOptions();
+            options.preserveEditability = false;
+            scratch.saveAs(new File(String(args.pdf)), options);
+        }
+        if (args.injectFailure) { throw new Error('injected extraction failure'); }
         if (copy.typename === 'TextFrame') {
-            outlined = copy.createOutlines();
-            // createOutlines replaces the frame, so the duplicate handle is spent either way.
+            outlined = copy.createOutline();
+            // Illustrator uses singular createOutline; InDesign uses createOutlines.
             copy = null;
         } else {
             outlined = copy;
@@ -80,7 +95,7 @@
         if (outlined) { walk(outlined); }
         say('leaf paths: ' + leaves.length);
 
-        // ---- what is the stroke, really? -----------------------------------------------------
+        // ---- basic path style only; Appearance remains a separate inquiry --------------------
         var reported = 0;
         for (var k = 0; k < leaves.length && reported < 4; k++) {
             var p = leaves[k], line = '  path[' + k + '] points=' + p.pathPoints.length + ' closed=' + p.closed;
@@ -97,23 +112,23 @@
         }
 
         // ---- write the geometry --------------------------------------------------------------
-        var json = '{"source":"' + how + '","paths":[';
+        var json = '{"version":"' + app.version + '","build":"' + app.buildNumber + '","source":"disposable copy","paths":[';
         for (var m = 0; m < leaves.length; m++) {
             var path = leaves[m];
             if (m > 0) { json += ','; }
             json += '{"index":' + m +
                     ',"points":' + path.pathPoints.length +
                     ',"closed":' + path.closed +
-                    ',"area":' + path.area.toFixed(4) +
+                        ',"area":' + path.area +
                     ',"gb":[' + path.geometricBounds.join(',') + ']';
             try { json += ',"strokeWidth":' + (path.stroked ? path.strokeWidth : 0); } catch (e5) { json += ',"strokeWidth":0'; }
             json += ',"pts":[';
             for (var n = 0; n < path.pathPoints.length; n++) {
                 var q = path.pathPoints[n];
                 if (n > 0) { json += ','; }
-                json += '{"a":[' + q.anchor[0].toFixed(4) + ',' + q.anchor[1].toFixed(4) + ']' +
-                        ',"l":[' + q.leftDirection[0].toFixed(4) + ',' + q.leftDirection[1].toFixed(4) + ']' +
-                        ',"r":[' + q.rightDirection[0].toFixed(4) + ',' + q.rightDirection[1].toFixed(4) + ']}';
+                json += '{"a":[' + q.anchor[0] + ',' + q.anchor[1] + ']' +
+                        ',"l":[' + q.leftDirection[0] + ',' + q.leftDirection[1] + ']' +
+                        ',"r":[' + q.rightDirection[0] + ',' + q.rightDirection[1] + ']}';
             }
             json += ']}';
         }
@@ -123,17 +138,24 @@
         file.parent.create();
         file.encoding = 'UTF-8';
         file.lineFeed = 'Unix';
-        file.open('w');
-        file.write(json);
-        file.close();
+        if (!file.open('w')) { throw new Error('Cannot open output: ' + file.error); }
+        try { if (!file.write(json)) { throw new Error('Evidence write failed'); } }
+        finally { file.close(); }
         say('wrote ' + file.fsName);
     } catch (err) {
+        failed = true;
         say('FAILED: ' + err.message + ' line ' + err.line);
     } finally {
-        // Leave the document exactly as it was found.
-        try { if (outlined && outlined.isValid !== false) { outlined.remove(); say('removed the outlined duplicate'); } } catch (e6) { say('could not remove the outlined duplicate: ' + e6.message); }
-        try { if (copy) { copy.remove(); say('removed the duplicate'); } } catch (e7) {}
+        try { if (scratch) { scratch.close(SaveOptions.DONOTSAVECHANGES); } }
+        catch (e6) { failed = true; say('cleanup failed: ' + e6.message); }
+        app.userInteractionLevel = oldUI;
+        doc.activate();
     }
     say('page items remaining: ' + doc.pageItems.length);
-    return log.join('\n');
+    var preserved = beforeSaved === doc.saved && beforeCount === doc.pageItems.length &&
+        documentCount === app.documents.length && sourceBounds === String(source.geometricBounds) &&
+        (sourceText === null || sourceText === String(source.contents));
+    // JSON result is separate from the geometry file and suitable for an enforcing test runner.
+    var report = log.join(' | ').replace(/\\/g, '\\\\').replace(/"/g, '\\"').replace(/\r/g, '\\r').replace(/\n/g, '\\n');
+    return '{"passed":' + (!failed && preserved) + ',"sourcePreserved":' + preserved + ',"paths":' + leaves.length + ',"log":"' + report + '"}';
 })();

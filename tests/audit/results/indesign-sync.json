@@ -1,0 +1,112 @@
+{
+  "version": "21.5.1.73",
+  "checks": [
+    {
+      "name": "both page-two splits succeeded",
+      "passed": true
+    },
+    {
+      "name": "same-bounds page-two pairs remain distinct",
+      "passed": true
+    },
+    {
+      "name": "first tick repairs stale contents",
+      "passed": true
+    },
+    {
+      "name": "explicit resync includes formatting-only edit",
+      "passed": true
+    },
+    {
+      "name": "top has genuinely empty stroke color",
+      "passed": true
+    },
+    {
+      "name": "top empty stroke reports zero weight",
+      "passed": true
+    },
+    {
+      "name": "bottom fill matches stroke",
+      "passed": true
+    },
+    {
+      "name": "replacement stays behind fill",
+      "passed": true
+    },
+    {
+      "name": "duplicate token refused without geometry guessing",
+      "passed": true
+    },
+    {
+      "name": "legacy labels refused",
+      "passed": true
+    },
+    {
+      "name": "IDML retains pair tokens on page two",
+      "passed": true
+    },
+    {
+      "name": "IDML retains None and zero-weight top strokes",
+      "passed": true
+    },
+    {
+      "name": "resync works after IDML import",
+      "passed": true
+    },
+    {
+      "name": "document count preserved",
+      "passed": true
+    },
+    {
+      "name": "user document 0 preserved",
+      "passed": true
+    },
+    {
+      "name": "UI restored",
+      "passed": true
+    }
+  ],
+  "splits": [
+    {
+      "name": "",
+      "done": true,
+      "ranges": 1,
+      "ordered": true,
+      "top": 276,
+      "bottom": 249,
+      "bounds": [
+        20,
+        20,
+        90,
+        150
+      ]
+    },
+    {
+      "name": "",
+      "done": true,
+      "ranges": 1,
+      "ordered": true,
+      "top": 299,
+      "bottom": 272,
+      "bounds": [
+        20,
+        20,
+        90,
+        150
+      ]
+    }
+  ],
+  "resync": {
+    "pairs": 2,
+    "resynced": 2,
+    "skipped": []
+  },
+  "roundtrip": {
+    "pairs": 2,
+    "resynced": 2,
+    "skipped": []
+  },
+  "error": null,
+  "passed": true,
+  "raw_result_sha256": "7e3f80ffe849a75dde12e9fcd8c77c670fc449ee81fdf1ee49d16a95371288fd"
+}

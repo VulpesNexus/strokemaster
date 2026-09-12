@@ -4,6 +4,8 @@ Phase D of the InDesign stroke engine investigation: the InDesign SDK surfaces t
 
 The map cites public SDK headers by file name and line so each claim can be checked. It reproduces no SDK code or documentation. "Verified" means the cited lines were read during this investigation; "SDK census" means the item comes from a broad read-only survey of the SDK and was not re-read line by line.
 
+Takeover qualification, 2026-09-12: reading an interface proves that the declaration exists, not that a proposed intervention works in the host. Source-only architecture claims remain proposals until a controlled host test. The sampled transparency-group observations do not establish universal repaint idempotence; the original glyph-core measurement mask was invalid for that purpose. See [the takeover audit](../PROJECT_TAKEOVER_AUDIT.md).
+
 ## Version and tooling
 
 | Item | Value | Source |
@@ -91,7 +93,7 @@ Proven by control on 2026-09-12: the same sources and the same class table, with
 
 **Two positions, not one.** Glyph geometry from `IWaxGlyphs` is relative to the start of its own wax run (*IWaxGlyphs.h*, lines 39 to 42), and the run is placed relative to its wax line by `IWaxRun::GetXPosition` and `GetYPosition` (*IWaxRun.h*, lines 98 to 114). Drawing a run's glyphs therefore needs both, and an adornment that uses only `GetGlyphDrawPosition` paints every run as though it began at the start of its line. Measured on the fixture: of 200 runs, 145 sat at a non-zero position on their line, and every one of them reported its first glyph at x = 0. The failure is quiet again, and worse than a blank: the first run of each line is correct, so output looks broadly right while later runs are painted over their neighbors. It also hides in simple tests, because a line with one run has an offset of zero.
 
-**Installing the run's own rendering object covers more than a solid color.** `IRenderingObject::Install` with `kInstallFill` reproduces whatever the run's fill was, a gradient included, and a gradient reaches exported PDF as a clip and a shading rather than as a path fill. That matters for measurement more than for code: a probe that counts only `f` and `S` sees nothing for gradient text and will report it as skipped when it is being repainted correctly. Counting every operator instead shows `sh` rising by exactly one per gradient-filled run. Blend modes and partial opacity need no handling either, because InDesign draws such text inside a transparency group and the adornment's painting lands inside that same group (*STROKE_MECHANISMS.md*, M8).
+**Installing the run's rendering object also reaches gradients in the sampled exports.** `IRenderingObject::Install` with `kInstallFill` requests the run's fill state. A gradient may reach PDF as clipping and shading, so counting only `f` and `S` misses that contribution. The historical sample showed an additional `sh` per gradient-filled run. Placement inside the sampled transparency groups does not establish correct compositing for all blend modes, opacity, overlapping colors, or decorations. The previous claim that these need no handling is withdrawn pending independent fill-only masks and single-pass controls (*STROKE_MECHANISMS.md*, M8).
 
 ## Where each defect becomes inevitable
 

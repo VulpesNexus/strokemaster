@@ -1,0 +1,2 @@
+// Generated PiPL stays in the local build directory.
+plugin pipl "plugin.pipl"

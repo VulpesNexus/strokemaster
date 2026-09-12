@@ -1,82 +1,50 @@
 # StrokeMaster
 
-Corrections for the way InDesign paints text strokes, and the investigation that established why they are needed. There is a native plugin that corrects the drawing, scripts that build a correction into the document itself, and a measured record of what InDesign actually does.
+Experimental stroke corrections for InDesign, plus an Illustrator native integration diagnostic. This is not a production release. The [takeover audit](PROJECT_TAKEOVER_AUDIT.md) separates reproduced behavior, corrected implementation errors, and remaining release gates.
 
-For InDesign 2026 (21.5.1) on Windows.
+## Current support
 
-## What it corrects
-
-| Defect | What you see | Status |
-| --- | --- | --- |
-| Adjacent-line overlap | A wide Outside stroke on one line covers the descenders of the line above | Root cause proven; corrected by the plugin and by the split |
-| Run fragmentation | Formatting one character leaves notches where the next run's stroke covers the previous run's glyphs | Same root cause, corrected by the same fix |
-| Miter spikes | Long spikes shoot from glyph corners on a Miter join | Root cause proven; no fix implemented, because the target behavior is a design decision |
-| Create Outlines | Converting stroked type loses the fill and halves the halo | Corrected by the `outline` command |
-
-The first two are one defect. For Outside alignment InDesign paints, per wax run, a centered stroke of twice the weight and then that same run's fill, and runs are painted in story order, so a later run's stroke lands on an earlier run's fill.
-
-## Choosing a correction
-
-The question that decides it is whether the file has to look right anywhere other than your own machine. *docs/USING_STROKEMASTER.md* has the full guide; in short:
-
-- **Only you open it** and you want the fix invisible: use the **plugin**. It changes the drawing and never the document.
-- **Anyone else opens it**, or it goes to a printer, or you hand over an INDD or IDML: use the **split** command. The correction is built out of real frames, so it survives with nothing installed.
-- **You export PDF and nothing else**: either. A PDF exported with the plugin loaded is already correct everywhere.
-
-## Quick start
-
-**Scripts.** Copy the *tools/jsx* folder into InDesign's *Scripts Panel* folder (*Window > Utilities > Scripts*, right-click a folder, *Reveal in Explorer*), then double-click *strokemaster.jsx* and choose a command: split, outline, resync, watch, unwatch, or status.
-
-**Plugin.** Copy *InDesignStrokeEngine.pln* and its *(InDesignStrokeEngine Resources)* folder into *Adobe InDesign 2026\Plug-Ins\InDesignStrokeEngine\* and restart InDesign. Administrator rights are needed; removing it is deleting that folder.
-
-**Before distributing the plugin to anyone else, read the warning below.**
-
-## Requirements
-
-- Adobe InDesign 2026 (21.5.1) running, on Windows
-- Python 3 with the packages in *requirements.txt*, for the measurement tools: *python -m pip install -r requirements.txt*
-- To build the plugin: Visual Studio 2022 with MSVC v14.42 or v14.39, and the Adobe InDesign 2026 SDK. Build with *plugin\build-plugin.ps1 -SdkPath "\<sdk\>"*.
-
-## A warning about the plugin's ID prefix
-
-The plugin uses prefix `0x5A200`, which is a development placeholder and **was not assigned by Adobe**. Adobe allocates a 24-bit prefix on request, and its own documentation is explicit that two plugins sharing a prefix cannot be loaded at the same time. InDesign has no registry and no validation, so a collision only ever appears on someone else's machine. Change `kIsePrefixNumber` in *plugin/source/IseID.h* before distributing anything. It is a one-line change today because the plugin stores no data in documents.
-
-## Build the reproducers
-
-Each build script creates its own document without touching open ones. It saves the document under *tests/indesign-stroke/\<issue\>/minimal/*, exports PDF, PNG, and IDML under *…/actual/*, closes it, and restores InDesign's export preferences.
-
-| Command | Builds |
+| Problem | Current result |
 | --- | --- |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-A-minimal.jsx* | Adjacent-line overlap variations |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-B-miter.jsx* | Miter-limit, weight, and wedge-angle variations |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-C-attribute-sweep.jsx* | One frame per character attribute, to see which ones split a run |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-D-outlines.jsx* | Native *Type > Create Outlines* results |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-D-faithful.jsx -With ise-faithful-outlines.jsx* | Live text next to faithful outline conversions |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-N-transparency.jsx* | Blend modes, opacity, gradients, and overprint, to test whether the plugin harms them |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-S-split.jsx -With ise-split-stroked-text.jsx* | Split pairs beside unsplit controls |
-| *powershell -NoProfile -File tools\run-jsx.ps1 build-T-livesync.jsx -With ise-split-stroked-text.jsx,ise-live-sync.jsx* | A split pair, edited and resynced |
+| Overlap between lines and formatting runs | The InDesign fill-repaint prototype corrects the measured Outside-stroked victims. It still misses unstroked victim runs and has ordering/compositing limits. Supported split-frame cases provide a document-level alternative. |
+| Miter spikes | Conventional miter behavior is characterized. The corrected local clipping kernel passes independent tests, but local clipping does not satisfy the original global outer-envelope requirement. No native miter fix is delivered. |
+| Create Outlines | The script stages conversion before replacing supported text frames. Thirteen checks pass in InDesign 21.5.1.73; broader fidelity and lifecycle coverage remain open. |
+| Editable split pairs | Explicit resync carries text and formatting while preserving a uniform Outside stroke. Contents-only watching is optional. Sixteen host checks include IDML import, page placement, and None/zero-weight top strokes. |
+| Illustrator integration | An x64 straight-line stroke-replacement diagnostic compiles and passes mocks. It has not been loaded in Illustrator and is not a font stroker. |
 
-## Measure
+The measured hosts are InDesign 21.5.1.73 and Illustrator 30.7.0, build 114R, on Windows. These observations are not cross-version certification.
 
-- *python tools/stroke_probe.py tests/indesign-stroke/\<issue\>/actual \<stem\>* lists the paint objects InDesign exported for every frame and writes the measurements the manifest asks for into *\<stem\>.probe.md*.
-- *python tools/compare_renders.py \<a.png\> \<b.png\> \<manifest.json\> \<out-stem\>* compares two renders of one document frame by frame, separating a repaint's antialiased edge from a real change of color.
-- *python tools/stroke_outline.py render \<paths.json\> \<out.png\>* builds a stroke's outline from a path under each join rule, and *validate* compares a plain miter against Adobe's own expansion of the same stroke.
-- *python tools/miter_geometry.py \<out-dir\>* checks the join formulas against fixture B's measured wedges and draws the rules side by side. Both tools take the rule itself from *tools/miter_rule.py*, which is the only place it is defined.
-- *powershell -NoProfile -File tools\run-ai-jsx.ps1 ai-dump-paths.jsx -ArgJson "{\\"out\\":\\"C:/tmp/p.json\\"}"* writes Illustrator path geometry to JSON for the two tools above. Illustrator is a separate application from InDesign, so it has its own runner.
-- *python tools/make_expected.py tests/indesign-stroke/\<issue\> \<stem\>* writes the expected output: the same PDF with each frame's Outside strokes painted before its fills.
-- *python tools/scan_identifiable.py \<path\>* checks files for this machine's user name, computer name, and home directory before they are added to the repository.
+## Use the scripts
 
-The per-frame crops and the edited PDFs these tools write are not committed; they are regenerated from the PDFs that are.
+Copy the *tools/jsx* folder into InDesign's *Scripts Panel* folder: open *Window > Utilities > Scripts*, right-click a folder, and choose *Reveal in Explorer*. Run *strokemaster.jsx* and choose **split**, **outline**, **resync**, **watch**, **unwatch**, or **status**.
 
-## Documents
+Read [the usage guide](docs/USING_STROKEMASTER.md) before choosing a correction. Split frames travel as ordinary document objects, but remain two stories. Automatic updates require the script running, and formatting-only edits require explicit resync. Unsupported backgrounds, effects, threading, and ambiguous pair labels are refused. Keep an original copy while evaluating a new revision.
 
-| Document | Contents |
+The top Outside-stroke contribution is explicitly cleared to *None* and weight 0. The bottom uses the stroke color as its fill. Mixed Center-stroked ranges keep their native treatment on top; a frame with no Outside-stroked range is not split.
+
+## Native prototype
+
+The InDesign binary and its resource folder load from *Adobe InDesign 2026/Plug-Ins/InDesignStrokeEngine/* after an InDesign restart. This per-machine drawing correction does not change the document. A recipient without the plugin sees native InDesign behavior; tested PDFs already contain the corrective paths.
+
+The prefix `0x5A200` is unassigned. Do not treat it as a release identity. An Adobe prefix allocation, Illustrator effect identity, package signing, and Creative Cloud publication are separate steps explained in [the distribution audit](docs/PLUGIN_DISTRIBUTION.md). No Marketplace package has been submitted.
+
+Native builds require external Adobe SDKs and Visual Studio/MSVC dependencies. The existing InDesign project is under *plugin/*; the separate compile-only Illustrator diagnostic and its build notes are under *plugin/illustrator-probe/*. SDK files and generated binaries are not redistributed here.
+
+## Verify and investigate
+
+[Validation instructions](tests/README.md) cover the executed pure suites and bounded host records. Python tools require *requirements.txt*; the script mocks require Node 24. Old fixture generators and output tables remain research evidence. Regenerate into fresh output directories and inspect restoration reports; do not overwrite the preserved corpus merely to update a measurement.
+
+The render comparator accepts an independent fill-only mask. Without it, its eroded non-background mask includes stroke/effect ink and cannot measure glyph-fill compositing. Historical transparency interpretations based on the old mask were withdrawn and remeasured.
+
+| Document | Purpose |
 | --- | --- |
-| *docs/USING_STROKEMASTER.md* | Which correction to use, how to install it, and what to know before relying on it |
-| *docs/STROKE_FIXTURE_CENSUS.md* | Inventory of the supplied fixture and where each defect appears |
-| *docs/INDESIGN_STROKE_SDK_MAP.md* | InDesign SDK surfaces for text strokes and where a plugin could act |
-| *docs/STROKE_MECHANISMS.md* | What produces each defect, with controls |
-| *docs/INDESIGN_STROKE_INVESTIGATION.md* | Per-defect report: root cause, layer, fixes, risks, and verdicts |
-| *docs/LINKED_TEXT_UTILITY.md* | Notes toward a separate tool for mirroring one text into several frames |
-
-Each fixture under *tests/indesign-stroke/* carries its own *NOTES.md* with the method and the numbers.
+| [Usage guide](docs/USING_STROKEMASTER.md) | Workflow, supported contexts, installation, and limitations |
+| [Takeover audit](PROJECT_TAKEOVER_AUDIT.md) | Initial A–N audit, claim ledger, and subsequent evidence |
+| [Open questions](OPEN_QUESTIONS.md) | Remaining discriminating tests and release blockers |
+| [Geometry contract](docs/MITER_GEOMETRY_CONTRACT.md) | Corrected local rule, independent oracle, and extreme-font limits |
+| [Region experiment](docs/REGION_OFFSET_EXPERIMENT.md) | Why topology and a surrounding envelope are required |
+| [Illustrator architecture](docs/ILLUSTRATOR_ARCHITECTURE_AUDIT.md) | Native stroke-filter route and compile-only proof |
+| [InDesign interception](docs/INDESIGN_PAINT_INTERCEPTION_AUDIT.md) | Public drawing contracts and unresolved suppression route |
+| [Fixture census](docs/STROKE_FIXTURE_CENSUS.md) | Inventory of the supplied InDesign fixture |
+| [Mechanisms](docs/STROKE_MECHANISMS.md) | Paint-order, miter, outlining, and comparison evidence |
+| [History](docs/MITER_JOIN_HISTORY.md) | Primary-source background and confidence limits |

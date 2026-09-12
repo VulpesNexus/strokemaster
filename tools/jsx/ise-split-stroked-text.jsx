@@ -2,9 +2,8 @@
 // A library. Load it, then call $.global.ISE_SPLIT.split(frames).
 //
 // This is the document-level workaround for fixtures A and C, for anyone who cannot install the
-// plugin. Painting every stroke before every fill is exactly what the plugin does at draw time;
-// here the same ordering is built out of two real frames, so the corrected appearance is carried
-// by the document itself and survives on any machine, any InDesign version, and any export.
+// plugin. The correction is built out of two real frames. Fixture S records the measured
+// rendering scope; it is not a guarantee for every document appearance or export backend.
 //
 // How the two frames are derived, per text style range rather than per frame, so that a story
 // with varied stroke settings splits correctly:
@@ -21,25 +20,61 @@
 // baseline difference between two frames equals their frame offset exactly
 // (tools/jsx/probe-linked-stories.jsx, Q7). The two frames therefore compose identically.
 //
-// The stroke color is never cleared by setting a weight of zero. On a text range, setting
-// strokeWeight to 0 after clearing the color switches a 1 pt black stroke back on, so only the
-// color is set to None (docs/INDESIGN_STROKE_INVESTIGATION.md).
+// Text ranges accept a zero weight with color None in the measured InDesign 21.5.1 host.
+// Set both explicitly. The inherited warning generalized a page-item observation to text;
+// probe-zero-stroke.jsx now distinguishes Text, TextStyleRange, and Character access routes.
 //
 // What this does NOT do is keep the two frames in sync afterward. InDesign's linked stories
 // synchronize the text but overwrite the child's formatting with the parent's, paragraph styles
 // included, and no style mapping is reachable from scripting to prevent it
-// (tools/jsx/probe-style-mapping.jsx). The original settings are therefore recorded in the
-// bottom frame's script label so that a later pass can rebuild the pair.
+// (tools/jsx/probe-style-mapping.jsx). Each new pair shares a persistent token in its role
+// labels, without numeric frame IDs. Sync reads the stroke from the bottom frame and refuses
+// duplicate tokens or legacy labels rather than guessing by rectangle or by text.
 //
 // Pure ASCII: ExtendScript sources are read in the system codepage.
 $.global.ISE_SPLIT = (function () {
     var api = {};
     var LABEL = 'ISE_SPLIT';
+    function newPairToken(doc) {
+        var token = 'p' + new Date().getTime() + '-' + Math.floor(Math.random() * 2147483647) + '-' + Math.floor(Math.random() * 2147483647);
+        var prefix = 'ISE3|' + token + '|';
+        // Randomness proposes a token; scanning rejects an actual collision in this document.
+        var items = doc.allPageItems;
+        for (var i = 0; i < items.length; i++) {
+            if (String(items[i].extractLabel(LABEL)).indexOf(prefix) === 0) { throw new Error('pair token collision; no split performed'); }
+        }
+        return token;
+    }
+    function pairLabel(token, role) { return 'ISE3|' + token + '|' + role; }
 
     function log(lib, s) { if (lib && lib.L) { lib.L(s); } }
 
     function swatchName(c) {
         try { return c === null || c === undefined ? 'None' : String(c.name); } catch (e) { return 'None'; }
+    }
+
+    // Duplication is supported only for frames without object paint or transparency effects.
+    // Unknown or unreadable appearance properties fail closed; do not assume they are off.
+    function plainAppearance(tf) {
+        if (String(tf.fillColor.name) !== 'None' || String(tf.strokeColor.name) !== 'None') {
+            throw new Error('frame backgrounds and borders are unsupported');
+        }
+        var targets = ['transparencySettings', 'contentTransparencySettings', 'fillTransparencySettings', 'strokeTransparencySettings'];
+        var effects = ['innerShadowSettings', 'outerGlowSettings', 'innerGlowSettings', 'bevelAndEmbossSettings', 'satinSettings', 'directionalFeatherSettings', 'gradientFeatherSettings'];
+        for (var t = 0; t < targets.length; t++) {
+            var settings = tf[targets[t]], blend = settings.blendingSettings;
+            if (String(blend.blendMode) !== String(BlendMode.NORMAL) || Number(blend.opacity) !== 100 ||
+                blend.knockoutGroup !== false || blend.isolateBlending !== false) {
+                throw new Error(targets[t] + ': blending or opacity is unsupported');
+            }
+            if (String(settings.dropShadowSettings.mode) !== String(ShadowMode.NONE) ||
+                String(settings.featherSettings.mode) !== String(FeatherMode.NONE)) {
+                throw new Error(targets[t] + ': shadow or feather is unsupported');
+            }
+            for (var e = 0; e < effects.length; e++) {
+                if (settings[effects[e]].applied !== false) { throw new Error(targets[t] + ': ' + effects[e] + ' is active or unverified'); }
+            }
+        }
     }
 
     /** True for a frame this library is prepared to handle.
@@ -52,6 +87,11 @@ $.global.ISE_SPLIT = (function () {
         if (tf.previousTextFrame !== null || tf.nextTextFrame !== null) { return 'threaded; split the thread by hand first'; }
         if (tf.parentStory.characters.length === 0) { return 'empty'; }
         if (tf.extractLabel(LABEL) !== '') { return 'already split'; }
+        try {
+            if (!tf.parentPage || (tf.parent.constructor.name !== 'Spread' && tf.parent.constructor.name !== 'Page')) { return 'only frames directly in a page or spread are supported'; }
+            if (tf.locked || tf.itemLayer.locked) { return 'frame or layer is locked'; }
+            plainAppearance(tf);
+        } catch (appearanceError) { return 'appearance is unsupported or unverified: ' + appearanceError.message; }
         var ranges = tf.parentStory.textStyleRanges, stroked = 0, outside = 0;
         for (var i = 0; i < ranges.length; i++) {
             if (swatchName(ranges[i].strokeColor) !== 'None') {
@@ -91,6 +131,7 @@ $.global.ISE_SPLIT = (function () {
                 fillTint: r.fillTint,
                 strokeColor: swatchName(r.strokeColor),
                 strokeTint: r.strokeTint,
+                strokeWeight: r.strokeWeight,
                 strokeAlignment: String(r.strokeAlignment),
                 overprintFill: r.overprintFill,
                 overprintStroke: r.overprintStroke
@@ -144,47 +185,87 @@ $.global.ISE_SPLIT = (function () {
         // placement rather than rearranging afterward is what keeps this safe: the first
         // version duplicated into the back and then stepped the copy backwards until the indices
         // crossed, which wedged InDesign when the step could not move past a locked item.
-        var bottom = tf;
-        var top = tf.duplicate();
-        top.geometricBounds = bounds;
-        bottom.name = (originalName || 'text') + ' [ISE stroke]';
-        top.name = (originalName || 'text') + ' [ISE fill]';
+        var bottom = tf, top = null, touched = false;
+        try {
+            var token = newPairToken(doc);
+            top = tf.duplicate();
+            // Keep the duplicate's native transform; resetting its bounding box can change it.
+            if (!placeBehind(bottom, top)) { throw new Error('could not establish fill-over-stroke order'); }
+            touched = true;
+            bottom.name = (originalName || 'text') + ' [ISE stroke]';
+            top.name = (originalName || 'text') + ' [ISE fill]';
 
-        var i, rec;
-        for (i = 0; i < recs.length; i++) {
-            rec = recs[i];
-            var br = rangeOf(bottom, rec);
-            if (rec.strokeColor === 'None' || !isOutside(rec)) {
-                // Nothing belongs underneath. An unstroked range has no halo, and a Center
-                // stroke stays on the top frame so that it still paints over its own fill; both
-                // must vanish from the bottom frame or they would add ink that was never there.
-                br.fillColor = none;
-                br.strokeColor = none;
-            } else {
-                br.fillColor = sw(doc, rec.strokeColor);
-                br.fillTint = rec.strokeTint;
-                br.overprintFill = rec.overprintStroke;
+            var i, rec;
+            for (i = 0; i < recs.length; i++) {
+                rec = recs[i];
+                var br = rangeOf(bottom, rec);
+                if (rec.strokeColor === 'None' || !isOutside(rec)) {
+                    // Nothing belongs underneath. An unstroked range has no halo, and a Center
+                    // stroke stays on the top frame so that it still paints over its own fill; both
+                    // must vanish from the bottom frame or they would add ink that was never there.
+                    br.fillColor = none;
+                    br.strokeColor = none;
+                } else {
+                    br.fillColor = sw(doc, rec.strokeColor);
+                    br.fillTint = rec.strokeTint;
+                    br.overprintFill = rec.overprintStroke;
+                }
             }
-        }
-        for (i = 0; i < recs.length; i++) {
-            rec = recs[i];
-            if (rec.strokeColor !== 'None' && isOutside(rec)) {
-                // Only the color is cleared: a weight of zero would switch a stroke back on.
-                // A Center range keeps its stroke here, which is where it already belonged.
-                rangeOf(top, rec).strokeColor = none;
+            for (i = 0; i < recs.length; i++) {
+                rec = recs[i];
+                if (rec.strokeColor !== 'None' && isOutside(rec)) {
+                    // Clear both text-stroke attributes. Keep Center strokes in their native role.
+                    var topRange = rangeOf(top, rec);
+                    topRange.strokeWeight = 0;
+                    topRange.strokeColor = none;
+                }
             }
+
+            // Expected to be true already, with no step taken; checked rather than assumed.
+            var ordered = placeBehind(bottom, top);
+            if (!ordered) { throw new Error('fill-over-stroke order was lost'); }
+            var bottomLabel = pairLabel(token, 'stroke');
+            var topLabel = pairLabel(token, 'fill');
+            bottom.insertLabel(LABEL, bottomLabel);
+            top.insertLabel(LABEL, topLabel);
+            if (String(bottom.extractLabel(LABEL)) !== bottomLabel || String(top.extractLabel(LABEL)) !== topLabel) {
+                throw new Error('pair labels did not persist');
+            }
+
+            log(lib, 'split ' + originalName + ': ' + recs.length + ' range(s), ordered=' + ordered);
+            return {
+                name: originalName, done: true, ranges: recs.length, ordered: ordered,
+                top: top.id, bottom: bottom.id, bounds: bounds
+            };
+        } catch (e) {
+            var problems = [];
+            if (touched) {
+                try {
+                    for (var j = 0; j < recs.length; j++) {
+                        var saved = recs[j], original = rangeOf(bottom, saved);
+                        original.strokeColor = sw(doc, saved.strokeColor);
+                        if (saved.strokeColor !== 'None') { original.strokeWeight = saved.strokeWeight; }
+                        original.strokeTint = saved.strokeTint;
+                        original.overprintStroke = saved.overprintStroke;
+                        original.fillColor = sw(doc, saved.fillColor);
+                        original.fillTint = saved.fillTint;
+                        original.overprintFill = saved.overprintFill;
+                    }
+                    bottom.name = originalName;
+                    bottom.insertLabel(LABEL, '');
+                } catch (restoreError) { problems.push('original restore failed: ' + restoreError.message); }
+            }
+            if (problems.length) {
+                // A failed restore means the duplicate may contain the only surviving fill.
+                // Retain it for recovery and make a best effort to disable pair discovery.
+                try { bottom.insertLabel(LABEL, ''); if (top && top.isValid) { top.insertLabel(LABEL, ''); } }
+                catch (labelError) { problems.push('pair quarantine failed: ' + labelError.message); }
+                return { name: originalName, done: false, reason: e.message + '; MANUAL RECOVERY: ' + problems.join('; ') + '; duplicate retained' };
+            }
+            try { if (top && top.isValid) { top.remove(); } if (top && top.isValid) { throw new Error('removal had no effect'); } }
+            catch (cleanupError) { problems.push('duplicate ' + top.id + ' cleanup failed: ' + cleanupError.message); }
+            return { name: originalName, done: false, reason: e.message + (problems.length ? '; MANUAL RECOVERY: ' + problems.join('; ') : '') };
         }
-
-        // Expected to be true already, with no step taken; checked rather than assumed.
-        var ordered = placeBehind(bottom, top);
-        bottom.insertLabel(LABEL, lib && lib.toJSON ? lib.toJSON({ role: 'stroke', of: originalName, ranges: recs }) : 'stroke');
-        top.insertLabel(LABEL, 'fill');
-
-        log(lib, 'split ' + originalName + ': ' + recs.length + ' range(s), ordered=' + ordered);
-        return {
-            name: originalName, done: true, ranges: recs.length, ordered: ordered,
-            top: top.id, bottom: bottom.id, bounds: bounds
-        };
     };
 
     /** Splits every frame given, skipping those it cannot handle and saying why. */

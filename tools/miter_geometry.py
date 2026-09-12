@@ -1,34 +1,10 @@
-"""Reference geometry for a clipped miter join, and a picture of what it does.
+"""Diagnostic join drawings and inherited conventional-miter measurements.
 
-Usage:
-    python tools/miter_geometry.py [out-dir]
-
-Writes miter-joins.svg and prints a reach table. No dependencies outside the standard library,
-so this can be checked without InDesign or the measurement stack.
-
-The problem, in one line: a miter join's tip sits at halfwidth / sin(theta / 2) from the vertex,
-which grows without bound as the angle closes, while the stroke reaches only halfwidth anywhere
-else. On a W the counter apexes are acute enough that their tips punch out past the letter's own
-outer edges.
-
-PostScript and PDF offer one control, the miter limit, and it is a THRESHOLD: a join is mitered
-while 1 / sin(theta / 2) <= limit and becomes a full bevel past that. So lowering the limit to
-tame a spike also flattens every corner just past the threshold, and the change is a jump rather
-than a taper. Fixture B measures both halves of that: at limit 4 the spike reaches 6.8 pt on a
-stroke whose half-width is 4.0, and at limit 1 it reaches 4.03, the half-width exactly, because
-every join has become a bevel.
-
-What is wanted instead is a CLAMP: keep the miter, but cut its tip off flat at a chosen distance.
-It is not expressible as a PDF or PostScript line join, each of which defines exactly three, so
-it has to be built as geometry.
-
-That behavior is ordinary elsewhere: GDI+, Direct2D, WPF, XPS, FreeType and Qt all clamp by
-default. It is not a web standard any more, though. SVG 2 specified it as stroke-linejoin:
-miter-clip in 2018, no browser implemented it, and the Working Group removed it on 18 March
-2026, so do not cite it under that name. See docs/MITER_JOIN_HISTORY.md.
-
-Distances below are all measured from the vertex along the outward bisector, in the same units as
-the stroke width.
+The shared Python join kernel is not an independent oracle. The analytic tests
+in tests/geometry are the clipping evidence. B3 values below are historical input,
+not a fresh host measurement or clipped-join validation. Distances are lengths
+in input-coordinate units; hw is half the full stroke width. Axial and radial
+extent differ for flat clips. No whole-stroke production claim is made here.
 """
 import math
 import os
@@ -36,7 +12,7 @@ import sys
 
 # Fixture B, B3 wedges: apex angle, the miter and bevel distances predicted for a half-width of
 # 4.0, and what was actually measured on the page with a Center stroke of 8 pt at limit 4.
-# Used here to check the formulas against the host rather than against themselves.
+# Historical comparison data only; no host is run by this module.
 B3 = [
     # angle, theory miter, theory bevel, measured extension
     (10, 45.89, 0.35, 0.4),
@@ -53,72 +29,23 @@ B3 = [
 HALFWIDTH = 4.0
 LIMIT = 4.0
 
-# The rule and its constants live in one place, so this file and tools/stroke_outline.py cannot
-# come to disagree about what the clamp is.
+# This visualization uses the shared kernel, not an independent reference.
 from miter_rule import (RIGHT_ANGLE_RATIO, bevel_reach, clipped_reach,  # noqa: E402
-                        miter_ratio, miter_reach, native_reach, round_reach)
+                        miter_ratio, miter_reach, native_reach, round_reach, join_boundary, _sine)
 
 
 def corner_polygon(vertex, d_in, d_out, hw, mode, clip_ratio=2.0, limit=4.0):
-    """The outer boundary of one join, as a list of points.
+    """Local outer boundary for either turn orientation; [] for straight travel.
 
-    vertex is the corner, d_in the unit direction arriving at it, d_out the unit direction
-    leaving it. The outward side is taken to be the left of travel, which is the convex side of
-    the corners this is built for.
+    Directions are unit vectors. Lengths use input units; both ratios use hw.
+    The diagnostic round arc keeps 16 subdivisions and follows the short arc.
     """
-    def left(v):
-        return (-v[1], v[0])
-
-    def add(p, v, s):
-        return (p[0] + v[0] * s, p[1] + v[1] * s)
-
-    n_in, n_out = left(d_in), left(d_out)
-    p_in = add(vertex, n_in, hw)
-    p_out = add(vertex, n_out, hw)
-
-    bx, by = n_in[0] + n_out[0], n_in[1] + n_out[1]
-    blen = math.hypot(bx, by)
-    if blen < 1e-12:
-        return [p_in, p_out]
-    bis = (bx / blen, by / blen)
-
-    cos_half = max(-1.0, min(1.0, (n_in[0] * n_out[0] + n_in[1] * n_out[1])))
-    half = math.acos(cos_half) / 2.0
-    theta_deg = 180.0 - math.degrees(half * 2.0)
-    ratio = miter_ratio(theta_deg)
-
-    if mode == 'bevel':
-        return [p_in, p_out]
-    if mode == 'round':
-        steps, arc = 16, []
-        a_in = math.atan2(n_in[1], n_in[0])
-        a_out = math.atan2(n_out[1], n_out[0])
-        while a_out < a_in:
-            a_out += 2 * math.pi
-        for i in range(steps + 1):
-            a = a_in + (a_out - a_in) * i / steps
-            arc.append(add(vertex, (math.cos(a), math.sin(a)), hw))
-        return arc
-    if mode == 'miter':
-        if ratio > limit:
-            return [p_in, p_out]
-        return [p_in, add(vertex, bis, hw * ratio), p_out]
-
-    # Clamped miter. Under the clamp it is an ordinary miter; past it the tip is cut off flat,
-    # which keeps the corner pointing while capping how far it reaches.
-    tip_at = hw * ratio
-    cap = hw * clip_ratio
-    tip = add(vertex, bis, tip_at)
-    if tip_at <= cap:
-        return [p_in, tip, p_out]
-    t = (cap - hw) / (tip_at - hw) if tip_at > hw else 0.0
-    a = (p_in[0] + (tip[0] - p_in[0]) * t, p_in[1] + (tip[1] - p_in[1]) * t)
-    b = (p_out[0] + (tip[0] - p_out[0]) * t, p_out[1] + (tip[1] - p_out[1]) * t)
-    return [p_in, a, b, p_out]
+    return join_boundary(vertex, d_in, d_out, hw, mode, clip_ratio, limit, round_steps=16)
 
 
 def wedge(theta_deg, hw, mode, **kw):
     """One symmetric wedge pointing up, drawn as its outer stroke boundary."""
+    _sine(theta_deg)  # Validate the public angle input.
     half = math.radians(theta_deg) / 2.0
     apex = (0.0, 0.0)
     d_in = (math.sin(half), math.cos(half))
@@ -127,7 +54,7 @@ def wedge(theta_deg, hw, mode, **kw):
 
 
 def check():
-    print("Checking the formulas against fixture B's measured wedges (half-width 4.0, limit 4):")
+    print("Historical conventional-miter comparison with fixture B's recorded wedges (half-width 4.0, limit 4):")
     print("%6s %10s %10s %10s %10s %9s" % ("angle", "ratio", "predicted", "measured", "delta", "join"))
     worst = 0.0
     for angle, th_miter, th_bevel, measured in B3:
@@ -139,14 +66,14 @@ def check():
             angle, miter_ratio(angle), predicted, measured, delta,
             "miter" if miter_ratio(angle) <= LIMIT else "bevel"))
         assert abs(predicted - expected) < 0.02, (angle, predicted, expected)
-    print("largest disagreement with the host: %.2f pt\n" % worst)
+    print("largest disagreement with historical measurements: %.2f pt\n" % worst)
     return worst
 
 
 def table(hw=4.0):
     print("Reach from the vertex, half-width %.1f, against what each rule gives:" % hw)
     print("%6s %9s %9s %9s %9s %9s %9s" % (
-        "angle", "ratio", "miter", "native L4", "clip sqrt2", "clip 2", "round/bevel cap"))
+        "angle", "ratio", "miter", "native L4", "clip sqrt2", "clip 2", "round radius"))
     for angle in (10, 15, 20, 25, 30, 45, 60, 90, 120):
         print("%6d %9.3f %9.2f %9.2f %9.2f %9.2f %9.2f" % (
             angle, miter_ratio(angle), miter_reach(hw, angle), native_reach(hw, angle, 4.0),
@@ -193,7 +120,7 @@ def svg(out_dir, hw=4.0):
     with open(path, 'w', encoding='utf-8') as f:
         f.write(''.join(parts))
     print('wrote %s' % path)
-    print('The dashed circle is the stroke\'s own reach. Anything outside it is a spike.')
+    print('The dashed circle has radius hw; it is not the axial clipping plane.')
 
 
 def png(out_dir, hw=4.0):
