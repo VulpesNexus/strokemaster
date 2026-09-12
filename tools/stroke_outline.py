@@ -14,9 +14,14 @@ type that is visible as spikes on the acute corners and blunt stumps on the ones
 limit, and the only dial available, the miter limit, moves the cliff rather than removing it.
 
 A clamped miter removes the cliff: keep the miter, but cut its tip off flat once it would reach
-further than clip_ratio times the stroke's half-width. This is stroke-linejoin: miter-clip in
-SVG 2. It cannot be expressed as a PDF or PostScript line join, so it has to be built as
-geometry, which is what this does.
+further than clip_ratio times the stroke's half-width. It cannot be expressed as a PDF or
+PostScript line join, each of which defines exactly three, so it has to be built as geometry,
+which is what this does.
+
+The behavior is ordinary elsewhere: GDI+, Direct2D, WPF, XPS, FreeType and Qt all clamp by
+default, and have since GDI+ shipped. It is not a web standard any more, though. SVG 2 specified
+it as stroke-linejoin: miter-clip in 2018, no browser implemented it, and the Working Group
+removed it on 18 March 2026, so do not cite it under that name. See docs/MITER_JOIN_HISTORY.md.
 
 Nothing here is fitted to a particular glyph or size. Every quantity is derived per corner from
 the path and the stroke width, so the same code answers for any font, any weight, and any angle.

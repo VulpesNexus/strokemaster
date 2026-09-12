@@ -19,8 +19,13 @@ stroke whose half-width is 4.0, and at limit 1 it reaches 4.03, the half-width e
 every join has become a bevel.
 
 What is wanted instead is a CLAMP: keep the miter, but cut its tip off flat at a chosen distance.
-That is stroke-linejoin: miter-clip in SVG 2, and it is not expressible as a PDF or PostScript
-line join, so it has to be built as geometry.
+It is not expressible as a PDF or PostScript line join, each of which defines exactly three, so
+it has to be built as geometry.
+
+That behavior is ordinary elsewhere: GDI+, Direct2D, WPF, XPS, FreeType and Qt all clamp by
+default. It is not a web standard any more, though. SVG 2 specified it as stroke-linejoin:
+miter-clip in 2018, no browser implemented it, and the Working Group removed it on 18 March
+2026, so do not cite it under that name. See docs/MITER_JOIN_HISTORY.md.
 
 Distances below are all measured from the vertex along the outward bisector, in the same units as
 the stroke width.

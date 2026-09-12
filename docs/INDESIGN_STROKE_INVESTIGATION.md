@@ -127,7 +127,7 @@ Set the miter limit in the document's text styles to a value chosen from the mea
 
 ### SDK/native-plugin fix
 
-Shortening long miters while keeping every other miter (the `miter-clip` behavior in SVG 2) has no PDF or PostScript operator, so it has to be drawn as geometry. *tools/stroke_outline.py* builds that geometry and is validated against Adobe's own expansion.
+Shortening long miters while keeping every other miter has no PDF or PostScript operator, so it has to be drawn as geometry. *tools/stroke_outline.py* builds that geometry and is validated against Adobe's own expansion. The behavior is standard elsewhere, being what GDI+, Direct2D, WPF, XPS, FreeType, and Qt do by default; it was specified for the web as `stroke-linejoin: miter-clip` in SVG 2 and removed again on 18 March 2026, having never been implemented by a browser (*MITER_JOIN_HISTORY.md*).
 
 Delivery differs by host, and the difference is the same one fixtures A and C ran into.
 

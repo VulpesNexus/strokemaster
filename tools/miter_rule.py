@@ -19,10 +19,17 @@ A clamp removes the cliff: the miter is kept and its tip cut off flat once it wo
 than clip_ratio times the half-width. Largest step anywhere in a 1 to 179 degree sweep: 0.0975 pt
 at the same half-width.
 
-clip_ratio is measured in half-widths, which is the same convention SVG 2 uses for
-stroke-linejoin: miter-clip, where the clip distance is stroke-miterlimit / 2 times the stroke
-width, and the stroke width is twice the half-width. The default here is therefore equivalent to
-an SVG 2 miter-clip at a stroke-miterlimit of sqrt(2).
+clip_ratio is measured in half-widths. That is the convention Microsoft's graphics stack uses,
+where the clamp has been the plain miter join since GDI+: WPF's documentation describes the
+miter limit as "the limit on the ratio of the miter length to HALF this pen's Thickness".
+FreeType and Qt clamp by default too. Beware the naming, which reads backwards in three of the
+four major APIs: GDI+'s LineJoinMiterClipped bevels while its plain LineJoinMiter clips, Qt's
+MiterJoin clips while SvgMiterJoin bevels, and FreeType's MITER_VARIABLE clips while MITER_FIXED
+bevels.
+
+Do not call this "SVG 2's miter-clip". SVG 2 did specify exactly this behavior under that name
+in 2018, but no browser implemented it and the Working Group removed it on 18 March 2026. See
+docs/MITER_JOIN_HISTORY.md.
 """
 import math
 
