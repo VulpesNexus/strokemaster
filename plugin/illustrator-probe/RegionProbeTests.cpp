@@ -1,23 +1,39 @@
-// Registration-only target tests. No Illustrator or real SDK implementation.
+// region-prep-2 target tests. No Illustrator or real SDK implementation.
+// The real core, adapter conversion, admission oracle, and SDK output backend
+// carry their own suites; these tests cover registration, globals lifetime,
+// bridge payloads, and bounded Go refusals against mocked suites.
 #include "RegionProbe.cpp"
 #include <cstdlib>
 #include <iostream>
 namespace {
-SPBasicSuite basic{};AILiveEffectSuite live{};
-int checks=0,acquired=0,released=0,registered=0,failAt=0,calls=0;
-bool nestedShutdown=false;
-constexpr ASErr failure=-1234;
+SPBasicSuite basic{};AILiveEffectSuite live{};AIArtSuite art{};AIPathSuite path{};
+AIPathStyleSuite paint{};AIArtStyleSuite styles{};AIArtStyleParserSuite parser{};
+AIDictionarySuite dict{};AIDocumentSuite doc{};AIBlendStyleSuite blend{};
+int checks=0,acquired=0,released=0,registered=0,allocated=0,freed=0,failAt=0,calls=0;
 void Check(bool x,const char* s){++checks;if(!x){std::cerr<<"FAIL: "<<s<<'\n';std::exit(1);}}
-ASErr Step(){return ++calls==failAt?failure:kNoErr;}
+ASErr Step(){return ++calls==failAt?-1234:kNoErr;}
 void Setup(){
-    acquired=released=registered=failAt=calls=0;nestedShutdown=false;
-    basic.AcquireSuite=[](const char* name,ai::int32 version,const void** out)->SPErr{
-        *out=nullptr;auto e=Step();if(e)return e;
-        Check(std::strcmp(name,kAILiveEffectSuite)==0&&version==kAILiveEffectVersion,"exact live-effect suite gate");
-        ++acquired;*out=&live;return kNoErr;
+    acquired=released=registered=allocated=freed=failAt=calls=0;
+    basic.AcquireSuite=[](const char* name,ai::int32,const void** out)->SPErr{
+        *out=nullptr;auto e=Step();if(e)return e;++acquired;
+        if(std::strcmp(name,kAILiveEffectSuite)==0)*out=&live;
+        else if(std::strcmp(name,kAIArtSuite)==0)*out=&art;
+        else if(std::strcmp(name,kAIPathSuite)==0)*out=&path;
+        else if(std::strcmp(name,kAIPathStyleSuite)==0)*out=&paint;
+        else if(std::strcmp(name,kAIArtStyleSuite)==0)*out=&styles;
+        else if(std::strcmp(name,kAIArtStyleParserSuite)==0)*out=&parser;
+        else if(std::strcmp(name,kAIDictionarySuite)==0)*out=&dict;
+        else if(std::strcmp(name,kAIDocumentSuite)==0)*out=&doc;
+        else if(std::strcmp(name,kAIBlendStyleSuite)==0)*out=&blend;
+        else return -1235;
+        return kNoErr;
     };
     basic.ReleaseSuite=[](const char*,ai::int32)->SPErr{++released;return kNoErr;};
-    // AllocateBlock, FreeBlock, and every art suite are deliberately unavailable.
+    basic.AllocateBlock=[](size_t size,void** out)->SPErr{
+        auto e=Step();if(e)return e;++allocated;
+        *out=std::malloc(size);return *out?kNoErr:-1236;
+    };
+    basic.FreeBlock=[](void* p)->SPErr{++freed;std::free(p);return kNoErr;};
     live.CountLiveEffects=[](ai::int32* n)->AIErr{auto e=Step();if(!e)*n=registered;return e;};
     live.GetNthLiveEffect=[](ai::int32 n,AILiveEffectHandle* h)->AIErr{
         auto e=Step();Check(n==0,"bounded registered index");if(!e)*h=reinterpret_cast<AILiveEffectHandle>(1);return e;
@@ -26,56 +42,90 @@ void Setup(){
         auto e=Step();if(!e)*name=strokemaster::topology_probe::effectIdentity;return e;
     };
     live.GetStyleFilterFlags=[](AILiveEffectHandle,ai::int32* flags)->AIErr{
-        auto e=Step();if(!e)*flags=kPostEffectFilter;return e;
+        auto e=Step();if(!e)*flags=strokemaster::topology_probe::regionFilterType;return e;
     };
     live.AddLiveEffect=[](AILiveEffectData* d,AILiveEffectHandle* h)->AIErr{
         auto e=Step();if(e)return e;
-        Check(d->styleFilterFlags==kPostEffectFilter&&d->prefersAsInput==kGroupInputArt,"whole-object post-effect registration");
+        Check(d->styleFilterFlags==strokemaster::topology_probe::regionFilterType&&
+              d->prefersAsInput==kGroupInputArt,"whole-object post-effect registration");
         Check(std::strcmp(d->name,strokemaster::topology_probe::effectIdentity)==0,"distinct region effect identity");
-        if(nestedShutdown){
-            SPMessageData stop{};stop.basic=&basic;
-            char caller[]=kSPInterfaceCaller,selector[]=kSPInterfaceShutdownSelector;
-            Check(PluginMain(caller,selector,&stop)==kNoErr&&!stop.globals,"nested shutdown needs no persistent allocation");
-        }
         ++registered;*h=reinterpret_cast<AILiveEffectHandle>(1);return kNoErr;
     };
     live.GetLiveEffectHandleByName=[](const char* name,AILiveEffectHandle* h)->AIErr{
         auto e=Step();Check(std::strcmp(name,strokemaster::topology_probe::effectIdentity)==0,"status queries exact separate effect");
         if(!e)*h=registered?reinterpret_cast<AILiveEffectHandle>(1):nullptr;return e;
     };
+    art.GetArtType=[](AIArtHandle,short*)->AIErr{return kNoErr;};
+}
+SPMessageData Startup(){
+    SPMessageData m{};m.basic=&basic;
+    char caller[]=kSPInterfaceCaller,start[]=kSPInterfaceStartupSelector;
+    Check(PluginMain(caller,start,&m)==kNoErr,"startup completes");
+    Check(m.globals!=nullptr,"startup persists globals");
+    return m;
 }
 }
+namespace ise { namespace topology {
+// The tests link RegionProbe.cpp, whose default kernel references the real core
+// symbol; this mock satisfies the linker without Boost or the reviewed core.
+Result process(Request const&) noexcept { Result r{};r.status=Status::Refused;return r; }
+}}
 int main(){
-    for(int fault=0;fault<=3;++fault){
+    for(int fault=0;fault<=2;++fault){
         Setup();failAt=fault;SPMessageData m{};m.basic=&basic;
-        char caller[]=kSPInterfaceCaller,start[]=kSPInterfaceStartupSelector,stop[]=kSPInterfaceShutdownSelector;
-        Check(PluginMain(caller,start,&m)==(fault?failure:kNoErr),"registration propagates SDK failure");
-        Check(!m.globals&&acquired==released,"no persistent heap state and balanced suites");
-        Check(PluginMain(caller,stop,&m)==kNoErr&&!m.globals,"shutdown without owned heap");
+        char caller[]=kSPInterfaceCaller,start[]=kSPInterfaceStartupSelector;
+        Check(PluginMain(caller,start,&m)==(fault?-1234:kNoErr),"registration propagates SDK failure");
+        if(fault)Check(!m.globals,"failed startup owns no globals");
+        char stop[]=kSPInterfaceShutdownSelector;
+        Check(PluginMain(caller,stop,&m)==kNoErr,"shutdown after fault is clean");
     }
     Setup();{
-        nestedShutdown=true;SPMessageData m{};m.basic=&basic;
-        char caller[]=kSPInterfaceCaller,start[]=kSPInterfaceStartupSelector;
-        Check(PluginMain(caller,start,&m)==kNoErr,"startup completes through nested SDK shutdown");
-        Check(PluginMain(caller,start,&m)==kNoErr&&registered==1,"no duplicate registration");
-        char payload[768]{};
-        Check(region_probe::Payload(m,"status",true,payload,sizeof(payload))==kNoErr,"read-only bridge payload");
-        Check(std::strstr(payload,"\"plugin\":\"StrokeMasterRegionProbe\"")&&std::strstr(payload,"\"geometryEnabled\":false")&&
-            std::strstr(payload,"\"kernelAdmitted\":false")&&std::strstr(payload,"\"nativeGeometryExecuted\":false"),"explicit registration-only identity and admission");
+        auto m=Startup();
+        Check(registered==1&&m.globals!=nullptr,"effect registered and globals allocated");
+        auto* state=static_cast<region_probe::State*>(m.globals);
+        Check(state->effect==reinterpret_cast<AILiveEffectHandle>(1),"persisted effect handle");
+        char payload[1024]{};
+        Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr,"status payload");
+        Check(std::strstr(payload,"\"plugin\":\"StrokeMasterRegionProbe\"")&&
+              std::strstr(payload,"\"geometryEnabled\":true")&&
+              std::strstr(payload,"\"kernelAdmitted\":false")&&
+              std::strstr(payload,"\"supportedGate\":\"MARKED_ANALYTIC_FIXTURE_ONLY\""),
+              "geometry-enabled identity with bounded gate");
         char pid[64]{};std::snprintf(pid,sizeof(pid),"\"processId\":%lu",static_cast<unsigned long>(GetCurrentProcessId()));
         Check(std::strstr(payload,pid)!=nullptr,"native process attribution");
-        const int before=acquired;
-        for(const char* selector:{"create","unexpected"}){
-            Check(region_probe::Payload(m,selector,false,payload,sizeof(payload))==kNoErr&&std::strstr(payload,"\"ok\":false"),"mutating and unknown bridge actions refused");
-        }
-        Check(acquired==before,"refused bridge action acquires no art suites");
-        Check(region_probe::Payload(m,"status",true,payload,8)==kBadParameterErr,"truncated JSON refused");
-        AILiveEffectGoMessage go{};go.d.basic=&basic;go.art=reinterpret_cast<AIArtHandle>(1);go.srcArt=reinterpret_cast<AIArtHandle>(2);
+        Check(region_probe::Payload(m,*state,"unexpected",false,kBadParameterErr,payload,sizeof(payload))==kNoErr&&
+              std::strstr(payload,"\"ok\":false"),"unknown bridge action refused");
+        Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,8)==kBadParameterErr,"truncated JSON refused");
+        // Go with an unknown effect handle is refused before any callback work.
+        AILiveEffectGoMessage go{};go.d.basic=&basic;go.d.globals=m.globals;
+        go.art=reinterpret_cast<AIArtHandle>(1);go.srcArt=reinterpret_cast<AIArtHandle>(2);
         char goCaller[]=kCallerAILiveEffect,selector[]=kSelectorAIGoLiveEffect;
-        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr&&go.art==reinterpret_cast<AIArtHandle>(1),"registration-only Go never touches input");
-        Check(acquired==released,"all suites released after protocol calls");
-        m.globals=reinterpret_cast<void*>(1);
-        Check(PluginMain(caller,start,&m)==kBadParameterErr,"unknown persistent layout rejected before dereference");
+        go.effect=reinterpret_cast<AILiveEffectHandle>(9);
+        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr,"unknown effect handle refused");
+        Check(state->metrics.goCalls==0,"mismatched handle never reaches the callback");
+        // Null processing input is refused without acquiring any suite.
+        const int suitesBefore=acquired;
+        go.effect=state->effect;go.art=nullptr;
+        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr,"null input refused");
+        Check(state->metrics.goCalls==1&&state->metrics.mutations==0&&
+              std::strcmp(state->metrics.gate,"input.null")==0,"null-input refusal recorded at its gate");
+        Check(acquired==suitesBefore,"null-input refusal acquires no suites");
+        // Alias and provenance refusals.
+        go.art=reinterpret_cast<AIArtHandle>(1);go.srcArt=go.art;
+        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr,"source alias refused");
+        Check(std::strcmp(state->metrics.gate,"input.source-alias")==0,"alias refusal recorded at its gate");
+        go.srcArt=reinterpret_cast<AIArtHandle>(2);go.parameters=nullptr;
+        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr,"missing marker refused");
+        Check(std::strcmp(state->metrics.gate,"source.parameters-missing")==0,"provenance refusal recorded at its gate");
+        Check(state->metrics.goCalls==3&&state->metrics.mutations==0&&
+              state->metrics.failedCalls==3,"refusals counted, never mutated");
+        char stop2[]=kSPInterfaceShutdownSelector,iface[]=kSPInterfaceCaller;
+        Check(PluginMain(iface,stop2,&m)==kNoErr&&m.globals==nullptr,"shutdown frees globals");
+        Check(allocated==1&&freed==1,"exactly one owned heap block");
+        Check(acquired==released,"all suites released");
+        SPMessageData foreign{};foreign.basic=&basic;foreign.globals=reinterpret_cast<void*>(1);
+        char start2[]=kSPInterfaceStartupSelector;
+        Check(PluginMain(iface,start2,&foreign)==kBadParameterErr,"unknown persistent layout rejected before dereference");
     }
-    std::cout<<"PASS: "<<checks<<" registration/bridge assertions; no art suites, heap allocation, or host execution.\n";
+    std::cout<<"PASS: "<<checks<<" region registration/bridge/refusal assertions; no host execution.\n";
 }

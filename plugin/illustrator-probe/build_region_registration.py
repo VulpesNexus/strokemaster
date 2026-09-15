@@ -1,4 +1,9 @@
-"""Bounded registration-only SDK target; no install, host calls, or SDK writes."""
+"""Bounded registration-only SDK target; no install, host calls, or SDK writes.
+
+Superseded by build_region_native.py for region-prep-2 and later: this script
+regenerates RegionProbe.vcxproj from Probe.vcxproj and would clobber the
+geometry-enabled project. Do not rerun it.
+"""
 import hashlib
 import json
 import os

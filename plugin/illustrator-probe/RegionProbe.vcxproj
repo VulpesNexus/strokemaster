@@ -12,7 +12,7 @@
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <PropertyGroup>
-    <OutDir>$(MSBuildProjectDirectory)\build\region-registration\</OutDir>
+    <OutDir>$(MSBuildProjectDirectory)\build\region-native\</OutDir>
     <IntDir>$(OutDir)obj\$(RegionProbeTests)\</IntDir>
     <TargetName Condition="'$(RegionProbeTests)' != 'true'">StrokeMasterRegionProbe</TargetName>
     <TargetName Condition="'$(RegionProbeTests)' == 'true'">RegionProbeTests</TargetName>
@@ -43,6 +43,12 @@
   </ItemDefinitionGroup>
   <ItemGroup Condition="'$(RegionProbeTests)' != 'true'">
     <ClCompile Include="RegionProbe.cpp" />
+    <ClCompile Include="..\..\tools\topology_region.cpp">
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <PreprocessorDefinitions>ISE_TOPOLOGY_CORE_ONLY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(RegionBoostRoot);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ResourceCompile Include="Probe.rc" />
   </ItemGroup>
   <ItemGroup Condition="'$(RegionProbeTests)' == 'true'"><ClCompile Include="RegionProbeTests.cpp" /></ItemGroup>
