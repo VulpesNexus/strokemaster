@@ -1,20 +1,20 @@
 # Using StrokeMaster
 
-Takeover status, 2026-09-13: these are prototype workflows. Conflict handling and pair identity have been repaired and tested in InDesign 21.5.1.73, including IDML import and resync. Rendering and native-plugin support remain bounded by [the audit](../PROJECT_TAKEOVER_AUDIT.md). Keep an original copy when evaluating a new script revision.
+Status, 2026-09-13: these are prototype workflows. The current native InDesign safety build performs no repaint because the earlier overlay changed benign edges, covered decorations, and missed unstroked victims. Use the scripts within their stated scope for current corrections. Uniform and varied split pairs preserve their measured rendering through INDD/IDML round-trips. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the exact tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
 | Your situation | Use | Why |
 | --- | --- | --- |
-| Only you open the file, and you want the fix to be invisible | The **plugin** | Corrects drawing with no change to the document. Nothing to maintain, and text stays one story. |
+| You need one live story with an invisible correction | Native correction is currently unavailable | The safety build leaves Adobe's drawing unchanged while its replacement is investigated. |
 | Someone else opens the file, or you hand over an INDD or IDML | The **split** command, within its supported appearance | Uses ordinary document frames; recipients need no plugin to render them. Fonts, composition, and synchronization still matter. |
-| You export PDF and nothing else | Either, within the tested envelope | Corrective paths are embedded in the tested exports; recipients do not need the plugin to render those paths. |
+| You export PDF and nothing else | A supported **split** or **outline** workflow, followed by output inspection | These use ordinary document objects. Previously corrected PDFs retain their embedded appearance, but the current native safety build adds no correction. |
 | You are converting type to outlines | The **outline** command | Native *Type > Create Outlines* loses the fill and halves the halo. |
 | You have split frames and need to edit the text | **resync**, or **watch** | Splitting makes two stories; these keep them together. |
 
 ## Installing
 
-**The plugin** (per machine, InDesign 2026 only): copy *InDesignStrokeEngine.pln* and its *(InDesignStrokeEngine Resources)* folder into *C:\Program Files\Adobe\Adobe InDesign 2026\Plug-Ins\InDesignStrokeEngine\*, then restart InDesign. Needs administrator rights. Remove it by deleting that folder and restarting.
+**Native builds are diagnostics, not an installation recommendation.** Replacing a loaded InDesign binary requires an InDesign restart. The current safety binary deliberately adds no correction. Illustrator's separate diagnostic has unresolved callback and host-lifecycle gates; it is not a miter repair. Native development details are in [the load report](../ILLUSTRATOR_NATIVE_LOAD_REPORT.md) and [the InDesign root-cause report](../UNSTROKED_VICTIM_ROOT_CAUSE.md).
 
 **The scripts**: copy the whole *tools/jsx* folder into InDesign's *Scripts Panel* folder (*Window > Utilities > Scripts*, right-click a folder, *Reveal in Explorer*). Then double-click *strokemaster.jsx* in the panel and pick a command.
 
@@ -42,14 +42,13 @@ Duplicating a labeled pair within the same document creates ambiguous tokens. Th
 
 ## What to know before relying on it
 
-- **The plugin is installed per machine.** The only recorded native target is InDesign 2026, build 21.5.1.73. Other builds require explicit ABI/load/edit/export validation; the version string alone does not prove their loader behavior. Its drawing correction is absent when the plugin is absent.
+- **Native compatibility requires per-host validation.** The recorded InDesign target is 21.5.1.73. Other builds require ABI, load, edit, and export checks. The current native safety build provides no drawing correction on any machine.
 - **Split frames are ordinary document objects.** They travel without a plugin, but remain two independent stories. Unsupported frame paint/effects are refused. After sending the file, edits require another resync by someone running the script, or manual maintenance of both stories.
 - **A split story lives in two frames.** The investigated linked-story configuration overwrote the child's formatting. That finite result does not rule out every native mapping or SDK route. The implemented **resync** and **watch** commands require the scripts to run.
 - **resync needs the stroke to be uniform** across the bottom frame. A pair whose stroke varies within the story is reported and skipped rather than guessed at, because character positions recorded before an edit no longer mean anything after one.
-- **The plugin changes antialiased fill edges** in the recorded raster tests. Visibility depends on scale and colors; a one-pixel result at one raster scale is not a general bound. Splitting avoids this particular second fill pass but introduces other appearance and synchronization risks.
+- **The earlier native overlay changed benign antialiased edges and decoration order.** It is disabled in the current source. Splitting avoids that second fill pass but still has its own appearance and synchronization restrictions.
 - **Neither reaches text that is already outlined.** That damage is baked into the paths; convert with **outline** in the first place.
-- **Cross-frame overlap is not corrected** by the plugin, which is scoped to one frame at a time.
-- **Unstroked victim runs are also missed by the current plugin.** A later stroked line can still cover an earlier unstroked line. This is reproduced by the takeover regression; a supported split-frame reference corrects that example.
+- **Cross-frame overlap and the original native text overlap remain uncorrected.** The safety build refuses repaint; it does not solve these host behaviors. The supported split-frame reference corrects the measured unstroked-victim example within one frame.
 - **The native prefix is still a development placeholder.** Prefix allocation, signing, and Creative Cloud listing are separate steps described in [the distribution notes](PLUGIN_DISTRIBUTION.md); the current build is not a Marketplace release.
 
 After replacing the script files, invoke *strokemaster.jsx* again to load the revised libraries. If watching is enabled, run **unwatch**, then **watch** to recreate its listener. Updating these JSX files does not require an InDesign restart. Loading a new native plugin binary does.
@@ -59,4 +58,4 @@ After replacing the script files, invoke *strokemaster.jsx* again to load the re
 - *Nothing happened.* Check that a text frame is selected, and that its stroke is Outside rather than Center.
 - *The halo disappeared after converting to outlines.* That is the native command, not this one. Undo and use **outline**.
 - *The two frames of a pair show different text.* Run **resync**, or **watch** to keep it from recurring.
-- *A collaborator sees notches and you do not.* They do not have the plugin. Use **split**, which does not depend on it.
+- *An older native prototype and the safety build look different.* The safety build intentionally removes repaint. Use supported **split** frames when a portable document correction is needed, and inspect the exported result.

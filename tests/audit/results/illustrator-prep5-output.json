@@ -1,0 +1,423 @@
+{
+  "schema": 1,
+  "passed": true,
+  "scope": "Prep-5 versus prep-4 exported PDFs for the open straight two-anchor control/effect specimens only",
+  "plugin_sha256": "201dd19cb25174c7fb9628fd1bf2769aa41e7d4dd4f2c6b77e5e9d7aea0fc9c7",
+  "coordinates": "PDF points, origin bottom-left",
+  "method": {
+    "extractor": "pypdf",
+    "renderer": "Poppler pdftoppm",
+    "ppi": 600,
+    "renderer_arguments": [
+      "-r",
+      "600",
+      "-png",
+      "-singlefile",
+      "-aa",
+      "yes",
+      "-aaVector",
+      "yes"
+    ],
+    "visual_inspection": "Both complete prep-5 pages inspected; one gray horizontal bar each, no extra visible marks",
+    "expected_geometry_derivation": "Control endpoints (100,140),(220,140), butt cap and width 8. Effect initial endpoints (100,100),(220,100), two +20 endpoint edits, width 8: filled rectangle x=100..260,y=96..104. Independent arithmetic, no production geometry routine used."
+  },
+  "comparisons": {
+    "control": {
+      "prep5": {
+        "file": "build/host-census/ai-native-5-hardened/retired-control.pdf",
+        "sha256": "b753644abab923870cbd9713c805494d8b8708497f86b52e1e46dd26c8638d04",
+        "page_count": 1,
+        "media_box_pt": [
+          0,
+          0,
+          300,
+          300
+        ],
+        "decoded_content_sha256": "8ff657c57adc4ac6bb1a3cda5db4329227a215d5761584b229eb77edad4c9537",
+        "operators": [
+          {
+            "operator": "BDC",
+            "operands": [
+              "/OC",
+              "/MC0"
+            ]
+          },
+          {
+            "operator": "G",
+            "operands": [
+              0.25
+            ]
+          },
+          {
+            "operator": "w",
+            "operands": [
+              8.0
+            ]
+          },
+          {
+            "operator": "M",
+            "operands": [
+              4.0
+            ]
+          },
+          {
+            "operator": "gs",
+            "operands": [
+              "/GS0"
+            ]
+          },
+          {
+            "operator": "q",
+            "operands": []
+          },
+          {
+            "operator": "cm",
+            "operands": [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              100.0,
+              140.0
+            ]
+          },
+          {
+            "operator": "m",
+            "operands": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "operator": "l",
+            "operands": [
+              120.0,
+              0.0
+            ]
+          },
+          {
+            "operator": "S",
+            "operands": []
+          },
+          {
+            "operator": "Q",
+            "operands": []
+          },
+          {
+            "operator": "EMC",
+            "operands": []
+          }
+        ],
+        "graphics_state": {
+          "blend_mode": "/Normal",
+          "stroke_opacity": 1.0,
+          "fill_opacity": 1.0,
+          "soft_mask": "/None",
+          "stroke_overprint": false,
+          "fill_overprint": false
+        },
+        "paint_layer_default_visible": true,
+        "expected_operator_check_passed": true
+      },
+      "prep4": {
+        "file": "build/host-census/ai-native-4-lifecycle-b/lifecycle-control.pdf",
+        "sha256": "7830e4878b7cc39d182c696b4f9a41cbb377dd468850bdd516f3fd6a2d6991b4",
+        "page_count": 1,
+        "media_box_pt": [
+          0,
+          0,
+          300,
+          300
+        ],
+        "decoded_content_sha256": "8ff657c57adc4ac6bb1a3cda5db4329227a215d5761584b229eb77edad4c9537",
+        "operators": [
+          {
+            "operator": "BDC",
+            "operands": [
+              "/OC",
+              "/MC0"
+            ]
+          },
+          {
+            "operator": "G",
+            "operands": [
+              0.25
+            ]
+          },
+          {
+            "operator": "w",
+            "operands": [
+              8.0
+            ]
+          },
+          {
+            "operator": "M",
+            "operands": [
+              4.0
+            ]
+          },
+          {
+            "operator": "gs",
+            "operands": [
+              "/GS0"
+            ]
+          },
+          {
+            "operator": "q",
+            "operands": []
+          },
+          {
+            "operator": "cm",
+            "operands": [
+              1.0,
+              0.0,
+              0.0,
+              1.0,
+              100.0,
+              140.0
+            ]
+          },
+          {
+            "operator": "m",
+            "operands": [
+              0.0,
+              0.0
+            ]
+          },
+          {
+            "operator": "l",
+            "operands": [
+              120.0,
+              0.0
+            ]
+          },
+          {
+            "operator": "S",
+            "operands": []
+          },
+          {
+            "operator": "Q",
+            "operands": []
+          },
+          {
+            "operator": "EMC",
+            "operands": []
+          }
+        ],
+        "graphics_state": {
+          "blend_mode": "/Normal",
+          "stroke_opacity": 1.0,
+          "fill_opacity": 1.0,
+          "soft_mask": "/None",
+          "stroke_overprint": false,
+          "fill_overprint": false
+        },
+        "paint_layer_default_visible": true,
+        "expected_operator_check_passed": true
+      },
+      "pdf_bytes_equal": false,
+      "operators_equal": true,
+      "decoded_content_equal": true,
+      "raster": {
+        "shape": [
+          2500,
+          2500,
+          3
+        ],
+        "changed_pixels": 0,
+        "changed_channels": 0,
+        "max_channel_difference": 0,
+        "prep5_rgb_sha256": "6666ec55fe336de471803422ce26ef89ebef850c8b85de77e8dba401a29ad35d",
+        "prep4_rgb_sha256": "6666ec55fe336de471803422ce26ef89ebef850c8b85de77e8dba401a29ad35d"
+      },
+      "independent_expected": {
+        "paint": "butt-cap stroke",
+        "ink_bounds_pt": [
+          100,
+          136,
+          220,
+          144
+        ],
+        "width_pt": 120,
+        "height_pt": 8,
+        "device_gray": 0.25,
+        "raster_core_rgb": [
+          64,
+          64,
+          64
+        ],
+        "core_pixels_checked": 62748,
+        "incorrect_core_pixels": 0,
+        "outside_pixels_checked": 6178716,
+        "incorrect_outside_pixels": 0,
+        "boundary_exclusion_pixels": 2
+      }
+    },
+    "effect": {
+      "prep5": {
+        "file": "build/host-census/ai-native-5-hardened/retired-effect.pdf",
+        "sha256": "575d725c7662394a407fae1d4c35df51e5101eb5427224d1768278ac686e5f4d",
+        "page_count": 1,
+        "media_box_pt": [
+          0,
+          0,
+          300,
+          300
+        ],
+        "decoded_content_sha256": "246b1b333a456da77e3c6190f520010bf4cf725e5b6747eef66b7e8cde22dec6",
+        "operators": [
+          {
+            "operator": "BDC",
+            "operands": [
+              "/OC",
+              "/MC0"
+            ]
+          },
+          {
+            "operator": "g",
+            "operands": [
+              0.25
+            ]
+          },
+          {
+            "operator": "gs",
+            "operands": [
+              "/GS0"
+            ]
+          },
+          {
+            "operator": "re",
+            "operands": [
+              100.0,
+              104.0,
+              160.0,
+              -8.0
+            ]
+          },
+          {
+            "operator": "f",
+            "operands": []
+          },
+          {
+            "operator": "EMC",
+            "operands": []
+          }
+        ],
+        "graphics_state": {
+          "blend_mode": "/Normal",
+          "stroke_opacity": 1.0,
+          "fill_opacity": 1.0,
+          "soft_mask": "/None",
+          "stroke_overprint": false,
+          "fill_overprint": false
+        },
+        "paint_layer_default_visible": true,
+        "expected_operator_check_passed": true
+      },
+      "prep4": {
+        "file": "build/host-census/ai-native-4-lifecycle-b/lifecycle-effect.pdf",
+        "sha256": "1eced85657212b95470cafdfb7698463e9f2bf459082ee94c19ef1ca28697af1",
+        "page_count": 1,
+        "media_box_pt": [
+          0,
+          0,
+          300,
+          300
+        ],
+        "decoded_content_sha256": "246b1b333a456da77e3c6190f520010bf4cf725e5b6747eef66b7e8cde22dec6",
+        "operators": [
+          {
+            "operator": "BDC",
+            "operands": [
+              "/OC",
+              "/MC0"
+            ]
+          },
+          {
+            "operator": "g",
+            "operands": [
+              0.25
+            ]
+          },
+          {
+            "operator": "gs",
+            "operands": [
+              "/GS0"
+            ]
+          },
+          {
+            "operator": "re",
+            "operands": [
+              100.0,
+              104.0,
+              160.0,
+              -8.0
+            ]
+          },
+          {
+            "operator": "f",
+            "operands": []
+          },
+          {
+            "operator": "EMC",
+            "operands": []
+          }
+        ],
+        "graphics_state": {
+          "blend_mode": "/Normal",
+          "stroke_opacity": 1.0,
+          "fill_opacity": 1.0,
+          "soft_mask": "/None",
+          "stroke_overprint": false,
+          "fill_overprint": false
+        },
+        "paint_layer_default_visible": true,
+        "expected_operator_check_passed": true
+      },
+      "pdf_bytes_equal": false,
+      "operators_equal": true,
+      "decoded_content_equal": true,
+      "raster": {
+        "shape": [
+          2500,
+          2500,
+          3
+        ],
+        "changed_pixels": 0,
+        "changed_channels": 0,
+        "max_channel_difference": 0,
+        "prep5_rgb_sha256": "1135935d562287676b269cf7ccfb3a6cbab5d1c01ed7311d62c78334a5bbf363",
+        "prep4_rgb_sha256": "1135935d562287676b269cf7ccfb3a6cbab5d1c01ed7311d62c78334a5bbf363"
+      },
+      "independent_expected": {
+        "paint": "fill only",
+        "ink_bounds_pt": [
+          100,
+          96,
+          260,
+          104
+        ],
+        "width_pt": 160,
+        "height_pt": 8,
+        "device_gray": 0.25,
+        "raster_core_rgb": [
+          64,
+          64,
+          64
+        ],
+        "core_pixels_checked": 83790,
+        "incorrect_core_pixels": 0,
+        "outside_pixels_checked": 6155002,
+        "incorrect_outside_pixels": 0,
+        "boundary_exclusion_pixels": 2
+      }
+    }
+  },
+  "limitations": [
+    "No Adobe host operation was performed for this audit.",
+    "This record does not independently validate editable AI persistence or process shutdown.",
+    "Exact full-page raster equality uses one renderer at 600 ppi.",
+    "The analytic pixel check excludes a two-pixel boundary band; boundary pixels are covered by the full-page prep-4 comparison and exact PDF operator checks.",
+    "No conclusion about arbitrary paths, text, transparency, miter joins, or missing-plugin AI behavior."
+  ]
+}

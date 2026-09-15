@@ -1,0 +1,642 @@
+{
+  "schema": 1,
+  "status": "LIFECYCLE_OBSERVED_ONLY",
+  "passed": true,
+  "nativeExecuted": true,
+  "scope": "Open straight two-anchor line; SourceParameterSnapshot; same-process AI save/reopen and PDF file creation",
+  "host": {
+    "product": "Adobe Illustrator",
+    "version": "30.7.0",
+    "build": "114R"
+  },
+  "plugin": {
+    "name": "StrokeMasterProposedProbe",
+    "build": "native-prep-4",
+    "sha256": "45fab742d70bfb12497b3735a1e3c9d4b14dd8dc9195551f0221f1c4297b1c78",
+    "bytes": 52224,
+    "diagnosticsSchema": 2,
+    "statusSchema": 1
+  },
+  "pidAttribution": {
+    "nativePidBefore": 64996,
+    "nativePidAfter": 64996,
+    "runnerObservedPid": 64996,
+    "matched": true,
+    "stableProcessStartAcrossSnapshots": true,
+    "snapshots": 5,
+    "method": "GetCurrentProcessId in native diagnostics matched external process enumeration",
+    "hostAliveAtRunnerReturn": true,
+    "hostShutdownObserved": false
+  },
+  "hostLedger": {
+    "HOST_DISCOVERS": "NOT_MEASURED",
+    "HOST_LOADS": "OBSERVED_BRIDGE_RESPONSE",
+    "INITIALIZES": "OBSERVED_STATE",
+    "REGISTERS": "OBSERVED_HANDLES",
+    "CALLBACK_EXECUTES": "OBSERVED_COUNTER_DELTA",
+    "TEST_ART_REACHES_CALLBACK": "OBSERVED_SUCCESS_AND_ORIGIN",
+    "HOST_CLOSES_CLEANLY": "NOT_MEASURED"
+  },
+  "checks": {
+    "total": 230,
+    "passed": 230,
+    "failed": 0,
+    "interpretation": "Harness assertions including repeated protocol parsing, not 230 independent tests"
+  },
+  "counters": {
+    "baselineGoCalls": 0,
+    "baselineMutations": 0,
+    "finalGoCalls": 3,
+    "finalMutations": 3,
+    "acceptedInputs": 3,
+    "lastGoError": 0,
+    "strokeOrigin": 3,
+    "strokeOriginMeaning": "parameters"
+  },
+  "phases": [
+    {
+      "stage": "control.redraw",
+      "goCalls": 0,
+      "mutations": 0,
+      "strokeOrigin": 0,
+      "lastGoError": 0
+    },
+    {
+      "stage": "control.reopen.redraw",
+      "goCalls": 0,
+      "mutations": 0,
+      "strokeOrigin": 0,
+      "lastGoError": 0
+    },
+    {
+      "stage": "effect.redraw",
+      "goCalls": 1,
+      "mutations": 1,
+      "strokeOrigin": 3,
+      "lastGoError": 0
+    },
+    {
+      "stage": "effect.edit",
+      "goCalls": 2,
+      "mutations": 2,
+      "strokeOrigin": 3,
+      "lastGoError": 0
+    },
+    {
+      "stage": "effect.reopen.redraw",
+      "goCalls": 2,
+      "mutations": 2,
+      "strokeOrigin": 3,
+      "lastGoError": 0
+    },
+    {
+      "stage": "effect.reopen.edit",
+      "goCalls": 3,
+      "mutations": 3,
+      "strokeOrigin": 3,
+      "lastGoError": 0
+    }
+  ],
+  "lifecycle": {
+    "controlAiSavedAndReopened": true,
+    "effectAiSavedAndReopened": true,
+    "exactEditableSourceGeometryPreserved": true,
+    "reopenedSourceOpen": true,
+    "reopenedSourceAnchorCount": 2,
+    "sameProcessReopenOnly": true,
+    "effectReopenRedrawAdditionalGoCalls": 0,
+    "effectEditAfterReopenAdditionalGoCalls": 1,
+    "controlPdfWritten": true,
+    "effectPdfWritten": true,
+    "styleMode": "SourceParameterSnapshot",
+    "automaticStyleResynchronizationProven": false
+  },
+  "preservation": {
+    "documentCountRestored": true,
+    "interactionLevelRestored": true,
+    "perExistingDocumentAssertions": 0,
+    "existingUserDocumentPreserved": "supervisor reported; not independently established by this record",
+    "hostQuitPerformedByHarness": false
+  },
+  "artifacts": [
+    {
+      "specimen": "control",
+      "format": "ai",
+      "bytes": 222195,
+      "sha256": "0157d54a14829e12c622450fa5d7a0491a455cbde950e0d9c2a17c38ac98e47c"
+    },
+    {
+      "specimen": "control",
+      "format": "pdf",
+      "bytes": 36978,
+      "sha256": "7830e4878b7cc39d182c696b4f9a41cbb377dd468850bdd516f3fd6a2d6991b4"
+    },
+    {
+      "specimen": "effect",
+      "format": "ai",
+      "bytes": 222758,
+      "sha256": "7605b61a1e504e88b5955cfb082e8864f941862aa2743f9570aa31f5d09d8128"
+    },
+    {
+      "specimen": "effect",
+      "format": "pdf",
+      "bytes": 37171,
+      "sha256": "1eced85657212b95470cafdfb7698463e9f2bf459082ee94c19ef1ca28697af1"
+    }
+  ],
+  "supplementaryPdfInspection": {
+    "source": "Independent supervisor MuPDF extraction, preserved local PDF geometry record; values checked against that record",
+    "control": {
+      "pathCount": 1,
+      "paint": "stroke",
+      "width": 8,
+      "boundsPdfCoordinates": [
+        100,
+        160,
+        220,
+        160
+      ]
+    },
+    "effect": {
+      "pathCount": 1,
+      "paint": "fill",
+      "boundsPdfCoordinates": [
+        100,
+        196,
+        260,
+        204
+      ]
+    },
+    "fullRenderingCertified": false,
+    "grayValuesMatch": true
+  },
+  "limitations": [
+    "No closed contour, hole, compound, glyph, or miter proof",
+    "No transformed-stroke delivery or arbitrary Appearance/style resynchronization proof",
+    "No cross-process reopen proof; later direct-COM quit observed PID 38016 exit, without explaining earlier non-exit or process activity",
+    "No missing-plugin fallback or final-render certification",
+    "Prior crash attribution remains unresolved"
+  ],
+  "provenance": {
+    "hostRecordSha256": "90fcb5b27183fbe309d1ab2ee7bdd6fbc4d2d88fddac2ccbb7974b470b72db1a",
+    "processJournalSha256": "499ea29aac853857d61f1a36aa6338f264c513efc8483a47833af4d0378e8df0",
+    "stageJournalSha256": "e2ebf98df2b0c4e051b1ba9d5c77253055ac1de6ccbe5f8def6e045556d46018",
+    "pdfInspectionSha256": "d169687ca78b537d67b87c036f960701fc0e3334f3a35ba1fa7748c66de349ed"
+  },
+  "sanitization": "No machine/user names, absolute paths, document titles, window handles, SDK excerpts, font programs, or outline payloads; diagnostic PIDs and artifact hashes retained",
+  "postRunLifecycle": {
+    "source": "supervisor-reported empty-document guard and quit-helper return; no persisted quit PID",
+    "testedProcessId": 64996,
+    "emptyDocumentListObserved": true,
+    "normalCloseReturned": true,
+    "closeHelperExitCode": 0,
+    "closeResult": "closed gracefully",
+    "testedProcessExitedNormally": null,
+    "recoveredDocumentDiscarded": false,
+    "subsequentUnexplainedProcessId": 48928,
+    "subsequentProcessLaunchBySupervisor": false,
+    "newApplicationError1000InReportedFiveMinuteWindow": false,
+    "hostStabilityProven": false,
+    "globalP0Resolved": false,
+    "quitTargetProcessId": null,
+    "pidAttributedExit": "UNVERIFIED: quit helper did not persist target PID",
+    "chronology": "Earlier quit-helper observation only; later authorized discard and PID-attributed non-exit are recorded separately"
+  },
+  "additionalRuns": [
+    {
+      "status": "LIFECYCLE_OBSERVED_ONLY",
+      "passed": true,
+      "host": {
+        "product": "Adobe Illustrator",
+        "version": "30.7.0",
+        "build": "114R"
+      },
+      "plugin": {
+        "name": "StrokeMasterProposedProbe",
+        "build": "native-prep-4",
+        "sha256": "45fab742d70bfb12497b3735a1e3c9d4b14dd8dc9195551f0221f1c4297b1c78",
+        "bytes": 52224,
+        "diagnosticsSchema": 2,
+        "statusSchema": 1
+      },
+      "pidAttribution": {
+        "nativePid": 78916,
+        "runnerObservedPid": 78916,
+        "matched": true,
+        "stableStartAcrossSnapshots": true,
+        "snapshots": 5,
+        "supervisorLaunchedThisProcess": false
+      },
+      "checks": {
+        "total": 231,
+        "passed": 231,
+        "failed": 0
+      },
+      "counters": {
+        "goCalls": 3,
+        "mutations": 3,
+        "acceptedInputs": 3,
+        "lastGoError": 0,
+        "strokeOrigin": 3
+      },
+      "phases": [
+        {
+          "stage": "control.redraw",
+          "goCalls": 0,
+          "mutations": 0,
+          "strokeOrigin": 0,
+          "lastGoError": 0
+        },
+        {
+          "stage": "control.reopen.redraw",
+          "goCalls": 0,
+          "mutations": 0,
+          "strokeOrigin": 0,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.redraw",
+          "goCalls": 1,
+          "mutations": 1,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.edit",
+          "goCalls": 2,
+          "mutations": 2,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.reopen.redraw",
+          "goCalls": 2,
+          "mutations": 2,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.reopen.edit",
+          "goCalls": 3,
+          "mutations": 3,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        }
+      ],
+      "hostLedger": {
+        "HOST_DISCOVERS": "NOT_MEASURED",
+        "HOST_LOADS": "OBSERVED_BRIDGE_RESPONSE",
+        "INITIALIZES": "OBSERVED_STATE",
+        "REGISTERS": "OBSERVED_HANDLES",
+        "CALLBACK_EXECUTES": "OBSERVED_COUNTER_DELTA",
+        "TEST_ART_REACHES_CALLBACK": "OBSERVED_SUCCESS_AND_ORIGIN",
+        "HOST_CLOSES_CLEANLY": "NOT_MEASURED"
+      },
+      "preservation": {
+        "perExistingDocumentAssertions": 1,
+        "allPassed": true,
+        "checkedFields": [
+          "name",
+          "saved flag",
+          "path item count"
+        ],
+        "fullDocumentContentEqualityProven": false,
+        "documentCountRestored": true,
+        "interactionLevelRestored": true,
+        "preexistingDocumentClosed": false
+      },
+      "artifacts": [
+        {
+          "specimen": "control",
+          "format": "ai",
+          "bytes": 222179,
+          "sha256": "cd0d1cc4a859359eff88c2cce0d48b8656d64da528696f48e0d23b68bec9474d"
+        },
+        {
+          "specimen": "control",
+          "format": "pdf",
+          "bytes": 36970,
+          "sha256": "8748b8eb06b8524e83f787fb319d86169efe184c190ab0f3a0ac71262978a1d1"
+        },
+        {
+          "specimen": "effect",
+          "format": "ai",
+          "bytes": 222524,
+          "sha256": "1ca756f2319d86090ff4ac7ba7b6e4a05df282afb149200e597fa91cf8764419"
+        },
+        {
+          "specimen": "effect",
+          "format": "pdf",
+          "bytes": 37163,
+          "sha256": "5019d51653b6cca047f66f17bebcd38dc5646d2ee9dff32fa5a5eaa75e3ead79"
+        }
+      ],
+      "scope": "Same open two-anchor snapshot lifecycle in a different host process; new generated fixtures, not cross-process reopen of first-run artifacts",
+      "provenance": {
+        "hostRecordSha256": "ad311d11bb3d56f5ca0f9f6fe97f4e153ebf5e7110d60acd6b0dab0b4c8b546d",
+        "processJournalSha256": "4b5314863103cc0f6aa8f6b580749f9e0289823fd487c20c752ef8670360793f",
+        "stageJournalSha256": "5f28204c62fc99e99038af413b0f7aa496faa5a5905e9a650c408854df2041e5"
+      }
+    },
+    {
+      "runLabel": "hardened-harness-third-run",
+      "status": "LIFECYCLE_OBSERVED_ONLY",
+      "passed": true,
+      "host": {
+        "product": "Adobe Illustrator",
+        "version": "30.7.0",
+        "build": "114R"
+      },
+      "plugin": {
+        "name": "StrokeMasterProposedProbe",
+        "build": "native-prep-4",
+        "sha256": "45fab742d70bfb12497b3735a1e3c9d4b14dd8dc9195551f0221f1c4297b1c78",
+        "bytes": 52224,
+        "diagnosticsSchema": 2,
+        "statusSchema": 1
+      },
+      "pidAttribution": {
+        "nativePid": 38016,
+        "runnerObservedPid": 38016,
+        "matched": true,
+        "stableStartAcrossSnapshots": true,
+        "snapshots": 5
+      },
+      "checks": {
+        "total": 332,
+        "passed": 332,
+        "failed": 0,
+        "intervalFailedCallbackAssertions": 27,
+        "interpretation": "Includes repeated parser checks; not independent test count"
+      },
+      "counters": {
+        "goCalls": 3,
+        "mutations": 3,
+        "strokeOrigin": 3,
+        "lastGoError": 0,
+        "acceptedInputs": 3
+      },
+      "phases": [
+        {
+          "stage": "control.redraw",
+          "goCalls": 0,
+          "mutations": 0,
+          "strokeOrigin": 0,
+          "lastGoError": 0
+        },
+        {
+          "stage": "control.reopen.redraw",
+          "goCalls": 0,
+          "mutations": 0,
+          "strokeOrigin": 0,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.redraw",
+          "goCalls": 1,
+          "mutations": 1,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.edit",
+          "goCalls": 2,
+          "mutations": 2,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.reopen.redraw",
+          "goCalls": 2,
+          "mutations": 2,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.reopen.edit",
+          "goCalls": 3,
+          "mutations": 3,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        }
+      ],
+      "preservation": {
+        "documentCountRestored": true,
+        "interactionLevelRestored": true,
+        "perExistingDocumentAssertions": 0,
+        "hostQuitPerformedByHarness": false
+      },
+      "artifacts": [
+        {
+          "specimen": "control",
+          "format": "ai",
+          "bytes": 222599,
+          "sha256": "b3e34f8e1117478d8303504d2d9e1e0c00ffb564cd7a30bc389dfbefd75123d4"
+        },
+        {
+          "specimen": "control",
+          "format": "pdf",
+          "bytes": 36974,
+          "sha256": "a03fc97fe78f1caa852d927783d94776c8ba63f33df7ce0aa1855e9e0a5c21c3"
+        },
+        {
+          "specimen": "effect",
+          "format": "ai",
+          "bytes": 222829,
+          "sha256": "d241e5d916c0e366090c80f3b6f55072e83c1794a03cc27b7358356e186e28d2"
+        },
+        {
+          "specimen": "effect",
+          "format": "pdf",
+          "bytes": 37167,
+          "sha256": "1047e2fa0bc075115edbc3e1df895303674f0c658a99608b6af040598619aaf3"
+        }
+      ],
+      "provenance": {
+        "hostRecordSha256": "39c6de0114fa0751372569cd07d92c6dd21e0ca9c9707280ba48064ccc48ef7c",
+        "processJournalSha256": "02eff131a153a5e8977376b77a5f1feb8507afa89b7146ae5b02efb288bf050f",
+        "stageJournalSha256": "46165d35804053c0b6445d5e3d7756194969eb729ba2611c54f4ef89a3cbf1fd"
+      }
+    },
+    {
+      "runLabel": "prep5-hardened",
+      "status": "LIFECYCLE_OBSERVED_ONLY",
+      "passed": true,
+      "host": {
+        "product": "Adobe Illustrator",
+        "version": "30.7.0",
+        "build": "114R"
+      },
+      "plugin": {
+        "name": "StrokeMasterProposedProbe",
+        "build": "native-prep-5",
+        "sha256": "201dd19cb25174c7fb9628fd1bf2769aa41e7d4dd4f2c6b77e5e9d7aea0fc9c7",
+        "bytes": 53248,
+        "diagnosticsSchema": 2,
+        "statusSchema": 1
+      },
+      "pidAttribution": {
+        "nativePid": 5324,
+        "runnerObservedPid": 5324,
+        "matched": true,
+        "stableStartAcrossSnapshots": true,
+        "snapshots": 5
+      },
+      "checks": {
+        "total": 332,
+        "passed": 332,
+        "failed": 0,
+        "intervalFailedCallbackAssertions": 27
+      },
+      "counters": {
+        "goCalls": 3,
+        "mutations": 3,
+        "strokeOrigin": 3,
+        "lastGoError": 0,
+        "acceptedInputs": 3
+      },
+      "phases": [
+        {
+          "stage": "control.redraw",
+          "goCalls": 0,
+          "mutations": 0,
+          "strokeOrigin": 0,
+          "lastGoError": 0
+        },
+        {
+          "stage": "control.reopen.redraw",
+          "goCalls": 0,
+          "mutations": 0,
+          "strokeOrigin": 0,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.redraw",
+          "goCalls": 1,
+          "mutations": 1,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.edit",
+          "goCalls": 2,
+          "mutations": 2,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.reopen.redraw",
+          "goCalls": 2,
+          "mutations": 2,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        },
+        {
+          "stage": "effect.reopen.edit",
+          "goCalls": 3,
+          "mutations": 3,
+          "strokeOrigin": 3,
+          "lastGoError": 0
+        }
+      ],
+      "nestedShutdownHostForced": false,
+      "scope": "Open straight two-anchor SourceParameterSnapshot; nested shutdown tested only in mocks",
+      "artifacts": [
+        {
+          "specimen": "control",
+          "format": "ai",
+          "bytes": 222370,
+          "sha256": "3b9054e707b92cfd205cb6aa0200f91770458645eb18479a1e2c4b29d3825e5c"
+        },
+        {
+          "specimen": "control",
+          "format": "pdf",
+          "bytes": 36974,
+          "sha256": "b753644abab923870cbd9713c805494d8b8708497f86b52e1e46dd26c8638d04"
+        },
+        {
+          "specimen": "effect",
+          "format": "ai",
+          "bytes": 222985,
+          "sha256": "dc1ae3b7c67f573219fcbe2b1b8fabec62b9262d491a5fe0e3fe777fc6a4aead"
+        },
+        {
+          "specimen": "effect",
+          "format": "pdf",
+          "bytes": 37167,
+          "sha256": "575d725c7662394a407fae1d4c35df51e5101eb5427224d1768278ac686e5f4d"
+        }
+      ],
+      "provenance": {
+        "hostRecordSha256": "ddcba181d3163d0a876cd10cd82babe7bf7564e6c1c8d728c5f7ed9c71b10e04",
+        "processJournalSha256": "f9755033d4531586ff8feb9c42992844f175004bc5991d98a74e6ee9d6188adc",
+        "stageJournalSha256": "0db183e742511c3b3ac880d2b1185d250212bb16c9f2244a07fbfe0fd3f1374d",
+        "installRecordSha256": "198eec74f0cec044803278d9ec731809b77efba45b1ad66109b3156daf88ccf9"
+      }
+    }
+  ],
+  "laterInstrumentedShutdown": {
+    "targetPid": 48928,
+    "documentCount": 0,
+    "quitReturned": true,
+    "targetExitedWithin30Seconds": false,
+    "targetStillPresentAfterControllerExit": true,
+    "result": "NOT_PROVEN: request returned but target remained alive",
+    "authorizedRecoveredDocumentDiscardedBeforeThisAttempt": true,
+    "discardSource": "supervisor report; identity and document name omitted",
+    "provenance": {
+      "shutdownRecordSha256": "16b63b1dfaf127f6b0749523d689f2450830e6b1c637871c274b25f8ed00bdc9",
+      "postClientRecordSha256": "2eacc9e73bedf13ac73419dddb0f43752ec01e71d2d160a6aba73b642d320779"
+    }
+  },
+  "latestInstrumentedShutdown": {
+    "result": "OBSERVED_PID_ATTRIBUTED_EXIT",
+    "plugin": {
+      "name": "StrokeMasterProposedProbe",
+      "build": "native-prep-5",
+      "sha256": "201dd19cb25174c7fb9628fd1bf2769aa41e7d4dd4f2c6b77e5e9d7aea0fc9c7",
+      "bytes": 53248,
+      "diagnosticsSchema": 2,
+      "statusSchema": 1
+    },
+    "method": "COM Application.Quit",
+    "targetPid": 5324,
+    "nativePidMatchedFromPrecedingLifecycle": true,
+    "processStartMatchedPrecedingLifecycle": true,
+    "documentCount": 0,
+    "quitReturned": true,
+    "targetExited": true,
+    "recordElapsedSeconds": 4.021051,
+    "hostStabilityProven": false,
+    "provenance": {
+      "shutdownRecordSha256": "80417813bb6075f7cf036e4dd4dd8b7106b796e5e4c538f0a3cbf5e28e2f2c85",
+      "precedingHostRecordSha256": "ddcba181d3163d0a876cd10cd82babe7bf7564e6c1c8d728c5f7ed9c71b10e04"
+    }
+  },
+  "prep4InstrumentedComShutdown": {
+    "result": "OBSERVED_PID_ATTRIBUTED_EXIT",
+    "method": "COM Application.Quit",
+    "targetPid": 38016,
+    "nativePidMatchedFromPrecedingLifecycle": true,
+    "processStartMatchedPrecedingLifecycle": true,
+    "documentCount": 0,
+    "quitReturned": true,
+    "targetExited": true,
+    "recordElapsedSeconds": 3.882651,
+    "hostStabilityProven": false,
+    "causeOfEarlierQuitNonExitEstablished": false,
+    "provenance": {
+      "shutdownRecordSha256": "6c52df3b06ebe223c9c42e0e5b7cba2eabd3a6434195a9e09da9c580ffdcf3e5",
+      "precedingHostRecordSha256": "39c6de0114fa0751372569cd07d92c6dd21e0ca9c9707280ba48064ccc48ef7c",
+      "precedingProcessJournalSha256": "02eff131a153a5e8977376b77a5f1feb8507afa89b7146ae5b02efb288bf050f"
+    }
+  },
+  "currentValidatedNative": {
+    "name": "StrokeMasterProposedProbe",
+    "build": "native-prep-5",
+    "sha256": "201dd19cb25174c7fb9628fd1bf2769aa41e7d4dd4f2c6b77e5e9d7aea0fc9c7",
+    "bytes": 53248,
+    "diagnosticsSchema": 2,
+    "statusSchema": 1
+  }
+}

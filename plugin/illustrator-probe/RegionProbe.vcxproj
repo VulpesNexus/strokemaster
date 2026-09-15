@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Release|x64"><Configuration>Release</Configuration><Platform>x64</Platform></ProjectConfiguration>
+  </ItemGroup>
+  <Import Project="build\inputs.props" />
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Label="Configuration">
+    <ConfigurationType Condition="'$(RegionProbeTests)' != 'true'">DynamicLibrary</ConfigurationType>
+    <ConfigurationType Condition="'$(RegionProbeTests)' == 'true'">Application</ConfigurationType>
+    <PlatformToolset>v143</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <PropertyGroup>
+    <OutDir>$(MSBuildProjectDirectory)\build\region-registration\</OutDir>
+    <IntDir>$(OutDir)obj\$(RegionProbeTests)\</IntDir>
+    <TargetName Condition="'$(RegionProbeTests)' != 'true'">StrokeMasterRegionProbe</TargetName>
+    <TargetName Condition="'$(RegionProbeTests)' == 'true'">RegionProbeTests</TargetName>
+    <TargetExt Condition="'$(RegionProbeTests)' != 'true'">.aip</TargetExt>
+  </PropertyGroup>
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(ProbeSdkRoot)\illustratorapi\illustrator;$(ProbeSdkRoot)\illustratorapi\ate;$(ProbeSdkRoot)\illustratorapi\pica_sp;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>WIN_ENV;_WINDOWS;NDEBUG;PROBE_TRACE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <LanguageStandard>stdcpp17</LanguageStandard>
+      <AdditionalOptions>/source-charset:windows-1252 /execution-charset:utf-8 /Zc:sizedDealloc- %(AdditionalOptions)</AdditionalOptions>
+      <TreatWChar_tAsBuiltInType>false</TreatWChar_tAsBuiltInType>
+      <StructMemberAlignment>8Bytes</StructMemberAlignment>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <WarningLevel>Level4</WarningLevel>
+      <Optimization>Disabled</Optimization>
+    </ClCompile>
+    <ResourceCompile><AdditionalIncludeDirectories>$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories></ResourceCompile>
+    <Link>
+      <ModuleDefinitionFile Condition="'$(RegionProbeTests)' != 'true'">Probe.def</ModuleDefinitionFile>
+      <SubSystem Condition="'$(RegionProbeTests)' != 'true'">Windows</SubSystem>
+      <SubSystem Condition="'$(RegionProbeTests)' == 'true'">Console</SubSystem>
+      <TargetMachine>MachineX64</TargetMachine>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <AdditionalDependencies>kernel32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup Condition="'$(RegionProbeTests)' != 'true'">
+    <ClCompile Include="RegionProbe.cpp" />
+    <ResourceCompile Include="Probe.rc" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(RegionProbeTests)' == 'true'"><ClCompile Include="RegionProbeTests.cpp" /></ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

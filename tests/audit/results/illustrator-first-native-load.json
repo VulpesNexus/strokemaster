@@ -1,0 +1,1035 @@
+{
+  "schema": 2,
+  "status": "PROPOSED",
+  "nativeExecuted": true,
+  "host": "Adobe Illustrator",
+  "version": "30.7.0",
+  "build": "114R",
+  "checks": [
+    {
+      "name": "safe unique runId",
+      "passed": true
+    },
+    {
+      "name": "existing output directory",
+      "passed": true
+    },
+    {
+      "name": "new output path stages.jsonl",
+      "passed": true
+    },
+    {
+      "name": "new output path control.ai",
+      "passed": true
+    },
+    {
+      "name": "new output path effect.ai",
+      "passed": true
+    },
+    {
+      "name": "new output path control.pdf",
+      "passed": true
+    },
+    {
+      "name": "new output path effect.pdf",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for status",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded status",
+      "passed": true
+    },
+    {
+      "name": "native diagnostics schema",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "native event separator",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "native event schema",
+      "passed": true
+    },
+    {
+      "name": "bounded native event count",
+      "passed": true
+    },
+    {
+      "name": "expected native diagnostic build",
+      "passed": true
+    },
+    {
+      "name": "native effect and command registered",
+      "passed": true
+    },
+    {
+      "name": "new document is not preexisting",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for status",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded status",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for create",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded create",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for status",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded status",
+      "passed": true
+    },
+    {
+      "name": "control has one editable source",
+      "passed": true
+    },
+    {
+      "name": "control source retains two open anchors",
+      "passed": true
+    },
+    {
+      "name": "control has no replacement calls or mutations",
+      "passed": true
+    },
+    {
+      "name": "output remains new pdf",
+      "passed": true
+    },
+    {
+      "name": "nonempty saved pdf",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for status",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded status",
+      "passed": true
+    },
+    {
+      "name": "PDF export has no new failed callback",
+      "passed": true
+    },
+    {
+      "name": "control export does not dispatch",
+      "passed": true
+    },
+    {
+      "name": "close target is an owned specimen",
+      "passed": true
+    },
+    {
+      "name": "new document is not preexisting",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for status",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded status",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for create",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded create",
+      "passed": true
+    },
+    {
+      "name": "strict native identity/schema for status",
+      "passed": true
+    },
+    {
+      "name": "native action succeeded status",
+      "passed": true
+    },
+    {
+      "name": "effect has one editable source",
+      "passed": true
+    },
+    {
+      "name": "effect source retains two open anchors",
+      "passed": true
+    },
+    {
+      "name": "effect callback advanced",
+      "passed": true
+    },
+    {
+      "name": "effect replacement succeeded",
+      "passed": false
+    },
+    {
+      "name": "close target is an owned specimen",
+      "passed": true
+    },
+    {
+      "name": "document count preserved",
+      "passed": true
+    },
+    {
+      "name": "preexisting document preserved 0",
+      "passed": true
+    },
+    {
+      "name": "UI level restored",
+      "passed": true
+    }
+  ],
+  "stages": [
+    {
+      "mode": "control",
+      "before": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 0
+      },
+      "after": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      },
+      "create": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "mode": "effect",
+      "before": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      },
+      "after": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 1,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 1346458189,
+        "effectFixtures": 1,
+        "controlFixtures": 1
+      },
+      "create": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 1,
+        "controlFixtures": 1
+      }
+    }
+  ],
+  "events": [
+    {
+      "sequence": 1,
+      "stage": "proof",
+      "status": "BEGIN",
+      "data": {
+        "lifecycle": false
+      }
+    },
+    {
+      "sequence": 2,
+      "stage": "bridge.status",
+      "status": "BEGIN",
+      "data": {
+        "input": ""
+      }
+    },
+    {
+      "sequence": 3,
+      "stage": "bridge.status",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 0
+      }
+    },
+    {
+      "sequence": 4,
+      "stage": "native.diagnostics",
+      "status": "PASS",
+      "data": {
+        "build": "native-prep-2",
+        "effectRegistered": true,
+        "commandRegistered": true,
+        "acceptedInputs": 0,
+        "sequence": 13,
+        "events": [
+          {
+            "sequence": 1,
+            "stage": "INITIALIZES",
+            "detail": "",
+            "version": 0,
+            "error": 0
+          },
+          {
+            "sequence": 2,
+            "stage": "suite.acquire",
+            "detail": "AI Live Effect Suite",
+            "version": 8,
+            "error": 0
+          },
+          {
+            "sequence": 3,
+            "stage": "suite.acquire",
+            "detail": "AI Filter Suite",
+            "version": 4,
+            "error": 0
+          },
+          {
+            "sequence": 4,
+            "stage": "register.effect",
+            "detail": "",
+            "version": 0,
+            "error": 0
+          },
+          {
+            "sequence": 5,
+            "stage": "register.command",
+            "detail": "",
+            "version": 0,
+            "error": 0
+          },
+          {
+            "sequence": 6,
+            "stage": "REGISTERS",
+            "detail": "",
+            "version": 0,
+            "error": 0
+          },
+          {
+            "sequence": 7,
+            "stage": "suite.release",
+            "detail": "AI Filter Suite",
+            "version": 4,
+            "error": 0
+          },
+          {
+            "sequence": 8,
+            "stage": "suite.release",
+            "detail": "AI Live Effect Suite",
+            "version": 8,
+            "error": 0
+          },
+          {
+            "sequence": 9,
+            "stage": "bridge",
+            "detail": "status",
+            "version": 0,
+            "error": 0
+          },
+          {
+            "sequence": 10,
+            "stage": "suite.acquire",
+            "detail": "AI Unicode String Suite",
+            "version": 10,
+            "error": 0
+          },
+          {
+            "sequence": 11,
+            "stage": "suite.release",
+            "detail": "AI Unicode String Suite",
+            "version": 10,
+            "error": 0
+          },
+          {
+            "sequence": 12,
+            "stage": "bridge",
+            "detail": "diagnostics",
+            "version": 0,
+            "error": 0
+          },
+          {
+            "sequence": 13,
+            "stage": "suite.acquire",
+            "detail": "AI Unicode String Suite",
+            "version": 10,
+            "error": 0
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 5,
+      "stage": "control.createDocument",
+      "status": "BEGIN",
+      "data": null
+    },
+    {
+      "sequence": 6,
+      "stage": "control.createDocument",
+      "status": "PASS",
+      "data": null
+    },
+    {
+      "sequence": 7,
+      "stage": "bridge.status",
+      "status": "BEGIN",
+      "data": {
+        "input": ""
+      }
+    },
+    {
+      "sequence": 8,
+      "stage": "bridge.status",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 0
+      }
+    },
+    {
+      "sequence": 9,
+      "stage": "bridge.create",
+      "status": "BEGIN",
+      "data": {
+        "input": "control"
+      }
+    },
+    {
+      "sequence": 10,
+      "stage": "bridge.create",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 11,
+      "stage": "control.redraw",
+      "status": "BEGIN",
+      "data": null
+    },
+    {
+      "sequence": 12,
+      "stage": "bridge.status",
+      "status": "BEGIN",
+      "data": {
+        "input": ""
+      }
+    },
+    {
+      "sequence": 13,
+      "stage": "bridge.status",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 14,
+      "stage": "control.redraw",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 15,
+      "stage": "control.save.pdf",
+      "status": "BEGIN",
+      "data": {
+        "path": "<repo>\\build\\host-census\\ai-native-1\\first-load-control.pdf"
+      }
+    },
+    {
+      "sequence": 16,
+      "stage": "control.save.pdf",
+      "status": "PASS",
+      "data": {
+        "path": "<repo>\\build\\host-census\\ai-native-1\\first-load-control.pdf",
+        "bytes": 36445
+      }
+    },
+    {
+      "sequence": 17,
+      "stage": "bridge.status",
+      "status": "BEGIN",
+      "data": {
+        "input": ""
+      }
+    },
+    {
+      "sequence": 18,
+      "stage": "bridge.status",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 19,
+      "stage": "control.export",
+      "status": "FILE_WRITTEN_NOT_RENDER_VERIFIED",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 20,
+      "stage": "control.close",
+      "status": "BEGIN",
+      "data": null
+    },
+    {
+      "sequence": 21,
+      "stage": "control.close",
+      "status": "PASS",
+      "data": null
+    },
+    {
+      "sequence": 22,
+      "stage": "effect.createDocument",
+      "status": "BEGIN",
+      "data": null
+    },
+    {
+      "sequence": 23,
+      "stage": "effect.createDocument",
+      "status": "PASS",
+      "data": null
+    },
+    {
+      "sequence": 24,
+      "stage": "bridge.status",
+      "status": "BEGIN",
+      "data": {
+        "input": ""
+      }
+    },
+    {
+      "sequence": 25,
+      "stage": "bridge.status",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 0,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 26,
+      "stage": "bridge.create",
+      "status": "BEGIN",
+      "data": {
+        "input": "effect"
+      }
+    },
+    {
+      "sequence": 27,
+      "stage": "bridge.create",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 0,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 0,
+        "effectFixtures": 1,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 28,
+      "stage": "effect.redraw",
+      "status": "BEGIN",
+      "data": null
+    },
+    {
+      "sequence": 29,
+      "stage": "bridge.status",
+      "status": "BEGIN",
+      "data": {
+        "input": ""
+      }
+    },
+    {
+      "sequence": 30,
+      "stage": "bridge.status",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 1,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 1346458189,
+        "effectFixtures": 1,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 31,
+      "stage": "effect.redraw",
+      "status": "PASS",
+      "data": {
+        "schema": 1,
+        "status": "PROPOSED",
+        "plugin": "StrokeMasterProposedProbe",
+        "ok": true,
+        "error": 0,
+        "goCalls": 1,
+        "mutations": 0,
+        "strokeOrigin": 0,
+        "lastGoError": 1346458189,
+        "effectFixtures": 1,
+        "controlFixtures": 1
+      }
+    },
+    {
+      "sequence": 32,
+      "stage": "proof",
+      "status": "FAIL",
+      "data": {
+        "error": "Error: effect replacement succeeded"
+      }
+    },
+    {
+      "sequence": 33,
+      "stage": "effect.close",
+      "status": "BEGIN",
+      "data": null
+    },
+    {
+      "sequence": 34,
+      "stage": "effect.close",
+      "status": "PASS",
+      "data": null
+    },
+    {
+      "sequence": 35,
+      "stage": "proof",
+      "status": "FAILED",
+      "data": {
+        "status": "PROPOSED"
+      }
+    }
+  ],
+  "files": [
+    {
+      "kind": "journal",
+      "path": "<repo>\\build\\host-census\\ai-native-1\\first-load-stages.jsonl"
+    },
+    {
+      "kind": "pdf",
+      "mode": "control",
+      "path": "<repo>\\build\\host-census\\ai-native-1\\first-load-control.pdf",
+      "bytes": 36445
+    }
+  ],
+  "nativeStages": {
+    "HOST_DISCOVERS": "NOT_MEASURED",
+    "HOST_LOADS": "OBSERVED_BRIDGE_RESPONSE",
+    "INITIALIZES": "OBSERVED_STATE",
+    "REGISTERS": "OBSERVED_HANDLES",
+    "CALLBACK_EXECUTES": "NOT_MEASURED",
+    "TEST_ART_REACHES_CALLBACK": "NOT_MEASURED",
+    "HOST_CLOSES_CLEANLY": "NOT_MEASURED"
+  },
+  "limitations": [
+    "Session-wide counters require quiet unrelated documents.",
+    "PDF file creation is not proof of rendered geometry or missing-plugin fallback."
+  ],
+  "baseline": {
+    "schema": 1,
+    "status": "PROPOSED",
+    "plugin": "StrokeMasterProposedProbe",
+    "ok": true,
+    "error": 0,
+    "goCalls": 0,
+    "mutations": 0,
+    "strokeOrigin": 0,
+    "lastGoError": 0,
+    "effectFixtures": 0,
+    "controlFixtures": 0
+  },
+  "nativeBefore": {
+    "build": "native-prep-2",
+    "effectRegistered": true,
+    "commandRegistered": true,
+    "acceptedInputs": 0,
+    "sequence": 13,
+    "events": [
+      {
+        "sequence": 1,
+        "stage": "INITIALIZES",
+        "detail": "",
+        "version": 0,
+        "error": 0
+      },
+      {
+        "sequence": 2,
+        "stage": "suite.acquire",
+        "detail": "AI Live Effect Suite",
+        "version": 8,
+        "error": 0
+      },
+      {
+        "sequence": 3,
+        "stage": "suite.acquire",
+        "detail": "AI Filter Suite",
+        "version": 4,
+        "error": 0
+      },
+      {
+        "sequence": 4,
+        "stage": "register.effect",
+        "detail": "",
+        "version": 0,
+        "error": 0
+      },
+      {
+        "sequence": 5,
+        "stage": "register.command",
+        "detail": "",
+        "version": 0,
+        "error": 0
+      },
+      {
+        "sequence": 6,
+        "stage": "REGISTERS",
+        "detail": "",
+        "version": 0,
+        "error": 0
+      },
+      {
+        "sequence": 7,
+        "stage": "suite.release",
+        "detail": "AI Filter Suite",
+        "version": 4,
+        "error": 0
+      },
+      {
+        "sequence": 8,
+        "stage": "suite.release",
+        "detail": "AI Live Effect Suite",
+        "version": 8,
+        "error": 0
+      },
+      {
+        "sequence": 9,
+        "stage": "bridge",
+        "detail": "status",
+        "version": 0,
+        "error": 0
+      },
+      {
+        "sequence": 10,
+        "stage": "suite.acquire",
+        "detail": "AI Unicode String Suite",
+        "version": 10,
+        "error": 0
+      },
+      {
+        "sequence": 11,
+        "stage": "suite.release",
+        "detail": "AI Unicode String Suite",
+        "version": 10,
+        "error": 0
+      },
+      {
+        "sequence": 12,
+        "stage": "bridge",
+        "detail": "diagnostics",
+        "version": 0,
+        "error": 0
+      },
+      {
+        "sequence": 13,
+        "stage": "suite.acquire",
+        "detail": "AI Unicode String Suite",
+        "version": 10,
+        "error": 0
+      }
+    ]
+  },
+  "error": "Error: effect replacement succeeded",
+  "passed": false,
+  "installed_sha256": "4eb883eebc07c21acc1c8e13a366475713f7501969b61309b51cbbcbe5f0b5fc"
+}
