@@ -1,4 +1,4 @@
-// region-prep-8 target tests. No Illustrator or real SDK implementation.
+// region-prep-9 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.
@@ -43,7 +43,8 @@ void Setup(){
     live.GetLiveEffectName=[](AILiveEffectHandle h,const char** name)->AIErr{
         auto e=Step();
         if(!e)*name=h==reinterpret_cast<AILiveEffectHandle>(1)?strokemaster::topology_probe::effectIdentity
-                                                              :region_probe::censusIdentity;
+                   :h==reinterpret_cast<AILiveEffectHandle>(2)?region_probe::censusIdentity
+                                                              :region_probe::strokeBehindIdentity;
         return e;
     };
     live.GetStyleFilterFlags=[](AILiveEffectHandle,ai::int32* flags)->AIErr{
@@ -55,9 +56,12 @@ void Setup(){
         if(registered==0){
             Check(std::strcmp(d->name,strokemaster::topology_probe::effectIdentity)==0&&
                   d->prefersAsInput==kGroupInputArt,"region effect registered first, group input only");
-        }else{
+        }else if(registered==1){
             Check(std::strcmp(d->name,region_probe::censusIdentity)==0&&d->prefersAsInput==region_probe::censusInput&&
                   !(d->prefersAsInput&kTextFrameInputArt),"census effect second, path/compound/group input, no text");
+        }else{
+            Check(std::strcmp(d->name,region_probe::strokeBehindIdentity)==0&&
+                  d->prefersAsInput==region_probe::censusInput,"stroke-behind third, same input as the census");
         }
         ++registered;*h=reinterpret_cast<AILiveEffectHandle>(static_cast<std::intptr_t>(registered));return kNoErr;
     };
@@ -92,11 +96,12 @@ int main(){
     }
     Setup();{
         auto m=Startup();
-        Check(registered==2&&m.globals!=nullptr,"both effects registered and globals allocated");
+        Check(registered==3&&m.globals!=nullptr,"all three effects registered and globals allocated");
         auto* state=static_cast<region_probe::State*>(m.globals);
         Check(state->effect==reinterpret_cast<AILiveEffectHandle>(1)&&
-              state->census==reinterpret_cast<AILiveEffectHandle>(2),"persisted effect handles");
-        char payload[1024]{};
+              state->census==reinterpret_cast<AILiveEffectHandle>(2)&&
+              state->strokeBehind==reinterpret_cast<AILiveEffectHandle>(3),"persisted effect handles");
+        char payload[4096]{};
         Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr,"status payload");
         Check(std::strstr(payload,"\"plugin\":\"StrokeMasterRegionProbe\"")&&
               std::strstr(payload,"\"geometryEnabled\":true")&&
@@ -149,6 +154,14 @@ int main(){
         Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr&&
               std::strstr(payload,"\"census\":{\"registered\":true,\"calls\":2,\"nodes\":1"),
               "status reports the census");
+        // Stroke-behind refusals pass through; the transform itself has its own suite.
+        go.effect=state->strokeBehind;go.art=nullptr;
+        Check(PluginMain(goCaller,selector,&go)==kNoErr,"stroke-behind with no art passes through");
+        Check(state->strokeBehindStats.calls==1&&state->strokeBehindStats.refused==1&&
+              std::strcmp(state->strokeBehindStats.gate,"input.null")==0,"stroke-behind refusal recorded");
+        Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr&&
+              std::strstr(payload,"\"strokeBehind\":{\"registered\":true,\"calls\":1,\"published\":0,\"refused\":1"),
+              "status reports stroke-behind");
         char stop2[]=kSPInterfaceShutdownSelector,iface[]=kSPInterfaceCaller;
         Check(PluginMain(iface,stop2,&m)==kNoErr&&m.globals==nullptr,"shutdown frees globals");
         Check(allocated==1&&freed==1,"exactly one owned heap block");

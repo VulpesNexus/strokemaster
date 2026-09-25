@@ -1,4 +1,4 @@
-// PROPOSED region-prep-8: real-core closed-region replacement for the marked
+// PROPOSED region-prep-9: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -8,6 +8,7 @@
 #include "AIScriptMessage.h"
 #include "AIUnicodeString.h"
 #include "RegionNative.h"
+#include "StrokeBehind.h"
 #include <Windows.h>
 #include <array>
 #include <cmath>
@@ -15,7 +16,7 @@
 #include <cstring>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-8";
+constexpr char build[] = "region-prep-9";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -95,9 +96,16 @@ struct CensusStats {
     char tree[512]{};
 };
 
+// Third effect: the stroke-behind paint-order correction in StrokeBehind.h,
+// with the same input declaration as the census so live text arrives as glyph
+// outlines while the source stays editable.
+constexpr char strokeBehindIdentity[] = "org.strokemaster.proposed.stroke-behind.v1";
+
 struct State {
     AILiveEffectHandle effect = nullptr;
     AILiveEffectHandle census = nullptr;
+    AILiveEffectHandle strokeBehind = nullptr;
+    stroke_behind::Stats strokeBehindStats{};
     CensusStats inputCensus{};
     unsigned long long fixtures = 0;
     Metrics metrics{};
@@ -180,7 +188,32 @@ ASErr Register(SPMessageData& message, State& state) {
     auto err = RegisterOne(message, *live.operator&(), effectIdentity, title, kGroupInputArt, state.effect);
     if (err) return err;
     char censusTitle[] = "StrokeMaster PROPOSED input census";
-    return RegisterOne(message, *live.operator&(), censusIdentity, censusTitle, censusInput, state.census);
+    err = RegisterOne(message, *live.operator&(), censusIdentity, censusTitle, censusInput, state.census);
+    if (err) return err;
+    char strokeBehindTitle[] = "StrokeMaster PROPOSED stroke behind";
+    return RegisterOne(message, *live.operator&(), strokeBehindIdentity, strokeBehindTitle, censusInput,
+                       state.strokeBehind);
+}
+
+ASErr StrokeBehindGo(AILiveEffectGoMessage& go, State& state) {
+    auto& stats = state.strokeBehindStats;
+    ++stats.calls;
+    Suite<AIArtSuite> art(go.d.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathStyleSuite> paint(go.d.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    Suite<AIBlendStyleSuite> blend(go.d.basic, kAIBlendStyleSuite, kAIBlendStyleVersion);
+    ASErr err = art.error ? art.error : paint.error ? paint.error : blend.error;
+    if (!err && !go.art) { stats.gate = "input.null"; err = kBadParameterErr; }
+    if (!err) {
+        stroke_behind::Transform transform(*art.operator&(), *paint.operator&(), *blend.operator&(), stats);
+        err = transform.Apply(go.art);
+    }
+    Trace("stroke-behind.result", err, stats.gate);
+    if (!err) { ++stats.published; return kNoErr; }
+    ++stats.refused;
+    // A refusal leaves the processing copy as it was, so it passes through.
+    // Only a failed rollback, where the copy may be partly changed, is
+    // reported to the host.
+    return std::strcmp(stats.gate, "output.rollback-failed") == 0 ? err : kNoErr;
 }
 
 // Walks the processing art handed to the census effect. Grammar as in
@@ -311,6 +344,8 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"census\":{\"registered\":%s,\"calls\":%llu,\"nodes\":%d,\"groups\":%d,\"paths\":%d,"
         "\"compounds\":%d,\"textFrames\":%d,\"other\":%d,\"fillOnly\":%d,\"strokeOnly\":%d,"
         "\"fillAndStroke\":%d,\"unpainted\":%d,\"truncated\":%s,\"tree\":\"%s\"},"
+        "\"strokeBehind\":{\"registered\":%s,\"calls\":%llu,\"published\":%llu,\"refused\":%llu,"
+        "\"leaves\":%d,\"stroked\":%d,\"gate\":\"%s\"},"
         "\"supportedGate\":\"MARKED_ANALYTIC_FIXTURE_ONLY\"}",
         regionPluginName, build, static_cast<unsigned long>(GetCurrentProcessId()),
         actionError ? "false" : "true", state.effect ? "true" : "false", effectIdentity,
@@ -323,7 +358,10 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         state.census ? "true" : "false", state.inputCensus.calls, state.inputCensus.nodes, state.inputCensus.groups,
         state.inputCensus.paths, state.inputCensus.compounds, state.inputCensus.textFrames, state.inputCensus.other,
         state.inputCensus.fillOnly, state.inputCensus.strokeOnly, state.inputCensus.fillAndStroke,
-        state.inputCensus.unpainted, state.inputCensus.truncated ? "true" : "false", state.inputCensus.tree);
+        state.inputCensus.unpainted, state.inputCensus.truncated ? "true" : "false", state.inputCensus.tree,
+        state.strokeBehind ? "true" : "false", state.strokeBehindStats.calls, state.strokeBehindStats.published,
+        state.strokeBehindStats.refused, state.strokeBehindStats.leaves, state.strokeBehindStats.stroked,
+        state.strokeBehindStats.gate);
     return n < 0 || static_cast<size_t>(n) >= capacity ? kBadParameterErr : kNoErr;
 }
 
@@ -391,6 +429,7 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
                     auto* state = static_cast<region_probe::State*>(message.globals);
                     state->effect = startupState.effect;
                     state->census = startupState.census;
+                    state->strokeBehind = startupState.strokeBehind;
                     region_probe::Trace("globals.allocated");
                 }
                 return kNoErr;
@@ -429,6 +468,10 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
         if (std::strcmp(caller, kCallerAILiveEffect) == 0) {
             if (std::strcmp(selector, kSelectorAIGoLiveEffect) == 0) {
                 auto& go = *static_cast<AILiveEffectGoMessage*>(raw);
+                if (state->strokeBehind && go.effect == state->strokeBehind) {
+                    region_probe::TelemetryScope telemetry(&state->telemetry);
+                    return finish(region_probe::StrokeBehindGo(go, *state));
+                }
                 if (state->census && go.effect == state->census) {
                     region_probe::TelemetryScope telemetry(&state->telemetry);
                     return finish(region_probe::CensusGo(go, *state));

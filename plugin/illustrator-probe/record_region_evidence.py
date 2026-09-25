@@ -43,6 +43,9 @@ def _is_json(value):
 
 def measurement(name):
     report = json.loads((folder / name).read_text(encoding='utf-8'))
+    if 'files' in report:  # tools/measure_stroke_order.py
+        return {k: report[k] for k in ('renderer', 'dpi', 'thresholds', 'fill_sha256')} | {
+            'files': {n: {k: v for k, v in r.items() if k != 'paint_sequence'} for n, r in report['files'].items()}}
     keep = ('status', 'checks', 'pdf_sha256', 'coordinate_tolerance', 'area_tolerance', 'gray', 'paint_type',
             'painted_min_x', 'painted_area', 'area_error', 'vertex_errors', 'split_fill_stroke_paint', 'render_hints',
             'escaping_probe_inside', 'area_evidence', 'silhouette_explicit_in_pdf', 'operators')

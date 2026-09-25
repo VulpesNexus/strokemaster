@@ -53,12 +53,17 @@ args = [str(msbuild), str(root / 'RegionProbe.vcxproj'), '/p:Configuration=Relea
 run('compile', args)
 run('test-compile', args + ['/p:RegionProbeTests=true'])
 run('tests', [str(out / 'RegionProbeTests.exe')])
+# The output backend and the stroke-behind transform carry their own mock suites.
+for project, folder in (('RegionSdkOutputTests', 'region-sdk-output-tests'), ('StrokeBehindTests', 'stroke-behind-tests')):
+    run(project + '-compile', [str(msbuild), str(root / (project + '.vcxproj')), '/p:Configuration=Release',
+                               '/p:Platform=x64', '/m:1', '/v:minimal', '/nologo'])
+    run(project, [str(root / 'build' / folder / (project + '.exe'))])
 binary = out / 'StrokeMasterRegionProbe.aip'
 assert (out / 'plugin.pipl').read_bytes() in binary.read_bytes(), 'PiPL resource missing'
 assert b'StrokeMasterRegionProbe' in (out / 'plugin.pipl').read_bytes(), 'Wrong PiPL identity'
 assert all(digest(p) == h for p, h in frozen.items()), 'Frozen prep artifact changed during build'
 assert digest(core_header) == header_sha and digest(core_cpp) == cpp_sha, 'Core changed during build'
-record = {'status': 'PROPOSED_GEOMETRY_ENABLED_MARKED_FIXTURE', 'plugin': 'StrokeMasterRegionProbe', 'build': 'region-prep-8',
+record = {'status': 'PROPOSED_GEOMETRY_ENABLED_MARKED_FIXTURE', 'plugin': 'StrokeMasterRegionProbe', 'build': 'region-prep-9',
           'sha256': digest(binary), 'bytes': binary.stat().st_size, 'geometryEnabled': True, 'coreLinked': True,
           'hostTested': False, 'piplEmbedded': True, 'prep4AndPrep5Unchanged': True,
           'coreHeaderSha256': header_sha, 'coreCppSha256': cpp_sha,
