@@ -9,3 +9,7 @@
 //========================================================================================
 // REGISTER_PMINTERFACE(ClassName, ImplementationID)
 REGISTER_PMINTERFACE(IseFillRepaintAdornment, kIseFillRepaintAdornmentImpl)
+#ifdef ISE_ROUTE_W
+REGISTER_PMINTERFACE(IseStrokeBehindAdornment, kIseStrokeBehindAdornmentImpl)
+REGISTER_PMINTERFACE(IseStrokeRestoreAdornment, kIseStrokeRestoreAdornmentImpl)
+#endif

@@ -17,7 +17,10 @@
 param(
     [Parameter(Mandatory = $true)][string]$SdkPath,
     [ValidateSet('Release', 'Debug')][string]$Configuration = 'Release',
-    [string[]]$PreferredToolsets = @('14.42.', '14.39.')
+    [string[]]$PreferredToolsets = @('14.42.', '14.39.'),
+    # Adds the experimental route W stroke-behind adornments (IseStrokeBehindAdornment.cpp).
+    # Built into build\<Configuration>-RouteW, never over the default refusal build.
+    [switch]$RouteW
 )
 $ErrorActionPreference = 'Stop'
 
@@ -57,7 +60,8 @@ $msbuild = Join-Path $vsPath 'MSBuild\Current\Bin\MSBuild.exe'
 if (-not (Test-Path -LiteralPath $msbuild)) { throw "MSBuild not found at $msbuild" }
 
 $repo = Split-Path -Parent $PSScriptRoot
-New-Item -ItemType Directory -Force -Path (Join-Path $repo ('build\' + $Configuration)), (Join-Path $repo ('build\obj\' + $Configuration)) | Out-Null
+$variant = if ($RouteW) { $Configuration + '-RouteW' } else { $Configuration }
+New-Item -ItemType Directory -Force -Path (Join-Path $repo ('build\' + $variant)), (Join-Path $repo ('build\obj\' + $variant)) | Out-Null
 
 # Creates a junction whose name is derived from its target, so the same target always gets the
 # same path. Random names would do for reaching the files, but odfrc records the absolute path
@@ -87,8 +91,8 @@ $junction = New-StableJunction -Prefix 'ise-sdk-' -Target $sdkFull
 # junction whose path has neither, so every argument survives intact.
 $repoLink = New-StableJunction -Prefix 'ise-repo-' -Target $repo
 $project = Join-Path $repoLink 'plugin\prj\InDesignStrokeEngine.vcxproj'
-$outDir = Join-Path $repoLink ('build\' + $Configuration + '\')
-$intDir = Join-Path $repoLink ('build\obj\' + $Configuration + '\')
+$outDir = Join-Path $repoLink ('build\' + $variant + '\')
+$intDir = Join-Path $repoLink ('build\obj\' + $variant + '\')
 try {
     Write-Host "SDK        : $sdkFull"
     Write-Host "via        : $junction"
@@ -136,6 +140,7 @@ try {
         "/p:IseOdfrcOptions=$odfrcRsp",
         "/p:OutDir=$outDir",
         "/p:IntDir=$intDir",
+        "/p:IseRouteW=$(if ($RouteW) { 'true' } else { 'false' })",
         '/m', '/v:minimal', '/nologo',
         "/flp:logfile=$buildLog;verbosity=normal"
     )

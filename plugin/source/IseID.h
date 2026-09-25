@@ -40,12 +40,17 @@ DECLARE_PMID(kPlugInIDSpace, kIsePluginID, kIsePrefix + 0)
 
 // ClassIDs:
 DECLARE_PMID(kClassIDSpace, kIseFillRepaintAdornmentBoss, kIsePrefix + 0)
+// Experimental route W (build-plugin.ps1 -RouteW); declared always, registered only then.
+DECLARE_PMID(kClassIDSpace, kIseStrokeBehindAdornmentBoss, kIsePrefix + 1)
+DECLARE_PMID(kClassIDSpace, kIseStrokeRestoreAdornmentBoss, kIsePrefix + 2)
 
 // InterfaceIDs:
 // None: the plugin implements interfaces the API already declares.
 
 // ImplementationIDs:
 DECLARE_PMID(kImplementationIDSpace, kIseFillRepaintAdornmentImpl, kIsePrefix + 0)
+DECLARE_PMID(kImplementationIDSpace, kIseStrokeBehindAdornmentImpl, kIsePrefix + 1)
+DECLARE_PMID(kImplementationIDSpace, kIseStrokeRestoreAdornmentImpl, kIsePrefix + 2)
 
 // Format IDs for the PluginVersion resource:
 #define kIseInitialMajorFormat      kSDKDef_20_PersistMajorVersionNumber

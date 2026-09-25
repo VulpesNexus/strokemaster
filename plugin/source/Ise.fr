@@ -76,6 +76,30 @@ resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
             IID_IGLOBALTEXTADORNMENT, kIseFillRepaintAdornmentImpl,
         }
     },
+#ifdef ISE_ROUTE_W
+    /** Experimental route W, Background pass: draws Outside text strokes beneath every fill
+        of their frame and mutes them for the Text pass. See IseStrokeBehindAdornment.cpp.
+    */
+    Class
+    {
+        kIseStrokeBehindAdornmentBoss,
+        kInvalidClass,
+        {
+            IID_IK2SERVICEPROVIDER, kGlobalTextAdornmentServiceImpl,
+            IID_IGLOBALTEXTADORNMENT, kIseStrokeBehindAdornmentImpl,
+        }
+    },
+    /** Experimental route W, Foreground pass: restores the muted stroke paint. */
+    Class
+    {
+        kIseStrokeRestoreAdornmentBoss,
+        kInvalidClass,
+        {
+            IID_IK2SERVICEPROVIDER, kGlobalTextAdornmentServiceImpl,
+            IID_IGLOBALTEXTADORNMENT, kIseStrokeRestoreAdornmentImpl,
+        }
+    },
+#endif
 }}};
 
 /*

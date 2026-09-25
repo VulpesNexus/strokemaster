@@ -32,6 +32,10 @@
          copies use paths relative to its project folder and do not work from here. -->
     <IseCppOptions Condition="'$(IseCppOptions)' == ''">$(IseSdkPrjDir)\SDKCPPOptions.rsp</IseCppOptions>
     <IseOdfrcOptions Condition="'$(IseOdfrcOptions)' == ''">$(IseSdkPrjDir)\SDKODFRCOptions.rsp</IseOdfrcOptions>
+    <!-- Experimental route W stroke-behind adornments; off unless build-plugin.ps1 -RouteW. -->
+    <IseRouteW Condition="'$(IseRouteW)' == ''">false</IseRouteW>
+    <IseRouteWDefine Condition="'$(IseRouteW)' == 'true'">ISE_ROUTE_W=1;</IseRouteWDefine>
+    <IseRouteWOdfrc Condition="'$(IseRouteW)' == 'true'">-d ISE_ROUTE_W</IseRouteWOdfrc>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
@@ -65,8 +69,8 @@
            folder, which does not resolve from here, so they are repeated as absolute paths. -->
       <AdditionalIncludeDirectories>$(IseSourceDir);$(IseSdkDir)\source\sdksamples\common;$(IseSdkDir)\external;$(IseSdkDir)\external\dva\Drover;$(IseSdkDir)\external\dva\third_party\boost_libraries;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <!-- The SDK's headers check that DEBUG and NDEBUG agree with the configuration. -->
-      <PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">_CRT_SECURE_NO_DEPRECATE;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">_CRT_SECURE_NO_DEPRECATE;STRICT;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Release'">$(IseRouteWDefine)_CRT_SECURE_NO_DEPRECATE;STRICT;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions Condition="'$(Configuration)'=='Debug'">$(IseRouteWDefine)_CRT_SECURE_NO_DEPRECATE;STRICT;DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PrecompiledHeader>Use</PrecompiledHeader>
       <PrecompiledHeaderFile>VCPlugInHeaders.h</PrecompiledHeaderFile>
       <PrecompiledHeaderOutputFile>$(IntDir)InDesignStrokeEngine.pch</PrecompiledHeaderOutputFile>
@@ -108,6 +112,7 @@ xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Comma
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(IseSourceDir)\IseFillRepaintAdornment.cpp" />
+    <ClCompile Include="$(IseSourceDir)\IseStrokeBehindAdornment.cpp" Condition="'$(IseRouteW)' == 'true'" />
     <ClCompile Include="$(IseSourceDir)\IseNoStrip.cpp" />
     <ClCompile Include="$(IseSourceDir)\TriggerResourceDeps.cpp" />
     <!-- Shared SDK sources, compiled from the SDK rather than copied into this repository. -->
@@ -120,10 +125,11 @@ xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Comma
   <ItemGroup>
     <ClInclude Include="$(IseSourceDir)\IseID.h" />
     <ClInclude Include="$(IseSourceDir)\IseFactoryList.h" />
+    <ClInclude Include="$(IseSourceDir)\IseStrokeBehindCore.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="$(IseSourceDir)\Ise.fr">
-      <Command>"$(IseSdkDir)\devtools\bin\odfrc.exe" $(ODFRC_ADDITIONAL_FLAGS) "%(FullPath)" -o "$(IntDir)%(Filename).fres" -i "$(IseSourceDir)" @"$(IseOdfrcOptions)"</Command>
+      <Command>"$(IseSdkDir)\devtools\bin\odfrc.exe" $(ODFRC_ADDITIONAL_FLAGS) $(IseRouteWOdfrc) "%(FullPath)" -o "$(IntDir)%(Filename).fres" -i "$(IseSourceDir)" @"$(IseOdfrcOptions)"</Command>
       <AdditionalInputs>$(IntDir)TriggerResourceDeps.obj;%(AdditionalInputs)</AdditionalInputs>
       <Outputs>$(IntDir)%(Filename).fres;%(Outputs)</Outputs>
     </CustomBuild>
