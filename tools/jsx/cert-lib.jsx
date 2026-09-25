@@ -14,6 +14,10 @@
 //                   effects reset, other artwork emptied, over a black backdrop: the fill glyphs
 //   splitReference  the census oracle: each unthreaded text frame gets a copy behind it holding
 //                   centered, doubled strokes and no fill; the frame itself keeps only its fills
+//   storyReference  the cross-frame oracle: splitReference for single-frame stories; a threaded
+//                   story on one layer is duplicated as a chain (grouped, so the copy keeps its
+//                   thread) and set at the back of the page, above the backdrop, holding the
+//                   story's strokes; the story keeps only its fills
 //   flatten:<spec>  a spread flattener override (document-scoped, not an application preference)
 //
 // Only [None] is ever assigned to strokeColor when removing a stroke: assigning weight 0 after
@@ -140,24 +144,65 @@ $.global.ISE_CERT = (function () {
             top.locked = false;
             var bottom = top.duplicate();
             bottom.sendBackward();
-            if (bottom.characters.length !== top.characters.length) { throw new Error('duplicate changed text in ' + top.name); }
-            for (var c = 0; c < top.characters.length; c++) {
-                var tc = top.characters[c], bc = bottom.characters[c];
-                var color = tc.strokeColor, width = tc.strokeWeight, align = tc.strokeAlignment;
-                bc.fillColor = none(doc);
-                try { bc.underline = false; bc.strikeThru = false; } catch (e1) {}
-                if (color.name === 'None' || !(width > 0)) { bc.strokeColor = none(doc); continue; }
-                bc.strokeAlignment = TextStrokeAlign.CENTER_ALIGNMENT;
-                bc.strokeWeight = align === TextStrokeAlign.OUTSIDE_ALIGNMENT ? 2 * width : width;
-                bc.strokeColor = color;
-                tc.strokeWeight = 0;
-                tc.strokeColor = none(doc);
-            }
+            splitStrokes(doc, top.parentStory, bottom.parentStory, top.name);
             top.locked = wasLocked;
             made++;
         }
         doc.recompose();
         return 'frames=' + made + ' skippedThreadedOrEmpty=' + skipped;
+    };
+
+    // Moves a story's strokes to its copy: the copy keeps each stroke, centered and doubled if it
+    // was Outside, and no fill; the original keeps its fills and no stroke.
+    function splitStrokes(doc, top, bottom, label) {
+        if (bottom.characters.length !== top.characters.length) { throw new Error('duplicate changed text in ' + label); }
+        for (var c = 0; c < top.characters.length; c++) {
+            var tc = top.characters[c], bc = bottom.characters[c];
+            var color = tc.strokeColor, width = tc.strokeWeight, align = tc.strokeAlignment;
+            bc.fillColor = none(doc);
+            try { bc.underline = false; bc.strikeThru = false; } catch (e1) {}
+            if (color.name === 'None' || !(width > 0)) { bc.strokeColor = none(doc); continue; }
+            bc.strokeAlignment = TextStrokeAlign.CENTER_ALIGNMENT;
+            bc.strokeWeight = align === TextStrokeAlign.OUTSIDE_ALIGNMENT ? 2 * width : width;
+            bc.strokeColor = color;
+            tc.strokeWeight = 0;
+            tc.strokeColor = none(doc);
+        }
+    }
+
+    cert.prep.storyReference = function (doc) {
+        var single = cert.prep.splitReference(doc);
+        // Stories by id: a threaded story's frames, all on one layer, not inside another group.
+        var ids = [], i, made = 0, skipped = [];
+        for (i = 0; i < doc.stories.length; i++) { ids.push(doc.stories[i].id); }
+        for (i = 0; i < ids.length; i++) {
+            var story = doc.stories.itemByID(ids[i]), frames = story.textContainers;
+            if (frames.length < 2) { continue; }
+            var layer = frames[0].itemLayer.name, parent = frames[0].parent, ok = true, j;
+            for (j = 0; j < frames.length; j++) {
+                if (frames[j].constructor.name !== 'TextFrame' || frames[j].itemLayer.name !== layer) { ok = false; }
+                if (frames[j].parent.constructor.name !== parent.constructor.name) { ok = false; }
+            }
+            if (!ok) { skipped.push(frames[0].name); continue; }
+            var copy, group = null;
+            if (parent.constructor.name === 'Group') {
+                copy = parent.duplicate();
+            } else {
+                group = doc.pages[0].groups.add(frames);
+                copy = group.duplicate();
+                group.ungroup();
+            }
+            copy.sendToBack();
+            copy.bringForward();   // above the backdrop rectangle, below everything else on its layer
+            var copyStory = copy.textFrames[0].parentStory;
+            if (copyStory.id === story.id || copy.textFrames[0].previousTextFrame && copy.textFrames[0].previousTextFrame.parentStory.id === story.id) {
+                throw new Error('copy of ' + frames[0].name + ' is not a separate story');
+            }
+            splitStrokes(doc, doc.stories.itemByID(ids[i]), copyStory, frames[0].name);
+            made++;
+        }
+        doc.recompose();
+        return single + ' threadedStories=' + made + ' skippedCrossLayerOrMixed=' + skipped.join(',');
     };
 
     // flatten:<level>:<textOutlines>:<strokeOutlines>, for example flatten:LOW:no:yes. Applies a

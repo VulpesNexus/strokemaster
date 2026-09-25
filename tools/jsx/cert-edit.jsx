@@ -14,6 +14,11 @@
 //        anchored and path text, a table cell
 //   For both: live -> undo all -> redo all -> save -> close -> reopen, exporting at each step.
 //   ED3  five cycles of edit, save, close, reopen on one copy, exporting after each.
+//   ED4  cross-frame census (ISE_ARGS.xframe, optional): reflow that moves text between
+//        threaded frames both ways, a stacking swap, a move across layers, threading two
+//        independent frames into one story, a stroke change, a rotated two-column frame, and a
+//        text edit downstream; the edited state also goes through IDML.
+// ISE_ARGS.only names the batteries to run (for example ['ED4']); all of them by default.
 (function () {
     var lib = $.global.ISE_LIB, cert = $.global.ISE_CERT;
     var out = lib.args.out, results = out + '/results.jsonl';
@@ -92,6 +97,20 @@
         run(doc, steps, log);
     }
 
+    function edits4(doc, log) {
+        var steps = [
+            ['reflow XB0: a new first paragraph pushes a line from f1 into f2', function () { frame(doc, 'XB0a').parentStory.insertionPoints[0].contents = 'HH\r'; }],
+            ['reflow XB1: removing the first paragraph pulls a line from f2 into f1', function () { frame(doc, 'XB1a').parentStory.paragraphs[0].remove(); }],
+            ['stacking XB2: the downstream frame sent behind the upstream one', function () { frame(doc, 'XB2b').sendBackward(); }],
+            ['move XB7b 5 pt up, across layers', function () { frame(doc, 'XB7b').move(undefined, [0, -5]); }],
+            ['thread XA3a into XA3b: two stories become one', function () { frame(doc, 'XA3a').nextTextFrame = frame(doc, 'XA3b'); }],
+            ['stroke weight 6 pt on the XB4 story', function () { frame(doc, 'XB4a').parentStory.texts[0].strokeWeight = 6; }],
+            ['rotate the two-column XB6 frame 5 degrees', function () { frame(doc, 'XB6').rotationAngle = 5; }],
+            ['text edit in XB5b', function () { frame(doc, 'XB5b').texts[0].insertionPoints[1].contents = 'X'; }]
+        ];
+        run(doc, steps, log);
+    }
+
     function run(doc, steps, log) {
         for (var i = 0; i < steps.length; i++) {
             try { steps[i][1](); doc.recompose(); log.push(steps[i][0] + ' ok'); }
@@ -120,15 +139,30 @@
         doc.close(SaveOptions.NO);
         doc = lib.track(app.open(copy, false));
         stage(doc, id + '-reopened');
+        if (id === 'ED4') {
+            // The edited state through IDML: export, open the IDML, draw it.
+            var idml = new File(out + '/work/' + id + '.idml');
+            doc.exportFile(ExportFormat.INDESIGN_MARKUP, idml);
+            doc.close(SaveOptions.NO);
+            doc = lib.track(app.open(idml, false));
+            stage(doc, id + '-idml');
+        }
         doc.close(SaveOptions.NO);
+    }
+    function wanted(id) {
+        var only = lib.args.only;
+        if (!only) { return true; }
+        for (var i = 0; i < only.length; i++) { if (only[i] === id) { return true; } }
+        return false;
     }
 
     return lib.run(function () {
         if (new File(results).exists) { lib.L('ERROR results exist: ' + results); return; }
         new Folder(out + '/work').create();
-        try { lifecycle('ED1', lib.args.victims, edits1); } catch (e1) { lib.L('ED1 ERROR ' + e1.message + ' line ' + e1.line); }
-        try { lifecycle('ED2', lib.args.scope, edits2); } catch (e2) { lib.L('ED2 ERROR ' + e2.message + ' line ' + e2.line); }
-        try {
+        if (wanted('ED1')) { try { lifecycle('ED1', lib.args.victims, edits1); } catch (e1) { lib.L('ED1 ERROR ' + e1.message + ' line ' + e1.line); } }
+        if (wanted('ED2')) { try { lifecycle('ED2', lib.args.scope, edits2); } catch (e2) { lib.L('ED2 ERROR ' + e2.message + ' line ' + e2.line); } }
+        if (wanted('ED4') && lib.args.xframe) { try { lifecycle('ED4', lib.args.xframe, edits4); } catch (e4) { lib.L('ED4 ERROR ' + e4.message + ' line ' + e4.line); } }
+        if (wanted('ED3')) try {
             var copy = cert.copyFile(lib.args.victims, out + '/work/ED3.indd');
             for (var c = 1; c <= 5; c++) {
                 var doc = lib.track(app.open(copy, false));

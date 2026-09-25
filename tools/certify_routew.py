@@ -30,7 +30,7 @@ REPO = Path(__file__).resolve().parents[1]
 CORPUS = REPO / 'tests/certification/corpus'
 CERT = REPO / 'build/cert'
 
-SOURCES = {'V': 'victims', 'T': 'cert-T', 'C': 'cert-C', 'E': 'cert-E'}
+SOURCES = {'V': 'victims', 'T': 'cert-T', 'C': 'cert-C', 'E': 'cert-E', 'X': 'cert-X'}
 
 # id: (preset, overrides, preparation). Overrides use enum:<Enumeration>:<KEY> for enumerations.
 PDF_FAMILIES = {
@@ -65,6 +65,8 @@ PLAN = {
     'T': {'pdf': ['hqp', 'x1a', 'x3', 'x4', 'a4', 'a4low', 'a4outline', 'press', 'U1'], 'png': ['png600'], 'print': ['eps', 'pshigh', 'pslow']},
     'C': {'pdf': ['hqp', 'press', 'x1a', 'x4', 'gray', 'rgb', 'U1', 'U2'], 'png': ['png600', 'png600gray'], 'print': ['eps', 'pshigh', 'psgray']},
     'E': {'pdf': ['hqp', 'x1a', 'x4'], 'png': ['png600'], 'print': ['eps', 'pshigh']},
+    # The cross-frame census: live PDF, flattened PDF, raster, EPS, and PostScript.
+    'X': {'pdf': ['hqp', 'x1a', 'x4'], 'png': ['png300', 'png600'], 'print': ['eps', 'pshigh']},
 }
 
 
@@ -75,6 +77,7 @@ PLAN_CONTROL = {
     'T': {'pdf': ['hqp', 'x4', 'x1a', 'a4', 'a4low'], 'png': ['png600'], 'print': ['eps', 'pshigh']},
     'C': {'pdf': ['hqp', 'press', 'x1a'], 'png': ['png600'], 'print': ['pshigh']},
     'E': {'pdf': ['hqp', 'x1a'], 'png': ['png600'], 'print': ['pshigh']},
+    'X': {'pdf': ['hqp', 'x4', 'x1a'], 'png': ['png600'], 'print': ['eps', 'pshigh']},
 }
 SUITES = ['A-adjacent-line-overlap/minimal/A-minimal.indd', 'B-miter-spikes/minimal/B-miter.indd',
           'C-run-fragmentation/minimal/C-attribute-sweep.indd', 'N-transparency/minimal/N-transparency.indd',
@@ -113,7 +116,8 @@ def source_jobs(session, key, families, users):
     plain = by_prep.pop(None, [])
     plain += [{'kind': 'png', **png[p], 'file': p + '.png'} for p in families['png']]
     plain += [{'kind': PRINT[p][0], **PRINT[p][1], 'file': p + ('.eps' if PRINT[p][0] == 'eps' else '.ps')} for p in families['print']]
-    twins = [('out', []), ('fill', ['fillOnly'])] + ([('ref', ['splitReference'])] if key == 'V' else [])
+    refs = {'V': ['splitReference'], 'X': ['storyReference']}
+    twins = [('out', []), ('fill', ['fillOnly'])] + ([('ref', refs[key])] if key in refs else [])
     for twin, prep in twins:
         outputs = plain if twin != 'ref' else [o for o in plain if o['kind'] != 'ps' or o['file'] == 'pshigh.ps']
         jobs.append({'id': '%s.%s' % (key, twin), 'source': fwd(src), 'copy': fwd(work / ('%s.%s.indd' % (key, twin))),
@@ -187,13 +191,54 @@ def edit_jobs(session):
     std = [{'kind': 'pdf', 'preset': '[High Quality Print]', 'overrides': {}, 'file': 'hqp.pdf'},
            {'kind': 'png', 'ppi': 600, 'file': 'png600.png'}]
     jobs = []
-    for sid in ('ED1', 'ED2'):
+    for sid in ('ED1', 'ED2', 'ED4'):
+        if not (ed / (sid + '-edited.indd')).exists():
+            continue   # a battery cert-edit.jsx did not run (ED4 needs the cross-frame census)
         src = fwd(ed / (sid + '-edited.indd'))
         jobs.append({'id': sid + '.fill', 'source': src, 'copy': fwd(work / (sid + '.fill.indd')), 'prep': ['fillOnly'],
                      'outDir': fwd(ed / (sid + '-twin')), 'outputs': std})
         jobs.append({'id': sid + '.mask', 'source': src, 'copy': fwd(work / (sid + '.mask.indd')), 'prep': ['mask'],
                      'outDir': fwd(ed / (sid + '-twin')), 'outputs': [{'kind': 'png', 'ppi': 600, 'gray': True, 'file': 'mask600.png'}]})
     return jobs
+
+
+ASYNC_FAMILIES = {'hqp': '[High Quality Print]', 'x4': '[PDF/X-4:2008]', 'x1a': '[PDF/X-1a:2001]'}
+
+
+def async_spec(session, keys=('V', 'X')):
+    """Background PDF exports (tools/jsx/cert-async.jsx) of the sources, in the families the
+    synchronous plan exported too, so each can be compared with its synchronous twin."""
+    root, work = CERT / session / 'out' / 'ASYNC', CERT / session / 'work'
+    jobs = [{'id': 'ASYNC.%s.%s' % (key, fam), 'source': fwd(CORPUS / (SOURCES[key] + '.indd')),
+             'copy': fwd(work / ('ASYNC.%s.%s.indd' % (key, fam))), 'preset': preset, 'out': fwd(root / key / (fam + '.pdf'))}
+            for key in keys for fam, preset in ASYNC_FAMILIES.items()]
+    spec = {'session': session, 'results': fwd(CERT / session / 'async.jsonl'), 'jobs': jobs}
+    path = CERT / session / 'spec-async.json'
+    path.write_text(json.dumps(spec, indent=1), encoding='utf-8', newline='\n')
+    print('%s: %d background exports -> %s' % (session, len(jobs), path))
+
+
+def measure_async(session_dir, render, masks_cache):
+    """Each background export against its fill twin, and against the synchronous export of the
+    same source and family from the same session."""
+    import routew_measure as m
+    rec = {}
+    for line in (session_dir / 'async.jsonl').read_text(encoding='utf-8').splitlines():
+        job = json.loads(line)
+        _, key, fam = job['id'].split('.')
+        out = session_dir / 'out' / 'ASYNC' / key / (fam + '.pdf')
+        sync, twin = session_dir / 'out' / key / 'out' / (fam + '.pdf'), session_dir / 'out' / key / 'fill' / (fam + '.pdf')
+        row = {'error': job.get('error'), 'bytes': job.get('bytes'), 'ms': job.get('ms')}
+        if out.exists() and twin.exists():
+            core = _core(masks_cache, (key, 600), session_dir / 'out' / key / 'mask' / 'mask600.png')
+            o, renderer = render(out, 600)
+            t, _ = render(twin, 600)
+            row.update({'sha256': file_sha(out), 'renderer': renderer, 'fill_core': m.core_damage(o, t, core, manifest_frames(key), 600),
+                        'vs_sync_export': _pair_stats(render, out, sync, 600) if sync.exists() else None,
+                        'structure': m.pdf_structure(str(out), manifest_frames(key))})
+            print('ASYNC', key, fam, 'damage', row['fill_core']['damage_px_total'], 'vs sync max', (row['vs_sync_export'] or {}).get('max_diff'), flush=True)
+        rec['%s.%s' % (key, fam)] = row
+    return rec
 
 
 def plan(session, families, control=False, spec_name='spec.json'):
@@ -336,16 +381,17 @@ def measure_roundtrip(session_dir, render, masks_cache):
     return rec
 
 
-def measure_illustrator(session_dir, render, masks_cache):
+def measure_illustrator(session_dir, render, masks_cache, key='V', folder='AI'):
     """Route W PDFs opened and re-saved by Illustrator (tools/jsx/ai-cert-roundtrip.jsx). Each saved
     file is compared with its fill twin taken through the same Illustrator step, and with the
-    InDesign export it came from."""
+    InDesign export it came from. folder AI holds the victim census's PDFs, AIX the cross-frame
+    census's (key X)."""
     import routew_measure as m
-    frames = manifest_frames('V')
-    ai = session_dir / 'out' / 'AI'
-    vbase = session_dir / 'out' / 'V'
-    if ('V', 600) not in masks_cache:
-        masks_cache[('V', 600)] = m.core_of(m.gray(vbase / 'mask' / 'mask600.png'), 600)
+    frames = manifest_frames(key)
+    ai = session_dir / 'out' / folder
+    vbase = session_dir / 'out' / key
+    if (key, 600) not in masks_cache:
+        masks_cache[(key, 600)] = m.core_of(m.gray(vbase / 'mask' / 'mask600.png'), 600)
     inventories, rows = [], {}
     for run in sorted(p for p in ai.iterdir() if p.is_dir()):
         inventories += json.loads((run / 'ai-results.json').read_text(encoding='utf-8'))
@@ -358,7 +404,7 @@ def measure_illustrator(session_dir, render, masks_cache):
             (a, b), trimmed = m.align(o, src)
             d = abs(a.astype(int) - b.astype(int))
             rows[out.name] = {'sha256': file_sha(out), 'bytes': out.stat().st_size, 'renderer': renderer,
-                              'fill_core': m.core_damage(o, t, masks_cache[('V', 600)], frames, 600),
+                              'fill_core': m.core_damage(o, t, masks_cache[(key, 600)], frames, 600),
                               'px_over_64_from_indesign_export': int((d > 64).sum()), 'px_differing_from_indesign_export': int((d > 0).sum()),
                               'structure': m.pdf_structure(str(out), frames)}
             print('AI', out.name, 'damage', rows[out.name]['fill_core']['damage_px_total'], 'off InDesign', rows[out.name]['px_over_64_from_indesign_export'], flush=True)
@@ -388,12 +434,16 @@ def measure_editing(session_dir, render, masks_cache):
     ed = session_dir / 'out' / 'ED'
     base = session_dir / 'out'
     stages = [json.loads(line) for line in (ed / 'results.jsonl').read_text(encoding='utf-8').splitlines()]
-    frames = {'ED1': manifest_frames('V'), 'ED2': manifest_frames('E') + [{'key': 'E01dup', 'bounds': [605, 20, 665, 190]}], 'ED3': manifest_frames('V')}
-    original_twin = {'ED1': ('V', base / 'V'), 'ED2': ('E', base / 'E'), 'ED3': ('V', base / 'V')}
+    # ED4 moves and rotates frames a little, so each cross-frame case is widened by 12 pt.
+    widened = [{**f, 'bounds': [f['bounds'][0] - 12, f['bounds'][1] - 12, f['bounds'][2] + 12, f['bounds'][3] + 12]}
+               for f in manifest_frames('X') if f.get('bounds')]
+    frames = {'ED1': manifest_frames('V'), 'ED2': manifest_frames('E') + [{'key': 'E01dup', 'bounds': [605, 20, 665, 190]}], 'ED3': manifest_frames('V'),
+              'ED4': widened}
+    original_twin = {'ED1': ('V', base / 'V'), 'ED2': ('E', base / 'E'), 'ED3': ('V', base / 'V'), 'ED4': ('X', base / 'X')}
     rec = {'stages': {}, 'identities': {}}
     for st in stages:
         sid, _, name = st['id'].partition('-')
-        edited = name in ('live', 'redone', 'reopened')
+        edited = name in ('live', 'redone', 'reopened', 'idml')
         rows = {}
         for f in ('hqp.pdf', 'png600.png'):
             out = ed / st['id'] / f
@@ -410,12 +460,18 @@ def measure_editing(session_dir, render, masks_cache):
                                    'log': st.get('log'), 'errors': [o['error'] for o in st['outputs'] if o['error']], 'outputs': rows}
     checks = [('ED1-undone', 'ED1-original'), ('ED1-redone', 'ED1-live'), ('ED1-reopened', 'ED1-live'),
               ('ED2-undone', 'ED2-original'), ('ED2-redone', 'ED2-live'), ('ED2-reopened', 'ED2-live'),
-              ('ED3-cycle2', 'ED1-original'), ('ED3-cycle4', 'ED1-original'), ('ED3-cycle3', 'ED3-cycle1'), ('ED3-cycle5', 'ED3-cycle1')]
+              ('ED3-cycle2', 'ED1-original'), ('ED3-cycle4', 'ED1-original'), ('ED3-cycle3', 'ED3-cycle1'), ('ED3-cycle5', 'ED3-cycle1'),
+              ('ED4-undone', 'ED4-original'), ('ED4-redone', 'ED4-live'), ('ED4-reopened', 'ED4-live'), ('ED4-idml', 'ED4-live')]
+    present = {st['id'] for st in stages}
     for a, b in checks:
+        if a not in present or b not in present:
+            continue
         for f in ('hqp.pdf', 'png600.png'):
             rec['identities']['%s vs %s %s' % (a, b, f)] = _pair_stats(render, ed / a / f, ed / b / f, 600)
     for f in ('hqp.pdf', 'png600.png'):
-        rec['identities']['ED1-original vs V direct export %s' % f] = _pair_stats(render, ed / 'ED1-original' / f, base / 'V' / 'out' / f, 600)
+        for sid, key in (('ED1', 'V'), ('ED4', 'X')):
+            if sid + '-original' in present and (base / key / 'out' / f).exists():
+                rec['identities']['%s-original vs %s direct export %s' % (sid, key, f)] = _pair_stats(render, ed / (sid + '-original') / f, base / key / 'out' / f, 600)
     return rec
 
 
@@ -758,12 +814,22 @@ def summarize(output):
     print('rows', len(rows), counts)
 
 
+def _no_paths(value):
+    """A host error message quotes the file it failed on; keep the repository's location out of
+    the record (it names the machine and its owner)."""
+    if not isinstance(value, str):
+        return value
+    for root in (fwd(REPO), str(REPO)):
+        value = value.replace(root, '<repo>')
+    return value
+
+
 def job_log(session_dir):
     jobs = {}
     for line in (session_dir / 'results.jsonl').read_text(encoding='utf-8').splitlines():
         r = json.loads(line)
-        jobs[r['id']] = {'error': r['error'], 'prep': r['prep'], 'ms': r['ms'], 'state': r.get('state'), 'placed': r.get('placed'),
-                         'outputs': [{k: o[k] for k in ('file', 'kind', 'ms', 'bytes', 'error', 'log')} for o in r['outputs']]}
+        jobs[r['id']] = {'error': _no_paths(r['error']), 'prep': r['prep'], 'ms': r['ms'], 'state': r.get('state'), 'placed': _no_paths(r.get('placed')),
+                         'outputs': [{k: _no_paths(o[k]) for k in ('file', 'kind', 'ms', 'bytes', 'error', 'log')} for o in r['outputs']]}
     return jobs
 
 
@@ -786,6 +852,8 @@ def measure(session, output, gs, work, label, keys):
             record['roundtrip'] = measure_roundtrip(session_dir, render, cache)
         elif key == 'AI':
             record['illustrator'] = measure_illustrator(session_dir, render, cache)
+        elif key == 'AIX':
+            record['illustrator_x'] = measure_illustrator(session_dir, render, cache, 'X', 'AIX')
         elif key == 'ED':
             record['editing'] = measure_editing(session_dir, render, cache)
         elif key == 'SUITE':
@@ -794,6 +862,8 @@ def measure(session, output, gs, work, label, keys):
             record['saved'] = measure_saved(session_dir, render, cache)
         elif key == 'REDRAW':
             record['redraw'] = measure_redraw(session_dir, render, cache)
+        elif key == 'ASYNC':
+            record['async'] = measure_async(session_dir, render, cache)
         elif key == 'CONV':
             record['conversions'] = measure_conversions(session_dir, render, cache)
         else:
@@ -825,6 +895,9 @@ def main(argv=None):
     c.add_argument('--extra', default='', help='a second route W session, for reproducibility')
     c.add_argument('--gs', required=True)
     c.add_argument('--work', type=Path, required=True)
+    a = sub.add_parser('async-plan', help='background PDF exports for tools/jsx/cert-async.jsx')
+    a.add_argument('session')
+    a.add_argument('--keys', nargs='+', default=['V', 'X'])
     d = sub.add_parser('prefs-diff')
     d.add_argument('before')
     d.add_argument('after')
@@ -833,6 +906,9 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.cmd == 'summarize':
         summarize(args.output)
+        return 0
+    if args.cmd == 'async-plan':
+        async_spec(args.session, args.keys)
         return 0
     if args.cmd == 'prefs-diff':
         changed = prefs_diff(args.before, args.after)
