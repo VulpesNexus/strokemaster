@@ -325,3 +325,41 @@ test('PURE: the panel report does not hide unverified preference restoration', (
     rt.load('strokemaster.jsx');
     assert.match(rt.calls.alerts[0], /unverified=1 \[host: unsupported/);
 });
+
+test('PURE: a named preset reference is kept and restored by name, not reported unverified', () => {
+    const rt = preferences(`
+        function FlattenerPreset(name) { this.name = name; }
+        var high = new FlattenerPreset('[High Resolution]');
+        app.epsExportPreferences = { reflect: { properties: [{ name: 'appliedFlattenerPreset' }] }, appliedFlattenerPreset: high };
+    `);
+    const report = rt.globals.ISE_LIB.run(() => rt.evaluate("app.epsExportPreferences.appliedFlattenerPreset = new FlattenerPreset('[Low Resolution]');"));
+    assert.equal(rt.evaluate("app.epsExportPreferences.appliedFlattenerPreset === high;"), true);
+    assert.match(report, /epsExportPreferences restore: fails=0 diff=0 unverified=0/);
+});
+
+test('PURE: extra preference objects are restored after success and after a thrown error', () => {
+    for (const body of ["app.pdfPlacePreferences.pdfCrop = 'CROP_ART';", "app.pdfPlacePreferences.pdfCrop = 'CROP_ART'; throw Error('export failed');"]) {
+        const rt = preferences(`
+            app.pdfPlacePreferences = { reflect: { properties: [{ name: 'pdfCrop' }] }, pdfCrop: 'CROP_MEDIA' };
+        `);
+        const report = rt.globals.ISE_LIB.run(() => rt.evaluate(body), ['pdfPlacePreferences']);
+        assert.equal(rt.app.pdfPlacePreferences.pdfCrop, 'CROP_MEDIA');
+        assert.match(report, /pdfPlacePreferences restore: fails=0 diff=0 unverified=0/);
+        if (body.includes('throw')) { assert.match(report, /ERROR export failed/); }
+    }
+});
+
+test('PURE: export preferences changed before a failed export are restored', () => {
+    const rt = preferences(`
+        app.pdfExportPreferences = { reflect: { properties: [{ name: 'acrobatCompatibility' }, { name: 'pdfColorSpace' }] }, acrobatCompatibility: 'ACROBAT_6', pdfColorSpace: 'REPURPOSE_RGB' };
+        app.pngExportPreferences = { reflect: { properties: [{ name: 'exportResolution' }] }, exportResolution: 72 };
+    `);
+    const report = rt.globals.ISE_LIB.run(() => rt.evaluate("app.pdfExportPreferences.acrobatCompatibility = 'ACROBAT_4'; app.pdfExportPreferences.pdfColorSpace = 'GRAY'; app.pngExportPreferences.exportResolution = 600; throw Error('disk full');"));
+    assert.equal(rt.app.pdfExportPreferences.acrobatCompatibility, 'ACROBAT_6');
+    assert.equal(rt.app.pdfExportPreferences.pdfColorSpace, 'REPURPOSE_RGB');
+    assert.equal(rt.app.pngExportPreferences.exportResolution, 72);
+    assert.match(report, /ERROR disk full/);
+    assert.match(report, /pdfExportPreferences restore: fails=0 diff=0 unverified=0/);
+    assert.match(report, /pngExportPreferences restore: fails=0 diff=0 unverified=0/);
+    assert.equal(rt.app.scriptPreferences.userInteractionLevel, 1);
+});

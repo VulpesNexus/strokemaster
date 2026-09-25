@@ -69,6 +69,7 @@ try {
     try { delete `$.global.ISE_SPLIT; } catch (e6) {}
     try { delete `$.global.ISE_HOOK; } catch (e4) {}
     try { delete `$.global.ISE_ARGS; } catch (e5) {}
+    try { delete `$.global.ISE_CERT; } catch (e7) {}
 }
 __r;
 "@

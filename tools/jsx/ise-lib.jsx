@@ -31,11 +31,17 @@ $.global.ISE_LIB = (function () {
         return v !== null && v !== undefined && v.constructor && v.constructor.name === 'Enumerator';
     }
 
+    // A named preset (FlattenerPreset, PDFExportPreset) is a persistent application object that a
+    // preference points at; the reference is the value, and two are the same preset by name.
+    function isPresetRef(v) {
+        try { return v !== null && typeof v === 'object' && !!v.constructor && /Preset$/.test(v.constructor.name) && typeof v.name === 'string'; } catch (e) { return false; }
+    }
+
     // Never keep a mutable reference as though it were a value snapshot. Cyclic arrays and
     // host objects have no supported copy contract here, so report them instead of guessing.
     function copyValue(v, parents) {
         var t = typeof v;
-        if (v === null || t === 'undefined' || t === 'string' || t === 'number' || t === 'boolean' || isEnum(v)) { return v; }
+        if (v === null || t === 'undefined' || t === 'string' || t === 'number' || t === 'boolean' || isEnum(v) || isPresetRef(v)) { return v; }
         if (v instanceof Array) {
             var i, out = new Array(v.length);
             parents = parents || [];
@@ -63,6 +69,7 @@ $.global.ISE_LIB = (function () {
             }
             return true;
         }
+        if (isPresetRef(a) && isPresetRef(b)) { return a.constructor.name === b.constructor.name && a.name === b.name; }
         return !!(isEnum(a) && isEnum(b) && String(a) === String(b));
     }
 
@@ -163,7 +170,9 @@ $.global.ISE_LIB = (function () {
         try { return fn(); } catch (e) { lib.L(label + ' FAILED: ' + e.message + ' line ' + e.line); return undefined; }
     };
 
-    lib.run = function (fn) {
+    // extraPrefs names further application preference objects the script changes (for example
+    // pdfPlacePreferences before a place); they are snapshotted and restored like the export ones.
+    lib.run = function (fn, extraPrefs) {
         var t0 = new Date().getTime();
         var before = lib.liveState();
         var existing = [];
@@ -174,6 +183,9 @@ $.global.ISE_LIB = (function () {
             { name: 'pngExportPreferences', s: snap(app.pngExportPreferences), first: [] },
             { name: 'epsExportPreferences', s: snap(app.epsExportPreferences), first: [] }
         ];
+        for (var xi = 0; extraPrefs && xi < extraPrefs.length; xi++) {
+            snaps.push({ name: extraPrefs[xi], s: snap(app[extraPrefs[xi]]), first: [] });
+        }
         var oldUIL = app.scriptPreferences.userInteractionLevel;
         app.scriptPreferences.userInteractionLevel = UserInteractionLevels.NEVER_INTERACT;
         var opened = [];
