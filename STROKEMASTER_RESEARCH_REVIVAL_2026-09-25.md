@@ -47,6 +47,9 @@ Preserved evidence: the tested binaries are frozen read-only beside their source
 | 21 | The earlier Illustrator host exits at `Illustrator.exe+0x18162a7` were caused by StrokeMaster | REJECTED as an attribution | The same offset is Illustrator 30.7.0's document-churn crash, reproduced by the LiveShear and FreeDistort+ sessions with every third-party plugin removed |
 | 22 | Illustrator does not return written path coordinates bit for bit | PROVEN | Readback drift up to 7.7e-13 pt |
 | 23 | Illustrator writes PDF coordinates to three decimals, and a live effect that returns an error raises a modal alert per redraw | PROVEN / DERIVED | Coordinates in every region PDF; the owner cleared an error dialog after three refusals returned `kBadParameterErr`, and none has appeared since refusals pass through |
+| 24 | For a uniform text stroke, one object-level Appearance stroke beneath the characters removes all stroke-over-fill damage **and the PDF keeps its text and font** | PROVEN (fixture) | Region-prep-10: 72,080 → 0 damaged fill-core pixels, coverage identical to native; PDF paints `Tr 1` shows, then `Tr 0` shows ([record](tests/audit/results/illustrator-region-prep10-appearance.json)) |
+| 25 | That Appearance renders, exports, and follows edits in Illustrator without the plugin | PROVEN (fixture) | Fresh processes with the plugin held out: corrected as opened; after appending a glyph, the glyph renders and the order holds |
+| 26 | Mixed per-character strokes cannot be expressed as one object-level stroke | DERIVED | An object-level paint field applies one stroke to the whole frame; per-character values live in the characters' own attributes, which paint inside the contents |
 
 ## C. Illustrator native status
 
@@ -58,7 +61,9 @@ Preserved evidence: the tested binaries are frozen read-only beside their source
 - **Region correction (topology core, marked analytic fixture).** Published through both the plugin's own attachment and the host's `PageItem.applyEffect`. PDF: one filled vector region, the hole kept, minimum x −0.3000; the native control's hole miter escapes the 0.2 pt wall to −0.4708. Both PDFs pass *tools/measure_region_pdf.py*.
 - **Stroke-behind (live text, paint order).** Two lines of *HH* on 34 pt leading, 8 pt mixed per-character strokes, and an unstroked victim glyph: fill-core damage 55,568 of 72,080 pixels natively, 0 corrected (MuPDF, 600 dpi). Against the outlined pass-through control, which shares the export route, ink coverage and every pixel away from the fills are identical. It republishes after live edits and undo, and after a fresh-process reopen.
 
-**Constraints, all measured:** under any effect the PDF carries text as outlines (claim 8); without the plugin, edited text renders stale (claim 15); effect order relative to other Appearance entries, transforms, gradients, and transparency are refused or untested.
+- **Native Appearance (uniform strokes).** Region-prep-10's bridge writes one object-level stroke beneath a text frame's characters, a plain style with no effect. On the uniform-stroke fixture it removes all damage, keeps PDF text and fonts, and needs no plugin to render, export, or follow edits (claims 24 and 25).
+
+**Constraints, all measured:** under any effect the PDF carries text as outlines (claim 8); without the plugin, edited text under an effect renders stale (claim 15), which the Appearance route avoids; effect order relative to other Appearance entries, transforms, gradients, and transparency are refused or untested.
 
 ## D. InDesign native status
 
@@ -96,6 +101,7 @@ Preserved evidence: the tested binaries are frozen read-only beside their source
 | Illustrator, region effect | 30.7.0 114R | Not captured | PASS (measured) | PASS, same process | PASS | Refuses edited fixture | n/a | Marked fixture only |
 | Illustrator, stroke-behind | 30.7.0 114R | Not captured | PASS (measured; text outlined) | PASS, fresh process | PASS | PASS | PASS (added glyph) | Opaque Normal text fixture |
 | Illustrator, without plugin | 30.7.0 114R | Cached result | PASS (cached) | Opens | — | **Stale drawing** | Stale | Host behavior |
+| Illustrator, native Appearance (uniform stroke) | 30.7.0 114R | Not captured | PASS (measured; **text kept**) | PASS, fresh process, plugin absent | Not measured | PASS without the plugin | PASS (added glyph) | Uniform-stroke fixture; authoring needs the plugin, rendering does not |
 | InDesign, refusal build | 21.5.1.73 | Earlier PNG census | Unchanged | PASS (earlier) | — | Native | Native | Installed; no correction |
 | InDesign, route W | 21.5.1.73 | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | BLOCKED | Built; install needs elevation |
 
@@ -107,7 +113,7 @@ The evidence supports **a shared StrokeMaster core with host-specific native ada
 
 - No shared Adobe component can be hooked (claim 20), and the two hosts expose unrelated extension points: Illustrator a post-effect over styled art, InDesign frame-wide text adornment passes.
 - What is shared is decided above both hosts: the paint-order rule (all strokes of a text object beneath all its fills), the topology rule for escaping joins (the reviewed core), and the measurement contracts.
-- Illustrator adapter: a live effect declaring path and compound input, reading glyph outlines of live text, applying stroke-behind and, where a stroke escapes a fill, the topology core. Its known costs are outlined text in PDF and stale drawing when the plugin is missing.
+- Illustrator adapter, two tiers. **Uniform strokes:** author a native object-level Appearance stroke beneath the characters (and clear the character stroke); the result is ordinary document data, keeps PDF text, and needs no plugin at render time (claims 24 and 25). **Mixed per-character strokes:** the live effect declaring path and compound input, applying stroke-behind to glyph outlines and, where a stroke escapes a fill, the topology core; its costs are outlined text in PDF and stale drawing when the plugin is missing.
 - InDesign adapter: route W if the host test passes; route A otherwise.
 
 ## I. Remaining blockers
@@ -115,7 +121,7 @@ The evidence supports **a shared StrokeMaster core with host-specific native ada
 1. **InDesign host test (BLOCKED on elevation).** Needs one elevated copy of *build\Release-RouteW* into *Plug-Ins\InDesignStrokeEngine*, with InDesign closed: `powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-RouteW`, run as administrator. It backs up the installed refusal build and verifies hashes; `-Restore <backup folder>` puts it back.
 2. **Topology core on curves.** The core is linear; glyph outlines are curved. Flattening with a stated tolerance, or a curve-aware offset, is the next core change.
 3. **Screen versus export in Illustrator.** No screen capture comparison was made; both fixtures were measured in PDF only.
-4. **Illustrator effected text in PDF is outlined.** A host policy; whether a text-preserving export route exists (for example, keeping native text and drawing only corrected strokes as a separate effect layer) is untested.
+4. **Illustrator text with mixed per-character strokes.** The Appearance route keeps PDF text for uniform strokes (claim 24); mixed strokes still need the live effect, whose PDF outlines the text. Untested: splitting a frame's strokes into per-value object-level fields by another means.
 
 ## J. Next experiment
 
