@@ -6,11 +6,11 @@ Experimental stroke scripts, native Adobe integration, and topology research. Th
 
 | Problem | Current result |
 | --- | --- |
-| Overlap between lines and formatting runs | The current InDesign native safety build refuses all repaint. The earlier overlay missed unstroked victims and changed benign edges and decorations. Supported split-frame cases remain the document-level alternative. |
-| Miter spikes | A filled-region buffer prototype removes inward excursions in controlled polygon examples while retaining exterior miters. It is not yet a native font stroker; curves, raw font topology, and the real benchmark remain open. |
+| Overlap between lines and formatting runs | Illustrator: an experimental native effect moves every stroke of live text beneath every fill; on the measured two-line fixture it removes all stroke-over-fill damage and survives edits, undo, and reopen, but the PDF carries the text as outlines. InDesign: the installed build refuses all repaint and leaves native output unchanged; route W, which moves native Outside strokes beneath the frame's fills, is built but not yet host-tested (installing it needs administrator rights). Split frames remain the document-level alternative. |
+| Miter spikes | The reviewed topology core, linked into an Illustrator effect, removes a hole's miter escaping through a thin wall and keeps the ordinary outer miters, on screen-independent PDF measurement of a marked polygon fixture. It handles straight segments only; curves and real glyph outlines remain open. |
 | Create Outlines | The script stages conversion before replacing supported text frames. Thirteen checks pass in InDesign 21.5.1.73; broader fidelity and lifecycle coverage remain open. |
 | Editable split pairs | Explicit resync carries text and formatting while preserving a uniform Outside stroke. Contents-only watching is optional. Uniform and varied pairs preserve their rendered appearance through the tested INDD/IDML round-trip; resync still requires a uniform bottom stroke. |
-| Illustrator integration | Native prep-5 passes the open straight-line diagnostic, source edits, same-process AI save/reopen, and PDF export. Region-prep-2 links the reviewed topology core into a second plugin that loads, registers, creates the marked analytic fixture, and reports over its bridge; its live effect has not executed in the host yet — the append-to-style attachment does not fire, and one proof attempt recorded an unexplained host exit. Native region correction, arbitrary style synchronization, and broad stability remain unverified. |
+| Illustrator integration | The diagnostic plugins load in Illustrator 30.7.0 and run three experimental effects: a straight-line stroke replacement, a topology region correction on a marked fixture, and a stroke-behind correction on live text. Documents keep drawing the corrected result without the plugin, but text edited there draws stale. Nothing here is a release. |
 
 The measured hosts are InDesign 21.5.1.73 and Illustrator 30.7.0, build 114R, on Windows. These observations are not cross-version certification.
 
@@ -24,11 +24,11 @@ The top Outside-stroke contribution is explicitly cleared to *None* and weight 0
 
 ## Native prototype
 
-The current InDesign binary performs no corrective drawing and leaves native output unchanged in the 20-case PNG test. It requires an InDesign restart to replace an older loaded binary. This safety change removes all earlier A/C native repaint corrections; it does not fix the original overlap. The [root-cause report](UNSTROKED_VICTIM_ROOT_CAUSE.md) explains the replacement work required. PDFs already exported with an older correction retain their recorded paths.
+The installed InDesign binary performs no corrective drawing and leaves native output unchanged in the 20-case PNG test. A second variant, built with *build-plugin.ps1 -RouteW*, adds the experimental route W adornments; *tools/install-indesign-plugin.ps1* installs either variant with a backup and hash check, from an elevated PowerShell with InDesign closed. Replacing a loaded binary requires an InDesign restart. The [root-cause report](UNSTROKED_VICTIM_ROOT_CAUSE.md) explains why the earlier repaint was withdrawn. PDFs already exported with an older correction retain their recorded paths.
 
 The prefix `0x5A200` is unassigned. Do not treat it as a release identity. An Adobe prefix allocation, Illustrator effect identity, package signing, and Creative Cloud publication are separate steps explained in [the distribution audit](docs/PLUGIN_DISTRIBUTION.md). No Marketplace package has been submitted.
 
-Native deployment currently requires no UAC prompts or elevation. The documented Illustrator per-user plugin location has an existing empty local folder, but loading this plugin from it has not been tested. Treat it as a proposed deployment route, not a verified installation recipe. [Route evidence and remaining check](fixtures/FIXTURE_INDEX.md#per-user-load-route).
+Illustrator plugins load without elevation from the shared per-generation folder *%LOCALAPPDATA%\Adobe Illustrator Plug-ins\30*, shared with other plugins; the region probe has loaded from there in every run since 2026-09-15. InDesign has no such folder: its *Plug-Ins* folder is writable by administrators only, so installing or replacing the InDesign binary needs one elevated copy. [Route evidence](fixtures/FIXTURE_INDEX.md#per-user-load-route).
 
 Native builds require external Adobe SDKs and Visual Studio/MSVC dependencies. The InDesign project is under *plugin/*; the Illustrator diagnostic and its build notes are under *plugin/illustrator-probe/*. Read the [native load report](ILLUSTRATOR_NATIVE_LOAD_REPORT.md) before testing it. SDK files and generated binaries are not redistributed here.
 
@@ -40,6 +40,7 @@ The render comparator accepts an independent fill-only mask. Without it, its ero
 
 | Document | Purpose |
 | --- | --- |
+| [Research revival, 2026-09-25](STROKEMASTER_RESEARCH_REVIVAL_2026-09-25.md) | Current evidence ledger, root-cause map, architecture decision, and next experiment |
 | [Usage guide](docs/USING_STROKEMASTER.md) | Workflow, supported contexts, installation, and limitations |
 | [Takeover audit](PROJECT_TAKEOVER_AUDIT.md) | Initial A–N audit, claim ledger, and subsequent evidence |
 | [Open questions](OPEN_QUESTIONS.md) | Remaining discriminating tests and release blockers |
