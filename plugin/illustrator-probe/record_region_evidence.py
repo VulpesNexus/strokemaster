@@ -4,20 +4,33 @@ Reads the pipe-delimited probe results and measurer reports under
 build/host-census/<run folder>/ and writes tests/audit/results/<name>.json with
 no paths, document names, or machine identity. The raw files stay local.
 
-Usage: record_region_evidence.py <run folder> <output name> <host version> <host build> [scope]
+Usage: record_region_evidence.py RUN_FOLDER OUTPUT_NAME --host-version V --host-build B
+       [--scope TEXT] [--binary TESTED.aip]
+
+--binary names the plugin file that was actually installed for the run (a
+frozen copy); by default the current build output is used. Builds are not
+byte-reproducible, so a rebuild after the run changes the default's hash.
 """
+import argparse
 import collections
 import hashlib
 import json
-import sys
 from pathlib import Path
 
 import pikepdf
 import pymupdf
 
 root = Path(__file__).resolve().parents[2]
-folder = root / 'build/host-census' / sys.argv[1]
-output = root / 'tests/audit/results' / (sys.argv[2] + '.json')
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument('run_folder')
+parser.add_argument('output_name')
+parser.add_argument('--host-version', required=True)
+parser.add_argument('--host-build', required=True)
+parser.add_argument('--scope')
+parser.add_argument('--binary', type=Path)
+options = parser.parse_args()
+folder = root / 'build/host-census' / options.run_folder
+output = root / 'tests/audit/results' / (options.output_name + '.json')
 digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 
 
@@ -80,15 +93,16 @@ def pdf_summary(path):
             'drawings': drawings, 'operatorCounts': dict(sorted(counts.items())), 'paintSequence': sequence}
 
 
-binary = root / 'plugin/illustrator-probe/build/region-native/StrokeMasterRegionProbe.aip'
+binary = options.binary or root / 'plugin/illustrator-probe/build/region-native/StrokeMasterRegionProbe.aip'
 artifact = json.loads((root / 'plugin/illustrator-probe/build/region-native/artifact.json').read_text(encoding='utf-8'))
 record = {
     'schema': 1,
-    'host': {'application': 'Adobe Illustrator', 'version': sys.argv[3], 'build': sys.argv[4], 'platform': 'Windows x64'},
+    'host': {'application': 'Adobe Illustrator', 'version': options.host_version, 'build': options.host_build,
+             'platform': 'Windows x64'},
     'plugin': {'name': artifact['plugin'], 'build': artifact['build'], 'sha256': digest(binary),
                'bytes': binary.stat().st_size, 'coreHeaderSha256': artifact['coreHeaderSha256'],
                'coreCppSha256': artifact['coreCppSha256']},
-    'scope': sys.argv[5] if len(sys.argv) > 5 else
+    'scope': options.scope or
              'Marked analytic closed-region fixture only (square shell, one triangular hole, 0.6 pt equal-gray miter '
              'stroke, limit 4). Not arbitrary artwork, curves, text, or live style synchronization.',
     'probes': {},
