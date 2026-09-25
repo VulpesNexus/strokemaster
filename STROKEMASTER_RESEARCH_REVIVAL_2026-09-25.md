@@ -50,6 +50,9 @@ Preserved evidence: the tested binaries are frozen read-only beside their source
 | 24 | For a uniform text stroke, one object-level Appearance stroke beneath the characters removes all stroke-over-fill damage **and the PDF keeps its text and font** | PROVEN (fixture) | Region-prep-10: 72,080 → 0 damaged fill-core pixels, coverage identical to native; PDF paints `Tr 1` shows, then `Tr 0` shows ([record](tests/audit/results/illustrator-region-prep10-appearance.json)) |
 | 25 | That Appearance renders, exports, and follows edits in Illustrator without the plugin | PROVEN (fixture) | Fresh processes with the plugin held out: corrected as opened; after appending a glyph, the glyph renders and the order holds |
 | 26 | Mixed per-character strokes cannot be expressed as one object-level stroke | DERIVED | An object-level paint field applies one stroke to the whole frame; per-character values live in the characters' own attributes, which paint inside the contents |
+| 27 | Curved outlines can be flattened to a stated tolerance and offset by the reviewed core within the matching distance band; on curves, legitimate miters are kept and excessive ones are clamped at the limit | PROVEN (analytic fixtures) | *tests/geometry/test_curve_region.py*: circle and annulus bands; lens tips of 30° (full miter) and 20° (clamped at 4h) |
+| 28 | Real glyph topology passes the adapter and the core, and every accepted result keeps its fill | PROVEN (five system fonts, 189 glyphs each, two offsets) | *tests/geometry/glyph_region_census.json*: 184–187 of 189 accepted per static font; worst lost fill area 0 |
+| 29 | Everything the pipeline cannot handle is refused rather than drawn wrong | PROVEN (census) | Touching composite parts and overlapping variable-font contours are refused by the adapter; Boost buffer failures on closing apertures (Arial Bold `@` and `e` at h = 120) and self-intersecting contours are refused by the core's checks |
 
 ## C. Illustrator native status
 
@@ -92,7 +95,8 @@ Preserved evidence: the tested binaries are frozen read-only beside their source
 - **Topology is needed where a stroke escapes every fill.** The region fixture's hole miter pierces the outer wall and lands outside the shape, where no fill order can hide it; the linked topology core removes it and keeps the ordinary outer miters (PDF measurement, claim 11).
 - **Clamped rather than rounded joins.** The published region keeps miter joins inside the limit and removes only the inward excursion; the measurer's `ordinary_outer_corner_preserved` check passes.
 - **Formatting runs.** The stroke-behind transform keeps each glyph's own stroke paint and relative order, so mixed per-character strokes are handled without merging formatting (fixture: three stroke states across two lines).
-- **Still open:** curves and raw font topology in the core (it is linear-only), and applying topology correction to glyph outlines inside the stroke-behind route.
+- **Curves and real glyphs.** *tools/curve_region.py* flattens cubic contours (both control points within the tolerance of the chord) and assigns ring roles by containment depth, refusing crossing or touching contours. On analytic curves the core's result stays within the band the tolerance allows, and the miter policy carries over: a 30° lens tip keeps its full miter, a 20° tip is clamped flat at 4h (claim 27). On real glyphs, five system fonts pass at 97–99% per static font with no lost fill (claims 28 and 29).
+- **Still open:** fill-rule resolution for touching or overlapping contours (a reviewed Boolean pre-pass before the core), and applying the core to glyph outlines inside the Illustrator stroke-behind route.
 
 ## G. Support matrix (this pass)
 
@@ -119,7 +123,7 @@ The evidence supports **a shared StrokeMaster core with host-specific native ada
 ## I. Remaining blockers
 
 1. **InDesign host test (BLOCKED on elevation).** Needs one elevated copy of *build\Release-RouteW* into *Plug-Ins\InDesignStrokeEngine*, with InDesign closed: `powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-RouteW`, run as administrator. It backs up the installed refusal build and verifies hashes; `-Restore <backup folder>` puts it back.
-2. **Topology core on curves.** The core is linear; glyph outlines are curved. Flattening with a stated tolerance, or a curve-aware offset, is the next core change.
+2. **Fill-rule resolution.** The curve adapter and core now handle curved glyph outlines (claims 27–29), but touching composite parts and overlapping contours are refused. A reviewed Boolean pre-pass (nonzero winding into explicit shells and holes) would admit them; the Boost buffer failure on closing apertures remains a backend limit that the core refuses.
 3. **Screen versus export in Illustrator.** No screen capture comparison was made; both fixtures were measured in PDF only.
 4. **Illustrator text with mixed per-character strokes.** The Appearance route keeps PDF text for uniform strokes (claim 24); mixed strokes still need the live effect, whose PDF outlines the text. Untested: splitting a frame's strokes into per-value object-level fields by another means.
 
