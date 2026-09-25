@@ -195,6 +195,37 @@ test('PURE: dependent preferences restore in priority order even after a build e
     assert.equal(rt.app.scriptPreferences.userInteractionLevel, 1);
 });
 
+test('PURE: a preference reset by a later restore is restored again', () => {
+    // Host 21.5.1: restoring the color settings after a preset export reset the destination profile.
+    const rt = preferences(`
+        var profile = 'WORKING', space = 'REPURPOSE_RGB';
+        app.pdfExportPreferences = { reflect: { properties: [{ name: 'pdfDestinationProfile' }, { name: 'pdfColorSpace' }] } };
+        Object.defineProperty(app.pdfExportPreferences, 'pdfDestinationProfile', { get: function () { return profile; }, set: function (v) { profile = v; } });
+        Object.defineProperty(app.pdfExportPreferences, 'pdfColorSpace', { get: function () { return space; }, set: function (v) { space = v; profile = 'USE_DOCUMENT'; } });
+    `);
+    const report = rt.globals.ISE_LIB.run(() => rt.evaluate("profile = 'USE_DOCUMENT'; space = 'CMYK';"));
+    assert.equal(rt.evaluate('profile + "|" + space'), 'WORKING|REPURPOSE_RGB');
+    assert.match(report, /pdfExportPreferences restore: fails=0 diff=0 unverified=0/);
+});
+
+test('PURE: a compression threshold refused below the hidden sampling resolution is restored', () => {
+    // Host 21.5.1: after [High Quality Print], thresholdToCompressMonochrome = 450 was refused
+    // ("Data is out of range") while sampling was off and the hidden resolution was 1200.
+    const rt = preferences(`
+        var Sampling = { NONE: 'NONE', BICUBIC_DOWNSAMPLE: 'BICUBIC' };
+        var sampling = 'NONE', dpi = 300, threshold = 450;
+        app.pdfExportPreferences = { reflect: { properties: [{ name: 'monochromeBitmapSampling' }, { name: 'thresholdToCompressMonochrome' }] } };
+        Object.defineProperty(app.pdfExportPreferences, 'monochromeBitmapSampling', { get: function () { return sampling; }, set: function (v) { sampling = v; } });
+        Object.defineProperty(app.pdfExportPreferences, 'monochromeBitmapSamplingDPI', {
+            get: function () { if (sampling === 'NONE') { throw Error('not applicable'); } return dpi; }, set: function (v) { dpi = v; } });
+        Object.defineProperty(app.pdfExportPreferences, 'thresholdToCompressMonochrome', {
+            get: function () { return threshold; }, set: function (v) { if (v < dpi) { throw Error('Data is out of range.'); } threshold = v; } });
+    `);
+    const report = rt.globals.ISE_LIB.run(() => rt.evaluate('dpi = 1200; threshold = 1800;'));
+    assert.equal(rt.evaluate('sampling + "|" + threshold + "|" + dpi'), 'NONE|450|450');
+    assert.match(report, /pdfExportPreferences restore: fails=0 diff=0 unverified=0 adjusted=\[monochromeBitmapSamplingDPI=450\]/);
+});
+
 function assertConsumed(rt) {
     assert.equal(rt.globals.ISE_LIB, undefined);
     assert.equal(rt.globals.ISE_ARGS, undefined);

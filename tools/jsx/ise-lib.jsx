@@ -77,16 +77,59 @@ $.global.ISE_LIB = (function () {
         return s;
     }
 
+    // A compression threshold below the hidden sampling resolution a preset left behind is
+    // refused while sampling is off; InDesign 21.5 then keeps the preset's threshold.
+    var THRESHOLDS = [['thresholdToCompressColor', 'colorBitmapSampling', 'colorBitmapSamplingDPI'],
+        ['thresholdToCompressGray', 'grayscaleBitmapSampling', 'grayscaleBitmapSamplingDPI'],
+        ['thresholdToCompressMonochrome', 'monochromeBitmapSampling', 'monochromeBitmapSamplingDPI']];
+
+    function restoreThresholds(o, s, adjusted) {
+        if (typeof Sampling === 'undefined') { return; }
+        for (var t = 0; t < THRESHOLDS.length; t++) {
+            var key = THRESHOLDS[t][0], sampling = THRESHOLDS[t][1], dpi = THRESHOLDS[t][2];
+            if (!s.vals.hasOwnProperty(key) || typeof s.vals[key] !== 'number') { continue; }
+            try {
+                if (sameValue(o[key], s.vals[key])) { continue; }
+                var mode = o[sampling];
+                o[sampling] = Sampling.BICUBIC_DOWNSAMPLE;
+                try {
+                    if (o[dpi] > s.vals[key]) { o[dpi] = s.vals[key]; adjusted.push(dpi + '=' + s.vals[key]); }
+                    o[key] = s.vals[key];
+                } finally { o[sampling] = mode; }
+            } catch (e) { adjusted.push(key + ': ' + e.message); }
+        }
+    }
+
     function restore(o, s, first) {
-        var fails = [], done = {}, diff = [], unverified = s.unverified.slice(0), i, n;
+        var fails = [], done = {}, diff = [], adjusted = [], unverified = s.unverified.slice(0), i, n, pass;
         for (i = 0; i < first.length; i++) {
             n = first[i];
             if (s.vals.hasOwnProperty(n)) { try { o[n] = copyValue(s.vals[n]); } catch (e) { fails.push(n + ': ' + e.message); } done[n] = 1; }
         }
-        for (i = 0; i < s.order.length; i++) {
-            n = s.order[i];
-            if (done[n]) { continue; }
-            try { if (!sameValue(o[n], s.vals[n])) { o[n] = copyValue(s.vals[n]); } } catch (e) { fails.push(n + ': ' + e.message); }
+        // Setting one preference can reset another (a preset's color settings reset the
+        // destination profile), so repeat until nothing changes; report the last pass only.
+        var firstFails = fails;
+        for (pass = 0; pass < 3; pass++) {
+            fails = firstFails.slice(0);
+            var changed = false;
+            for (i = 0; i < s.order.length; i++) {
+                n = s.order[i];
+                if (done[n] && pass === 0) { continue; }
+                try { if (!sameValue(o[n], s.vals[n])) { changed = true; o[n] = copyValue(s.vals[n]); } } catch (e) { fails.push(n + ': ' + e.message); }
+            }
+            if (!changed) { break; }
+        }
+        restoreThresholds(o, s, adjusted);
+        if (adjusted.length) {
+            var remaining = [];
+            for (i = 0; i < fails.length; i++) {
+                var failedKey = fails[i].split(':')[0], cleared = false;
+                for (var t = 0; t < THRESHOLDS.length; t++) {
+                    if (THRESHOLDS[t][0] === failedKey && sameValue(o[failedKey], s.vals[failedKey])) { cleared = true; }
+                }
+                if (!cleared) { remaining.push(fails[i]); }
+            }
+            fails = remaining;
         }
         for (i = 0; i < s.order.length; i++) {
             n = s.order[i];
@@ -94,7 +137,8 @@ $.global.ISE_LIB = (function () {
             catch (e) { unverified.push(n + ': verification failed: ' + e.message); }
         }
         return 'fails=' + fails.length + (fails.length ? ' [' + fails.join('; ') + ']' : '') + ' diff=' + diff.length + (diff.length ? ' [' + diff.join('; ') + ']' : '') +
-            ' unverified=' + unverified.length + (unverified.length ? ' [' + unverified.join('; ') + ']' : '');
+            ' unverified=' + unverified.length + (unverified.length ? ' [' + unverified.join('; ') + ']' : '') +
+            (adjusted.length ? ' adjusted=[' + adjusted.join('; ') + ']' : '');
     }
 
     function sameDocument(a, b) {
