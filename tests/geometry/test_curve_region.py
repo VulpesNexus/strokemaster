@@ -94,6 +94,16 @@ class Flattening(unittest.TestCase):
                 d = min(_segment_distance(q, a, b) for a, b in zip(ring, ring[1:]))
                 self.assertLessEqual(d, tol * (1 + 1e-9))
 
+    def test_cusp_stays_within_tolerance(self):
+        # A control polygon that folds back past the chord's start: the old line-distance
+        # test accepted it although the curve strays 1.06 x tolerance from the chord.
+        p0, p1, p2, p3 = (0.0, 0.0), (-0.999e-3, 0.999e-3), (-0.999e-3, 0.999e-3), (1e-6, 0.0)
+        tol = 1e-3
+        ring = [p0] + cr.flatten_cubic(p0, p1, p2, p3, tol)
+        for i in range(2001):
+            q = bezier(p0, p1, p2, p3, i / 2000)
+            self.assertLessEqual(min(_segment_distance(q, a, b) for a, b in zip(ring, ring[1:])), tol * (1 + 1e-9))
+
     def test_refusals(self):
         with self.assertRaises(cr.Refused):
             cr.flatten_cubic((0, 0), (1, 1), (2, 1), (3, 0), 0)
@@ -112,11 +122,21 @@ def _segment_distance(p, a, b):
 
 class Classification(unittest.TestCase):
     def test_nested_shell_hole_island(self):
-        rings = [cr.flatten_contour(*circle(0, 0, r)[:2], 1e-3) for r in (10, 6, 3)]
+        rings = [cr.flatten_contour(*circle(0, 0, r, clockwise=(r == 6))[:2], 1e-3) for r in (10, 6, 3)]
         polygons = cr.classify(rings)
         self.assertEqual(len(polygons), 2)
         self.assertEqual(len(polygons[0][1]), 1)
         self.assertEqual(len(polygons[1][1]), 0)
+
+    def test_nested_contour_wound_like_its_parent_refused(self):
+        # Under nonzero, a same-wound nested contour is filled, not a hole.
+        outer = cr.flatten_contour(*circle(0, 0, 10)[:2], 1e-3)
+        inner = cr.flatten_contour(*circle(0, 0, 5)[:2], 1e-3)
+        with self.assertRaises(cr.Refused):
+            cr.classify([outer, inner])
+        # Wound against it, it is a hole.
+        hole = cr.flatten_contour(*circle(0, 0, 5, clockwise=True)[:2], 1e-3)
+        self.assertEqual(len(cr.classify([outer, hole])[0][1]), 1)
 
     def test_crossing_contours_refused(self):
         rings = [cr.flatten_contour(*circle(0, 0, 10)[:2], 1e-3), cr.flatten_contour(*circle(5, 0, 10)[:2], 1e-3)]

@@ -1,6 +1,6 @@
 {
   "schema": 1,
-  "note": "Aggregate census of local system fonts (Arial Bold, Times New Roman Bold, Arial Black, Bahnschrift, Segoe UI Variable; identified by file hash only). Code points 33-126 and 161-255; units per em 2048; flatten tolerance 0.5 units; miter limit 4. No outline, name, or path is recorded. Produced by tools/glyph_region_census.py.",
+  "note": "Aggregate census of local system fonts (Arial Bold, Times New Roman Bold, Arial Black, Bahnschrift, Segoe UI Variable; identified by file hash only). Code points 33-126 and 161-255; units per em 2048; flatten tolerance 0.5 units; miter limit 4. No outline, name, or path is recorded. Produced by tools/glyph_region_census.py with the winding check and segment-distance flatness bound.",
   "runs": {
     "h40": {
       "schema": 1,

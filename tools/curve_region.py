@@ -5,20 +5,23 @@ with explicit shell and hole roles. Glyph outlines are cubic Bezier contours who
 come from a fill rule. This module is the adapter between the two:
 
 - flatten_cubic subdivides a cubic Bezier (de Casteljau, at t = 1/2) until both control
-  points lie within `tolerance` of the chord. By the convex-hull property the curve then
-  lies within `tolerance` of the polyline, and every polyline vertex lies on the curve.
+  points lie within `tolerance` of the chord segment (distance to the segment, clamped at
+  its ends). All four control points are then within `tolerance` of the segment, whose
+  tolerance neighborhood is convex, so by the convex-hull property the curve lies within
+  `tolerance` of the polyline; every polyline vertex lies on the curve.
 - flatten_contour turns one closed contour of line and cubic segments into a ring.
 - classify assigns roles to non-crossing rings: containment depth 0, 2, ... is a shell,
-  1, 3, ... a hole of its nearest enclosing ring. That matches both the even-odd and the
-  nonzero fill rules for well-formed outlines (no crossing contours, each hole wound
-  against its shell); crossing or touching contours are refused, never guessed.
+  1, 3, ... a hole of its nearest enclosing ring, and it checks that every ring is wound
+  against its enclosing ring. Under both the even-odd and the nonzero fill rules that
+  makes the depth roles exact; a nested ring wound like its parent (filled under nonzero)
+  and crossing or touching contours are refused, never guessed.
 - request builds the core's JSON request.
 
 Bounds are stated, not assumed; tests/geometry/test_curve_region.py measures them.
 """
 import math
 
-MAX_DEPTH = 24          # 2**24 pieces per curve at most
+MAX_DEPTH = 16          # 2**16 pieces per curve at most
 MAX_RING_POINTS = 20000  # the core's per-polygon-list budget
 
 
@@ -26,19 +29,15 @@ class Refused(ValueError):
     """The outline cannot be converted within this module's contract."""
 
 
+def _segment_distance(p, a, b):
+    dx, dy = b[0] - a[0], b[1] - a[1]
+    length2 = dx * dx + dy * dy
+    t = 0.0 if length2 == 0 else max(0.0, min(1.0, ((p[0] - a[0]) * dx + (p[1] - a[1]) * dy) / length2))
+    return math.dist(p, (a[0] + t * dx, a[1] + t * dy))
+
+
 def _flat_enough(p0, p1, p2, p3, tolerance):
-    dx, dy = p3[0] - p0[0], p3[1] - p0[1]
-    length = math.hypot(dx, dy)
-    if length == 0:
-        return max(math.dist(p0, p1), math.dist(p0, p2)) <= tolerance
-    for c in (p1, p2):
-        if abs((c[0] - p0[0]) * dy - (c[1] - p0[1]) * dx) / length > tolerance:
-            return False
-        # Control points beyond the chord's ends are not covered by the distance to its line.
-        t = ((c[0] - p0[0]) * dx + (c[1] - p0[1]) * dy) / (length * length)
-        if t < -tolerance / length or t > 1 + tolerance / length:
-            return False
-    return True
+    return _segment_distance(p1, p0, p3) <= tolerance and _segment_distance(p2, p0, p3) <= tolerance
 
 
 def flatten_cubic(p0, p1, p2, p3, tolerance):
@@ -48,6 +47,8 @@ def flatten_cubic(p0, p1, p2, p3, tolerance):
     out = []
 
     def split(a, b, c, d, depth):
+        if len(out) > MAX_RING_POINTS:
+            raise Refused('curve exceeds the core vertex budget')
         if depth >= MAX_DEPTH or _flat_enough(a, b, c, d, tolerance):
             if depth >= MAX_DEPTH and not _flat_enough(a, b, c, d, tolerance):
                 raise Refused('curve does not flatten within the subdivision budget')
@@ -155,11 +156,20 @@ def classify(rings):
     for i in range(len(rings)):
         if depth[i] % 2 == 0:
             polygons[i] = (rings[i], [])
+    areas = [signed_area(r) for r in rings]
     for i in range(len(rings)):
+        if areas[i] == 0:
+            raise Refused('contour encloses no area')
+        if depth[i] == 0:
+            continue
+        # The nearest enclosing ring is the container with the greatest depth.
+        parent = max(parents[i], key=lambda j: depth[j])
+        if depth[parent] != depth[i] - 1:
+            raise Refused('inconsistent containment depth')
+        if (areas[i] > 0) == (areas[parent] > 0):
+            raise Refused('nested contour wound like its enclosing contour; fill-rule resolution is not supported')
         if depth[i] % 2 == 1:
-            # The nearest enclosing ring is the container with the greatest depth.
-            parent = max(parents[i], key=lambda j: depth[j])
-            if depth[parent] != depth[i] - 1 or parent not in polygons:
+            if parent not in polygons:
                 raise Refused('hole without an enclosing shell')
             polygons[parent][1].append(rings[i])
     return [polygons[i] for i in sorted(polygons)]
