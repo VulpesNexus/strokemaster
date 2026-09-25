@@ -1,0 +1,581 @@
+{
+ "schema": 1,
+ "host": "InDesign",
+ "version": "21.5.1.73",
+ "plugin": "route W",
+ "plugin_sha256": "f31dd2c9c7a4f7bd94ea9c9c1c48b19ba33fec76f2c3332730d1d82d7c4f4215",
+ "screen_check": "owner, by eye: VC00 at 400% zoom showed the first line whole; then scrolled and zoomed to interrupt redraws",
+ "census_fixture_sha256": "f3270a31c9d39801a9ff57dbc30c1eb1909cac098b42a2ef47cf08027b06d7e2",
+ "live": "exported from the open window by tools/jsx/ise-export-open.jsx; document unmodified before and after",
+ "copy": "saveACopy of the open document, reopened without a window and re-exported by tools/jsx/ise-reexport.jsx",
+ "exports": {
+  "live": {
+   "png": {
+    "sha256": "6c0fd0ba1c622d991b275388e0a199903c4cf4f7473c541730158e6cb95fe18a",
+    "px_differing_from_census_export": 0,
+    "fill_core_vs_reference": {
+     "dpi": 600,
+     "erode_px": 6,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC09",
+       "core_px": 0,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      }
+     ]
+    }
+   },
+   "pdf": {
+    "sha256": "9cec88945636062aa1a6cda3593199f1773e68422852a9dc32c4eb8848a83f8c",
+    "text_same_as_census": true,
+    "fonts": [
+     "MinionPro-Regular"
+    ],
+    "frames_ordered_unlike_census": [],
+    "strokes_before_first_fill": 36,
+    "strokes_after_first_fill": {
+     "VC15": [
+      5.0,
+      5.0
+     ]
+    },
+    "render_vs_reference": {
+     "renderer": "MuPDF 1.28.2",
+     "dpi": 600,
+     "erode_px": 6,
+     "core_px": 228688,
+     "core_over_64": 0,
+     "core_max_diff": 46
+    }
+   },
+   "eps": {
+    "px_differing_from_census_eps": 0,
+    "fill_core_vs_reference": {
+     "dpi": 600,
+     "erode_px": 6,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 9
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC09",
+       "core_px": 0,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 48
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      }
+     ]
+    }
+   }
+  },
+  "copy": {
+   "png": {
+    "sha256": "6c0fd0ba1c622d991b275388e0a199903c4cf4f7473c541730158e6cb95fe18a",
+    "px_differing_from_census_export": 0,
+    "fill_core_vs_reference": {
+     "dpi": 600,
+     "erode_px": 6,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC09",
+       "core_px": 0,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      }
+     ]
+    }
+   },
+   "pdf": {
+    "sha256": "e98d0c6760826ebce82ee31d68dbbea34c8cb038877d45f7c70b6e41940e586e",
+    "text_same_as_census": true,
+    "fonts": [
+     "MinionPro-Regular"
+    ],
+    "frames_ordered_unlike_census": [],
+    "strokes_before_first_fill": 36,
+    "strokes_after_first_fill": {
+     "VC15": [
+      5.0,
+      5.0
+     ]
+    },
+    "render_vs_reference": {
+     "renderer": "MuPDF 1.28.2",
+     "dpi": 600,
+     "erode_px": 6,
+     "core_px": 228688,
+     "core_over_64": 0,
+     "core_max_diff": 46
+    }
+   },
+   "eps": {
+    "px_differing_from_census_eps": 0,
+    "fill_core_vs_reference": {
+     "dpi": 600,
+     "erode_px": 6,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 9
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC09",
+       "core_px": 0,
+       "core_over_64": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 48
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "core_over_64": 0,
+       "core_max_diff": 32
+      }
+     ]
+    }
+   }
+  }
+ }
+}
