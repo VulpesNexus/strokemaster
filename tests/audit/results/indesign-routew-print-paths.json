@@ -1,0 +1,376 @@
+{
+ "schema": 1,
+ "host": "InDesign",
+ "version": "21.5.1.73",
+ "plugin": "route W",
+ "plugin_sha256": "f31dd2c9c7a4f7bd94ea9c9c1c48b19ba33fec76f2c3332730d1d82d7c4f4215",
+ "renderer": "Ghostscript 9.23",
+ "suite_n_noplugin_vs_routew": {
+  "eps": {
+   "page_changed_px": 8355,
+   "frames": [
+    {
+     "name": "N00 control: Normal, opaque, solid",
+     "changed_px": 200,
+     "max_channel_diff": 150
+    },
+    {
+     "name": "N01 text blend Multiply",
+     "changed_px": 12,
+     "max_channel_diff": 33
+    },
+    {
+     "name": "N02 text blend Screen",
+     "changed_px": 117,
+     "max_channel_diff": 43
+    },
+    {
+     "name": "N03 text blend Overlay",
+     "changed_px": 125,
+     "max_channel_diff": 108
+    },
+    {
+     "name": "N04 text blend Darken",
+     "changed_px": 2379,
+     "max_channel_diff": 73
+    },
+    {
+     "name": "N05 text blend Lighten",
+     "changed_px": 125,
+     "max_channel_diff": 108
+    },
+    {
+     "name": "N06 text blend Difference",
+     "changed_px": 64,
+     "max_channel_diff": 45
+    },
+    {
+     "name": "N07 text opacity 50 %",
+     "changed_px": 1088,
+     "max_channel_diff": 47
+    },
+    {
+     "name": "N08 text blend Multiply at 50 %",
+     "changed_px": 2,
+     "max_channel_diff": 14
+    },
+    {
+     "name": "N09 object blend Multiply",
+     "changed_px": 12,
+     "max_channel_diff": 33
+    },
+    {
+     "name": "N10 object opacity 50 %",
+     "changed_px": 9,
+     "max_channel_diff": 35
+    },
+    {
+     "name": "N11 gradient fill, solid stroke",
+     "changed_px": 199,
+     "max_channel_diff": 120
+    },
+    {
+     "name": "N12 solid fill, gradient stroke",
+     "changed_px": 98,
+     "max_channel_diff": 217
+    },
+    {
+     "name": "N13 gradient fill and gradient stroke",
+     "changed_px": 98,
+     "max_channel_diff": 168
+    },
+    {
+     "name": "N14 overprint fill",
+     "changed_px": 225,
+     "max_channel_diff": 88
+    },
+    {
+     "name": "N15 overprint stroke",
+     "changed_px": 281,
+     "max_channel_diff": 59
+    },
+    {
+     "name": "N16 overprint fill and stroke",
+     "changed_px": 282,
+     "max_channel_diff": 59
+    },
+    {
+     "name": "N17 spot color fill, overprint",
+     "changed_px": 282,
+     "max_channel_diff": 119
+    },
+    {
+     "name": "N18 drop shadow on text",
+     "changed_px": 314,
+     "max_channel_diff": 64
+    },
+    {
+     "name": "N19 feather on text",
+     "changed_px": 2443,
+     "max_channel_diff": 95
+    },
+    {
+     "name": "N20 CONTROL: Center stroke, blend Multiply",
+     "changed_px": 0,
+     "max_channel_diff": 0
+    },
+    {
+     "name": "N21 CONTROL: no stroke, blend Multiply",
+     "changed_px": 0,
+     "max_channel_diff": 0
+    },
+    {
+     "name": "N22 CONTROL: no stroke, gradient fill",
+     "changed_px": 0,
+     "max_channel_diff": 0
+    }
+   ]
+  },
+  "ps": {
+   "page_changed_px": 8363,
+   "frames": [
+    {
+     "name": "N00 control: Normal, opaque, solid",
+     "changed_px": 200,
+     "max_channel_diff": 150
+    },
+    {
+     "name": "N01 text blend Multiply",
+     "changed_px": 12,
+     "max_channel_diff": 33
+    },
+    {
+     "name": "N02 text blend Screen",
+     "changed_px": 117,
+     "max_channel_diff": 43
+    },
+    {
+     "name": "N03 text blend Overlay",
+     "changed_px": 125,
+     "max_channel_diff": 108
+    },
+    {
+     "name": "N04 text blend Darken",
+     "changed_px": 2379,
+     "max_channel_diff": 73
+    },
+    {
+     "name": "N05 text blend Lighten",
+     "changed_px": 125,
+     "max_channel_diff": 108
+    },
+    {
+     "name": "N06 text blend Difference",
+     "changed_px": 64,
+     "max_channel_diff": 45
+    },
+    {
+     "name": "N07 text opacity 50 %",
+     "changed_px": 1088,
+     "max_channel_diff": 47
+    },
+    {
+     "name": "N08 text blend Multiply at 50 %",
+     "changed_px": 2,
+     "max_channel_diff": 14
+    },
+    {
+     "name": "N09 object blend Multiply",
+     "changed_px": 12,
+     "max_channel_diff": 33
+    },
+    {
+     "name": "N10 object opacity 50 %",
+     "changed_px": 9,
+     "max_channel_diff": 35
+    },
+    {
+     "name": "N11 gradient fill, solid stroke",
+     "changed_px": 199,
+     "max_channel_diff": 120
+    },
+    {
+     "name": "N12 solid fill, gradient stroke",
+     "changed_px": 102,
+     "max_channel_diff": 217
+    },
+    {
+     "name": "N13 gradient fill and gradient stroke",
+     "changed_px": 102,
+     "max_channel_diff": 168
+    },
+    {
+     "name": "N14 overprint fill",
+     "changed_px": 225,
+     "max_channel_diff": 88
+    },
+    {
+     "name": "N15 overprint stroke",
+     "changed_px": 281,
+     "max_channel_diff": 59
+    },
+    {
+     "name": "N16 overprint fill and stroke",
+     "changed_px": 282,
+     "max_channel_diff": 59
+    },
+    {
+     "name": "N17 spot color fill, overprint",
+     "changed_px": 282,
+     "max_channel_diff": 119
+    },
+    {
+     "name": "N18 drop shadow on text",
+     "changed_px": 314,
+     "max_channel_diff": 64
+    },
+    {
+     "name": "N19 feather on text",
+     "changed_px": 2443,
+     "max_channel_diff": 95
+    },
+    {
+     "name": "N20 CONTROL: Center stroke, blend Multiply",
+     "changed_px": 0,
+     "max_channel_diff": 0
+    },
+    {
+     "name": "N21 CONTROL: no stroke, blend Multiply",
+     "changed_px": 0,
+     "max_channel_diff": 0
+    },
+    {
+     "name": "N22 CONTROL: no stroke, gradient fill",
+     "changed_px": 0,
+     "max_channel_diff": 0
+    }
+   ]
+  }
+ },
+ "victims_eps_vs_reference": {
+  "dpi": 600,
+  "erode_px": 6,
+  "frames": [
+   {
+    "key": "VC00",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC01",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC02",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC03",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC04",
+    "core_px": 16956,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC05",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC06",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 9
+   },
+   {
+    "key": "VC07",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC08",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC09",
+    "core_px": 0,
+    "core_over_64": 0,
+    "core_max_diff": 0
+   },
+   {
+    "key": "VC10",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC11",
+    "core_px": 12488,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC12",
+    "core_px": 12488,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC13",
+    "core_px": 12488,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC14",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC15",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 48
+   },
+   {
+    "key": "VC16",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC17",
+    "core_px": 11600,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC18",
+    "core_px": 11379,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   },
+   {
+    "key": "VC19",
+    "core_px": 11795,
+    "core_over_64": 0,
+    "core_max_diff": 32
+   }
+  ]
+ }
+}
