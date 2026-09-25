@@ -1,0 +1,2888 @@
+{
+ "schema": 1,
+ "session": "A1",
+ "label": "route W conversions",
+ "user_presets": {
+  "U1": "user-defined preset (name kept out of the repository)",
+  "U2": "user-defined preset (name kept out of the repository)"
+ },
+ "ghostscript": "9.23",
+ "corpus_sha256": {
+  "cert-C.indd": "b1d134dd866ed82515f65c694774a698e58652f15133dcf9e6be2d8a7b1f7842",
+  "cert-C.manifest.json": "a4fbc86b7a0ae26adf655ac38b5c06c46249f0ac98d88b7546ff295ff42c37cf",
+  "cert-E.indd": "5498dcb612527e1a289af026efa5bdf3849204fba25ecfccf75898f6822e6e71",
+  "cert-E.manifest.json": "0d35ae8aca2b9972a3cbf0ab24d3957145fe3c810defaf3b1d07d6f4b8e08b3e",
+  "cert-T.indd": "28fe6428e70872a8963ad8803c4818dde67a81b061fa4e944c8255907b09fbbb",
+  "cert-T.manifest.json": "0e96ce13160fe213ae26135fdcc4f3fd70d4bdaaa997ae87699be80d3933ff54",
+  "victims.host.json": "4c647cc87df681c8f5bb1bd415116aad8264f41c3a3330352d47ea5bab534309",
+  "victims.indd": "f3270a31c9d39801a9ff57dbc30c1eb1909cac098b42a2ef47cf08027b06d7e2",
+  "victims.manifest.json": "6357c939a0671d69a2e8bde9fad5a260f2aa8c08f4ed32ab8175845a13117ca4",
+  "victims.mask.png": "31885db1f056aa5496a524af261517fbd59e343f10891e4e79b6ef84b1572c88",
+  "victims.reference.png": "15f3d988ff0fee1f95900ceeb416da00844a596421c85fbdbbc2d913c523e378"
+ },
+ "jobs": {
+  "E.out": {
+   "error": null,
+   "prep": [],
+   "ms": 4573,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1129,
+     "bytes": 82474,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 127,
+     "bytes": 404835,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 124,
+     "bytes": 404708,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1084,
+     "bytes": 385512,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 330,
+     "bytes": 236664,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 780,
+     "bytes": 1159114,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x795"
+    }
+   ]
+  },
+  "E.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=15"
+   ],
+   "ms": 4744,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1144,
+     "bytes": 73437,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 117,
+     "bytes": 399180,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 120,
+     "bytes": 399053,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 908,
+     "bytes": 285344,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 1054,
+     "bytes": 191940,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 792,
+     "bytes": 1114390,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x795"
+    }
+   ]
+  },
+  "E.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=2 hidden=0"
+   ],
+   "ms": 1362,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 389,
+     "bytes": 99742,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "V.out": {
+   "error": null,
+   "prep": [],
+   "ms": 22745,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1162,
+     "bytes": 77188,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1185,
+     "bytes": 72510,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "small.pdf",
+     "kind": "pdf",
+     "ms": 1185,
+     "bytes": 75391,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 413,
+     "bytes": 400079,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x3.pdf",
+     "kind": "pdf",
+     "ms": 191,
+     "bytes": 400077,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 160,
+     "bytes": 401225,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "a4.pdf",
+     "kind": "pdf",
+     "ms": 382,
+     "bytes": 14794,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "a8.pdf",
+     "kind": "pdf",
+     "ms": 1081,
+     "bytes": 18921,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_8; route=preferences compat=ACROBAT_8 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "gray.pdf",
+     "kind": "pdf",
+     "ms": 371,
+     "bytes": 19926,
+     "error": null,
+     "log": "override pdfColorSpace=GRAY; route=preferences compat=ACROBAT_5 std=NONE color=GRAY"
+    },
+    {
+     "file": "rgb.pdf",
+     "kind": "pdf",
+     "ms": 831,
+     "bytes": 21773,
+     "error": null,
+     "log": "override pdfColorSpace=REPURPOSE_RGB; route=preferences compat=ACROBAT_5 std=NONE color=REPURPOSE_RGB"
+    },
+    {
+     "file": "editable.pdf",
+     "kind": "pdf",
+     "ms": 1390,
+     "bytes": 77187,
+     "error": null,
+     "log": "override preserveInDesignEditingCapabilities=true; route=preferences compat=ACROBAT_5 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "U1.pdf",
+     "kind": "pdf",
+     "ms": 708,
+     "bytes": 506762,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "U2.pdf",
+     "kind": "pdf",
+     "ms": 155,
+     "bytes": 18968,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png72.png",
+     "kind": "png",
+     "ms": 62,
+     "bytes": 21737,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png150.png",
+     "kind": "png",
+     "ms": 363,
+     "bytes": 63660,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 958,
+     "bytes": 136980,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2157,
+     "bytes": 344362,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png300noaa.png",
+     "kind": "png",
+     "ms": 728,
+     "bytes": 67850,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600noaa.png",
+     "kind": "png",
+     "ms": 1915,
+     "bytes": 220343,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600transparent.png",
+     "kind": "png",
+     "ms": 2519,
+     "bytes": 408276,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600gray.png",
+     "kind": "png",
+     "ms": 906,
+     "bytes": 149716,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 346,
+     "bytes": 1031017,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps3rgb.eps",
+     "kind": "eps",
+     "ms": 273,
+     "bytes": 1030965,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 817,
+     "bytes": 913730,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    },
+    {
+     "file": "pslow.ps",
+     "kind": "ps",
+     "ms": 851,
+     "bytes": 1713697,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[Low Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    },
+    {
+     "file": "psgray.ps",
+     "kind": "ps",
+     "ms": 917,
+     "bytes": 913387,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_GRAY paper=CUSTOM 800x1000"
+    }
+   ]
+  },
+  "V.out.lowno": {
+   "error": null,
+   "prep": [
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1388,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 636,
+     "bytes": 65222,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.out.highyes": {
+   "error": null,
+   "prep": [
+    "flatten:HIGH:yes:no -> spreads=1 balance=100"
+   ],
+   "ms": 980,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4outline.pdf",
+     "kind": "pdf",
+     "ms": 481,
+     "bytes": 234364,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=20"
+   ],
+   "ms": 20109,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1201,
+     "bytes": 70784,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1143,
+     "bytes": 66332,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "small.pdf",
+     "kind": "pdf",
+     "ms": 1478,
+     "bytes": 69144,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 131,
+     "bytes": 396672,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x3.pdf",
+     "kind": "pdf",
+     "ms": 122,
+     "bytes": 396670,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 296,
+     "bytes": 398849,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "a4.pdf",
+     "kind": "pdf",
+     "ms": 372,
+     "bytes": 7992,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "a8.pdf",
+     "kind": "pdf",
+     "ms": 408,
+     "bytes": 12363,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_8; route=preferences compat=ACROBAT_8 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "gray.pdf",
+     "kind": "pdf",
+     "ms": 400,
+     "bytes": 13319,
+     "error": null,
+     "log": "override pdfColorSpace=GRAY; route=preferences compat=ACROBAT_5 std=NONE color=GRAY"
+    },
+    {
+     "file": "rgb.pdf",
+     "kind": "pdf",
+     "ms": 366,
+     "bytes": 15176,
+     "error": null,
+     "log": "override pdfColorSpace=REPURPOSE_RGB; route=preferences compat=ACROBAT_5 std=NONE color=REPURPOSE_RGB"
+    },
+    {
+     "file": "editable.pdf",
+     "kind": "pdf",
+     "ms": 1390,
+     "bytes": 70783,
+     "error": null,
+     "log": "override preserveInDesignEditingCapabilities=true; route=preferences compat=ACROBAT_5 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "U1.pdf",
+     "kind": "pdf",
+     "ms": 132,
+     "bytes": 499961,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "U2.pdf",
+     "kind": "pdf",
+     "ms": 155,
+     "bytes": 12379,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png72.png",
+     "kind": "png",
+     "ms": 41,
+     "bytes": 10111,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png150.png",
+     "kind": "png",
+     "ms": 284,
+     "bytes": 30412,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 702,
+     "bytes": 78487,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2034,
+     "bytes": 240046,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png300noaa.png",
+     "kind": "png",
+     "ms": 656,
+     "bytes": 56658,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600noaa.png",
+     "kind": "png",
+     "ms": 1912,
+     "bytes": 196615,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600transparent.png",
+     "kind": "png",
+     "ms": 2355,
+     "bytes": 296213,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600gray.png",
+     "kind": "png",
+     "ms": 786,
+     "bytes": 99519,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 229,
+     "bytes": 187290,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps3rgb.eps",
+     "kind": "eps",
+     "ms": 471,
+     "bytes": 187310,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 739,
+     "bytes": 865454,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    },
+    {
+     "file": "pslow.ps",
+     "kind": "ps",
+     "ms": 815,
+     "bytes": 865666,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[Low Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    },
+    {
+     "file": "psgray.ps",
+     "kind": "ps",
+     "ms": 783,
+     "bytes": 865342,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_GRAY paper=CUSTOM 800x1000"
+    }
+   ]
+  },
+  "V.fill.lowno": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=20",
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1137,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 641,
+     "bytes": 47661,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.fill.highyes": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=20",
+    "flatten:HIGH:yes:no -> spreads=1 balance=100"
+   ],
+   "ms": 1143,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4outline.pdf",
+     "kind": "pdf",
+     "ms": 339,
+     "bytes": 8012,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.ref": {
+   "error": null,
+   "prep": [
+    "splitReference -> frames=20 skippedThreadedOrEmpty=0"
+   ],
+   "ms": 20907,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1162,
+     "bytes": 94575,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1195,
+     "bytes": 86676,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "small.pdf",
+     "kind": "pdf",
+     "ms": 1147,
+     "bytes": 89560,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 168,
+     "bytes": 399734,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x3.pdf",
+     "kind": "pdf",
+     "ms": 206,
+     "bytes": 399732,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 179,
+     "bytes": 400869,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "a4.pdf",
+     "kind": "pdf",
+     "ms": 418,
+     "bytes": 15830,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "a8.pdf",
+     "kind": "pdf",
+     "ms": 550,
+     "bytes": 21731,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_8; route=preferences compat=ACROBAT_8 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "gray.pdf",
+     "kind": "pdf",
+     "ms": 411,
+     "bytes": 22741,
+     "error": null,
+     "log": "override pdfColorSpace=GRAY; route=preferences compat=ACROBAT_5 std=NONE color=GRAY"
+    },
+    {
+     "file": "rgb.pdf",
+     "kind": "pdf",
+     "ms": 361,
+     "bytes": 24607,
+     "error": null,
+     "log": "override pdfColorSpace=REPURPOSE_RGB; route=preferences compat=ACROBAT_5 std=NONE color=REPURPOSE_RGB"
+    },
+    {
+     "file": "editable.pdf",
+     "kind": "pdf",
+     "ms": 1403,
+     "bytes": 94575,
+     "error": null,
+     "log": "override preserveInDesignEditingCapabilities=true; route=preferences compat=ACROBAT_5 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "U1.pdf",
+     "kind": "pdf",
+     "ms": 232,
+     "bytes": 506453,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "U2.pdf",
+     "kind": "pdf",
+     "ms": 177,
+     "bytes": 21772,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png72.png",
+     "kind": "png",
+     "ms": 98,
+     "bytes": 22072,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png150.png",
+     "kind": "png",
+     "ms": 338,
+     "bytes": 63574,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 899,
+     "bytes": 137518,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2222,
+     "bytes": 346845,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png300noaa.png",
+     "kind": "png",
+     "ms": 706,
+     "bytes": 67894,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600noaa.png",
+     "kind": "png",
+     "ms": 1948,
+     "bytes": 220330,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600transparent.png",
+     "kind": "png",
+     "ms": 2555,
+     "bytes": 411137,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600gray.png",
+     "kind": "png",
+     "ms": 910,
+     "bytes": 150742,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 659,
+     "bytes": 965487,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps3rgb.eps",
+     "kind": "eps",
+     "ms": 335,
+     "bytes": 965435,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 868,
+     "bytes": 911115,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    }
+   ]
+  },
+  "V.ref.lowno": {
+   "error": null,
+   "prep": [
+    "splitReference -> frames=20 skippedThreadedOrEmpty=0",
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1686,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 654,
+     "bytes": 66550,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.ref.highyes": {
+   "error": null,
+   "prep": [
+    "splitReference -> frames=20 skippedThreadedOrEmpty=0",
+    "flatten:HIGH:yes:no -> spreads=1 balance=100"
+   ],
+   "ms": 1515,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4outline.pdf",
+     "kind": "pdf",
+     "ms": 463,
+     "bytes": 218201,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=1 hidden=0"
+   ],
+   "ms": 1787,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask72.png",
+     "kind": "png",
+     "ms": 26,
+     "bytes": 2974,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "mask150.png",
+     "kind": "png",
+     "ms": 38,
+     "bytes": 8887,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "mask300.png",
+     "kind": "png",
+     "ms": 122,
+     "bytes": 25686,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 384,
+     "bytes": 80723,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "T.out": {
+   "error": null,
+   "prep": [],
+   "ms": 12359,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1378,
+     "bytes": 91904,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 552,
+     "bytes": 448824,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x3.pdf",
+     "kind": "pdf",
+     "ms": 591,
+     "bytes": 449242,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 442,
+     "bytes": 436051,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "a4.pdf",
+     "kind": "pdf",
+     "ms": 771,
+     "bytes": 62216,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1578,
+     "bytes": 89584,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "U1.pdf",
+     "kind": "pdf",
+     "ms": 627,
+     "bytes": 827035,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2771,
+     "bytes": 213044,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 617,
+     "bytes": 601500,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 1161,
+     "bytes": 1083640,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x600"
+    },
+    {
+     "file": "pslow.ps",
+     "kind": "ps",
+     "ms": 1187,
+     "bytes": 1314664,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[Low Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x600"
+    }
+   ]
+  },
+  "T.out.lowno": {
+   "error": null,
+   "prep": [
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1348,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 629,
+     "bytes": 62471,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "T.out.highyes": {
+   "error": null,
+   "prep": [
+    "flatten:HIGH:yes:no -> spreads=1 balance=100"
+   ],
+   "ms": 1305,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4outline.pdf",
+     "kind": "pdf",
+     "ms": 750,
+     "bytes": 62216,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "T.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=12"
+   ],
+   "ms": 9269,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1215,
+     "bytes": 82925,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 179,
+     "bytes": 410150,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x3.pdf",
+     "kind": "pdf",
+     "ms": 163,
+     "bytes": 410344,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 295,
+     "bytes": 429273,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "a4.pdf",
+     "kind": "pdf",
+     "ms": 554,
+     "bytes": 21440,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1301,
+     "bytes": 80692,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "U1.pdf",
+     "kind": "pdf",
+     "ms": 164,
+     "bytes": 610129,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 3043,
+     "bytes": 154589,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 175,
+     "bytes": 233911,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 743,
+     "bytes": 965396,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x600"
+    },
+    {
+     "file": "pslow.ps",
+     "kind": "ps",
+     "ms": 745,
+     "bytes": 911394,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[Low Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x600"
+    }
+   ]
+  },
+  "T.fill.lowno": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=12",
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1315,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 632,
+     "bytes": 50998,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "T.fill.highyes": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=12",
+    "flatten:HIGH:yes:no -> spreads=1 balance=100"
+   ],
+   "ms": 869,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4outline.pdf",
+     "kind": "pdf",
+     "ms": 413,
+     "bytes": 21440,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "T.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=6 hidden=0"
+   ],
+   "ms": 1225,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 231,
+     "bytes": 40338,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "C.out": {
+   "error": null,
+   "prep": [],
+   "ms": 6956,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1157,
+     "bytes": 61941,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1125,
+     "bytes": 59361,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 146,
+     "bytes": 399041,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 165,
+     "bytes": 401775,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "gray.pdf",
+     "kind": "pdf",
+     "ms": 372,
+     "bytes": 15296,
+     "error": null,
+     "log": "override pdfColorSpace=GRAY; route=preferences compat=ACROBAT_5 std=NONE color=GRAY"
+    },
+    {
+     "file": "rgb.pdf",
+     "kind": "pdf",
+     "ms": 484,
+     "bytes": 18807,
+     "error": null,
+     "log": "override pdfColorSpace=REPURPOSE_RGB; route=preferences compat=ACROBAT_5 std=NONE color=REPURPOSE_RGB"
+    },
+    {
+     "file": "U1.pdf",
+     "kind": "pdf",
+     "ms": 235,
+     "bytes": 506459,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "U2.pdf",
+     "kind": "pdf",
+     "ms": 136,
+     "bytes": 16033,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 517,
+     "bytes": 151653,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600gray.png",
+     "kind": "png",
+     "ms": 248,
+     "bytes": 66078,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 272,
+     "bytes": 222849,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 773,
+     "bytes": 899786,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x405"
+    },
+    {
+     "file": "psgray.ps",
+     "kind": "ps",
+     "ms": 883,
+     "bytes": 887542,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_GRAY paper=CUSTOM 800x405"
+    }
+   ]
+  },
+  "C.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=8"
+   ],
+   "ms": 6535,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1147,
+     "bytes": 55721,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1200,
+     "bytes": 53376,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 128,
+     "bytes": 396926,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 138,
+     "bytes": 399538,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "gray.pdf",
+     "kind": "pdf",
+     "ms": 390,
+     "bytes": 9756,
+     "error": null,
+     "log": "override pdfColorSpace=GRAY; route=preferences compat=ACROBAT_5 std=NONE color=GRAY"
+    },
+    {
+     "file": "rgb.pdf",
+     "kind": "pdf",
+     "ms": 376,
+     "bytes": 11838,
+     "error": null,
+     "log": "override pdfColorSpace=REPURPOSE_RGB; route=preferences compat=ACROBAT_5 std=NONE color=REPURPOSE_RGB"
+    },
+    {
+     "file": "U1.pdf",
+     "kind": "pdf",
+     "ms": 189,
+     "bytes": 500222,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "U2.pdf",
+     "kind": "pdf",
+     "ms": 112,
+     "bytes": 9093,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 411,
+     "bytes": 95763,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600gray.png",
+     "kind": "png",
+     "ms": 172,
+     "bytes": 39485,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 195,
+     "bytes": 190288,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 916,
+     "bytes": 868661,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x405"
+    },
+    {
+     "file": "psgray.ps",
+     "kind": "ps",
+     "ms": 810,
+     "bytes": 862838,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_GRAY paper=CUSTOM 800x405"
+    }
+   ]
+  },
+  "C.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=1 hidden=0"
+   ],
+   "ms": 837,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 155,
+     "bytes": 27208,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.save": {
+   "error": null,
+   "prep": [],
+   "ms": 2751,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "saved.indd",
+     "kind": "indd",
+     "ms": 1055,
+     "bytes": 1241088,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "victims.idml",
+     "kind": "idml",
+     "ms": 222,
+     "bytes": 57889,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "package",
+     "kind": "pkg",
+     "ms": 797,
+     "bytes": -1,
+     "error": null,
+     "log": "package returned true"
+    }
+   ]
+  },
+  "RT.reopen": {
+   "error": null,
+   "prep": [],
+   "ms": 5056,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1245,
+     "bytes": 77364,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 3441,
+     "bytes": 344362,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.idml": {
+   "error": null,
+   "prep": [],
+   "ms": 7219,
+   "state": "saved=false modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1236,
+     "bytes": 78131,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4378,
+     "bytes": 344362,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "from-idml.indd",
+     "kind": "indd",
+     "ms": 880,
+     "bytes": 1286144,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.idml-reopen": {
+   "error": null,
+   "prep": [],
+   "ms": 5762,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1299,
+     "bytes": 78531,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4080,
+     "bytes": 344362,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.package": {
+   "error": null,
+   "prep": [],
+   "ms": 5367,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1198,
+     "bytes": 77363,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 3801,
+     "bytes": 344362,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-hqp.out": {
+   "error": null,
+   "prep": [],
+   "ms": 4916,
+   "state": "saved=false modified=true",
+   "placed": "PDF bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 69,
+     "bytes": 17995,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4023,
+     "bytes": 344602,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-hqp.fill": {
+   "error": null,
+   "prep": [],
+   "ms": 4401,
+   "state": "saved=false modified=true",
+   "placed": "PDF bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 366,
+     "bytes": 11597,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 3415,
+     "bytes": 240228,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-x4.out": {
+   "error": null,
+   "prep": [],
+   "ms": 6794,
+   "state": "saved=false modified=true",
+   "placed": "PDF bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 196,
+     "bytes": 18433,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4228,
+     "bytes": 344596,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-x4.fill": {
+   "error": null,
+   "prep": [],
+   "ms": 15155,
+   "state": "saved=false modified=true",
+   "placed": "PDF bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 10077,
+     "bytes": 12036,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4422,
+     "bytes": 240727,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-x1a.out": {
+   "error": null,
+   "prep": [],
+   "ms": 2441,
+   "state": "saved=false modified=true",
+   "placed": "PDF bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 574,
+     "bytes": 17489,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1188,
+     "bytes": 342858,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-x1a.fill": {
+   "error": null,
+   "prep": [],
+   "ms": 2017,
+   "state": "saved=false modified=true",
+   "placed": "PDF bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 170,
+     "bytes": 10685,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1032,
+     "bytes": 241744,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-eps.out": {
+   "error": null,
+   "prep": [],
+   "ms": 2543,
+   "state": "saved=false modified=true",
+   "placed": "EPS bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 181,
+     "bytes": 235383,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1214,
+     "bytes": 342672,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "RT.place-eps.fill": {
+   "error": null,
+   "prep": [],
+   "ms": 1694,
+   "state": "saved=false modified=true",
+   "placed": "EPS bounds=-5.6843418860808e-14,0,1000,800",
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 171,
+     "bytes": 9015,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1165,
+     "bytes": 241500,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "ED1.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=20"
+   ],
+   "ms": 6031,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1138,
+     "bytes": 72685,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 3142,
+     "bytes": 242672,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "ED1.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=1 hidden=0"
+   ],
+   "ms": 1584,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 389,
+     "bytes": 81593,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "ED2.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=16"
+   ],
+   "ms": 2586,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1156,
+     "bytes": 76447,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 884,
+     "bytes": 289938,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "ED2.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=2 hidden=0"
+   ],
+   "ms": 1273,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 372,
+     "bytes": 105007,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.A-minimal": {
+   "error": null,
+   "prep": [],
+   "ms": 2879,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1202,
+     "bytes": 101467,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 708,
+     "bytes": 181499,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.B-miter": {
+   "error": null,
+   "prep": [],
+   "ms": 4758,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 3442,
+     "bytes": 170388,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 624,
+     "bytes": 515418,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.C-attribute-sweep": {
+   "error": null,
+   "prep": [],
+   "ms": 3072,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1358,
+     "bytes": 201783,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 366,
+     "bytes": 133792,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.N-transparency": {
+   "error": null,
+   "prep": [],
+   "ms": 3502,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1631,
+     "bytes": 124946,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 963,
+     "bytes": 295303,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.S-split": {
+   "error": null,
+   "prep": [],
+   "ms": 2269,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1189,
+     "bytes": 84073,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 225,
+     "bytes": 89904,
+     "error": null,
+     "log": ""
+    }
+   ]
+  }
+ },
+ "sources": {},
+ "conversions": {
+  "eps-gs.pdf": {
+   "sha256": "b0fdf4a83dce210cf28c7bd6eebb13547f36947ca7a158a58c028acf8d99542d",
+   "bytes": 218292,
+   "renderer": "MuPDF 1.28.2",
+   "fill_core": {
+    "ppi": 600,
+    "erode_px": 6,
+    "trimmed_px": 1,
+    "frames": [
+     {
+      "key": "VC00",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC01",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC02",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC03",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC04",
+      "core_px": 16956,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC05",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC06",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC07",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC08",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC09",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC10",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC11",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC12",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC13",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC14",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC15",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC16",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC17",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC18",
+      "core_px": 11379,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC19",
+      "core_px": 11795,
+      "damage_px": 0,
+      "core_max_diff": 0
+     }
+    ],
+    "damage_px_total": 0
+   },
+   "structure": {
+    "pdf_version": "1.5",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": false,
+    "fonts": {
+     "TIFGBJ+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 88,
+    "ops": {
+     "BT": 25,
+     "Tj": 28,
+     "S": 1,
+     "f": 44,
+     "W": 6,
+     "gs": 38
+    },
+    "text_render_modes": {},
+    "images": 0,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   },
+   "frames_with_stroke_after_fill_text": []
+  },
+  "pshigh-dist-hqp.pdf": {
+   "sha256": "acf4a97c9e8fa9205f56b796609b498eda15c1cb81ff966e0117a7b3f0613cfe",
+   "bytes": 13782,
+   "renderer": "MuPDF 1.28.2",
+   "fill_core": {
+    "ppi": 600,
+    "erode_px": 6,
+    "trimmed_px": 1,
+    "frames": [
+     {
+      "key": "VC00",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC01",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC02",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC03",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC04",
+      "core_px": 16956,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC05",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC06",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC07",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC08",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC09",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC10",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC11",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC12",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC13",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC14",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC15",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC16",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC17",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC18",
+      "core_px": 11379,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC19",
+      "core_px": 11795,
+      "damage_px": 0,
+      "core_max_diff": 0
+     }
+    ],
+    "damage_px_total": 0
+   },
+   "structure": {
+    "pdf_version": "1.4",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": false,
+    "fonts": {
+     "EAOHDK+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 90,
+    "ops": {
+     "BT": 25,
+     "Tj": 47,
+     "S": 43,
+     "s": 21,
+     "f": 8,
+     "W": 20,
+     "gs": 43
+    },
+    "text_render_modes": {
+     "0": 1,
+     "1": 1
+    },
+    "images": 0,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   },
+   "frames_with_stroke_after_fill_text": [
+    "VC15"
+   ]
+  },
+  "pshigh-gs.pdf": {
+   "sha256": "aeeef311ac7f50270fd78751184c43b8afce4c52fb07296469db1e3148cf6c16",
+   "bytes": 16552,
+   "renderer": "MuPDF 1.28.2",
+   "fill_core": {
+    "ppi": 600,
+    "erode_px": 6,
+    "trimmed_px": 1,
+    "frames": [
+     {
+      "key": "VC00",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC01",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC02",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC03",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC04",
+      "core_px": 16956,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC05",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC06",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC07",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC08",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC09",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC10",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC11",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC12",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC13",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC14",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC15",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC16",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC17",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC18",
+      "core_px": 11379,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC19",
+      "core_px": 11795,
+      "damage_px": 0,
+      "core_max_diff": 0
+     }
+    ],
+    "damage_px_total": 0
+   },
+   "structure": {
+    "pdf_version": "1.5",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": false,
+    "fonts": {
+     "TIFGBJ+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 88,
+    "ops": {
+     "BT": 25,
+     "Tj": 28,
+     "S": 37,
+     "f": 8,
+     "W": 6,
+     "gs": 8
+    },
+    "text_render_modes": {},
+    "images": 0,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   },
+   "frames_with_stroke_after_fill_text": [
+    "VC15"
+   ]
+  },
+  "pslow-dist-hqp.pdf": {
+   "sha256": "c1aae3aa6bc396496a5f5b57e08c74b1ad7a3083b71762c2e0a25096a890fdc3",
+   "bytes": 234670,
+   "renderer": "MuPDF 1.28.2",
+   "fill_core": {
+    "ppi": 600,
+    "erode_px": 6,
+    "trimmed_px": 1,
+    "frames": [
+     {
+      "key": "VC00",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC01",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC02",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC03",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC04",
+      "core_px": 16956,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC05",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC06",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC07",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC08",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC09",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 1
+     },
+     {
+      "key": "VC10",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC11",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC12",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC13",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC14",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC15",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC16",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC17",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC18",
+      "core_px": 11379,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC19",
+      "core_px": 11795,
+      "damage_px": 0,
+      "core_max_diff": 0
+     }
+    ],
+    "damage_px_total": 0
+   },
+   "structure": {
+    "pdf_version": "1.4",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": false,
+    "fonts": {
+     "EEMGFB+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 83,
+    "ops": {
+     "BT": 25,
+     "Tj": 47,
+     "f": 44,
+     "W": 23,
+     "Do": 1,
+     "gs": 44
+    },
+    "text_render_modes": {
+     "0": 1,
+     "1": 1
+    },
+    "images": 1,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   },
+   "frames_with_stroke_after_fill_text": []
+  },
+  "pslow-gs.pdf": {
+   "sha256": "bb2da48eb1ee286acc4ec32c8a3406dd6acc2717ae87c139bfd5ad00484b8f5f",
+   "bytes": 219697,
+   "renderer": "MuPDF 1.28.2",
+   "fill_core": {
+    "ppi": 600,
+    "erode_px": 6,
+    "trimmed_px": 1,
+    "frames": [
+     {
+      "key": "VC00",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC01",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC02",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC03",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC04",
+      "core_px": 16956,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC05",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC06",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC07",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC08",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC09",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 1
+     },
+     {
+      "key": "VC10",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC11",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC12",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC13",
+      "core_px": 12488,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC14",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC15",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC16",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC17",
+      "core_px": 11600,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC18",
+      "core_px": 11379,
+      "damage_px": 0,
+      "core_max_diff": 0
+     },
+     {
+      "key": "VC19",
+      "core_px": 11795,
+      "damage_px": 0,
+      "core_max_diff": 0
+     }
+    ],
+    "damage_px_total": 0
+   },
+   "structure": {
+    "pdf_version": "1.5",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": false,
+    "fonts": {
+     "TIFGBJ+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 81,
+    "ops": {
+     "BT": 25,
+     "Tj": 28,
+     "S": 1,
+     "f": 44,
+     "W": 7,
+     "Do": 1,
+     "gs": 38
+    },
+    "text_render_modes": {},
+    "images": 1,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   },
+   "frames_with_stroke_after_fill_text": []
+  }
+ }
+}

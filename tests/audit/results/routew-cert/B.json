@@ -1,0 +1,7917 @@
+{
+ "schema": 1,
+ "session": "B",
+ "label": "refusal build 15b802eb (control), InDesign 21.5.1.73",
+ "user_presets": {
+  "U1": "user-defined preset (name kept out of the repository)",
+  "U2": "user-defined preset (name kept out of the repository)"
+ },
+ "ghostscript": "9.23",
+ "corpus_sha256": {
+  "cert-C.indd": "b1d134dd866ed82515f65c694774a698e58652f15133dcf9e6be2d8a7b1f7842",
+  "cert-C.manifest.json": "a4fbc86b7a0ae26adf655ac38b5c06c46249f0ac98d88b7546ff295ff42c37cf",
+  "cert-E.indd": "5498dcb612527e1a289af026efa5bdf3849204fba25ecfccf75898f6822e6e71",
+  "cert-E.manifest.json": "0d35ae8aca2b9972a3cbf0ab24d3957145fe3c810defaf3b1d07d6f4b8e08b3e",
+  "cert-T.indd": "28fe6428e70872a8963ad8803c4818dde67a81b061fa4e944c8255907b09fbbb",
+  "cert-T.manifest.json": "0e96ce13160fe213ae26135fdcc4f3fd70d4bdaaa997ae87699be80d3933ff54",
+  "victims.host.json": "4c647cc87df681c8f5bb1bd415116aad8264f41c3a3330352d47ea5bab534309",
+  "victims.indd": "f3270a31c9d39801a9ff57dbc30c1eb1909cac098b42a2ef47cf08027b06d7e2",
+  "victims.manifest.json": "6357c939a0671d69a2e8bde9fad5a260f2aa8c08f4ed32ab8175845a13117ca4",
+  "victims.mask.png": "31885db1f056aa5496a524af261517fbd59e343f10891e4e79b6ef84b1572c88",
+  "victims.reference.png": "15f3d988ff0fee1f95900ceeb416da00844a596421c85fbdbbc2d913c523e378"
+ },
+ "jobs": {
+  "V.out": {
+   "error": null,
+   "prep": [],
+   "ms": 6033,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1305,
+     "bytes": 72836,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 120,
+     "bytes": 399154,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 155,
+     "bytes": 397946,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 763,
+     "bytes": 118302,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2082,
+     "bytes": 320871,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 151,
+     "bytes": 196517,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 932,
+     "bytes": 874755,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    }
+   ]
+  },
+  "V.out.lowno": {
+   "error": null,
+   "prep": [
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 986,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 654,
+     "bytes": 64413,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=20"
+   ],
+   "ms": 5610,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1124,
+     "bytes": 70784,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 128,
+     "bytes": 398848,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 150,
+     "bytes": 396672,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 741,
+     "bytes": 78487,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1952,
+     "bytes": 240046,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 249,
+     "bytes": 187290,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 986,
+     "bytes": 865454,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    }
+   ]
+  },
+  "V.fill.lowno": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=20",
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1284,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 658,
+     "bytes": 48258,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.ref": {
+   "error": null,
+   "prep": [
+    "splitReference -> frames=20 skippedThreadedOrEmpty=0"
+   ],
+   "ms": 7588,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1145,
+     "bytes": 88900,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 156,
+     "bytes": 399159,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 168,
+     "bytes": 397947,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 793,
+     "bytes": 119156,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2196,
+     "bytes": 322377,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 422,
+     "bytes": 196315,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 1184,
+     "bytes": 874553,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1000"
+    }
+   ]
+  },
+  "V.ref.lowno": {
+   "error": null,
+   "prep": [
+    "splitReference -> frames=20 skippedThreadedOrEmpty=0",
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1557,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 639,
+     "bytes": 65849,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "V.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=1 hidden=0"
+   ],
+   "ms": 1181,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask300.png",
+     "kind": "png",
+     "ms": 118,
+     "bytes": 25686,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 392,
+     "bytes": 80723,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "T.out": {
+   "error": null,
+   "prep": [],
+   "ms": 7042,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1375,
+     "bytes": 85253,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 282,
+     "bytes": 432914,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 376,
+     "bytes": 437386,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "a4.pdf",
+     "kind": "pdf",
+     "ms": 572,
+     "bytes": 51300,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2730,
+     "bytes": 202386,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 382,
+     "bytes": 300214,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 966,
+     "bytes": 1023209,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x600"
+    }
+   ]
+  },
+  "T.out.lowno": {
+   "error": null,
+   "prep": [
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 808,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 606,
+     "bytes": 61479,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "T.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=12"
+   ],
+   "ms": 5857,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1338,
+     "bytes": 82925,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 232,
+     "bytes": 429274,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 176,
+     "bytes": 410157,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "a4.pdf",
+     "kind": "pdf",
+     "ms": 415,
+     "bytes": 21424,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 2488,
+     "bytes": 154616,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 159,
+     "bytes": 233911,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 813,
+     "bytes": 965396,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x600"
+    }
+   ]
+  },
+  "T.fill.lowno": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=12",
+    "flatten:LOW:no:yes -> spreads=1 balance=0"
+   ],
+   "ms": 1101,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "a4low.pdf",
+     "kind": "pdf",
+     "ms": 869,
+     "bytes": 51021,
+     "error": null,
+     "log": "override acrobatCompatibility=ACROBAT_4; route=preferences compat=ACROBAT_4 std=NONE color=UNCHANGED_COLOR_SPACE"
+    }
+   ]
+  },
+  "T.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=6 hidden=0"
+   ],
+   "ms": 1114,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 233,
+     "bytes": 40338,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "C.out": {
+   "error": null,
+   "prep": [],
+   "ms": 5259,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1161,
+     "bytes": 57389,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1135,
+     "bytes": 55014,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 123,
+     "bytes": 398471,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 532,
+     "bytes": 141609,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 1247,
+     "bytes": 881489,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x405"
+    }
+   ]
+  },
+  "C.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=8"
+   ],
+   "ms": 4350,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1127,
+     "bytes": 55721,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "press.pdf",
+     "kind": "pdf",
+     "ms": 1125,
+     "bytes": 53376,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 144,
+     "bytes": 396926,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 472,
+     "bytes": 95763,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 1261,
+     "bytes": 868661,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x405"
+    }
+   ]
+  },
+  "C.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=1 hidden=0"
+   ],
+   "ms": 583,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 182,
+     "bytes": 27208,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "E.out": {
+   "error": null,
+   "prep": [],
+   "ms": 4959,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1206,
+     "bytes": 75084,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 160,
+     "bytes": 399063,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1115,
+     "bytes": 360997,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 907,
+     "bytes": 1118135,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x795"
+    }
+   ]
+  },
+  "E.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=15"
+   ],
+   "ms": 3713,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1140,
+     "bytes": 73047,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 159,
+     "bytes": 398816,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 907,
+     "bytes": 284144,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 1076,
+     "bytes": 1111781,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x795"
+    }
+   ]
+  },
+  "E.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=2 hidden=0"
+   ],
+   "ms": 1120,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 430,
+     "bytes": 99290,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.A-minimal": {
+   "error": null,
+   "prep": [],
+   "ms": 2364,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1149,
+     "bytes": 69320,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 940,
+     "bytes": 177223,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.B-miter": {
+   "error": null,
+   "prep": [],
+   "ms": 2326,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1160,
+     "bytes": 132282,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 639,
+     "bytes": 510361,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.C-attribute-sweep": {
+   "error": null,
+   "prep": [],
+   "ms": 2171,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1294,
+     "bytes": 162061,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 333,
+     "bytes": 118616,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.N-transparency": {
+   "error": null,
+   "prep": [],
+   "ms": 3573,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1720,
+     "bytes": 103409,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 1418,
+     "bytes": 295317,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SUITE.S-split": {
+   "error": null,
+   "prep": [],
+   "ms": 1935,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1167,
+     "bytes": 67218,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png300.png",
+     "kind": "png",
+     "ms": 435,
+     "bytes": 90043,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SAVED.saved": {
+   "error": null,
+   "prep": [],
+   "ms": 5671,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1132,
+     "bytes": 73012,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 3896,
+     "bytes": 320871,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SAVED.from-idml": {
+   "error": null,
+   "prep": [],
+   "ms": 6408,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1156,
+     "bytes": 74182,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4980,
+     "bytes": 320871,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SAVED.ED1-edited": {
+   "error": null,
+   "prep": [],
+   "ms": 6121,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1202,
+     "bytes": 73015,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4573,
+     "bytes": 321342,
+     "error": null,
+     "log": ""
+    }
+   ]
+  },
+  "SAVED.ED2-edited": {
+   "error": null,
+   "prep": [],
+   "ms": 2863,
+   "state": "saved=true modified=false",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1137,
+     "bytes": 78125,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 1171,
+     "bytes": 380675,
+     "error": null,
+     "log": ""
+    }
+   ]
+  }
+ },
+ "sources": {
+  "V": {
+   "frames": [
+    {
+     "key": "VC00",
+     "name": "unstroked first line, stroked second",
+     "bounds": [
+      19.999999999999,
+      20,
+      184.999999999999,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC01",
+     "name": "stroked first line, unstroked second",
+     "bounds": [
+      19.999999999999,
+      215,
+      184.999999999999,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC02",
+     "name": "both stroked",
+     "bounds": [
+      19.999999999999,
+      410,
+      184.999999999999,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC03",
+     "name": "both unstroked",
+     "bounds": [
+      19.999999999999,
+      605,
+      184.999999999999,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC04",
+     "name": "alternating three lines",
+     "bounds": [
+      214.999999999999,
+      20,
+      379.999999999999,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC05",
+     "name": "different stroke weights",
+     "bounds": [
+      214.999999999999,
+      215,
+      379.999999999999,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC06",
+     "name": "different stroke and fill colors",
+     "bounds": [
+      214.999999999999,
+      410,
+      379.999999999999,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC07",
+     "name": "None with positive stored weight",
+     "bounds": [
+      214.999999999999,
+      605,
+      379.999999999999,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC08",
+     "name": "zero weight with Paper stroke color",
+     "bounds": [
+      409.999999999999,
+      20,
+      574.999999999999,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC09",
+     "name": "0 percent text opacity",
+     "bounds": [
+      409.999999999999,
+      215,
+      574.999999999999,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC10",
+     "name": "character mixed stroke states",
+     "bounds": [
+      409.999999999999,
+      410,
+      574.999999999999,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC11",
+     "name": "thin benign round strokes",
+     "bounds": [
+      409.999999999999,
+      605,
+      574.999999999999,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC12",
+     "name": "thin benign miter strokes",
+     "bounds": [
+      604.999999999999,
+      20,
+      769.999999999999,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC13",
+     "name": "thick nonoverlapping lines",
+     "bounds": [
+      604.999999999999,
+      215,
+      769.999999999999,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC14",
+     "name": "underline decoration",
+     "bounds": [
+      604.999999999999,
+      410,
+      769.999999999999,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC15",
+     "name": "strikethrough decoration",
+     "bounds": [
+      604.999999999999,
+      605,
+      769.999999999999,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC16",
+     "name": "stroke tint zero",
+     "bounds": [
+      799.999999999999,
+      20,
+      964.999999999999,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC17",
+     "name": "None plus zero weight",
+     "bounds": [
+      799.999999999999,
+      215,
+      964.999999999999,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC18",
+     "name": "rotated frame",
+     "bounds": [
+      788.973170747214,
+      399.345433327761,
+      976.026829252784,
+      590.654566672239
+     ],
+     "buildError": null
+    },
+    {
+     "key": "VC19",
+     "name": "baseline shift boundary",
+     "bounds": [
+      799.999999999999,
+      605,
+      964.999999999999,
+      775
+     ],
+     "buildError": null
+    }
+   ],
+   "outputs": {
+    "a4low.pdf": {
+     "sha256": "c5e8d44a9401154353730e3805cd82c232b0429f84565a95da258873c1f6df69",
+     "bytes": 64413,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 1,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 11600,
+        "damage_px": 3769,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 11600,
+        "damage_px": 3772,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC03",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 16956,
+        "damage_px": 3769,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC05",
+        "core_px": 11600,
+        "damage_px": 3768,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC06",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 11600,
+        "damage_px": 3770,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC08",
+        "core_px": 11600,
+        "damage_px": 3769,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC09",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 11600,
+        "damage_px": 2870,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC11",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 11600,
+        "damage_px": 3772,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC15",
+        "core_px": 11600,
+        "damage_px": 3770,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC16",
+        "core_px": 11600,
+        "damage_px": 3769,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC17",
+        "core_px": 11600,
+        "damage_px": 3768,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC18",
+        "core_px": 11379,
+        "damage_px": 3714,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC19",
+        "core_px": 11795,
+        "damage_px": 3959,
+        "core_max_diff": 223
+       }
+      ],
+      "damage_px_total": 48239
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {},
+      "text_chars": 0,
+      "ops": {
+       "W": 14,
+       "Do": 14,
+       "gs": 14
+      },
+      "text_render_modes": {},
+      "images": 14,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "VC00",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC01",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC02",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC03",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC04",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC05",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC06",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC07",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC08",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC09",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC10",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC11",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC12",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC13",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC14",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC15",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC16",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC17",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC18",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC19",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 0,
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    },
+    "eps.eps": {
+     "sha256": "bc05e5cb00063841fbde8e3bbf471a648277f2c1da1a1f22a26934b6f8d975de",
+     "bytes": 196517,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC03",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 16956,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC05",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC06",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC08",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC09",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 11600,
+        "damage_px": 2901,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC11",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC15",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC16",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC17",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC18",
+        "core_px": 11379,
+        "damage_px": 3707,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC19",
+        "core_px": 11795,
+        "damage_px": 4001,
+        "core_max_diff": 223
+       }
+      ],
+      "damage_px_total": 48689
+     },
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    },
+    "hqp.pdf": {
+     "sha256": "e8d80d7468807f3a3aaf749348004712c8140dba57134933e3e465a4a3994de7",
+     "bytes": 72836,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 1,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC03",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 16956,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC05",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC06",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC08",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC09",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 11600,
+        "damage_px": 2905,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC11",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC15",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC16",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC17",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC18",
+        "core_px": 11379,
+        "damage_px": 3729,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC19",
+        "core_px": 11795,
+        "damage_px": 4004,
+        "core_max_diff": 223
+       }
+      ],
+      "damage_px_total": 48778
+     },
+     "structure": {
+      "pdf_version": "1.4",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": true,
+      "piece_info": true,
+      "fonts": {
+       "ITTLHX+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 142,
+      "ops": {
+       "BT": 78,
+       "Tj": 78,
+       "S": 5,
+       "f": 1,
+       "W": 34,
+       "Do": 1,
+       "gs": 43
+      },
+      "text_render_modes": {
+       "0": 2,
+       "1": 34
+      },
+      "images": 0,
+      "form_xobjects": 1,
+      "transparency_groups": 1,
+      "soft_or_alpha_gs": 1,
+      "frames": [
+       {
+        "key": "VC00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC01",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC03",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC04",
+        "glyphs": {
+         "text-fill": 6,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC06",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC08",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC09",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC10",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "VC11",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         0.2
+        ]
+       },
+       {
+        "key": "VC12",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         0.2
+        ]
+       },
+       {
+        "key": "VC13",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC14",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 3,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC15",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         5.0,
+         24.0,
+         5.0
+        ]
+       },
+       {
+        "key": "VC16",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC17",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC18",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC19",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 82,
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    },
+    "png300.png": {
+     "sha256": "22da3b8bc0c8a81b649a117066174eeaa53f2aaca96ba90e9683c94561e5ab01",
+     "bytes": 118302,
+     "renderer": "InDesign PNG",
+     "fill_core": {
+      "ppi": 300,
+      "erode_px": 3,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 2716,
+        "damage_px": 856,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC01",
+        "core_px": 2716,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 2716,
+        "damage_px": 856,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC03",
+        "core_px": 2716,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 3966,
+        "damage_px": 860,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC05",
+        "core_px": 2704,
+        "damage_px": 860,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC06",
+        "core_px": 2704,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 2704,
+        "damage_px": 860,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC08",
+        "core_px": 2716,
+        "damage_px": 856,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC09",
+        "core_px": 2716,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 2716,
+        "damage_px": 658,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC11",
+        "core_px": 2884,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 2884,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 2884,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 2704,
+        "damage_px": 860,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC15",
+        "core_px": 2704,
+        "damage_px": 860,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC16",
+        "core_px": 2716,
+        "damage_px": 856,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC17",
+        "core_px": 2716,
+        "damage_px": 856,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC18",
+        "core_px": 2705,
+        "damage_px": 889,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC19",
+        "core_px": 2749,
+        "damage_px": 909,
+        "core_max_diff": 255
+       }
+      ],
+      "damage_px_total": 11036
+     },
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    },
+    "png600.png": {
+     "sha256": "7e87698f853b741254933de276bc71d3102b4c5f91688b0da1ba58f7efbaa60a",
+     "bytes": 320871,
+     "renderer": "InDesign PNG",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC03",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 16956,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC05",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC06",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC08",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC09",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 11600,
+        "damage_px": 2875,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC11",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC15",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC16",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC17",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC18",
+        "core_px": 11379,
+        "damage_px": 3733,
+        "core_max_diff": 255
+       },
+       {
+        "key": "VC19",
+        "core_px": 11795,
+        "damage_px": 3948,
+        "core_max_diff": 255
+       }
+      ],
+      "damage_px_total": 48176
+     },
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    },
+    "pshigh.ps": {
+     "sha256": "447788859ebd5f7f15142de6803186659359692ae4ff1b7c33d66a4b0febb988",
+     "bytes": 874755,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC03",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 16956,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC05",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC06",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC08",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC09",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 11600,
+        "damage_px": 2901,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC11",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC15",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC16",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC17",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC18",
+        "core_px": 11379,
+        "damage_px": 3707,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC19",
+        "core_px": 11795,
+        "damage_px": 4001,
+        "core_max_diff": 223
+       }
+      ],
+      "damage_px_total": 48689
+     },
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    },
+    "x1a.pdf": {
+     "sha256": "de3e99b7cac99389c0e6b2e70c0547dd5854aab233858042c790bc22ebe67a14",
+     "bytes": 397946,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 1,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC03",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 16956,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC05",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC06",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC08",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC09",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 11600,
+        "damage_px": 2900,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC11",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC15",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC16",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC17",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC18",
+        "core_px": 11379,
+        "damage_px": 3722,
+        "core_max_diff": 224
+       },
+       {
+        "key": "VC19",
+        "core_px": 11795,
+        "damage_px": 4000,
+        "core_max_diff": 224
+       }
+      ],
+      "damage_px_total": 48682
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": "PDF/X-1:2001",
+      "output_intents": 1,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "ASDUZN+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 138,
+      "ops": {
+       "BT": 68,
+       "Tj": 76,
+       "S": 5,
+       "f": 5,
+       "W": 37,
+       "gs": 39
+      },
+      "text_render_modes": {
+       "1": 32
+      },
+      "images": 0,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "VC00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC01",
+        "glyphs": {
+         "text-fill": 12,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC02",
+        "glyphs": {
+         "text-fill": 2,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC03",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC06",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC08",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC09",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 4,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC10",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "VC11",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         0.2
+        ]
+       },
+       {
+        "key": "VC12",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         0.2
+        ]
+       },
+       {
+        "key": "VC13",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC14",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 3,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC15",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         5.0,
+         24.0,
+         5.0
+        ]
+       },
+       {
+        "key": "VC16",
+        "glyphs": {
+         "text-fill": 6,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC17",
+        "glyphs": {
+         "text-fill": 2,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC18",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC19",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 88,
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    },
+    "x4.pdf": {
+     "sha256": "59d8926c98cbec5a2b200fb685c9cda7c50613a03890b412c0c2b75bef4e276a",
+     "bytes": 399154,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 1,
+      "frames": [
+       {
+        "key": "VC00",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC02",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC03",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC04",
+        "core_px": 16956,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC05",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC06",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC07",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC08",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC09",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC10",
+        "core_px": 11600,
+        "damage_px": 2904,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC11",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC12",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC13",
+        "core_px": 12488,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "VC14",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC15",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC16",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC17",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC18",
+        "core_px": 11379,
+        "damage_px": 3729,
+        "core_max_diff": 223
+       },
+       {
+        "key": "VC19",
+        "core_px": 11795,
+        "damage_px": 4004,
+        "core_max_diff": 223
+       }
+      ],
+      "damage_px_total": 48777
+     },
+     "structure": {
+      "pdf_version": "1.6",
+      "pdfx": "PDF/X-4",
+      "output_intents": 1,
+      "page_transparency_group": true,
+      "piece_info": true,
+      "fonts": {
+       "XPWRJT+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "UAKZTZ+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 142,
+      "ops": {
+       "BT": 67,
+       "Tj": 78,
+       "S": 5,
+       "f": 1,
+       "W": 34,
+       "Do": 1,
+       "gs": 43
+      },
+      "text_render_modes": {
+       "0": 2,
+       "1": 34
+      },
+      "images": 0,
+      "form_xobjects": 1,
+      "transparency_groups": 1,
+      "soft_or_alpha_gs": 1,
+      "frames": [
+       {
+        "key": "VC00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC01",
+        "glyphs": {
+         "text-fill": 12,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC02",
+        "glyphs": {
+         "text-fill": 2,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC03",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC06",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC08",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC09",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC10",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "VC11",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         0.2
+        ]
+       },
+       {
+        "key": "VC12",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         0.2
+        ]
+       },
+       {
+        "key": "VC13",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC14",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 3,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC15",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         5.0,
+         24.0,
+         5.0
+        ]
+       },
+       {
+        "key": "VC16",
+        "glyphs": {
+         "text-fill": 6,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC17",
+        "glyphs": {
+         "text-fill": 2,
+         "text-stroke": 2
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "VC18",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "VC19",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 82,
+     "edge_vs_split_reference": "removed: this session measured its split reference before the id fix in cert-lib.jsx splitReference; every reference frame was a copy of VC19, so route W was compared with itself. A2 and ring.json hold the valid edge measurements."
+    }
+   }
+  },
+  "T": {
+   "frames": [
+    {
+     "key": "T00",
+     "name": "no transparency (control)",
+     "bounds": [
+      20,
+      20,
+      185,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T01",
+     "name": "text opacity 50%",
+     "bounds": [
+      20,
+      215,
+      185,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T02",
+     "name": "object opacity 50%",
+     "bounds": [
+      20,
+      410,
+      185,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T03",
+     "name": "group opacity 50%",
+     "bounds": [
+      20,
+      605,
+      185,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T04",
+     "name": "transparent multiply rectangle above",
+     "bounds": [
+      215,
+      20,
+      380,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T05",
+     "name": "transparent rectangle below",
+     "bounds": [
+      215,
+      215,
+      380,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T06",
+     "name": "object blend mode Multiply",
+     "bounds": [
+      215,
+      410,
+      380,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T07",
+     "name": "drop shadow",
+     "bounds": [
+      215,
+      605,
+      380,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T08",
+     "name": "basic feather",
+     "bounds": [
+      410,
+      20,
+      575,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T09",
+     "name": "frame clipped inside a rectangle",
+     "bounds": [
+      410,
+      215,
+      575,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T10",
+     "name": "object blend mode Screen over blue",
+     "bounds": [
+      410,
+      410,
+      575,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "T11",
+     "name": "gradient feather",
+     "bounds": [
+      410,
+      605,
+      575,
+      775
+     ],
+     "buildError": null
+    }
+   ],
+   "outputs": {
+    "a4.pdf": {
+     "sha256": "9305a6d779b5db6ce8cdca7e59565cba35dd10a46a2386a63bee364fd7144189",
+     "bytes": 51300,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 172
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 116
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11494,
+        "core_max_diff": 124
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 148
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 52
+       }
+      ],
+      "damage_px_total": 57016
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "RJEAGA+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 68,
+      "ops": {
+       "BT": 31,
+       "Tj": 34,
+       "S": 1,
+       "f": 34,
+       "W": 46,
+       "sh": 4,
+       "Do": 9,
+       "gs": 50
+      },
+      "text_render_modes": {
+       "0": 2,
+       "1": 8,
+       "7": 4
+      },
+      "images": 9,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T01",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 4,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T02",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 4,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T03",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 5,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T04",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 7,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T06",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 4,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T08",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T09",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T10",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 8,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T11",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 100
+    },
+    "a4low.pdf": {
+     "sha256": "fa7b76dbdd689a9f71dc05f02a249de3b338eb998398862209b019bd0a284a6c",
+     "bytes": 61479,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3769,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3767,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3772,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3771,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3769,
+        "core_max_diff": 171
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3768,
+        "core_max_diff": 255
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3772,
+        "core_max_diff": 117
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3770,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 134
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3768,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 139
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 52
+       }
+      ],
+      "damage_px_total": 57126
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {},
+      "text_chars": 0,
+      "ops": {
+       "W": 9,
+       "Do": 9,
+       "gs": 9
+      },
+      "text_render_modes": {},
+      "images": 9,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T01",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T02",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T03",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T04",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T05",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T06",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T07",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T08",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T09",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T10",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T11",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 0
+    },
+    "eps.eps": {
+     "sha256": "cfedbb61efaed7e607496250cdab02521e0d1838382c3906443547cf3aea1012",
+     "bytes": 300214,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 165
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 117
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 132
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 161
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 59
+       }
+      ],
+      "damage_px_total": 57088
+     }
+    },
+    "hqp.pdf": {
+     "sha256": "5b43ecba4e8a64a0f910b1a0077c7ddc46611c9046b1371d31aad5460aee1765",
+     "bytes": 85253,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 172
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 117
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11497,
+        "core_max_diff": 126
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 50
+       }
+      ],
+      "damage_px_total": 45501
+     },
+     "structure": {
+      "pdf_version": "1.4",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": true,
+      "piece_info": true,
+      "fonts": {
+       "BJYEVG+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 96,
+      "ops": {
+       "BT": 45,
+       "Tj": 48,
+       "S": 1,
+       "f": 6,
+       "W": 11,
+       "Do": 10,
+       "gs": 56
+      },
+      "text_render_modes": {
+       "0": 16,
+       "1": 24
+      },
+      "images": 0,
+      "form_xobjects": 10,
+      "transparency_groups": 10,
+      "soft_or_alpha_gs": 9,
+      "frames": [
+       {
+        "key": "T00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T01",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T03",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T06",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T08",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T09",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T10",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T11",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 48
+    },
+    "png600.png": {
+     "sha256": "accf1e46032eed66d9914771ed242100e4db08a1e7191bef7e8002ddd8c1a14c",
+     "bytes": 202386,
+     "renderer": "InDesign PNG",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3752,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3752,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3752,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 175
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 149
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11590,
+        "core_max_diff": 138
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 52
+       }
+      ],
+      "damage_px_total": 45418
+     }
+    },
+    "pshigh.ps": {
+     "sha256": "7e9719af48294467e36c45d18b0342b258a2a57a2824ec84a3a8bb75a5fa2067",
+     "bytes": 1023209,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 101
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3808,
+        "core_max_diff": 165
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 117
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 123
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 161
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 59
+       }
+      ],
+      "damage_px_total": 57088
+     }
+    },
+    "x1a.pdf": {
+     "sha256": "9caeaad08d338671b07f11f3d424bf60572db89ddb33a2ce7093eaa9129322a5",
+     "bytes": 437386,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 172
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 117
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11494,
+        "core_max_diff": 124
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 11600,
+        "core_max_diff": 148
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 52
+       }
+      ],
+      "damage_px_total": 57016
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": "PDF/X-1:2001",
+      "output_intents": 1,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "CJWREE+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 68,
+      "ops": {
+       "BT": 31,
+       "Tj": 34,
+       "S": 1,
+       "f": 34,
+       "W": 46,
+       "sh": 4,
+       "Do": 9,
+       "gs": 50
+      },
+      "text_render_modes": {
+       "0": 2,
+       "1": 8,
+       "7": 4
+      },
+      "images": 9,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T01",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 4,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T02",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 4,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T03",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 5,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T04",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 7,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T06",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 4,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T08",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T09",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T10",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 8,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "T11",
+        "glyphs": {},
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 100
+    },
+    "x4.pdf": {
+     "sha256": "615f5468576dc32c4a6472f0a4757a558d3ca2d2e705bed7b75a6a26c1824477",
+     "bytes": 432914,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "T00",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T01",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T02",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T03",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 100
+       },
+       {
+        "key": "T04",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 173
+       },
+       {
+        "key": "T05",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T06",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 117
+       },
+       {
+        "key": "T07",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T08",
+        "core_px": 11600,
+        "damage_px": 11494,
+        "core_max_diff": 124
+       },
+       {
+        "key": "T09",
+        "core_px": 11600,
+        "damage_px": 3814,
+        "core_max_diff": 223
+       },
+       {
+        "key": "T10",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "T11",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 50
+       }
+      ],
+      "damage_px_total": 45498
+     },
+     "structure": {
+      "pdf_version": "1.6",
+      "pdfx": "PDF/X-4",
+      "output_intents": 1,
+      "page_transparency_group": true,
+      "piece_info": true,
+      "fonts": {
+       "USPEWU+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "VVLZKS+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "RPNBGA+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "MFAXOK+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "HVNTWU+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "BXDZQG+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "SHSXUY+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "OBUZQG+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 96,
+      "ops": {
+       "BT": 24,
+       "Tj": 48,
+       "S": 1,
+       "f": 6,
+       "W": 11,
+       "Do": 10,
+       "gs": 56
+      },
+      "text_render_modes": {
+       "0": 16,
+       "1": 24
+      },
+      "images": 0,
+      "form_xobjects": 10,
+      "transparency_groups": 10,
+      "soft_or_alpha_gs": 9,
+      "frames": [
+       {
+        "key": "T00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T01",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T03",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T06",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T08",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T09",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T10",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "T11",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 48
+    }
+   }
+  },
+  "C": {
+   "frames": [
+    {
+     "key": "C00",
+     "name": "Paper stroke over black fill (census colors)",
+     "bounds": [
+      20,
+      20,
+      185,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "C01",
+     "name": "process fill and stroke",
+     "bounds": [
+      20,
+      215,
+      185,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "C02",
+     "name": "spot stroke over process fill",
+     "bounds": [
+      20,
+      410,
+      185,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "C03",
+     "name": "spot fill and spot stroke",
+     "bounds": [
+      20,
+      605,
+      185,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "C04",
+     "name": "RGB fill and stroke",
+     "bounds": [
+      215,
+      20,
+      380,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "C05",
+     "name": "tints: fill 70%, stroke 50%",
+     "bounds": [
+      215,
+      215,
+      380,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "C06",
+     "name": "gradient stroke",
+     "bounds": [
+      215,
+      410,
+      380,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "C07",
+     "name": "overprint stroke",
+     "bounds": [
+      215,
+      605,
+      380,
+      775
+     ],
+     "buildError": null
+    }
+   ],
+   "outputs": {
+    "hqp.pdf": {
+     "sha256": "365850a2ba3f1f87fc98e6afc0b55f82d8498a0445a97d8ae736ea5d4c6dfd02",
+     "bytes": 57389,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "C01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 28
+       },
+       {
+        "key": "C02",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 141
+       },
+       {
+        "key": "C03",
+        "core_px": 11600,
+        "damage_px": 3708,
+        "core_max_diff": 84
+       },
+       {
+        "key": "C04",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 138
+       },
+       {
+        "key": "C05",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 47
+       },
+       {
+        "key": "C06",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 112
+       },
+       {
+        "key": "C07",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 28
+       }
+      ],
+      "damage_px_total": 18838
+     },
+     "structure": {
+      "pdf_version": "1.4",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "JWYKFQ+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 64,
+      "ops": {
+       "BT": 32,
+       "Tj": 32,
+       "S": 1,
+       "f": 1,
+       "W": 16,
+       "gs": 13
+      },
+      "text_render_modes": {
+       "1": 16
+      },
+      "images": 0,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C01",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C03",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C06",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "C07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 32
+    },
+    "png600.png": {
+     "sha256": "02da0483d9fd59e8116c759c8dc825a5d7998079375adbd94816c518ce963ce6",
+     "bytes": 141609,
+     "renderer": "InDesign PNG",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "C01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 11
+       },
+       {
+        "key": "C02",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 164
+       },
+       {
+        "key": "C03",
+        "core_px": 11600,
+        "damage_px": 3752,
+        "core_max_diff": 72
+       },
+       {
+        "key": "C04",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 99
+       },
+       {
+        "key": "C05",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 50
+       },
+       {
+        "key": "C06",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 131
+       },
+       {
+        "key": "C07",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 23
+       }
+      ],
+      "damage_px_total": 18800
+     }
+    },
+    "press.pdf": {
+     "sha256": "4505ae0b20b09d3a32419676c66a3bc3ee526144946864b885c043d895653345",
+     "bytes": 55014,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "C01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 28
+       },
+       {
+        "key": "C02",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 141
+       },
+       {
+        "key": "C03",
+        "core_px": 11600,
+        "damage_px": 3708,
+        "core_max_diff": 84
+       },
+       {
+        "key": "C04",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 111
+       },
+       {
+        "key": "C05",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 47
+       },
+       {
+        "key": "C06",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 112
+       },
+       {
+        "key": "C07",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 28
+       }
+      ],
+      "damage_px_total": 18744
+     },
+     "structure": {
+      "pdf_version": "1.4",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "QGAPUC+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 64,
+      "ops": {
+       "BT": 32,
+       "Tj": 32,
+       "S": 1,
+       "f": 1,
+       "W": 16,
+       "gs": 13
+      },
+      "text_render_modes": {
+       "1": 16
+      },
+      "images": 0,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C01",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C03",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C06",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "C07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 32
+    },
+    "pshigh.ps": {
+     "sha256": "92e89a4c3e43dcd032bd6a80942aa2431e0492f7ad96e2a308f5b218cf02497d",
+     "bytes": 881489,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "C01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 11
+       },
+       {
+        "key": "C02",
+        "core_px": 11600,
+        "damage_px": 3756,
+        "core_max_diff": 132
+       },
+       {
+        "key": "C03",
+        "core_px": 11600,
+        "damage_px": 3708,
+        "core_max_diff": 72
+       },
+       {
+        "key": "C04",
+        "core_px": 11600,
+        "damage_px": 3708,
+        "core_max_diff": 85
+       },
+       {
+        "key": "C05",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 50
+       },
+       {
+        "key": "C06",
+        "core_px": 11600,
+        "damage_px": 3773,
+        "core_max_diff": 102
+       },
+       {
+        "key": "C07",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 11
+       }
+      ],
+      "damage_px_total": 18709
+     }
+    },
+    "x1a.pdf": {
+     "sha256": "d51fea5d389411eb7b65b1361834b788ca59d75c89e73688a3fd6f7327f939ad",
+     "bytes": 398471,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "C01",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 28
+       },
+       {
+        "key": "C02",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 142
+       },
+       {
+        "key": "C03",
+        "core_px": 11600,
+        "damage_px": 3708,
+        "core_max_diff": 84
+       },
+       {
+        "key": "C04",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 111
+       },
+       {
+        "key": "C05",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 48
+       },
+       {
+        "key": "C06",
+        "core_px": 11600,
+        "damage_px": 3712,
+        "core_max_diff": 113
+       },
+       {
+        "key": "C07",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 28
+       }
+      ],
+      "damage_px_total": 18744
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": "PDF/X-1:2001",
+      "output_intents": 1,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "RYKGIA+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 64,
+      "ops": {
+       "BT": 32,
+       "Tj": 32,
+       "S": 1,
+       "f": 1,
+       "W": 16,
+       "gs": 13
+      },
+      "text_render_modes": {
+       "1": 16
+      },
+      "images": 0,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "C00",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C01",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C03",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C05",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "C06",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "C07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 32
+    }
+   }
+  },
+  "E": {
+   "frames": [
+    {
+     "key": "E00",
+     "name": "threaded pair: last line of frame 1 above first line of frame 2",
+     "bounds": [
+      20.0000000000001,
+      20,
+      80.0000000000001,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E01",
+     "name": "same four lines in one frame (control for E00)",
+     "bounds": [
+      20.0000000000001,
+      215,
+      80.0000000000001,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E02",
+     "name": "independent frames, second stroke over first fill",
+     "bounds": [
+      20,
+      410,
+      74,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E03",
+     "name": "mixed runs: fonts, weights, colors, unstroked",
+     "bounds": [
+      20.0000000000001,
+      605,
+      185,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E04",
+     "name": "overset: third paragraph does not fit",
+     "bounds": [
+      215,
+      20,
+      260,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E05",
+     "name": "rotated 30 degrees",
+     "bounds": [
+      183.552904187784,
+      185.137840678323,
+      411.447095812216,
+      414.862159321677
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E06",
+     "name": "scaled 110% horizontally, 80% vertically",
+     "bounds": [
+      215,
+      410,
+      347,
+      597
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E07",
+     "name": "sheared 20 degrees",
+     "bounds": [
+      215,
+      574.972455673038,
+      380,
+      805.027544326962
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E08",
+     "name": "table cell",
+     "bounds": [
+      410,
+      20,
+      575,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E09",
+     "name": "anchored inline frame",
+     "bounds": [
+      410,
+      215,
+      575,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E10",
+     "name": "text on a path",
+     "bounds": [
+      430,
+      420,
+      555,
+      570
+     ],
+     "buildError": null
+    },
+    {
+     "key": "E11",
+     "name": "stroked text over another frame's fill, stroke frame behind",
+     "bounds": [
+      410,
+      605,
+      464,
+      775
+     ],
+     "buildError": null
+    }
+   ],
+   "outputs": {
+    "hqp.pdf": {
+     "sha256": "b510bdbc34b7d6c298db7e044658ebd3d7e9750ad41a22a7b9a0fb85d027a6c8",
+     "bytes": 75084,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "E00",
+        "core_px": 21056,
+        "damage_px": 11206,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E01",
+        "core_px": 20496,
+        "damage_px": 11342,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E02",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E03",
+        "core_px": 24090,
+        "damage_px": 9339,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E04",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E05",
+        "core_px": 12612,
+        "damage_px": 4253,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E06",
+        "core_px": 10660,
+        "damage_px": 4128,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E07",
+        "core_px": 11223,
+        "damage_px": 3631,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E08",
+        "core_px": 146897,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E09",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E10",
+        "core_px": 12698,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E11",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 223
+       }
+      ],
+      "damage_px_total": 59123
+     },
+     "structure": {
+      "pdf_version": "1.4",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "ZHIHMK+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "WAZPWQ+MyriadPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 121,
+      "ops": {
+       "BT": 67,
+       "Tj": 81,
+       "S": 5,
+       "f": 1,
+       "W": 32,
+       "gs": 38
+      },
+      "text_render_modes": {
+       "0": 2,
+       "1": 33
+      },
+      "images": 0,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "E00",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "E01",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "E02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E03",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 7
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         8.0,
+         24.0,
+         24.0,
+         24.0,
+         16.0
+        ]
+       },
+       {
+        "key": "E04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E05",
+        "glyphs": {
+         "text-fill": 6,
+         "text-stroke": 6
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "E06",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         22.514
+        ]
+       },
+       {
+        "key": "E07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E08",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 5,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E09",
+        "glyphs": {
+         "text-fill": 3,
+         "text-stroke": 3
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         2.0
+        ]
+       },
+       {
+        "key": "E10",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 8,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "E11",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 69
+    },
+    "png600.png": {
+     "sha256": "bc6ea7d4047a3ef7013da2903f244cfb0b69fc9f456e54e83b90716ea8623341",
+     "bytes": 360997,
+     "renderer": "InDesign PNG",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "E00",
+        "core_px": 21056,
+        "damage_px": 11074,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E01",
+        "core_px": 20496,
+        "damage_px": 11210,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E02",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E03",
+        "core_px": 24090,
+        "damage_px": 12066,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E04",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E05",
+        "core_px": 12612,
+        "damage_px": 4263,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E06",
+        "core_px": 10660,
+        "damage_px": 4128,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E07",
+        "core_px": 11223,
+        "damage_px": 3603,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E08",
+        "core_px": 146897,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E09",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       },
+       {
+        "key": "E10",
+        "core_px": 12698,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E11",
+        "core_px": 11600,
+        "damage_px": 3762,
+        "core_max_diff": 255
+       }
+      ],
+      "damage_px_total": 61392
+     }
+    },
+    "pshigh.ps": {
+     "sha256": "e0fb6b344ef4c883f0542ef4853e7528858b3ffebc544a88bfbcc62f84bbbe54",
+     "bytes": 1118135,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "E00",
+        "core_px": 21056,
+        "damage_px": 11152,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E01",
+        "core_px": 20496,
+        "damage_px": 11300,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E02",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E03",
+        "core_px": 24090,
+        "damage_px": 9149,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E04",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E05",
+        "core_px": 12612,
+        "damage_px": 4259,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E06",
+        "core_px": 10660,
+        "damage_px": 4128,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E07",
+        "core_px": 11223,
+        "damage_px": 3606,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E08",
+        "core_px": 146897,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E09",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       },
+       {
+        "key": "E10",
+        "core_px": 12698,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E11",
+        "core_px": 11600,
+        "damage_px": 3764,
+        "core_max_diff": 223
+       }
+      ],
+      "damage_px_total": 58650
+     }
+    },
+    "x1a.pdf": {
+     "sha256": "8cc8d544cfb71a9b12d99fa290ff3387cef05d3cd7780f6feee77346bab6e5c9",
+     "bytes": 399063,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "E00",
+        "core_px": 21056,
+        "damage_px": 11206,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E01",
+        "core_px": 20496,
+        "damage_px": 11342,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E02",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E03",
+        "core_px": 24090,
+        "damage_px": 9340,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E04",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E05",
+        "core_px": 12612,
+        "damage_px": 4253,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E06",
+        "core_px": 10660,
+        "damage_px": 4128,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E07",
+        "core_px": 11223,
+        "damage_px": 3631,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E08",
+        "core_px": 146897,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E09",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       },
+       {
+        "key": "E10",
+        "core_px": 12698,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "E11",
+        "core_px": 11600,
+        "damage_px": 3806,
+        "core_max_diff": 224
+       }
+      ],
+      "damage_px_total": 59124
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": "PDF/X-1:2001",
+      "output_intents": 1,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "MCJNMK+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "JAAVWQ+MyriadPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 121,
+      "ops": {
+       "BT": 63,
+       "Tj": 81,
+       "S": 5,
+       "f": 1,
+       "W": 32,
+       "gs": 38
+      },
+      "text_render_modes": {
+       "0": 2,
+       "1": 33
+      },
+      "images": 0,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "E00",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "E01",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "E02",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E03",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 7
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         8.0,
+         24.0,
+         24.0,
+         24.0,
+         16.0
+        ]
+       },
+       {
+        "key": "E04",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E05",
+        "glyphs": {
+         "text-fill": 6,
+         "text-stroke": 6
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "E06",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         22.514
+        ]
+       },
+       {
+        "key": "E07",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E08",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 5,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "E09",
+        "glyphs": {
+         "text-fill": 3,
+         "text-stroke": 3
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         2.0
+        ]
+       },
+       {
+        "key": "E10",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 8,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "E11",
+        "glyphs": {
+         "text-fill": 4,
+         "text-stroke": 4
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 69
+    }
+   }
+  }
+ },
+ "saved": {
+  "saved": {
+   "hqp.pdf": {
+    "sha256": "1f05e7aaad6090e0ff36595d9a9f82369f320d103ebcade27fe03ea202a5f4ee",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 1,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC09",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "damage_px": 2905,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "damage_px": 3729,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "damage_px": 4004,
+       "core_max_diff": 223
+      }
+     ],
+     "damage_px_total": 48778
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 228089,
+     "px_over_64": 167603,
+     "max_diff": 223,
+     "trimmed_px": 0
+    }
+   },
+   "png600.png": {
+    "sha256": "7e87698f853b741254933de276bc71d3102b4c5f91688b0da1ba58f7efbaa60a",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 0,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC09",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "damage_px": 2875,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "damage_px": 3733,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "damage_px": 3948,
+       "core_max_diff": 255
+      }
+     ],
+     "damage_px_total": 48176
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 212958,
+     "px_over_64": 177769,
+     "max_diff": 255,
+     "trimmed_px": 0
+    }
+   }
+  },
+  "from-idml": {
+   "hqp.pdf": {
+    "sha256": "1a33624fce2d8abfefa7038d73307e500671de16d4cb8ba344776ca3458c6b3b",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 1,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC09",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "damage_px": 2905,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "damage_px": 3729,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "damage_px": 4004,
+       "core_max_diff": 223
+      }
+     ],
+     "damage_px_total": 48778
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 228089,
+     "px_over_64": 167603,
+     "max_diff": 223,
+     "trimmed_px": 0
+    }
+   },
+   "png600.png": {
+    "sha256": "7e87698f853b741254933de276bc71d3102b4c5f91688b0da1ba58f7efbaa60a",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 0,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 16956,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC09",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 11600,
+       "damage_px": 2875,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC13",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "damage_px": 3733,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC19",
+       "core_px": 11795,
+       "damage_px": 3948,
+       "core_max_diff": 255
+      }
+     ],
+     "damage_px_total": 48176
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 212958,
+     "px_over_64": 177769,
+     "max_diff": 255,
+     "trimmed_px": 0
+    }
+   }
+  },
+  "ED1-edited": {
+   "hqp.pdf": {
+    "sha256": "606246adec10ace8f4842a1a81f72509c9f972801ef834c8ceb276302d86c627",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 1,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 12108,
+       "damage_px": 4663,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 8922,
+       "damage_px": 1878,
+       "core_max_diff": 160
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 17096,
+       "damage_px": 5088,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 0,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC09",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 14722,
+       "damage_px": 3862,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 11600,
+       "damage_px": 4,
+       "core_max_diff": 66
+      },
+      {
+       "key": "VC13",
+       "core_px": 14900,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "damage_px": 3814,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "damage_px": 3729,
+       "core_max_diff": 223
+      },
+      {
+       "key": "VC19",
+       "core_px": 11500,
+       "damage_px": 3835,
+       "core_max_diff": 223
+      }
+     ],
+     "damage_px_total": 45943
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 217639,
+     "px_over_64": 155827,
+     "max_diff": 223,
+     "trimmed_px": 0
+    }
+   },
+   "png600.png": {
+    "sha256": "a7c963e2f313e80fa9964fea583d0f4c3608a1ea75df4c6276a1d7a5a175de7f",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 0,
+     "frames": [
+      {
+       "key": "VC00",
+       "core_px": 12108,
+       "damage_px": 4641,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC01",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC02",
+       "core_px": 8922,
+       "damage_px": 1881,
+       "core_max_diff": 175
+      },
+      {
+       "key": "VC03",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC04",
+       "core_px": 17096,
+       "damage_px": 5066,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC05",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC06",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC07",
+       "core_px": 0,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC08",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC09",
+       "core_px": 11600,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC10",
+       "core_px": 14722,
+       "damage_px": 3817,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC11",
+       "core_px": 12488,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC12",
+       "core_px": 11600,
+       "damage_px": 1940,
+       "core_max_diff": 80
+      },
+      {
+       "key": "VC13",
+       "core_px": 14900,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "VC14",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC15",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC16",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC17",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC18",
+       "core_px": 11379,
+       "damage_px": 3733,
+       "core_max_diff": 255
+      },
+      {
+       "key": "VC19",
+       "core_px": 11500,
+       "damage_px": 3783,
+       "core_max_diff": 255
+      }
+     ],
+     "damage_px_total": 47433
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 204862,
+     "px_over_64": 172466,
+     "max_diff": 255,
+     "trimmed_px": 0
+    }
+   }
+  },
+  "ED2-edited": {
+   "hqp.pdf": {
+    "sha256": "b5aaf6c5e6326214718d50a6acc032fdf0c03f6c8725dc340f8cc112fb85e628",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 0,
+     "frames": [
+      {
+       "key": "E00",
+       "core_px": 21056,
+       "damage_px": 11206,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E01",
+       "core_px": 20496,
+       "damage_px": 11342,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E02",
+       "core_px": 11600,
+       "damage_px": 3806,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E03",
+       "core_px": 25913,
+       "damage_px": 9883,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E04",
+       "core_px": 15384,
+       "damage_px": 8098,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E05",
+       "core_px": 12205,
+       "damage_px": 3967,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E06",
+       "core_px": 11052,
+       "damage_px": 3696,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E07",
+       "core_px": 10627,
+       "damage_px": 3383,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E08",
+       "core_px": 87047,
+       "damage_px": 0,
+       "core_max_diff": 1
+      },
+      {
+       "key": "E09",
+       "core_px": 14722,
+       "damage_px": 5043,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E10",
+       "core_px": 9164,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "E11",
+       "core_px": 11600,
+       "damage_px": 3806,
+       "core_max_diff": 223
+      },
+      {
+       "key": "E01dup",
+       "core_px": 20496,
+       "damage_px": 11342,
+       "core_max_diff": 223
+      }
+     ],
+     "damage_px_total": 75572
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 282939,
+     "px_over_64": 225374,
+     "max_diff": 223,
+     "trimmed_px": 0
+    }
+   },
+   "png600.png": {
+    "sha256": "484660d4bd345a9aa2da07d386a75a0033389d55ed20bcb51f11d7713892c162",
+    "fill_core": {
+     "ppi": 600,
+     "erode_px": 6,
+     "trimmed_px": 0,
+     "frames": [
+      {
+       "key": "E00",
+       "core_px": 21056,
+       "damage_px": 11074,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E01",
+       "core_px": 20496,
+       "damage_px": 11210,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E02",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E03",
+       "core_px": 25913,
+       "damage_px": 12380,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E04",
+       "core_px": 15384,
+       "damage_px": 8010,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E05",
+       "core_px": 12205,
+       "damage_px": 3986,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E06",
+       "core_px": 11052,
+       "damage_px": 3696,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E07",
+       "core_px": 10627,
+       "damage_px": 3403,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E08",
+       "core_px": 87047,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "E09",
+       "core_px": 14722,
+       "damage_px": 5008,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E10",
+       "core_px": 9164,
+       "damage_px": 0,
+       "core_max_diff": 0
+      },
+      {
+       "key": "E11",
+       "core_px": 11600,
+       "damage_px": 3762,
+       "core_max_diff": 255
+      },
+      {
+       "key": "E01dup",
+       "core_px": 20496,
+       "damage_px": 11210,
+       "core_max_diff": 255
+      }
+     ],
+     "damage_px_total": 77501
+    },
+    "vs_route_w_session_export": {
+     "px_differing": 255081,
+     "px_over_64": 218066,
+     "max_diff": 255,
+     "trimmed_px": 0
+    }
+   }
+  }
+ },
+ "suites": {
+  "A-minimal": {
+   "manifest": "tests/indesign-stroke/A-adjacent-line-overlap/actual/A-minimal.manifest.json",
+   "pdf_sha256": "5afbb76f86af3f2aa6c0c8370e2a4219d7750be6591d99514625e8b07a3aee64",
+   "png_sha256": "0fab5bcf83581f43ad5d5fdf0b8ebfa60d7c0555e077c5ad72dc45a09cfadb56",
+   "structure": {
+    "pdf_version": "1.4",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": true,
+    "piece_info": true,
+    "fonts": {
+     "PGHCIE+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 253,
+    "ops": {
+     "BT": 52,
+     "Tj": 8,
+     "TJ": 44,
+     "S": 1,
+     "f": 1,
+     "W": 23,
+     "Do": 1,
+     "gs": 30
+    },
+    "text_render_modes": {
+     "0": 2,
+     "1": 24,
+     "2": 1
+    },
+    "images": 0,
+    "form_xobjects": 1,
+    "transparency_groups": 1,
+    "soft_or_alpha_gs": 1,
+    "unknown_frame_events": 0
+   }
+  },
+  "B-miter": {
+   "manifest": "tests/indesign-stroke/B-miter-spikes/actual/B-miter.manifest.json",
+   "pdf_sha256": "8882899409b0c133143884ecdebf7c07c44b606a634379f635b3eefd1519d226",
+   "png_sha256": "ac71903f76812b663db5b056651d2e094e8b3055c93c5960a4c1e86ea5561a18",
+   "structure": {
+    "pdf_version": "1.4",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": true,
+    "fonts": {
+     "OJKKFG+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 308,
+    "ops": {
+     "BT": 28,
+     "TJ": 28,
+     "S": 25,
+     "f": 25,
+     "W": 16,
+     "gs": 58
+    },
+    "text_render_modes": {
+     "1": 13,
+     "2": 1
+    },
+    "images": 0,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   }
+  },
+  "C-attribute-sweep": {
+   "manifest": "tests/indesign-stroke/C-run-fragmentation/actual/C-attribute-sweep.manifest.json",
+   "pdf_sha256": "4fb0d7a3abd0e680282ed1c03c9da705089a86f072bb316164424b66fb51daa0",
+   "png_sha256": "2fd73958c9f63713d4ce62dc1d629c510a732a72ae1336cfcbad9217c0be05f3",
+   "structure": {
+    "pdf_version": "1.4",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": true,
+    "fonts": {
+     "EJQGQA+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     },
+     "SRRMEY+MinionPro-Bold": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     },
+     "OLOOAG+Bahnschrift": {
+      "subtype": "/TrueType",
+      "embedded": true,
+      "subset": true
+     },
+     "HYCYGU+Bahnschrift": {
+      "subtype": "/TrueType",
+      "embedded": true,
+      "subset": true
+     },
+     "GUSSSW+Bahnschrift": {
+      "subtype": "/TrueType",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 672,
+    "ops": {
+     "BT": 215,
+     "Tj": 203,
+     "TJ": 12,
+     "S": 3,
+     "f": 1,
+     "W": 105,
+     "gs": 109
+    },
+    "text_render_modes": {
+     "1": 105,
+     "2": 1
+    },
+    "images": 0,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   }
+  },
+  "N-transparency": {
+   "manifest": "tests/indesign-stroke/N-transparency/actual/N-transparency.manifest.json",
+   "pdf_sha256": "6dffad9215ee27c282f0068cfd59ccdd51908ffffbc2c1d369e7c46d32b240d0",
+   "png_sha256": "0a2e520b4ef13819aa4d2a0eef5324fb045a34fc70aa6c9650740db8e26dc656",
+   "structure": {
+    "pdf_version": "1.4",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": true,
+    "piece_info": true,
+    "fonts": {
+     "PDGIJE+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 344,
+    "ops": {
+     "BT": 86,
+     "TJ": 86,
+     "S": 1,
+     "f": 2,
+     "W": 19,
+     "Do": 14,
+     "gs": 47
+    },
+    "text_render_modes": {
+     "0": 23,
+     "1": 40,
+     "2": 1
+    },
+    "images": 0,
+    "form_xobjects": 14,
+    "transparency_groups": 14,
+    "soft_or_alpha_gs": 6,
+    "unknown_frame_events": 0
+   }
+  },
+  "S-split": {
+   "manifest": "tests/indesign-stroke/S-split/actual/S-split.manifest.json",
+   "pdf_sha256": "30e718739bb6b382eef11b17761a312740f85d49e390978e13f0f303baa2cccd",
+   "png_sha256": "98cc49f3e8590d320cbc1ee887a83a77d1743aa95e36d1ddb49f5678f64232b3",
+   "structure": {
+    "pdf_version": "1.4",
+    "pdfx": null,
+    "output_intents": 0,
+    "page_transparency_group": false,
+    "piece_info": true,
+    "fonts": {
+     "IXUEFN+MinionPro-Regular": {
+      "subtype": "/Type1",
+      "embedded": true,
+      "subset": true
+     }
+    },
+    "text_chars": 187,
+    "ops": {
+     "BT": 54,
+     "Tj": 24,
+     "TJ": 30,
+     "S": 1,
+     "f": 1,
+     "W": 19,
+     "gs": 24
+    },
+    "text_render_modes": {
+     "1": 18,
+     "2": 1
+    },
+    "images": 0,
+    "form_xobjects": 0,
+    "transparency_groups": 0,
+    "soft_or_alpha_gs": 0,
+    "unknown_frame_events": 0
+   }
+  }
+ }
+}

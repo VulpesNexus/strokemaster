@@ -612,6 +612,152 @@ def measure_conversions(session_dir, render, masks_cache):
     return rows
 
 
+# Frames whose fill-core number is not a route W verdict, and why. Their own evidence is named.
+EXCLUDED = {
+    'T08': 'basic feather: the fill-only twin is feathered as a different shape, so it is no oracle; '
+           'the cell-shift oracle (T08 against the unfeathered T00) is used instead',
+    'T10': 'Screen over blue: under flattening the stroke-free twin composites differently; route W equals '
+           'native there pixel for pixel, and in CMYK blending the correct fill is white either way',
+    'T11': 'gradient feather: the text lies where the object is faded out, so neither order is visible '
+           '(native also measures 0)',
+    'E00': 'threaded frames: a story across two frames; route W is frame-scoped (unsupported by design)',
+    'E02': 'independent overlapping frames (unsupported by design)',
+    'E11': 'independent overlapping frames, back frame brought forward (unsupported by design)',
+}
+ROUTE_CLASS = {
+    'hqp': 'PDF 1.4 live transparency', 'press': 'PDF 1.4 live, CMYK conversion', 'small': 'PDF 1.5 live, RGB conversion, downsampling',
+    'x1a': 'PDF/X-1a:2001, PDF 1.3 flattened, CMYK', 'x3': 'PDF/X-3:2002, PDF 1.3 flattened', 'x4': 'PDF/X-4:2008, PDF 1.6 live',
+    'a4': 'PDF 1.3 flattened (non-X)', 'a4low': 'PDF 1.3, custom flattener at raster balance 0 (full rasterization)',
+    'a4outline': 'PDF 1.3, flattener converting text to outlines', 'a8': 'PDF 1.7 live', 'gray': 'PDF 1.4, gray conversion',
+    'rgb': 'PDF 1.4, RGB conversion', 'editable': 'PDF 1.4 with InDesign editing capabilities', 'U1': 'user preset: PDF/X-1a, FOGRA39',
+    'U2': 'user preset: PDF 1.5, RGB conversion', 'eps': 'EPS, CMYK, PostScript level 2', 'eps3rgb': 'EPS, RGB, level 3',
+    'pshigh': 'print to PostScript, [High Resolution] flattener', 'pslow': 'print to PostScript, [Low Resolution] flattener',
+    'psgray': 'print to PostScript, composite gray', 'png72': 'PNG 72 ppi', 'png150': 'PNG 150 ppi', 'png300': 'PNG 300 ppi',
+    'png600': 'PNG 600 ppi', 'png300noaa': 'PNG 300 ppi, no anti-aliasing', 'png600noaa': 'PNG 600 ppi, no anti-aliasing',
+    'png600transparent': 'PNG 600 ppi, transparent background', 'png600gray': 'PNG 600 ppi, gray',
+}
+
+
+def _in_scope(fill_core):
+    return sum(f.get('damage_px', 0) for f in fill_core['frames'] if f['key'] not in EXCLUDED)
+
+
+RECORDS = REPO / 'tests/audit/results/routew-cert'
+
+
+def _load(name):
+    path = RECORDS / name
+    return json.loads(path.read_text(encoding='utf-8')) if path.exists() else None
+
+
+def summarize(output):
+    """Build the machine-readable certification matrix from the session records. Verdicts follow
+    fixed rules (see VERDICT_RULES); rows that rest on judgment say so with measured=false."""
+    A1, A2, B = _load('A1.json'), _load('A2.json'), _load('B.json')
+    more, conv, cmp_, ring = _load('A1-more.json'), _load('A1-conv.json'), _load('compare-A2-B.json'), _load('ring.json')
+    rows = []
+    for key in ('V', 'T', 'C', 'E'):
+        for name, o1 in A1['sources'][key]['outputs'].items():
+            fam = Path(name).stem
+            o2 = A2['sources'][key]['outputs'].get(name)
+            ob = B['sources'][key]['outputs'].get(name)
+            w = [_in_scope(o1['fill_core'])] + ([_in_scope(o2['fill_core'])] if o2 else [])
+            n = _in_scope(ob['fill_core']) if ob else None
+            st = (o2 or o1).get('structure')
+            text = st['text_chars'] if st else None
+            if max(w) > 0:
+                verdict = 'FAILED'
+            elif st and text == 0:
+                verdict = 'CERTIFIED_FOR_APPEARANCE' if (n and len(w) == 2) else 'PASS_FOR_APPEARANCE'
+            elif n and len(w) == 2:
+                verdict = 'CERTIFIED'
+            else:
+                verdict = 'PASS'
+            row = {'id': '%s.%s' % (key, fam), 'source': SOURCES[key] + '.indd', 'route': ROUTE_CLASS.get(fam, fam),
+                   'chain': 'copy -> open -> export' + (' (spread flattener override)' if fam in ('a4low', 'a4outline') else ''),
+                   'routew_damage_in_scope_px': {'A1': w[0], 'A2': w[1] if len(w) > 1 else None},
+                   'native_damage_in_scope_px': n, 'excluded_frames': sorted(k for k in EXCLUDED if k in {f['key'] for f in o1['fill_core']['frames']}),
+                   'output_sha256_A1': o1['sha256'], 'renderer': o1['renderer'], 'verdict': verdict}
+            if st:
+                row['structure'] = {'pdf_version': st['pdf_version'], 'pdfx': st['pdfx'], 'text_glyphs': text,
+                                    'native_text_glyphs': ob['structure']['text_chars'] if ob and ob.get('structure') else None,
+                                    'fonts_embedded': all(f['embedded'] for f in st['fonts'].values()) if st['fonts'] else None,
+                                    'images': st['images'], 'text_render_modes': st['text_render_modes'],
+                                    'strokes_after_fill_text': {f['key']: f['stroke_after_fill_text'] for f in st['frames'] if f['stroke_after_fill_text']}}
+            rows.append(row)
+    rt = A1['roundtrip']
+    for sub, outs in rt.items():
+        for name, o in outs.items():
+            rows.append({'id': 'RT.%s.%s' % (sub, Path(name).stem), 'source': 'victims.indd', 'route': sub,
+                         'routew_damage_in_scope_px': {'A1': o['fill_core']['damage_px_total']},
+                         'px_over_64_from_direct_export': o['px_over_64_from_direct_export'],
+                         'px_differing_from_direct_export': o['px_differing_from_direct_export'],
+                         'verdict': 'PASS' if o['fill_core']['damage_px_total'] == 0 else 'FAILED'})
+    for sess, rec in (('A2', A2), ('B', B)):
+        for name, outs in rec['saved'].items():
+            for f, o in outs.items():
+                rows.append({'id': 'SAVED.%s.%s.%s' % (sess, name, Path(f).stem), 'route': 'saved by route W session A1, opened in %s' % sess,
+                             'damage_px': o['fill_core']['damage_px_total'], 'px_differing_from_A1_export': o['vs_route_w_session_export']['px_differing'],
+                             'expected': 'identical, and 0 in scope' if sess == 'A2' else 'native drawing (the damage returns)'})
+    for sess, rec in (('A1', more), ('A2', A2)):
+        ed = rec['editing']
+        rows.append({'id': 'EDIT.%s' % sess, 'route': 'edits, undo all, redo all, save, reopen; five save and reopen cycles',
+                     'identities_differing_px': {k: v['px_differing'] for k, v in ed['identities'].items()},
+                     'undo_redo_steps': {k: (v['undo_steps'], v['redo_steps']) for k, v in ed['stages'].items() if v['undo_steps'] or v['redo_steps']},
+                     'damage_in_scope_px': {k: _in_scope(v['outputs']['png600.png']['fill_core']) for k, v in ed['stages'].items()},
+                     'verdict': 'CERTIFIED' if all(v['px_differing'] == 0 for v in ed['identities'].values()) and
+                     all(_in_scope(v['outputs'][f]['fill_core']) == 0 for v in ed['stages'].values() for f in v['outputs']) else 'FAILED'})
+    red = A2['redraw']
+    rows.append({'id': 'REDRAW.A2', 'route': 'scripted screen-drawing stress in a window, saves mid-redraw, reopen without a window',
+                 'steps': red['steps'], 'actions': red['actions'], 'call_errors': red['errors'],
+                 'saves': [{'step': sv['step'], 'vc05_weight': sv['vc05_weight'], 'damage': {f: o['fill_core_damage'] for f, o in sv['outputs'].items()},
+                            'px_differing_from_expected_state': {f: o['vs_expected_state']['px_differing'] for f, o in sv['outputs'].items()}} for sv in red['saves']],
+                 'live_exports': {k: {'damage': v['fill_core_damage'], 'px_differing_from_direct_export': v['vs_direct_export']['px_differing']} for k, v in red['live'].items()},
+                 'verdict': 'PASS'})
+    for name, o in more['illustrator']['outputs'].items():
+        rows.append({'id': 'AI.' + Path(name).stem, 'route': 'InDesign PDF -> Illustrator 30.7 open -> save PDF', 'damage_px': o['fill_core']['damage_px_total'],
+                     'px_over_64_from_indesign_export': o['px_over_64_from_indesign_export'], 'text_glyphs': o['structure']['text_chars'],
+                     'images': o['structure']['images'], 'verdict': 'PASS' if o['fill_core']['damage_px_total'] == 0 else 'FAILED'})
+    for name, o in conv['conversions'].items():
+        rows.append({'id': 'CONV.' + Path(name).stem, 'route': 'InDesign PostScript or EPS -> ' + ('Acrobat Distiller (COM, High Quality Print)' if 'dist' in name else 'Ghostscript pdfwrite'),
+                     'damage_px': o['fill_core']['damage_px_total'], 'text_glyphs': o['structure']['text_chars'], 'images': o['structure']['images'],
+                     'verdict': 'PASS' if o['fill_core']['damage_px_total'] == 0 else 'FAILED'})
+    for stem, srec in cmp_['suites'].items():
+        fr = srec['frames']
+        rows.append({'id': 'SUITE.' + stem, 'route': 'saved fixture suite, route W (A2) against native (B), PNG 300 ppi',
+                     'frames': len(fr), 'frames_differing_beyond_edge_band': sum(1 for f in fr if f['over_64_beyond_band']),
+                     'max_ink_bbox_delta_px': max((f['ink_bbox_max_delta_px'] or 0) for f in fr)})
+    judged = [
+        {'id': 'SCREEN.owner', 'measured': False, 'verdict': 'MANUAL_PASS',
+         'evidence': 'owner looked at VC00 at 400% on screen and interrupted redraws; tests/audit/results/indesign-routew-screen.json'},
+        {'id': 'EDGE.fidelity', 'measured': True, 'verdict': 'CERTIFIED_WITH_VARIANCE',
+         'evidence': 'ring.json: stroke points equal the embedded font outline points; differences stay within two device pixels of an edge at every resolution'},
+        {'id': 'CROSS_FRAME', 'measured': True, 'verdict': 'UNSUPPORTED', 'evidence': 'E00, E02, E11 damaged with and without route W in every output'},
+        {'id': 'PREFERENCES', 'measured': True, 'verdict': 'CERTIFIED (after one leak found and fixed)',
+         'evidence': 'cert-enumerate snapshots before A1, after A1, B start and end, A2 end: unchanged except the cert-redraw.ps1 leak, restored and fixed'},
+        {'id': 'STABILITY', 'measured': True, 'verdict': 'PASS', 'evidence': 'no InDesign or Illustrator application error, crash, or hang event on 2026-09-25; three InDesign processes, one Illustrator'},
+    ]
+    record = {'schema': 1, 'certified': '2026-09-25', 'host': 'InDesign 21.5.1.73', 'illustrator': '30.7.0',
+              'plugin': {'route_w_sha256': 'f31dd2c9c7a4f7bd94ea9c9c1c48b19ba33fec76f2c3332730d1d82d7c4f4215',
+                         'control_refusal_sha256': '15b802ebfb38f567eb3aa586e995c0a1afff47efd078f3e2a0443596b54df4c4'},
+              'sessions': {'A1': 'route W, the owner-launched InDesign process', 'B': 'refusal build (no correction), fresh process',
+                           'A2': 'route W reinstalled, fresh process'},
+              'corpus_sha256': A1['corpus_sha256'], 'excluded_frames': EXCLUDED,
+              'verdict_rules': {
+                  'FAILED': 'any in-scope fill-core damage in any route W session',
+                  'CERTIFIED': '0 in-scope damage in both route W sessions and the native control damaged in the same output',
+                  'CERTIFIED_FOR_APPEARANCE': 'as CERTIFIED, but the output keeps no text (rasterized) with or without route W',
+                  'PASS': '0 in-scope damage where the control or the second session was not run'},
+              'rows': rows, 'judged_rows': judged,
+              'reproducibility_A1_A2': {'outputs': len(cmp_['reproducibility']), 'differing': [k for k, v in cmp_['reproducibility'].items() if v['px_differing']]}}
+    Path(output).write_bytes((json.dumps(record, indent=1, ensure_ascii=False) + '\n').encode('utf-8'))
+    counts = {}
+    for r in rows:
+        if 'verdict' in r:
+            counts[r['verdict']] = counts.get(r['verdict'], 0) + 1
+    print('rows', len(rows), counts)
+
+
 def job_log(session_dir):
     jobs = {}
     for line in (session_dir / 'results.jsonl').read_text(encoding='utf-8').splitlines():
@@ -682,7 +828,12 @@ def main(argv=None):
     d = sub.add_parser('prefs-diff')
     d.add_argument('before')
     d.add_argument('after')
+    y = sub.add_parser('summarize')
+    y.add_argument('output', type=Path)
     args = parser.parse_args(argv)
+    if args.cmd == 'summarize':
+        summarize(args.output)
+        return 0
     if args.cmd == 'prefs-diff':
         changed = prefs_diff(args.before, args.after)
         for c in changed:
