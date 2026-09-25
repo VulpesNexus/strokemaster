@@ -1,0 +1,1004 @@
+{
+ "schema": 1,
+ "host": "InDesign",
+ "version": "21.5.1.73",
+ "plugin": "route W",
+ "plugin_sha256": "f31dd2c9c7a4f7bd94ea9c9c1c48b19ba33fec76f2c3332730d1d82d7c4f4215",
+ "renderer": "MuPDF 1.28.2",
+ "hidden_fill": [
+  {
+   "suite": "A",
+   "frames": [
+    {
+     "name": "A01 two paragraphs, stroke 8 outside",
+     "noplugin": 1536,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A02 forced line break",
+     "noplugin": 1536,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A03 soft wrap",
+     "noplugin": 1536,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A04 center alignment, stroke 16",
+     "noplugin": 62497,
+     "routew": 62497,
+     "oracle": 62497,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A05 control, leading 60",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A09a stroke 3",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A09b stroke 5",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A08 lower (created first)",
+     "noplugin": 2126,
+     "routew": 2271,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A06 lower, story start",
+     "noplugin": 2126,
+     "routew": 2271,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A07 lower, story start (in front)",
+     "noplugin": 1536,
+     "routew": 1413,
+     "oracle": 0,
+     "fill_core_noplugin": 62497,
+     "fill_core_routew": 62497
+    },
+    {
+     "name": "A10 two runs on line 1",
+     "noplugin": 3244,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 56442,
+     "fill_core_routew": 56442
+    },
+    {
+     "name": "A11 frame text opacity 90",
+     "noplugin": 1506,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 61368,
+     "fill_core_routew": 61368
+    }
+   ],
+   "hidden_total": {
+    "noplugin": 77643,
+    "routew": 68452,
+    "oracle": 62497
+   }
+  },
+  {
+   "suite": "B",
+   "frames": [
+    {
+     "name": "B1 text miter limit 1",
+     "spike_px_beyond_weight_noplugin": 0,
+     "max_stroke_reach_pt_noplugin": 4.1,
+     "spike_px_beyond_weight_routew": 0,
+     "max_stroke_reach_pt_routew": 4.03
+    },
+    {
+     "name": "B1 text miter limit 1.5",
+     "spike_px_beyond_weight_noplugin": 7365,
+     "max_stroke_reach_pt_noplugin": 5.66,
+     "spike_px_beyond_weight_routew": 7416,
+     "max_stroke_reach_pt_routew": 5.66
+    },
+    {
+     "name": "B1 text miter limit 2",
+     "spike_px_beyond_weight_noplugin": 7931,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 7995,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "B1 text miter limit 3",
+     "spike_px_beyond_weight_noplugin": 8299,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 8360,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "B1 text miter limit 4",
+     "spike_px_beyond_weight_noplugin": 8299,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 8360,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "B1 text miter limit 10",
+     "spike_px_beyond_weight_noplugin": 8299,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 8360,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "B1 text miter limit 100",
+     "spike_px_beyond_weight_noplugin": 8299,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 8360,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "B1 text miter limit 500",
+     "spike_px_beyond_weight_noplugin": 8286,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 8348,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "B2 center alignment 8 pt, limit 4",
+     "spike_px_beyond_weight_noplugin": 8286,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 8286,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "B2 center alignment 8 pt, limit 1",
+     "spike_px_beyond_weight_noplugin": 0,
+     "max_stroke_reach_pt_noplugin": 4.1,
+     "spike_px_beyond_weight_routew": 0,
+     "max_stroke_reach_pt_routew": 4.1
+    },
+    {
+     "name": "B2 weight 1, limit 4",
+     "spike_px_beyond_weight_noplugin": 258,
+     "max_stroke_reach_pt_noplugin": 1.64,
+     "spike_px_beyond_weight_routew": 271,
+     "max_stroke_reach_pt_routew": 1.64
+    },
+    {
+     "name": "B2 weight 2, limit 4",
+     "spike_px_beyond_weight_noplugin": 2412,
+     "max_stroke_reach_pt_noplugin": 3.36,
+     "spike_px_beyond_weight_routew": 2390,
+     "max_stroke_reach_pt_routew": 3.36
+    },
+    {
+     "name": "B2 weight 6, limit 4",
+     "spike_px_beyond_weight_noplugin": 16879,
+     "max_stroke_reach_pt_noplugin": 11.81,
+     "spike_px_beyond_weight_routew": 16873,
+     "max_stroke_reach_pt_routew": 11.81
+    },
+    {
+     "name": "B2 weight 8, limit 4",
+     "spike_px_beyond_weight_noplugin": 28955,
+     "max_stroke_reach_pt_noplugin": 16.7,
+     "spike_px_beyond_weight_routew": 28882,
+     "max_stroke_reach_pt_routew": 16.7
+    },
+    {
+     "name": "B4 source text, limit 4",
+     "spike_px_beyond_weight_noplugin": 8286,
+     "max_stroke_reach_pt_noplugin": 6.8,
+     "spike_px_beyond_weight_routew": 8348,
+     "max_stroke_reach_pt_routew": 6.8
+    },
+    {
+     "name": "",
+     "spike_px_beyond_weight_noplugin": 0,
+     "max_stroke_reach_pt_noplugin": 3.36,
+     "spike_px_beyond_weight_routew": 0,
+     "max_stroke_reach_pt_routew": 3.36
+    },
+    {
+     "name": "",
+     "spike_px_beyond_weight_noplugin": 25,
+     "max_stroke_reach_pt_noplugin": 4.9,
+     "spike_px_beyond_weight_routew": 25,
+     "max_stroke_reach_pt_routew": 4.9
+    }
+   ],
+   "hidden_total": {
+    "noplugin": 0,
+    "routew": 0,
+    "oracle": 0
+   }
+  },
+  {
+   "suite": "C",
+   "frames": [],
+   "hidden_total": {
+    "noplugin": 0,
+    "routew": 0,
+    "oracle": 0
+   }
+  },
+  {
+   "suite": "N",
+   "frames": [
+    {
+     "name": "N00 control: Normal, opaque, solid",
+     "noplugin": 10,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 53226,
+     "fill_core_routew": 43726
+    },
+    {
+     "name": "N01 text blend Multiply",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 9500,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N02 text blend Screen",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 9500,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N03 text blend Overlay",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N04 text blend Darken",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N05 text blend Lighten",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N06 text blend Difference",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 45728,
+     "fill_core_routew": 45728
+    },
+    {
+     "name": "N07 text opacity 50 %",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N08 text blend Multiply at 50 %",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N09 object blend Multiply",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N10 object opacity 50 %",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N11 gradient fill, solid stroke",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 16680,
+     "fill_core_routew": 16680
+    },
+    {
+     "name": "N12 solid fill, gradient stroke",
+     "noplugin": 9,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 43726,
+     "fill_core_routew": 43726
+    },
+    {
+     "name": "N13 gradient fill and gradient stroke",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 16680,
+     "fill_core_routew": 16680
+    },
+    {
+     "name": "N14 overprint fill",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N15 overprint stroke",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N16 overprint fill and stroke",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N17 spot color fill, overprint",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N18 drop shadow on text",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N19 feather on text",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N20 CONTROL: Center stroke, blend Multiply",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N21 CONTROL: no stroke, blend Multiply",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 0,
+     "fill_core_routew": 0
+    },
+    {
+     "name": "N22 CONTROL: no stroke, gradient fill",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 16680,
+     "fill_core_routew": 16680
+    }
+   ],
+   "hidden_total": {
+    "noplugin": 19,
+    "routew": 0,
+    "oracle": 0
+   }
+  },
+  {
+   "suite": "S",
+   "frames": [
+    {
+     "name": "S01c uniform: black fill, Paper 8 pt Outside [control]",
+     "noplugin": 1010,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 54702,
+     "fill_core_routew": 54702
+    },
+    {
+     "name": "S01t uniform: black fill, Paper 8 pt Outside [split]",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 53871,
+     "fill_core_routew": 53871
+    },
+    {
+     "name": "S02c varied fill: one magenta character on line one [control]",
+     "noplugin": 2763,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 48604,
+     "fill_core_routew": 48604
+    },
+    {
+     "name": "S02t varied fill: one magenta character on line one [split]",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 47835,
+     "fill_core_routew": 47835
+    },
+    {
+     "name": "S03c varied stroke: one character at 5 pt magenta stroke [control]",
+     "noplugin": 3260,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 54702,
+     "fill_core_routew": 54702
+    },
+    {
+     "name": "S03t varied stroke: one character at 5 pt magenta stroke [split]",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 54003,
+     "fill_core_routew": 54003
+    },
+    {
+     "name": "S04c CONTROL: no stroke at all (split must refuse) [control]",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 54702,
+     "fill_core_routew": 54702
+    },
+    {
+     "name": "S04t CONTROL: no stroke at all (split must refuse) [split]",
+     "noplugin": 0,
+     "routew": 0,
+     "oracle": 0,
+     "fill_core_noplugin": 54702,
+     "fill_core_routew": 54702
+    },
+    {
+     "name": "S05c Center alignment (split acts; records what it does) [control]",
+     "noplugin": 54702,
+     "routew": 54702,
+     "oracle": 54702,
+     "fill_core_noplugin": 54702,
+     "fill_core_routew": 54702
+    },
+    {
+     "name": "S05t Center alignment (split acts; records what it does) [split]",
+     "noplugin": 54702,
+     "routew": 54702,
+     "oracle": 54702,
+     "fill_core_noplugin": 54702,
+     "fill_core_routew": 54702
+    }
+   ],
+   "hidden_total": {
+    "noplugin": 116437,
+    "routew": 109404,
+    "oracle": 109404
+   }
+  }
+ ],
+ "strokes_first_oracle": [
+  {
+   "suite": "A",
+   "dpi": 300,
+   "frames": [
+    {
+     "name": "A01 two paragraphs, stroke 8 outside",
+     "noplugin_over_128": 257,
+     "routew_over_128": 0,
+     "routew_max": 80
+    },
+    {
+     "name": "A02 forced line break",
+     "noplugin_over_128": 257,
+     "routew_over_128": 0,
+     "routew_max": 80
+    },
+    {
+     "name": "A03 soft wrap",
+     "noplugin_over_128": 257,
+     "routew_over_128": 0,
+     "routew_max": 47
+    },
+    {
+     "name": "A04 center alignment, stroke 16",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 0
+    },
+    {
+     "name": "A05 control, leading 60",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 93
+    },
+    {
+     "name": "A09a stroke 3",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 103
+    },
+    {
+     "name": "A09b stroke 5",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 107
+    },
+    {
+     "name": "A08 lower (created first)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 4,
+     "routew_max": 171
+    },
+    {
+     "name": "A08 upper (created second, in front)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 4,
+     "routew_max": 171
+    },
+    {
+     "name": "A06 lower, story start",
+     "noplugin_over_128": 0,
+     "routew_over_128": 2,
+     "routew_max": 147
+    },
+    {
+     "name": "A06 upper, story continues (in front)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 2,
+     "routew_max": 147
+    },
+    {
+     "name": "A07 lower, story start (in front)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 80
+    },
+    {
+     "name": "A07 upper, story continues (behind)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 70
+    },
+    {
+     "name": "A10 two runs on line 1",
+     "noplugin_over_128": 655,
+     "routew_over_128": 0,
+     "routew_max": 47
+    },
+    {
+     "name": "A11 frame text opacity 90",
+     "noplugin_over_128": 245,
+     "routew_over_128": 0,
+     "routew_max": 41
+    }
+   ]
+  },
+  {
+   "suite": "C",
+   "dpi": 300,
+   "frames": [
+    {
+     "name": "C00 control: no override",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 71
+    },
+    {
+     "name": "C01 fill color Magenta",
+     "noplugin_over_128": 178,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C02 fill tint 50",
+     "noplugin_over_128": 87,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C03 stroke color Magenta",
+     "noplugin_over_128": 173,
+     "routew_over_128": 4,
+     "routew_max": 157
+    },
+    {
+     "name": "C04 stroke tint 50",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C05 stroke weight 5",
+     "noplugin_over_128": 338,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C06 stroke weight 4 set locally (same value as style)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 44
+    },
+    {
+     "name": "C07 join Miter",
+     "noplugin_over_128": 233,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C08 miter limit 10 with round join (no visual effect)",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C09 stroke alignment Center",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 74
+    },
+    {
+     "name": "C10 overprint stroke",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C11 overprint fill",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C12 font change (Minion Pro\tBold)",
+     "noplugin_over_128": 219,
+     "routew_over_128": 0,
+     "routew_max": 74
+    },
+    {
+     "name": "C13 point size 23.9",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 76
+    },
+    {
+     "name": "C14 horizontal scale 99 %",
+     "noplugin_over_128": 186,
+     "routew_over_128": 0,
+     "routew_max": 80
+    },
+    {
+     "name": "C15 vertical scale 101 %",
+     "noplugin_over_128": 175,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C16 baseline shift 0.5 pt",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C17 tracking 20",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C18 manual kerning -50 before character 3",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 71
+    },
+    {
+     "name": "C19 language English: UK",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C20 skew -10",
+     "noplugin_over_128": 280,
+     "routew_over_128": 0,
+     "routew_max": 77
+    },
+    {
+     "name": "C21 character rotation 10",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 79
+    },
+    {
+     "name": "C22 empty character style",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C23 character style with fill Magenta",
+     "noplugin_over_128": 178,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C24 underline",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C25 underline color set, underline off (no visual effect)",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C26 strikethrough",
+     "noplugin_over_128": 221,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C27 Lowercase on a lowercase letter (no visual effect)",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C28 Small Caps",
+     "noplugin_over_128": 171,
+     "routew_over_128": 0,
+     "routew_max": 81
+    },
+    {
+     "name": "C29 Superscript",
+     "noplugin_over_128": 184,
+     "routew_over_128": 0,
+     "routew_max": 73
+    },
+    {
+     "name": "C30 No Break (no visual effect)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 79
+    },
+    {
+     "name": "C31 OpenType slashed zero on a letter (no visual effect)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C32 OpenType oldstyle figures on a letter (no visual effect)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C33c control for C33: text with fi",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 55
+    },
+    {
+     "name": "C33 ligatures off on fi",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 45
+    },
+    {
+     "name": "C34c control for C34: text with st",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 59
+    },
+    {
+     "name": "C34 discretionary ligatures on st",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 78
+    },
+    {
+     "name": "C35 GREP style applying the empty character style to character 3",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C36 GREP style applying the magenta character style to character 3",
+     "noplugin_over_128": 178,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C37 nested style applying the empty character style through 4 characters",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 79
+    },
+    {
+     "name": "C38 conditional text condition, indicators hidden",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C39 hyperlink text source on character 3",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C40 XML tag on character 3",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 44
+    },
+    {
+     "name": "C41 OpenType stylistic set 1",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 46
+    },
+    {
+     "name": "C42c control for C42: variable font Bahnschrift",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 70
+    },
+    {
+     "name": "C42 variable font axis on character 3 (Bahnschrift)",
+     "noplugin_over_128": 159,
+     "routew_over_128": 0,
+     "routew_max": 86
+    },
+    {
+     "name": "C43 fill color Black set locally (same value as style)",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 72
+    },
+    {
+     "name": "C44 kerning method Optical on character 3",
+     "noplugin_over_128": 0,
+     "routew_over_128": 0,
+     "routew_max": 71
+    },
+    {
+     "name": "C45 stroke tint 100 set explicitly (style uses the swatch tint)",
+     "noplugin_over_128": 174,
+     "routew_over_128": 0,
+     "routew_max": 75
+    },
+    {
+     "name": "C46 variable font named instance Bold on character 3 (Bahnschrift)",
+     "noplugin_over_128": 205,
+     "routew_over_128": 0,
+     "routew_max": 57
+    }
+   ]
+  }
+ ],
+ "live_text": [
+  {
+   "document": "D-contours",
+   "fill_text_identical": true,
+   "fill_text_spans": 3,
+   "native_stroke_text_spans_left": 0
+  },
+  {
+   "document": "D-faithful",
+   "fill_text_identical": true,
+   "fill_text_spans": 6,
+   "native_stroke_text_spans_left": 1
+  },
+  {
+   "document": "D-hook",
+   "fill_text_identical": true,
+   "fill_text_spans": 2,
+   "native_stroke_text_spans_left": 0
+  },
+  {
+   "document": "D-outlines",
+   "fill_text_identical": true,
+   "fill_text_spans": 6,
+   "native_stroke_text_spans_left": 1
+  },
+  {
+   "document": "T-livesync",
+   "fill_text_identical": true,
+   "fill_text_spans": 4,
+   "native_stroke_text_spans_left": 0
+  },
+  {
+   "document": "fixture-plugin",
+   "fill_text_identical": true,
+   "fill_text_spans": 36,
+   "native_stroke_text_spans_left": 0
+  },
+  {
+   "document": "A-minimal",
+   "fill_text_identical": true,
+   "fill_text_spans": 27,
+   "native_stroke_text_spans_left": 2
+  },
+  {
+   "document": "C-attribute-sweep",
+   "fill_text_identical": true,
+   "fill_text_spans": 108,
+   "native_stroke_text_spans_left": 1
+  },
+  {
+   "document": "N-transparency",
+   "fill_text_identical": true,
+   "fill_text_spans": 40,
+   "native_stroke_text_spans_left": 2
+  },
+  {
+   "document": "S-split",
+   "fill_text_identical": true,
+   "fill_text_spans": 36,
+   "native_stroke_text_spans_left": 4
+  }
+ ]
+}
