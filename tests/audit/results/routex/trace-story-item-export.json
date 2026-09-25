@@ -1,0 +1,65 @@
+[
+ {
+  "kind": "screen",
+  "flags": "0x1200",
+  "bracket": "none",
+  "distinct_ports": 1,
+  "events": {
+   "DrawShape": 4,
+   "BeginShape": 3,
+   "BeginFrameFill": 1,
+   "EndFrameFill": 1,
+   "BeginFrameHierarchy": 1,
+   "FrameBackground": 1,
+   "AfterFrameForeground": 1,
+   "EndShape": 3,
+   "EndFrameHierarchy": 1,
+   "BeginFrameStroke": 1,
+   "EndFrameStroke": 1
+  },
+  "frames_drawn": 1,
+  "frames_reentered_after_another_frame": 0,
+  "pass_sequences": [
+   [
+    "WWRR",
+    1
+   ]
+  ],
+  "fills_recorded": 0,
+  "fills_painted": 0,
+  "knockouts": {},
+  "defer_probe_glyphs": null,
+  "suppressed": []
+ },
+ {
+  "kind": "screen",
+  "flags": "0x1000",
+  "bracket": "BeginSpread",
+  "distinct_ports": 1,
+  "events": {
+   "BeginSpread": 1,
+   "BeginLayer": 3,
+   "DrawShape": 4,
+   "BeginShape": 3,
+   "BeginPage": 1,
+   "EndPage": 1,
+   "EndShape": 2,
+   "EndLayer": 2,
+   "BeforeContent": 1,
+   "BeginFrameFill": 2,
+   "EndFrameFill": 2,
+   "BeginFrameHierarchy": 2,
+   "EndFrameHierarchy": 1,
+   "BeginFrameStroke": 1,
+   "EndFrameStroke": 1
+  },
+  "frames_drawn": 0,
+  "frames_reentered_after_another_frame": 0,
+  "pass_sequences": [],
+  "fills_recorded": 0,
+  "fills_painted": 0,
+  "knockouts": {},
+  "defer_probe_glyphs": null,
+  "suppressed": []
+ }
+]

@@ -1,0 +1,66 @@
+{
+ "schema": 1,
+ "marks": [
+  "496e44657369676e5374726f6b65456e67696e65",
+  "496e44657369676e205374726f6b6520456e67696e65",
+  "0005a200",
+  "00a20500"
+ ],
+ "idml_marks": [
+  "InDesignStrokeEngine",
+  "InDesign Stroke Engine",
+  "5A200",
+  "5a200",
+  "368128"
+ ],
+ "files": [
+  {
+   "file": "saved.indd",
+   "bytes": 1241088,
+   "sha256": "0368f8aa9a1495d5f4a89071e454e78cb5f17bc04d55b8d7732c97cb2f0d3018",
+   "hits": []
+  },
+  {
+   "file": "victims.idml",
+   "bytes": 57889,
+   "sha256": "ff845d149475a0cabb1e217e5d022bed8142caf125b6b2ed66f1e03ca9534914",
+   "hits": []
+  },
+  {
+   "file": "from-idml.indd",
+   "bytes": 1290240,
+   "sha256": "523f480caf664b77ceefcc03fd72ae01df7294120a96699b10639c2dda2f0358",
+   "hits": []
+  },
+  {
+   "file": "ED1-edited.indd",
+   "bytes": 1257472,
+   "sha256": "cf92beea3075e1a64b8b4619eba796375d16e9594600479146fa3814d96361b9",
+   "hits": []
+  },
+  {
+   "file": "ED2-edited.indd",
+   "bytes": 1257472,
+   "sha256": "ad1b8c0b4fe7f89848e19bbf90dd5c272d084b4ba52d6099cb0aa2836501e2f3",
+   "hits": []
+  },
+  {
+   "file": "ED4-edited.indd",
+   "bytes": 1409024,
+   "sha256": "7b9df47f5e2ddccb439332a716308d5e299169f2e45198ee6124a15b9e6b9e23",
+   "hits": []
+  },
+  {
+   "file": "ED4.idml",
+   "bytes": 68783,
+   "sha256": "dfe4b12199a74b8b237df4bb1e4cc78e80c4b416d6215767ea434a839aced85f",
+   "hits": []
+  },
+  {
+   "file": "ED4.indd",
+   "bytes": 1474560,
+   "sha256": "7569b4389cd5fd8f4f2f7a1e802d1b8380b652301b40ab04ba661c4c6545a65e",
+   "hits": []
+  }
+ ]
+}

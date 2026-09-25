@@ -1,0 +1,2201 @@
+{
+ "schema": 1,
+ "session": "O1",
+ "label": "research build a05acd09 mode=overlap",
+ "user_presets": {
+  "U1": "user-defined preset (name kept out of the repository)",
+  "U2": "user-defined preset (name kept out of the repository)"
+ },
+ "ghostscript": "9.23",
+ "corpus_sha256": {
+  "cert-C.indd": "b1d134dd866ed82515f65c694774a698e58652f15133dcf9e6be2d8a7b1f7842",
+  "cert-C.manifest.json": "a4fbc86b7a0ae26adf655ac38b5c06c46249f0ac98d88b7546ff295ff42c37cf",
+  "cert-E.indd": "5498dcb612527e1a289af026efa5bdf3849204fba25ecfccf75898f6822e6e71",
+  "cert-E.manifest.json": "0d35ae8aca2b9972a3cbf0ab24d3957145fe3c810defaf3b1d07d6f4b8e08b3e",
+  "cert-T.indd": "28fe6428e70872a8963ad8803c4818dde67a81b061fa4e944c8255907b09fbbb",
+  "cert-T.manifest.json": "0e96ce13160fe213ae26135fdcc4f3fd70d4bdaaa997ae87699be80d3933ff54",
+  "cert-X.indd": "29237a413ebddba2d7cff7323ab22bb38444f5df9b62d436b5d85ec63c4b62ff",
+  "cert-X.manifest.json": "bfe9acb60ba4cb53639d613bb53fe2a5f704540345808c6b563a5982b18bcc8a",
+  "victims.host.json": "4c647cc87df681c8f5bb1bd415116aad8264f41c3a3330352d47ea5bab534309",
+  "victims.indd": "f3270a31c9d39801a9ff57dbc30c1eb1909cac098b42a2ef47cf08027b06d7e2",
+  "victims.manifest.json": "6357c939a0671d69a2e8bde9fad5a260f2aa8c08f4ed32ab8175845a13117ca4",
+  "victims.mask.png": "31885db1f056aa5496a524af261517fbd59e343f10891e4e79b6ef84b1572c88",
+  "victims.reference.png": "15f3d988ff0fee1f95900ceeb416da00844a596421c85fbdbbc2d913c523e378"
+ },
+ "jobs": {
+  "X.out": {
+   "error": null,
+   "prep": [],
+   "ms": 10491,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1382,
+     "bytes": 120188,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 302,
+     "bytes": 431820,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 336,
+     "bytes": 430617,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4761,
+     "bytes": 453524,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 550,
+     "bytes": 2203016,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 2066,
+     "bytes": 1070571,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1190"
+    }
+   ]
+  },
+  "X.fill": {
+   "error": null,
+   "prep": [
+    "fillOnly -> stories=28"
+   ],
+   "ms": 9686,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "hqp.pdf",
+     "kind": "pdf",
+     "ms": 1262,
+     "bytes": 87836,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x4.pdf",
+     "kind": "pdf",
+     "ms": 218,
+     "bytes": 399423,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "x1a.pdf",
+     "kind": "pdf",
+     "ms": 220,
+     "bytes": 397253,
+     "error": null,
+     "log": "route=preset"
+    },
+    {
+     "file": "png600.png",
+     "kind": "png",
+     "ms": 4340,
+     "bytes": 304891,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "eps.eps",
+     "kind": "eps",
+     "ms": 755,
+     "bytes": 254290,
+     "error": null,
+     "log": ""
+    },
+    {
+     "file": "pshigh.ps",
+     "kind": "ps",
+     "ms": 1990,
+     "bytes": 869590,
+     "error": null,
+     "log": "copies refused: The property's value is locked and cannot be changed.; textAsBlack refused: The property is not applicable in the current state.; ppd=Adobe PDF flattener=[High Resolution] level=LEVEL_3 color=COMPOSITE_CMYK paper=CUSTOM 800x1190"
+    }
+   ]
+  },
+  "X.mask": {
+   "error": null,
+   "prep": [
+    "mask -> emptied=4 hidden=0"
+   ],
+   "ms": 3462,
+   "state": "saved=true modified=true",
+   "placed": null,
+   "outputs": [
+    {
+     "file": "mask600.png",
+     "kind": "png",
+     "ms": 781,
+     "bytes": 103005,
+     "error": null,
+     "log": ""
+    }
+   ]
+  }
+ },
+ "sources": {
+  "X": {
+   "frames": [
+    {
+     "key": "XA0",
+     "name": "independent pair, both stroked: the upper frame's stroke over the lower frame's fill",
+     "bounds": [
+      20,
+      20,
+      74,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XA1",
+     "name": "independent pair: stroked upper frame over an unstroked lower frame",
+     "bounds": [
+      20,
+      215,
+      74,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XA2",
+     "name": "independent pair: unstroked upper frame over a stroked lower frame (no damage natively)",
+     "bounds": [
+      20,
+      410,
+      74,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XA3",
+     "name": "independent frames that only touch: two stories, the XB0 geometry",
+     "bounds": [
+      20,
+      605,
+      80,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XA4",
+     "name": "independent pair on two layers: the upper frame on the layer above",
+     "bounds": [
+      215,
+      20,
+      269,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XA5",
+     "name": "halo: a headline with a Paper Outside stroke set over another frame's body text",
+     "bounds": [
+      215,
+      215,
+      315,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB0",
+     "name": "threaded pair: the downstream frame, in front, strokes over the upstream frame's last line (E00)",
+     "bounds": [
+      410,
+      20,
+      470,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB1",
+     "name": "threaded pair with the upstream frame in front",
+     "bounds": [
+      410,
+      215,
+      470,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB2",
+     "name": "threaded pair whose frames overlap by 10 pt",
+     "bounds": [
+      410,
+      410,
+      460,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB3",
+     "name": "threaded pair with an unrelated opaque rectangle stacked between the frames, over the left half of the seam",
+     "bounds": [
+      410,
+      605,
+      470,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB4",
+     "name": "threaded pair whose downstream frame has a 20% red frame fill",
+     "bounds": [
+      605,
+      20,
+      665,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB5",
+     "name": "threaded pair, both frames with a 1 pt black border",
+     "bounds": [
+      995,
+      20,
+      1055,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB6",
+     "name": "one frame, two columns, no gutter: the second column's stroke over the first column's fill",
+     "bounds": [
+      995,
+      215,
+      1025,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XB7",
+     "name": "threaded pair split across layers: the downstream frame on the layer above",
+     "bounds": [
+      995,
+      410,
+      1055,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XD0",
+     "name": "threaded pair inside a group",
+     "bounds": [
+      605,
+      215,
+      665,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XD1",
+     "name": "threaded pair with the upstream frame at 50% object opacity",
+     "bounds": [
+      605,
+      410,
+      665,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XD2",
+     "name": "threaded pair with the upstream frame on a hidden layer",
+     "bounds": [
+      605,
+      605,
+      665,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XD3",
+     "name": "two-row table: the second row's stroke over the first row's fill",
+     "bounds": [
+      800,
+      20,
+      860,
+      190
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XN0",
+     "name": "stroked text over an opaque rectangle: the stroke must still cover the rectangle",
+     "bounds": [
+      800,
+      215,
+      854,
+      385
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XN1",
+     "name": "opaque rectangle over stroked text: the rectangle must still cover the stroke",
+     "bounds": [
+      800,
+      410,
+      840,
+      580
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XN2",
+     "name": "threaded pair with Center-aligned strokes (left to InDesign)",
+     "bounds": [
+      800,
+      605,
+      860,
+      775
+     ],
+     "buildError": null
+    },
+    {
+     "key": "XN3",
+     "name": "threaded pair with a nonprinting upstream frame",
+     "bounds": [
+      215,
+      605,
+      275,
+      775
+     ],
+     "buildError": null
+    }
+   ],
+   "outputs": {
+    "eps.eps": {
+     "sha256": "bfba27a244bd14c8b5b41346f4a108c916fdffd9cb5b50e215adbb3ba232581b",
+     "bytes": 2203016,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "XA0",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA2",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA3",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA4",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA5",
+        "core_px": 17218,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB1",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB2",
+        "core_px": 18120,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB3",
+        "core_px": 21056,
+        "damage_px": 4248,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB4",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB5",
+        "core_px": 21056,
+        "damage_px": 355,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB6",
+        "core_px": 19640,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB7",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD1",
+        "core_px": 21056,
+        "damage_px": 4248,
+        "core_max_diff": 156
+       },
+       {
+        "key": "XD2",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD3",
+        "core_px": 135228,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN0",
+        "core_px": 6244,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN2",
+        "core_px": 21056,
+        "damage_px": 21056,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XN3",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       }
+      ],
+      "damage_px_total": 29907
+     }
+    },
+    "hqp.pdf": {
+     "sha256": "64593efa199722be78fd5d3a6f89365aa40604b240fadadbef7f7da1ace0a844",
+     "bytes": 120188,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "XA0",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA2",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA3",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA4",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA5",
+        "core_px": 17218,
+        "damage_px": 0,
+        "core_max_diff": 10
+       },
+       {
+        "key": "XB0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB1",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB2",
+        "core_px": 18120,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB3",
+        "core_px": 21056,
+        "damage_px": 4150,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB4",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB5",
+        "core_px": 21056,
+        "damage_px": 219,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB6",
+        "core_px": 19640,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB7",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD1",
+        "core_px": 21056,
+        "damage_px": 4196,
+        "core_max_diff": 155
+       },
+       {
+        "key": "XD2",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD3",
+        "core_px": 135228,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN0",
+        "core_px": 6244,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN2",
+        "core_px": 21056,
+        "damage_px": 21056,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XN3",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       }
+      ],
+      "damage_px_total": 29621
+     },
+     "structure": {
+      "pdf_version": "1.4",
+      "pdfx": null,
+      "output_intents": 0,
+      "page_transparency_group": true,
+      "piece_info": true,
+      "fonts": {
+       "WHRVOB+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 192,
+      "ops": {
+       "BT": 72,
+       "Tj": 72,
+       "S": 63,
+       "f": 5,
+       "W": 43,
+       "Do": 1,
+       "gs": 51
+      },
+      "text_render_modes": {
+       "0": 1,
+       "2": 1
+      },
+      "images": 0,
+      "form_xobjects": 1,
+      "transparency_groups": 1,
+      "soft_or_alpha_gs": 1,
+      "frames": [
+       {
+        "key": "XA0",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XA1",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XA2",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XA3",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XA4",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XA5",
+        "glyphs": {
+         "text-fill": 74
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         16.0
+        ]
+       },
+       {
+        "key": "XB0",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB1",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB2",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB3",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB4",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB5",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 6,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         1.0,
+         24.0,
+         24.0,
+         1.0
+        ]
+       },
+       {
+        "key": "XB6",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB7",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD0",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD1",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD2",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XD3",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XN0",
+        "glyphs": {
+         "text-fill": 2
+        },
+        "path_strokes": 1,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XN1",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XN2",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         12.0,
+         12.0,
+         12.0,
+         12.0
+        ]
+       },
+       {
+        "key": "XN3",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 192
+    },
+    "png600.png": {
+     "sha256": "acc4d8aac9bb3a669cb18186a580a979d565a302f3499b887596e09af5dcf762",
+     "bytes": 453524,
+     "renderer": "InDesign PNG",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "XA0",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA2",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA3",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA4",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA5",
+        "core_px": 17218,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB1",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB2",
+        "core_px": 18120,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB3",
+        "core_px": 21056,
+        "damage_px": 4204,
+        "core_max_diff": 255
+       },
+       {
+        "key": "XB4",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB5",
+        "core_px": 21056,
+        "damage_px": 206,
+        "core_max_diff": 255
+       },
+       {
+        "key": "XB6",
+        "core_px": 19640,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB7",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD1",
+        "core_px": 21056,
+        "damage_px": 4148,
+        "core_max_diff": 156
+       },
+       {
+        "key": "XD2",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD3",
+        "core_px": 135228,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN0",
+        "core_px": 6244,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN2",
+        "core_px": 21056,
+        "damage_px": 21056,
+        "core_max_diff": 255
+       },
+       {
+        "key": "XN3",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       }
+      ],
+      "damage_px_total": 29614
+     }
+    },
+    "pshigh.ps": {
+     "sha256": "05a806bea9aca57217dacc990d7048b0dbb9096155ac320c95de3c89b77c2ccc",
+     "bytes": 1070571,
+     "renderer": "Ghostscript",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "XA0",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA2",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA3",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA4",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA5",
+        "core_px": 17218,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB1",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB2",
+        "core_px": 18120,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB3",
+        "core_px": 21056,
+        "damage_px": 4248,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB4",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB5",
+        "core_px": 21056,
+        "damage_px": 355,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB6",
+        "core_px": 19640,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB7",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD1",
+        "core_px": 21056,
+        "damage_px": 4248,
+        "core_max_diff": 156
+       },
+       {
+        "key": "XD2",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD3",
+        "core_px": 135228,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN0",
+        "core_px": 6244,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN2",
+        "core_px": 21056,
+        "damage_px": 21056,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XN3",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       }
+      ],
+      "damage_px_total": 29907
+     }
+    },
+    "x1a.pdf": {
+     "sha256": "d544d46473d5471399713d4d559a7ff9cb6888a35723a6e67c62f8dc5c8c6e3e",
+     "bytes": 430617,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "XA0",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA2",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA3",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA4",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA5",
+        "core_px": 17218,
+        "damage_px": 0,
+        "core_max_diff": 6
+       },
+       {
+        "key": "XB0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB1",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB2",
+        "core_px": 18120,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB3",
+        "core_px": 21056,
+        "damage_px": 4196,
+        "core_max_diff": 224
+       },
+       {
+        "key": "XB4",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB5",
+        "core_px": 21056,
+        "damage_px": 218,
+        "core_max_diff": 224
+       },
+       {
+        "key": "XB6",
+        "core_px": 19640,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB7",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD1",
+        "core_px": 21056,
+        "damage_px": 4196,
+        "core_max_diff": 156
+       },
+       {
+        "key": "XD2",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD3",
+        "core_px": 135228,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN0",
+        "core_px": 6244,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN2",
+        "core_px": 21056,
+        "damage_px": 21056,
+        "core_max_diff": 224
+       },
+       {
+        "key": "XN3",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       }
+      ],
+      "damage_px_total": 29666
+     },
+     "structure": {
+      "pdf_version": "1.3",
+      "pdfx": "PDF/X-1:2001",
+      "output_intents": 1,
+      "page_transparency_group": false,
+      "piece_info": true,
+      "fonts": {
+       "UHCAHF+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 208,
+      "ops": {
+       "BT": 48,
+       "Tj": 80,
+       "S": 61,
+       "f": 12,
+       "W": 54,
+       "gs": 53
+      },
+      "text_render_modes": {
+       "0": 1,
+       "1": 4,
+       "7": 1
+      },
+      "images": 0,
+      "form_xobjects": 0,
+      "transparency_groups": 0,
+      "soft_or_alpha_gs": 0,
+      "frames": [
+       {
+        "key": "XA0",
+        "glyphs": {
+         "text-fill": 6
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XA1",
+        "glyphs": {
+         "text-fill": 2
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XA2",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XA3",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XA4",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XA5",
+        "glyphs": {
+         "text-fill": 74
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         16.0
+        ]
+       },
+       {
+        "key": "XB0",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB1",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB2",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB3",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB4",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB5",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 6,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         1.0,
+         24.0,
+         24.0,
+         1.0
+        ]
+       },
+       {
+        "key": "XB6",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB7",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD0",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD1",
+        "glyphs": {
+         "text-fill": 14
+        },
+        "path_strokes": 2,
+        "path_fills": 7,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD2",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XD3",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XN0",
+        "glyphs": {
+         "text-fill": 2
+        },
+        "path_strokes": 1,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XN1",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XN2",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         12.0,
+         12.0,
+         12.0,
+         12.0
+        ]
+       },
+       {
+        "key": "XN3",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 198
+    },
+    "x4.pdf": {
+     "sha256": "1fa59da4ea92b60c05fe503a36a5c7f8c7b05742b7338e77064f5c17f618bf91",
+     "bytes": 431820,
+     "renderer": "MuPDF 1.28.2",
+     "fill_core": {
+      "ppi": 600,
+      "erode_px": 6,
+      "trimmed_px": 0,
+      "frames": [
+       {
+        "key": "XA0",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA2",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA3",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA4",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XA5",
+        "core_px": 17218,
+        "damage_px": 0,
+        "core_max_diff": 10
+       },
+       {
+        "key": "XB0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB1",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB2",
+        "core_px": 18120,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB3",
+        "core_px": 21056,
+        "damage_px": 4150,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB4",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB5",
+        "core_px": 21056,
+        "damage_px": 219,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XB6",
+        "core_px": 19640,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XB7",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD0",
+        "core_px": 21056,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD1",
+        "core_px": 21056,
+        "damage_px": 4196,
+        "core_max_diff": 155
+       },
+       {
+        "key": "XD2",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XD3",
+        "core_px": 135228,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN0",
+        "core_px": 6244,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN1",
+        "core_px": 9820,
+        "damage_px": 0,
+        "core_max_diff": 0
+       },
+       {
+        "key": "XN2",
+        "core_px": 21056,
+        "damage_px": 21056,
+        "core_max_diff": 223
+       },
+       {
+        "key": "XN3",
+        "core_px": 11600,
+        "damage_px": 0,
+        "core_max_diff": 0
+       }
+      ],
+      "damage_px_total": 29621
+     },
+     "structure": {
+      "pdf_version": "1.6",
+      "pdfx": "PDF/X-4",
+      "output_intents": 1,
+      "page_transparency_group": true,
+      "piece_info": true,
+      "fonts": {
+       "BFJZBR+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       },
+       "HYKOHF+MinionPro-Regular": {
+        "subtype": "/Type1",
+        "embedded": true,
+        "subset": true
+       }
+      },
+      "text_chars": 192,
+      "ops": {
+       "BT": 36,
+       "Tj": 72,
+       "S": 63,
+       "f": 5,
+       "W": 43,
+       "Do": 1,
+       "gs": 51
+      },
+      "text_render_modes": {
+       "0": 1,
+       "2": 1
+      },
+      "images": 0,
+      "form_xobjects": 1,
+      "transparency_groups": 1,
+      "soft_or_alpha_gs": 1,
+      "frames": [
+       {
+        "key": "XA0",
+        "glyphs": {
+         "text-fill": 6
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XA1",
+        "glyphs": {
+         "text-fill": 2
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XA2",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XA3",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XA4",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XA5",
+        "glyphs": {
+         "text-fill": 74
+        },
+        "path_strokes": 1,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         16.0
+        ]
+       },
+       {
+        "key": "XB0",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB1",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB2",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB3",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB4",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB5",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 6,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         1.0,
+         24.0,
+         24.0,
+         1.0
+        ]
+       },
+       {
+        "key": "XB6",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XB7",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD0",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD1",
+        "glyphs": {
+         "text-fill": 8
+        },
+        "path_strokes": 4,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": [
+         24.0,
+         24.0
+        ]
+       },
+       {
+        "key": "XD2",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XD3",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": [
+         24.0
+        ]
+       },
+       {
+        "key": "XN0",
+        "glyphs": {
+         "text-fill": 2
+        },
+        "path_strokes": 1,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 1,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XN1",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 1,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       },
+       {
+        "key": "XN2",
+        "glyphs": {
+         "text-fill": 8,
+         "text-stroke": 8
+        },
+        "path_strokes": 0,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 0,
+        "stroke_after_fill_text": [
+         12.0
+        ]
+       },
+       {
+        "key": "XN3",
+        "glyphs": {
+         "text-fill": 4
+        },
+        "path_strokes": 2,
+        "path_fills": 0,
+        "strokes_before_first_fill_text": 2,
+        "stroke_after_fill_text": []
+       }
+      ],
+      "unknown_frame_events": 0
+     },
+     "twin_text_chars": 192
+    }
+   }
+  }
+ }
+}

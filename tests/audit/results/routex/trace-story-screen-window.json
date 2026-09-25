@@ -1,0 +1,207 @@
+[
+ {
+  "kind": "screen",
+  "flags": "0x800",
+  "bracket": "BeginSpread",
+  "distinct_ports": 1,
+  "events": {
+   "BeginSpread": 1,
+   "BeginLayer": 9,
+   "DrawShape": 164,
+   "BeginShape": 124,
+   "BeginPage": 1,
+   "EndPage": 1,
+   "EndShape": 124,
+   "EndLayer": 9,
+   "BeforeContent": 1,
+   "BeginFrameFill": 43,
+   "EndFrameFill": 43,
+   "BeginFrameHierarchy": 43,
+   "EndFrameHierarchy": 43,
+   "BeginFrameStroke": 43,
+   "EndFrameStroke": 43,
+   "FrameBackground": 40,
+   "AfterFrameForeground": 40,
+   "BeginGroup": 1,
+   "EndGroup": 1,
+   "AfterContent": 1,
+   "EndSpread": 1
+  },
+  "frames_drawn": 40,
+  "frames_reentered_after_another_frame": 0,
+  "pass_sequences": [
+   [
+    "WR",
+    10
+   ],
+   [
+    "WWRR",
+    28
+   ],
+   [
+    "WWRWRR",
+    1
+   ],
+   [
+    "WWWWWWRRRRRR",
+    1
+   ]
+  ],
+  "fills_recorded": 48,
+  "fills_painted": 48,
+  "knockouts": {
+   "XB0b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB1a": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB2b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB3b": {
+    "strokes": 2,
+    "withheld_glyphs": 0,
+    "covered_glyphs": 8
+   },
+   "XB4b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB5b": {
+    "strokes": 2,
+    "withheld_glyphs": 4,
+    "covered_glyphs": 4
+   },
+   "821": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XD0b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XN3b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB7b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   }
+  },
+  "defer_probe_glyphs": null,
+  "suppressed": []
+ },
+ {
+  "kind": "screen",
+  "flags": "0x1000",
+  "bracket": "BeginSpread",
+  "distinct_ports": 1,
+  "events": {
+   "BeginSpread": 1,
+   "BeginLayer": 5,
+   "DrawShape": 161,
+   "BeginShape": 121,
+   "BeginPage": 1,
+   "EndPage": 1,
+   "EndShape": 121,
+   "EndLayer": 5,
+   "BeforeContent": 1,
+   "BeginFrameFill": 42,
+   "EndFrameFill": 42,
+   "BeginFrameHierarchy": 42,
+   "EndFrameHierarchy": 42,
+   "BeginFrameStroke": 42,
+   "EndFrameStroke": 42,
+   "FrameBackground": 39,
+   "AfterFrameForeground": 39,
+   "BeginGroup": 1,
+   "EndGroup": 1,
+   "AfterContent": 1,
+   "EndSpread": 1
+  },
+  "frames_drawn": 39,
+  "frames_reentered_after_another_frame": 0,
+  "pass_sequences": [
+   [
+    "WR",
+    10
+   ],
+   [
+    "WWRR",
+    27
+   ],
+   [
+    "WWRWRR",
+    1
+   ],
+   [
+    "WWWWWWRRRRRR",
+    1
+   ]
+  ],
+  "fills_recorded": 46,
+  "fills_painted": 46,
+  "knockouts": {
+   "XB0b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB1a": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB2b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB3b": {
+    "strokes": 2,
+    "withheld_glyphs": 0,
+    "covered_glyphs": 8
+   },
+   "XB4b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB5b": {
+    "strokes": 2,
+    "withheld_glyphs": 4,
+    "covered_glyphs": 4
+   },
+   "821": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XD0b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   },
+   "XB7b": {
+    "strokes": 2,
+    "withheld_glyphs": 8,
+    "covered_glyphs": 0
+   }
+  },
+  "defer_probe_glyphs": null,
+  "suppressed": []
+ }
+]

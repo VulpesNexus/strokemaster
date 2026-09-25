@@ -1,0 +1,110 @@
+[
+ {
+  "kind": "screen",
+  "flags": "0x1000",
+  "bracket": "BeginSpread",
+  "distinct_ports": 1,
+  "events": {
+   "BeginSpread": 1,
+   "BeginLayer": 5,
+   "DrawShape": 139,
+   "BeginShape": 105,
+   "BeginPage": 1,
+   "EndPage": 1,
+   "EndShape": 105,
+   "EndLayer": 5,
+   "BeforeContent": 1,
+   "BeginFrameFill": 37,
+   "EndFrameFill": 37,
+   "BeginFrameHierarchy": 37,
+   "EndFrameHierarchy": 37,
+   "BeginFrameStroke": 37,
+   "EndFrameStroke": 37,
+   "FrameBackground": 33,
+   "AfterFrameForeground": 33,
+   "BeginGroup": 1,
+   "EndGroup": 1,
+   "AfterContent": 1,
+   "EndSpread": 1
+  },
+  "frames_drawn": 33,
+  "frames_reentered_after_another_frame": 0,
+  "pass_sequences": [
+   [
+    "WR",
+    10
+   ],
+   [
+    "WWRR",
+    21
+   ],
+   [
+    "WWRWRR",
+    1
+   ],
+   [
+    "WWWWWWRRRRRR",
+    1
+   ]
+  ],
+  "fills_recorded": 0,
+  "fills_painted": 0,
+  "knockouts": {},
+  "defer_probe_glyphs": null,
+  "suppressed": []
+ },
+ {
+  "kind": "print",
+  "flags": "0x200",
+  "bracket": "BeginSpread",
+  "distinct_ports": 1,
+  "events": {
+   "BeginSpread": 1,
+   "BeginLayer": 9,
+   "DrawShape": 139,
+   "BeginShape": 105,
+   "BeginPage": 1,
+   "EndPage": 1,
+   "EndShape": 105,
+   "EndLayer": 9,
+   "BeforeContent": 1,
+   "BeginFrameFill": 37,
+   "EndFrameFill": 37,
+   "BeginFrameHierarchy": 37,
+   "EndFrameHierarchy": 37,
+   "BeginFrameStroke": 37,
+   "EndFrameStroke": 37,
+   "FrameBackground": 33,
+   "AfterFrameForeground": 33,
+   "BeginGroup": 1,
+   "EndGroup": 1,
+   "AfterContent": 1,
+   "EndSpread": 1
+  },
+  "frames_drawn": 33,
+  "frames_reentered_after_another_frame": 0,
+  "pass_sequences": [
+   [
+    "WR",
+    10
+   ],
+   [
+    "WWRR",
+    21
+   ],
+   [
+    "WWRWRR",
+    1
+   ],
+   [
+    "WWWWWWRRRRRR",
+    1
+   ]
+  ],
+  "fills_recorded": 0,
+  "fills_painted": 0,
+  "knockouts": {},
+  "defer_probe_glyphs": null,
+  "suppressed": []
+ }
+]
