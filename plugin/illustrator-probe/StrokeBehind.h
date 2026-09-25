@@ -10,13 +10,19 @@
 //
 // Validation is read-only and complete before the first mutation. Anything
 // whose meaning depends on paint order in ways this transform does not model
-// is refused: transparency, blending, isolation, knockout, clipping, advanced
-// fills, and art types other than groups, paths, and compound paths. A
-// refusal leaves the processing art untouched. Mutation failures roll back.
+// is refused: a root that is not a group; object transparency, blending,
+// isolation, knockout, opacity masks, and clipping; any art style that is not
+// simple or carries effects, per-paint blending, or style transparency;
+// advanced fills; and art types other than groups, paths, and compound paths.
+// Because only simple styles are admitted, a leaf's style is its AIPathStyle,
+// so restoring that restores the leaf. A refusal leaves the processing art
+// untouched. Mutation failures roll back.
 #pragma once
 #include "AIArt.h"
 #include "AIPathStyle.h"
 #include "AIMask.h"
+#include "AIArtStyle.h"
+#include "AIArtStyleParser.h"
 #include <vector>
 
 namespace stroke_behind {
@@ -31,12 +37,47 @@ class Transform {
     const AIArtSuite& art;
     const AIPathStyleSuite& paint;
     const AIBlendStyleSuite& blend;
+    const AIMaskSuite& mask;
+    const AIArtStyleSuite& styles;
+    const AIArtStyleParserSuite& parser;
     Stats& stats;
     struct Leaf { AIArtHandle handle; AIPathStyle style; };
     std::vector<Leaf> leaves; // painting order, bottom first
     static constexpr std::size_t maxLeaves = 20000;
 
     ASErr Refuse(const char* gate) { stats.gate = gate; return kBadParameterErr; }
+
+    // No art style, or a simple one with no effects, default paint blends, and no
+    // style-level transparency.
+    ASErr PlainStyle(AIArtHandle node) {
+        AIArtStyleHandle style = nullptr;
+        auto e = styles.GetArtStyle(node, &style);
+        if (e) return e;
+        if (!style) return kNoErr;
+        ai::int16 type = 0;
+        e = styles.GetArtStyleType(style, &type);
+        if (e) return e;
+        if (type != kAIArtStyleSimple) return Refuse("input.complex-style");
+        AIStyleParser p = nullptr;
+        e = parser.NewParser(&p);
+        if (e) return e;
+        if (!p) return kOutOfMemoryErr;
+        struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{parser, p};
+        e = parser.ParseStyle(p, style);
+        if (e) return e;
+        if (!parser.IsStyleParseable(p) || parser.ContainsTransparency(p) ||
+            parser.CountPreEffects(p) != 0 || parser.CountPostEffects(p) != 0)
+            return Refuse("input.style-effects-or-transparency");
+        const auto fields = parser.CountPaintFields(p);
+        for (ai::int32 i = 0; i < fields; ++i) {
+            AIParserPaintField field = nullptr;
+            e = parser.GetNthPaintField(p, i, &field);
+            if (e) return e;
+            if (!field || parser.CountEffectsOfPaintField(field) != 0 || !parser.IsDefaultPaintBlend(field))
+                return Refuse("input.paint-effect-or-blend");
+        }
+        return kNoErr;
+    }
 
     ASErr Collect(AIArtHandle node, int depth) {
         if (depth > 16) return Refuse("input.too-deep");
@@ -53,6 +94,14 @@ class Transform {
             return Refuse("input.transparency");
         const auto knockout = blend.GetKnockout(node);
         if (knockout != kAIKnockoutOff && knockout != kAIKnockoutInherit) return Refuse("input.knockout");
+        AIMaskRef opacityMask = nullptr;
+        e = mask.GetMask(node, &opacityMask);
+        if (e) return e;
+        if (opacityMask) { mask.Release(opacityMask); return Refuse("input.opacity-mask"); }
+        if (type == kPathArt || type == kCompoundPathArt || type == kGroupArt) {
+            e = PlainStyle(node);
+            if (e) return e;
+        }
         if (type == kPathArt || type == kCompoundPathArt) {
             Leaf leaf{node, {}};
             AIBoolean advanced = false;
@@ -95,14 +144,22 @@ class Transform {
     }
 
 public:
-    Transform(const AIArtSuite& a, const AIPathStyleSuite& p, const AIBlendStyleSuite& b, Stats& s)
-        : art(a), paint(p), blend(b), stats(s) {}
+    Transform(const AIArtSuite& a, const AIPathStyleSuite& p, const AIBlendStyleSuite& b, const AIMaskSuite& m,
+              const AIArtStyleSuite& st, const AIArtStyleParserSuite& ps, Stats& s)
+        : art(a), paint(p), blend(b), mask(m), styles(st), parser(ps), stats(s) {}
 
     // Returns kNoErr after publishing, or an error with processing art restored.
     ASErr Apply(AIArtHandle root) {
         stats.gate = "validate";
         leaves.clear();
-        auto e = Collect(root, 0);
+        stats.leaves = stats.stroked = 0;
+        // The strokes group is created inside the root, so the root must be a group:
+        // a path or compound root (possible with path/compound input) is refused.
+        short rootType = kUnknownArt;
+        auto e = art.GetArtType(root, &rootType);
+        if (e) return e;
+        if (rootType != kGroupArt) return Refuse("input.root-not-group");
+        e = Collect(root, 0);
         stats.leaves = static_cast<int>(leaves.size());
         stats.stroked = 0;
         if (e) return e;

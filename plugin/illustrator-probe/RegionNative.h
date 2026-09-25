@@ -177,13 +177,14 @@ struct Native {
     }
     ASErr Process(AILiveEffectGoMessage& message) {
         metrics.gate="source.validate";metrics.outputComponents=metrics.outputHoles=0;metrics.maxVertexDeviation=-1;
+        metrics.readbackAnchorDelta=metrics.readbackHandleDelta=-1; // not measured until Stage writes rings
         short type=0;auto e=art.GetArtType(message.art,&type);if(e)return e;metrics.inputType=type;
         e=Census(message.art);if(e)return e;
         Source source;e=ReadSource(message,source);if(e)return e;
         CoreKernel kernel;FixtureAdmission admission;
         RegionSdkOutput output(art,path,paint,message.art,message.srcArt,metrics.groupContentsPosition);
         const auto result=Run(source,kernel,admission,output);
-        metrics.readbackAnchorDelta=output.maxAnchorDelta;metrics.readbackHandleDelta=output.maxHandleDelta;
+        if(output.measuredRings){metrics.readbackAnchorDelta=output.maxAnchorDelta;metrics.readbackHandleDelta=output.maxHandleDelta;}
         metrics.maxVertexDeviation=admission.deviation;
         if(!result.committed){
             if(result.error==Error::rollbackFailed)return Reject("output.rollback-failed");

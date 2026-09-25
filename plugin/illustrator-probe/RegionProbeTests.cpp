@@ -1,4 +1,4 @@
-// region-prep-10 target tests. No Illustrator or real SDK implementation.
+// region-prep-11 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.
@@ -9,7 +9,7 @@
 namespace {
 SPBasicSuite basic{};AILiveEffectSuite live{};AIArtSuite art{};AIPathSuite path{};
 AIPathStyleSuite paint{};AIArtStyleSuite styles{};AIArtStyleParserSuite parser{};
-AIDictionarySuite dict{};AIDocumentSuite doc{};AIBlendStyleSuite blend{};
+AIDictionarySuite dict{};AIDocumentSuite doc{};AIBlendStyleSuite blend{};AIMaskSuite maskSuite{};
 int checks=0,acquired=0,released=0,registered=0,allocated=0,freed=0,failAt=0,calls=0;
 void Check(bool x,const char* s){++checks;if(!x){std::cerr<<"FAIL: "<<s<<'\n';std::exit(1);}}
 ASErr Step(){return ++calls==failAt?-1234:kNoErr;}
@@ -26,6 +26,7 @@ void Setup(){
         else if(std::strcmp(name,kAIDictionarySuite)==0)*out=&dict;
         else if(std::strcmp(name,kAIDocumentSuite)==0)*out=&doc;
         else if(std::strcmp(name,kAIBlendStyleSuite)==0)*out=&blend;
+        else if(std::strcmp(name,kAIMaskSuite)==0)*out=&maskSuite;
         else {--acquired;return -1235;} // a refused suite is never acquired
         return kNoErr;
     };

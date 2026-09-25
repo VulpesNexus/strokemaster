@@ -95,6 +95,7 @@ class RegionSdkOutput final : public OwnedOutput {
             if(!(anchor<=maxAnchorDelta)) maxAnchorDelta=anchor;
             if(!(handle<=maxHandleDelta)) maxHandleDelta=handle;
         }
+        measuredRings=true;
         if(!(maxAnchorDelta<=readbackTolerance)||!(maxHandleDelta<=readbackTolerance))
             return Reject("verify.geometry-mismatch");
         return true;
@@ -104,6 +105,7 @@ public:
     const char* gate="not-started";
     // Largest readback deviations over every written vertex, in points.
     double maxAnchorDelta=0,maxHandleDelta=0;
+    bool measuredRings=false; // set once any ring was written and read back
     static constexpr double readbackTolerance=1e-4;
     // DisposeArt has no documented partial-failure atomicity. If commit fails,
     // report that processing-input preservation is unverified, never successful.

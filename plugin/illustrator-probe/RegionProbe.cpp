@@ -1,4 +1,4 @@
-// PROPOSED region-prep-10: real-core closed-region replacement for the marked
+// PROPOSED region-prep-11: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -18,7 +18,7 @@
 #include <cstring>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-10";
+constexpr char build[] = "region-prep-11";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -211,10 +211,16 @@ ASErr StrokeBehindGo(AILiveEffectGoMessage& go, State& state) {
     Suite<AIArtSuite> art(go.d.basic, kAIArtSuite, kAIArtVersion);
     Suite<AIPathStyleSuite> paint(go.d.basic, kAIPathStyleSuite, kAIPathStyleVersion);
     Suite<AIBlendStyleSuite> blend(go.d.basic, kAIBlendStyleSuite, kAIBlendStyleVersion);
-    ASErr err = art.error ? art.error : paint.error ? paint.error : blend.error;
+    Suite<AIMaskSuite> mask(go.d.basic, kAIMaskSuite, kAIMaskVersion);
+    Suite<AIArtStyleSuite> styles(go.d.basic, kAIArtStyleSuite, kAIArtStyleVersion);
+    Suite<AIArtStyleParserSuite> parser(go.d.basic, kAIArtStyleParserSuite, kAIArtStyleParserVersion);
+    ASErr err = kNoErr;
+    for (ASErr e : {art.error, paint.error, blend.error, mask.error, styles.error, parser.error}) if (!err && e) err = e;
+    if (err) stats.gate = "suites";
     if (!err && !go.art) { stats.gate = "input.null"; err = kBadParameterErr; }
     if (!err) {
-        stroke_behind::Transform transform(*art.operator&(), *paint.operator&(), *blend.operator&(), stats);
+        stroke_behind::Transform transform(*art.operator&(), *paint.operator&(), *blend.operator&(), *mask.operator&(),
+                                           *styles.operator&(), *parser.operator&(), stats);
         err = transform.Apply(go.art);
     }
     Trace("stroke-behind.result", err, stats.gate);
@@ -311,7 +317,8 @@ ASErr CensusGo(AILiveEffectGoMessage& go, State& state) {
 // bottom of every text frame's art style, below the frame's contents, so the frame's
 // characters paint above it. This writes an ordinary native Appearance, the manual
 // "stroke below Characters" technique; no live effect is involved. Diagnostic only: it
-// acts on every text frame of the current document, which the probe creates itself.
+// acts on every text frame of the current document, which the probe creates itself; a
+// failure part-way leaves earlier frames styled, and each call adds another stroke.
 ASErr AppearanceStrokeBelow(SPMessageData& message, State& state) {
     auto& stats = state.appearance;
     stats = AppearanceStats{};
@@ -347,6 +354,9 @@ ASErr AppearanceStrokeBelow(SPMessageData& message, State& state) {
         }
         stats.fieldsBefore = parser->CountPaintFields(p);
         stats.contentsBefore = parser->GetGroupContentsPosition(p);
+        // Refuse before any change: a style that already carries effects would be
+        // rebuilt without its meaning being modeled here.
+        if (parser->ContainsEffects(p)) { stats.gate = "has-effects"; return kBadParameterErr; }
         AIPathStyle base{};
         base.Init();
         AIStrokeStyle stroke = base.stroke;
@@ -377,7 +387,12 @@ ASErr AppearanceStrokeBelow(SPMessageData& message, State& state) {
         if (err) { stats.gate = "readback-parse"; return err; }
         stats.fieldsAfter = parser->CountPaintFields(q);
         stats.contentsAfter = parser->GetGroupContentsPosition(q);
-        if (stats.fieldsAfter != stats.fieldsBefore + 1 || parser->ContainsEffects(q)) { stats.gate = "readback-mismatch"; return kBadParameterErr; }
+        // The inserted stroke is the last paint field; it must sit at or below the
+        // contents position (positions run top to bottom), or it would paint over them.
+        if (stats.fieldsAfter != stats.fieldsBefore + 1 || parser->ContainsEffects(q) ||
+            stats.contentsAfter < 0 || stats.contentsAfter > stats.fieldsAfter - 1) {
+            stats.gate = "readback-mismatch"; return kBadParameterErr;
+        }
         ++stats.styled;
     }
     stats.gate = "styled";
