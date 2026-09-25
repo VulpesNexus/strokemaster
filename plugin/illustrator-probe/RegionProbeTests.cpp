@@ -1,8 +1,9 @@
-// region-prep-7 target tests. No Illustrator or real SDK implementation.
+// region-prep-8 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.
 #include "RegionProbe.cpp"
+#include <cstdint>
 #include <cstdlib>
 #include <iostream>
 namespace {
@@ -36,20 +37,29 @@ void Setup(){
     basic.FreeBlock=[](void* p)->SPErr{++freed;std::free(p);return kNoErr;};
     live.CountLiveEffects=[](ai::int32* n)->AIErr{auto e=Step();if(!e)*n=registered;return e;};
     live.GetNthLiveEffect=[](ai::int32 n,AILiveEffectHandle* h)->AIErr{
-        auto e=Step();Check(n==0,"bounded registered index");if(!e)*h=reinterpret_cast<AILiveEffectHandle>(1);return e;
+        auto e=Step();Check(n>=0&&n<registered,"bounded registered index");
+        if(!e)*h=reinterpret_cast<AILiveEffectHandle>(static_cast<std::intptr_t>(n+1));return e;
     };
-    live.GetLiveEffectName=[](AILiveEffectHandle,const char** name)->AIErr{
-        auto e=Step();if(!e)*name=strokemaster::topology_probe::effectIdentity;return e;
+    live.GetLiveEffectName=[](AILiveEffectHandle h,const char** name)->AIErr{
+        auto e=Step();
+        if(!e)*name=h==reinterpret_cast<AILiveEffectHandle>(1)?strokemaster::topology_probe::effectIdentity
+                                                              :region_probe::censusIdentity;
+        return e;
     };
     live.GetStyleFilterFlags=[](AILiveEffectHandle,ai::int32* flags)->AIErr{
         auto e=Step();if(!e)*flags=strokemaster::topology_probe::regionFilterType;return e;
     };
     live.AddLiveEffect=[](AILiveEffectData* d,AILiveEffectHandle* h)->AIErr{
         auto e=Step();if(e)return e;
-        Check(d->styleFilterFlags==strokemaster::topology_probe::regionFilterType&&
-              d->prefersAsInput==kGroupInputArt,"whole-object post-effect registration");
-        Check(std::strcmp(d->name,strokemaster::topology_probe::effectIdentity)==0,"distinct region effect identity");
-        ++registered;*h=reinterpret_cast<AILiveEffectHandle>(1);return kNoErr;
+        Check(d->styleFilterFlags==strokemaster::topology_probe::regionFilterType,"post-effect registration");
+        if(registered==0){
+            Check(std::strcmp(d->name,strokemaster::topology_probe::effectIdentity)==0&&
+                  d->prefersAsInput==kGroupInputArt,"region effect registered first, group input only");
+        }else{
+            Check(std::strcmp(d->name,region_probe::censusIdentity)==0&&d->prefersAsInput==region_probe::censusInput&&
+                  !(d->prefersAsInput&kTextFrameInputArt),"census effect second, path/compound/group input, no text");
+        }
+        ++registered;*h=reinterpret_cast<AILiveEffectHandle>(static_cast<std::intptr_t>(registered));return kNoErr;
     };
     live.GetLiveEffectHandleByName=[](const char* name,AILiveEffectHandle* h)->AIErr{
         auto e=Step();Check(std::strcmp(name,strokemaster::topology_probe::effectIdentity)==0,"status queries exact separate effect");
@@ -82,9 +92,10 @@ int main(){
     }
     Setup();{
         auto m=Startup();
-        Check(registered==1&&m.globals!=nullptr,"effect registered and globals allocated");
+        Check(registered==2&&m.globals!=nullptr,"both effects registered and globals allocated");
         auto* state=static_cast<region_probe::State*>(m.globals);
-        Check(state->effect==reinterpret_cast<AILiveEffectHandle>(1),"persisted effect handle");
+        Check(state->effect==reinterpret_cast<AILiveEffectHandle>(1)&&
+              state->census==reinterpret_cast<AILiveEffectHandle>(2),"persisted effect handles");
         char payload[1024]{};
         Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr,"status payload");
         Check(std::strstr(payload,"\"plugin\":\"StrokeMasterRegionProbe\"")&&
@@ -127,6 +138,17 @@ int main(){
               std::strstr(payload,"\"wrapperContainsPaint\":-1")&&std::strstr(payload,"\"wrapperBase\":0")&&
               std::strstr(payload,"\"groupContentsPosition\":-1")&&
               std::strstr(payload,"\"processingCensus\":\"0\""),"status reports pass-throughs, unread wrapper census, and the last processing census");
+        // The census effect never errors and never mutates; it only records.
+        go.effect=state->census;go.art=nullptr;
+        Check(PluginMain(goCaller,selector,&go)==kNoErr,"census Go with no art passes through");
+        go.art=reinterpret_cast<AIArtHandle>(1);
+        Check(PluginMain(goCaller,selector,&go)==kNoErr,"census Go records and passes through");
+        Check(state->inputCensus.calls==2&&state->inputCensus.nodes==1&&state->inputCensus.other==1&&
+              std::strcmp(state->inputCensus.tree,"0")==0,"census walked the single mocked node");
+        Check(state->metrics.goCalls==3&&state->metrics.mutations==0,"census calls are not region calls");
+        Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr&&
+              std::strstr(payload,"\"census\":{\"registered\":true,\"calls\":2,\"nodes\":1"),
+              "status reports the census");
         char stop2[]=kSPInterfaceShutdownSelector,iface[]=kSPInterfaceCaller;
         Check(PluginMain(iface,stop2,&m)==kNoErr&&m.globals==nullptr,"shutdown frees globals");
         Check(allocated==1&&freed==1,"exactly one owned heap block");

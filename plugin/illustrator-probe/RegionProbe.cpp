@@ -1,4 +1,4 @@
-// PROPOSED region-prep-7: real-core closed-region replacement for the marked
+// PROPOSED region-prep-8: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -15,7 +15,7 @@
 #include <cstring>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-7";
+constexpr char build[] = "region-prep-8";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -80,8 +80,25 @@ public:
     const T* operator&() const { return value_; }
 };
 
+// Second, census-only effect. It declares path and compound input but not
+// text, as Adobe's Twirl sample does, so the host decides what a live text
+// source becomes before Go. Go records the processing tree and passes it
+// through unchanged; it never edits art.
+constexpr char censusIdentity[] = "org.strokemaster.proposed.input-census.v1";
+constexpr ai::int32 censusInput = kGroupInputArt | kPathInputArt | kCompoundPathInputArt;
+
+struct CensusStats {
+    unsigned long long calls = 0;
+    int nodes = 0, groups = 0, paths = 0, compounds = 0, textFrames = 0, other = 0;
+    int fillOnly = 0, strokeOnly = 0, fillAndStroke = 0, unpainted = 0;
+    bool truncated = false;
+    char tree[512]{};
+};
+
 struct State {
     AILiveEffectHandle effect = nullptr;
+    AILiveEffectHandle census = nullptr;
+    CensusStats inputCensus{};
     unsigned long long fixtures = 0;
     Metrics metrics{};
     unsigned activeDepth = 0;
@@ -115,46 +132,135 @@ template<class Op> ASErr WithNative(SPMessageData& message, State& state, const 
     return operation(native);
 }
 
-ASErr Register(SPMessageData& message, State& state) {
-    Suite<AILiveEffectSuite> live(message.basic, kAILiveEffectSuite, kAILiveEffectVersion);
-    if (live.error) return live.error;
+ASErr RegisterOne(SPMessageData& message, const AILiveEffectSuite& live, const char* identity, char* title,
+                  ai::int32 input, AILiveEffectHandle& out) {
     ai::int32 count = 0;
-    auto err = live->CountLiveEffects(&count);
+    auto err = live.CountLiveEffects(&count);
     if (err) return err;
     if (count < 0 || count > 8192) return kBadParameterErr;
     // Enumeration differentiates absent identity from a failed lookup operation.
     for (ai::int32 i = 0; i < count; ++i) {
         AILiveEffectHandle handle = nullptr;
         const char* name = nullptr;
-        err = live->GetNthLiveEffect(i, &handle);
+        err = live.GetNthLiveEffect(i, &handle);
         if (err) return err;
         if (!handle) return kBadParameterErr;
-        err = live->GetLiveEffectName(handle, &name);
+        err = live.GetLiveEffectName(handle, &name);
         if (err) return err;
-        if (name && std::strcmp(name, effectIdentity) == 0) {
+        if (name && std::strcmp(name, identity) == 0) {
             ai::int32 flags = 0;
-            err = live->GetStyleFilterFlags(handle, &flags);
+            err = live.GetStyleFilterFlags(handle, &flags);
             if (err) return err;
             if (flags != regionFilterType) return kBadParameterErr;
-            state.effect = handle;
+            out = handle;
             return kNoErr;
         }
     }
     AILiveEffectData data{};
-    char title[] = "StrokeMaster PROPOSED closed region";
     data.self = message.self;
-    data.name = effectIdentity;
+    data.name = identity;
     data.title = title;
     data.majorVersion = 1;
     data.minorVersion = 0;
-    data.prefersAsInput = kGroupInputArt;
+    data.prefersAsInput = input;
     data.styleFilterFlags = regionFilterType;
     AILiveEffectHandle handle = nullptr;
-    err = live->AddLiveEffect(&data, &handle);
+    err = live.AddLiveEffect(&data, &handle);
     if (err) return err;
     if (!handle) return kBadParameterErr;
-    state.effect = handle;
-    Trace("register.effect");
+    out = handle;
+    Trace("register.effect", kNoErr, identity);
+    return kNoErr;
+}
+
+ASErr Register(SPMessageData& message, State& state) {
+    Suite<AILiveEffectSuite> live(message.basic, kAILiveEffectSuite, kAILiveEffectVersion);
+    if (live.error) return live.error;
+    char title[] = "StrokeMaster PROPOSED closed region";
+    auto err = RegisterOne(message, *live.operator&(), effectIdentity, title, kGroupInputArt, state.effect);
+    if (err) return err;
+    char censusTitle[] = "StrokeMaster PROPOSED input census";
+    return RegisterOne(message, *live.operator&(), censusIdentity, censusTitle, censusInput, state.census);
+}
+
+// Walks the processing art handed to the census effect. Grammar as in
+// RegionNative's census, but with aggregate counts that are never truncated
+// (within 4,096 nodes and depth 8) and a tree string that may be.
+struct CensusWalker {
+    const AIArtSuite& art;
+    const AIPathStyleSuite& paint;
+    CensusStats& stats;
+    void Append(const char* text) {
+        const std::size_t used = std::strlen(stats.tree);
+        const int n = std::snprintf(stats.tree + used, sizeof(stats.tree) - used, "%s", text);
+        if (n < 0 || static_cast<std::size_t>(n) >= sizeof(stats.tree) - used) stats.truncated = true;
+    }
+    ASErr Node(AIArtHandle node, int depth) {
+        if (++stats.nodes > 4096 || depth > 8) { stats.truncated = true; return kNoErr; }
+        short type = 0;
+        auto e = art.GetArtType(node, &type);
+        if (e) return e;
+        char text[24]{};
+        std::snprintf(text, sizeof(text), "%d", static_cast<int>(type));
+        Append(text);
+        if (type == kGroupArt) ++stats.groups;
+        else if (type == kPathArt) ++stats.paths;
+        else if (type == kCompoundPathArt) ++stats.compounds;
+        else if (type == kTextFrameArt) ++stats.textFrames;
+        else ++stats.other;
+        if (type == kPathArt || type == kCompoundPathArt) {
+            AIPathStyle style{};
+            AIBoolean advanced = false;
+            e = paint.GetPathStyle(node, &style, &advanced);
+            if (e) return e;
+            std::snprintf(text, sizeof(text), "[%d,%d]", style.fillPaint ? 1 : 0, style.strokePaint ? 1 : 0);
+            Append(text);
+            if (type == kPathArt || style.fillPaint || style.strokePaint) {
+                if (style.fillPaint && style.strokePaint) ++stats.fillAndStroke;
+                else if (style.fillPaint) ++stats.fillOnly;
+                else if (style.strokePaint) ++stats.strokeOnly;
+                else ++stats.unpainted;
+            }
+            if (type == kPathArt) return kNoErr;
+        }
+        if (type != kGroupArt && type != kCompoundPathArt) return kNoErr;
+        AIArtHandle child = nullptr;
+        e = art.GetArtFirstChild(node, &child);
+        if (e) return e;
+        if (!child) return kNoErr;
+        // Children of a compound share its paint; they are counted as nodes only.
+        const bool compound = type == kCompoundPathArt;
+        Append("(");
+        for (int count = 0; child; ++count) {
+            if (count) Append(",");
+            if (compound) {
+                if (++stats.nodes > 4096) { stats.truncated = true; break; }
+                Append("2");
+            } else {
+                e = Node(child, depth + 1);
+                if (e) return e;
+            }
+            e = art.GetArtSibling(child, &child);
+            if (e) return e;
+        }
+        Append(")");
+        return kNoErr;
+    }
+};
+
+ASErr CensusGo(AILiveEffectGoMessage& go, State& state) {
+    Suite<AIArtSuite> art(go.d.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathStyleSuite> paint(go.d.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    if (art.error) return art.error;
+    if (paint.error) return paint.error;
+    const auto calls = state.inputCensus.calls + 1;
+    state.inputCensus = CensusStats{};
+    state.inputCensus.calls = calls;
+    CensusWalker walker{*art.operator&(), *paint.operator&(), state.inputCensus};
+    const auto err = go.art ? walker.Node(go.art, 0) : kBadParameterErr;
+    Trace("census.result", err, state.inputCensus.truncated ? "truncated" : "complete");
+    // The census never edits art: whatever it found, the processing copy is
+    // the result, so no host alert is raised.
     return kNoErr;
 }
 
@@ -202,6 +308,9 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"passThroughs\":%llu,\"wrapperPaintFields\":%d,\"wrapperContainsPaint\":%d,"
         "\"wrapperBase\":%d,\"groupContentsPosition\":%d,\"processingCensus\":\"%s\","
         "\"readbackAnchorDelta\":%.9g,\"readbackHandleDelta\":%.9g,"
+        "\"census\":{\"registered\":%s,\"calls\":%llu,\"nodes\":%d,\"groups\":%d,\"paths\":%d,"
+        "\"compounds\":%d,\"textFrames\":%d,\"other\":%d,\"fillOnly\":%d,\"strokeOnly\":%d,"
+        "\"fillAndStroke\":%d,\"unpainted\":%d,\"truncated\":%s,\"tree\":\"%s\"},"
         "\"supportedGate\":\"MARKED_ANALYTIC_FIXTURE_ONLY\"}",
         regionPluginName, build, static_cast<unsigned long>(GetCurrentProcessId()),
         actionError ? "false" : "true", state.effect ? "true" : "false", effectIdentity,
@@ -210,7 +319,11 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         state.metrics.gate, state.metrics.maxVertexDeviation, state.fixtures,
         state.metrics.passThroughs, state.metrics.wrapperPaintFields, state.metrics.wrapperContainsPaint,
         state.metrics.wrapperBase, state.metrics.groupContentsPosition, state.metrics.processingCensus,
-        state.metrics.readbackAnchorDelta, state.metrics.readbackHandleDelta);
+        state.metrics.readbackAnchorDelta, state.metrics.readbackHandleDelta,
+        state.census ? "true" : "false", state.inputCensus.calls, state.inputCensus.nodes, state.inputCensus.groups,
+        state.inputCensus.paths, state.inputCensus.compounds, state.inputCensus.textFrames, state.inputCensus.other,
+        state.inputCensus.fillOnly, state.inputCensus.strokeOnly, state.inputCensus.fillAndStroke,
+        state.inputCensus.unpainted, state.inputCensus.truncated ? "true" : "false", state.inputCensus.tree);
     return n < 0 || static_cast<size_t>(n) >= capacity ? kBadParameterErr : kNoErr;
 }
 
@@ -244,7 +357,7 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
         });
         if (!actionError) ++state.fixtures;
     }
-    char payload[2048]{};
+    char payload[4096]{};
     auto err = Payload(message.d, state, selector, input[0] == '\0', actionError, payload, sizeof(payload));
     if (err) return err;
     if (actionError) Trace("bridge.action-failed", actionError, selector);
@@ -277,6 +390,7 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
                     message.globals = new (storage) region_probe::State{};
                     auto* state = static_cast<region_probe::State*>(message.globals);
                     state->effect = startupState.effect;
+                    state->census = startupState.census;
                     region_probe::Trace("globals.allocated");
                 }
                 return kNoErr;
@@ -315,6 +429,10 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
         if (std::strcmp(caller, kCallerAILiveEffect) == 0) {
             if (std::strcmp(selector, kSelectorAIGoLiveEffect) == 0) {
                 auto& go = *static_cast<AILiveEffectGoMessage*>(raw);
+                if (state->census && go.effect == state->census) {
+                    region_probe::TelemetryScope telemetry(&state->telemetry);
+                    return finish(region_probe::CensusGo(go, *state));
+                }
                 if (go.effect != state->effect) return finish(kBadParameterErr);
                 region_probe::TelemetryScope telemetry(&state->telemetry);
                 auto& metrics = state->metrics;
