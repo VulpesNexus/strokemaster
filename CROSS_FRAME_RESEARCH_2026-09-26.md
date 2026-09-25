@@ -31,7 +31,7 @@ Builds made in this sprint, all into the ignored *build/* folder:
 | Research 3 | `baf0d4e5…` | 71,680 | A model plugin with thread-safe services, and lazy fill records |
 | **Route X candidate** | `1e7c417e998c4ab8314384d6dc865d81f949b6ed3c7e8d0139da23d5ee3e1ef8` | 63,488 | No research code; mode fixed; deterministic content bounds. *plugin/build-plugin.ps1 -RouteX* into *build/Release-RouteX*; installed now |
 
-The research builds read a control file and write a trace only when InDesign is launched with *ISE_XF_CONTROL* and *ISE_XF_TRACE* set; without them they behave as route W. The owner ran all four elevated installs.
+The research builds read a control file and write a trace only when InDesign is launched with *ISE_XF_CONTROL* and *ISE_XF_TRACE* set; without them they behave as route W. The owner ran all four elevated installs. The three research binaries and their install backups were retired after the sprint. They are recorded above by hash only: research builds 1 and 2 were intermediate source states. *plugin/build-plugin.ps1 -RouteX -Research* at `0b8adaa` rebuilds the research variant with the candidate's logic, and *-RouteX* rebuilds the candidate. The certified route W build stays in its install backup.
 
 ## 2. Cross-frame fixture census
 
