@@ -243,26 +243,52 @@ def operator_census(path, page_number):
                 elif op == 'gs':
                     ext = resources.get('/ExtGState',{}).get(operands[0])
                     require(ext is not None, "missing ExtGState")
-                    for key,value in ext.items():
-                        if key == '/Type':
-                            require(str(value)=='/ExtGState', "invalid graphics-state type")
-                        elif key in ('/LW','/LJ','/LC','/ML'):
-                            state[{'/LW':'width','/LJ':'join','/LC':'cap','/ML':'limit'}[key]] = float(value)
-                        elif key in ('/CA','/ca'):
-                            require(float(value)==1, "transparency unsupported")
-                        elif key in ('/OP','/op','/SA','/AIS'):
-                            require(not bool(value), "overprint/stroke adjustment unsupported")
-                        elif key == '/OPM':
-                            require(float(value)==0, "overprint mode unsupported")
-                        elif key == '/BM':
-                            require(str(value)=='/Normal', "blend mode unsupported")
-                        elif key == '/SMask':
-                            require(str(value)=='/None', "soft mask unsupported")
-                        else:
-                            raise Unsupported('unsupported ExtGState key: '+key)
+                    apply_ext_gstate(dict(ext.items()), state)
         require(not stack and not active, "unbalanced graphics state or unfinished path")
+        if len(records)==2 and records[0]['type']=='f' and records[1]['type']=='s':
+            # Illustrator 30.7.0 exports a filled and stroked compound as one
+            # fill (f*) followed by one stroke (S) of the same subpaths, not as
+            # B*. measure_pdf verifies the two share geometry before merging.
+            merged = dict(records[1], type='fs', fill=records[0]['fill'],
+                          fill_space=records[0]['fill_space'], even_odd=records[0]['even_odd'],
+                          split_paint=True)
+            return merged, operators
         require(len(records)==1, "require exactly one compound paint; split/extra paint unsupported")
         return records[0], operators
+
+
+def apply_ext_gstate(ext, state):
+    """Apply one ExtGState dictionary, refusing anything that changes paint.
+
+    Illustrator writes /OPM 1 and /SA true into every graphics state. Overprint
+    mode has no effect while /OP and /op are both false (ISO 32000-1, 8.6.7),
+    and stroke adjustment is a scan-conversion hint that does not change the
+    vector geometry measured here. Both are accepted only in that form and are
+    recorded as a sorted tuple in state['render_hints'].
+    """
+    overprint = any(bool(ext.get(key, False)) for key in ('/OP', '/op'))
+    for key, value in ext.items():
+        if key == '/Type':
+            require(str(value)=='/ExtGState', "invalid graphics-state type")
+        elif key in ('/LW','/LJ','/LC','/ML'):
+            state[{'/LW':'width','/LJ':'join','/LC':'cap','/ML':'limit'}[key]] = float(value)
+        elif key in ('/CA','/ca'):
+            require(float(value)==1, "transparency unsupported")
+        elif key in ('/OP','/op','/AIS'):
+            require(not bool(value), "overprint/alpha-is-shape unsupported")
+        elif key == '/SA':
+            if bool(value):
+                state['render_hints'] = tuple(sorted(set(state.get('render_hints', ())) | {'SA'}))
+        elif key == '/OPM':
+            require(float(value)==0 or not overprint, "overprint mode with overprint unsupported")
+            if float(value) != 0:
+                state['render_hints'] = tuple(sorted(set(state.get('render_hints', ())) | {'OPM-inert'}))
+        elif key == '/BM':
+            require(str(value)=='/Normal', "blend mode unsupported")
+        elif key == '/SMask':
+            require(str(value)=='/None', "soft mask unsupported")
+        else:
+            raise Unsupported('unsupported ExtGState key: '+key)
 
 
 def extract_rings(drawing, matrix, origin, scale):
@@ -317,6 +343,26 @@ def measure_pdf(path, role, origin, scale, gray_value=.5, tolerance=1e-4, page_n
         page = doc[page_number]
         require(page.rotation==0, "rotated page unsupported")
         drawings = page.get_drawings(extended=True)
+        matrix = ~page.transformation_matrix  # MuPDF top-left/y-down -> PDF y-up.
+        if state.get('split_paint'):
+            require(role=='control', "split fill/stroke paint is accepted for the control only")
+        if state.get('split_paint') and len(drawings)==1:
+            # PyMuPDF itself joins a fill and a stroke of identical subpaths
+            # into one 'fs' drawing; the operator census above proves the split.
+            require(drawings[0]['type']=='fs', "split paint must extract as one fill+stroke drawing")
+        elif state.get('split_paint'):
+            require(len(drawings)==2 and [d['type'] for d in drawings]==['f','s'],
+                    "split paint needs exactly one fill then one stroke drawing")
+            fill_rings = extract_rings(drawings[0],matrix,origin,scale)
+            stroke_rings = extract_rings(drawings[1],matrix,origin,scale)
+            require(len(fill_rings)==len(stroke_rings)==2 and
+                    all(e is not None and e<=tolerance for e in
+                        (ring_error(a,b,tolerance) for a,b in zip(fill_rings,stroke_rings))),
+                    "split fill and stroke do not share geometry")
+            drawing = dict(drawings[0], type='fs', color=drawings[1].get('color'),
+                           width=drawings[1].get('width'), lineJoin=drawings[1].get('lineJoin'),
+                           stroke_opacity=drawings[1].get('stroke_opacity'))
+            drawings = [drawing]
         require(len(drawings)==1 and drawings[0]['type'] in ('f','fs'), "unsupported clipping, group, or paint census")
         drawing = drawings[0]
         require(drawing['type']==state['type'], "operator/vector paint disagreement")
@@ -327,7 +373,6 @@ def measure_pdf(path, role, origin, scale, gray_value=.5, tolerance=1e-4, page_n
         require(abs(state['fill']-gray_value)<=1e-9, "unexpected fill gray")
         require(drawing.get('fill') is not None and max(abs(v-gray_value) for v in drawing['fill']) <= 2e-4,
                 "unexpected extracted fill color")
-        matrix = ~page.transformation_matrix  # MuPDF top-left/y-down -> PDF y-up.
         rings = extract_rings(drawing,matrix,origin,scale)
         pdf_bounds = [pymupdf.Point(origin[0]+x*scale,origin[1]+y*scale)*page.transformation_matrix
                       for x,y in [(-.5,-.3),(10.3,10.3)]]
@@ -384,7 +429,9 @@ def measure_pdf(path, role, origin, scale, gray_value=.5, tolerance=1e-4, page_n
                     escaping_probe=list(probe), escaping_probe_inside=escape,
                     area_evidence='analytic stroke reconstruction from validated centerline and operators'
                     if reconstruction_valid else 'shoelace area of extracted filled polygon vertices',
-                    silhouette_explicit_in_pdf=not stroked)
+                    silhouette_explicit_in_pdf=not stroked,
+                    split_fill_stroke_paint=bool(state.get('split_paint')),
+                    render_hints=list(state.get('render_hints',())))
 
 
 def measure_pair(effect, control, origin, scale, *, effect_origin=None, control_origin=None,
