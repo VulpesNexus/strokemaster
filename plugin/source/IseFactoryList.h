@@ -13,3 +13,7 @@ REGISTER_PMINTERFACE(IseFillRepaintAdornment, kIseFillRepaintAdornmentImpl)
 REGISTER_PMINTERFACE(IseStrokeBehindAdornment, kIseStrokeBehindAdornmentImpl)
 REGISTER_PMINTERFACE(IseStrokeRestoreAdornment, kIseStrokeRestoreAdornmentImpl)
 #endif
+#ifdef ISE_ROUTE_X
+REGISTER_PMINTERFACE(IseXfDrawEvents, kIseXfDrawEventHandlerImpl)
+REGISTER_PMINTERFACE(IseXfDrawEventService, kIseXfDrawEventServiceImpl)
+#endif

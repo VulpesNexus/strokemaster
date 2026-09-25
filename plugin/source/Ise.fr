@@ -18,6 +18,9 @@
 #include "ShuksanID.h"
 #include "BuildNumber.h"
 #include "TextID.h"
+#ifdef ISE_ROUTE_X
+#include "GraphicsID.h"
+#endif
 #include "PlugInModel_UIAttributes.h"
 
 //===========================
@@ -39,7 +42,14 @@ resource PluginVersion (kSDKDefPluginVersionResourceID)
     kIseLastMajorFormatChange, kIseLastMinorFormatChange,
     { kInDesignProduct, kInCopyProduct },
     { kWildFS },
+#ifdef ISE_ROUTE_X
+    // A model plugin: InDesign loads it on worker threads too, so its adornments and its draw
+    // event handler also run in background PDF export. A UI plugin runs on the main thread
+    // only, and background export then draws natively (route W's certified build is one).
+    kModelPlugIn,
+#else
     kUIPlugIn,
+#endif
     kIseVersion
 };
 
@@ -97,6 +107,20 @@ resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
         {
             IID_IK2SERVICEPROVIDER, kGlobalTextAdornmentServiceImpl,
             IID_IGLOBALTEXTADORNMENT, kIseStrokeRestoreAdornmentImpl,
+        }
+    },
+#endif
+#ifdef ISE_ROUTE_X
+    /** Experimental route X: a session-wide draw event handler that brackets each traversal
+        and reports the content drawn in it. See IseCrossFrame.cpp.
+    */
+    Class
+    {
+        kIseXfDrawEventBoss,
+        kInvalidClass,
+        {
+            IID_IK2SERVICEPROVIDER, kIseXfDrawEventServiceImpl,
+            IID_IDRWEVTHANDLER, kIseXfDrawEventHandlerImpl,
         }
     },
 #endif

@@ -53,6 +53,9 @@
 // Project includes:
 #include "IseID.h"
 #include "IseStrokeBehindCore.h"
+#ifdef ISE_ROUTE_X
+#include "IseCrossFrame.h"
+#endif
 
 #include <cmath>
 
@@ -156,13 +159,29 @@ public:
         frame's Background pass (shading, underlines) and before its Text pass. */
     virtual Text::DrawPriority GetDrawPriority() { return Text::DrawPriority(Text::kTAPassPriBackground + 0.95); }
     virtual bool16 GetCheckIsActive() { return kTrue; }
+#ifdef ISE_ROUTE_X
+    /** Route X also learns here which parcel (frame, story) the pass is about to draw. */
+    virtual bool16 GetIsActive(const IParcelShape* parcel, const ITextOptions*, int32 flags)
+    {
+        if (parcel != nil) ise_cross_frame::NoteParcel(parcel, 'W', flags);
+        return parcel != nil;
+    }
+#else
     virtual bool16 GetIsActive(const IParcelShape* parcel, const ITextOptions*, int32) { return parcel != nil; }
+#endif
     virtual bool16 GetCheckCouldDraw() { return kFalse; }
     virtual bool16 GetCouldDraw(const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) { return kTrue; }
     /** The moved stroke occupies the ink the run's native Outside stroke already claims. */
     virtual bool16 GetHasInkBounds() { return kFalse; }
     virtual void GetInkBounds(PMRect*, const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) {}
+#ifdef ISE_ROUTE_X
+    virtual void StartOfParcelDraw(GraphicsData*, int32 flags, const IParcelShape* parcel)
+    {
+        if (parcel != nil) ise_cross_frame::NoteParcel(parcel, 'w', flags);
+    }
+#else
     virtual void StartOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
+#endif
     virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
     virtual void Draw(GraphicsData* gd, int32 flags, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs);
 };
@@ -176,6 +195,12 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     IDataBase* db = run->GetDataBase();
     if (db == nil) return;
     Recover(run, data, glyphs, db);
+#ifdef ISE_ROUTE_X
+    ise_cross_frame::TraceRun('W', gd, run, data, glyphs, db, "visit");
+    // Every fill this parcel is about to paint, stroked or not (route X; a no-op otherwise).
+    ise_cross_frame::RecordPendingFill(gd, run, data, glyphs, db);
+    if (!ise_cross_frame::RouteWEnabled()) return;
+#endif
     if (!Eligible(AlignmentOf(data), ToDouble(data->GetOutlineWidth()), MethodOf(data, db))) return;
     IGraphicsPort* port = gd->GetGraphicsPort();
     const int32 count = glyphs->GetGlyphCount();
@@ -195,6 +220,10 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     if (!ThreadLedger().Mute(run, data, PrintOf(run, data, glyphs), strokePaint.Get())) return;
     {
         AutoGSave save(port);
+#ifdef ISE_ROUTE_X
+        // Withhold the stroke from fills of the same story painted earlier in this traversal.
+        ise_cross_frame::ClipWithheld(gd, port, run, data, glyphs, db);
+#endif
         stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
         // Outside alignment is drawn by InDesign as a centered stroke of twice the weight
         // beneath the fill; reproduce that geometry explicitly.
@@ -233,19 +262,36 @@ public:
     /** After everything else in the Foreground pass. */
     virtual Text::DrawPriority GetDrawPriority() { return Text::DrawPriority(Text::kTAPassPriForeground + 0.99); }
     virtual bool16 GetCheckIsActive() { return kTrue; }
+#ifdef ISE_ROUTE_X
+    virtual bool16 GetIsActive(const IParcelShape* parcel, const ITextOptions*, int32 flags)
+    {
+        if (parcel != nil) ise_cross_frame::NoteParcel(parcel, 'R', flags);
+        return parcel != nil;
+    }
+#else
     virtual bool16 GetIsActive(const IParcelShape* parcel, const ITextOptions*, int32) { return parcel != nil; }
+#endif
     virtual bool16 GetCheckCouldDraw() { return kFalse; }
     virtual bool16 GetCouldDraw(const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) { return kTrue; }
     virtual bool16 GetHasInkBounds() { return kFalse; }
     virtual void GetInkBounds(PMRect*, const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) {}
     virtual void StartOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
     virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
+#ifdef ISE_ROUTE_X
+    virtual void Draw(GraphicsData* gd, int32, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs)
+#else
     virtual void Draw(GraphicsData*, int32, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs)
+#endif
     {
         if (run == nil || data == nil || glyphs == nil) return;
         IDataBase* db = run->GetDataBase();
         if (db == nil) return;
         Recover(run, data, glyphs, db);
+#ifdef ISE_ROUTE_X
+        // The Text pass has run: this run's fill is painted (route X; a no-op otherwise).
+        ise_cross_frame::ConfirmFill(gd, run);
+        ise_cross_frame::TraceRun('R', gd, run, data, glyphs, db, "restored");
+#endif
     }
 };
 

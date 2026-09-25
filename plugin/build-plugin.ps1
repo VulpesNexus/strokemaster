@@ -20,7 +20,12 @@ param(
     [string[]]$PreferredToolsets = @('14.42.', '14.39.'),
     # Adds the experimental route W stroke-behind adornments (IseStrokeBehindAdornment.cpp).
     # Built into build\<Configuration>-RouteW, never over the default refusal build.
-    [switch]$RouteW
+    [switch]$RouteW,
+    # Adds experimental route X (IseCrossFrame.cpp): route W across the frames of one story.
+    # Built into build\<Configuration>-RouteX, or build\<Configuration>-RouteXResearch with
+    # -Research (control file, trace, and probes; see IseCrossFrame.cpp).
+    [switch]$RouteX,
+    [switch]$Research
 )
 $ErrorActionPreference = 'Stop'
 
@@ -60,7 +65,8 @@ $msbuild = Join-Path $vsPath 'MSBuild\Current\Bin\MSBuild.exe'
 if (-not (Test-Path -LiteralPath $msbuild)) { throw "MSBuild not found at $msbuild" }
 
 $repo = Split-Path -Parent $PSScriptRoot
-$variant = if ($RouteW) { $Configuration + '-RouteW' } else { $Configuration }
+if ($Research -and -not $RouteX) { throw '-Research applies to -RouteX only.' }
+$variant = if ($RouteX) { $Configuration + '-RouteX' + $(if ($Research) { 'Research' } else { '' }) } elseif ($RouteW) { $Configuration + '-RouteW' } else { $Configuration }
 New-Item -ItemType Directory -Force -Path (Join-Path $repo ('build\' + $variant)), (Join-Path $repo ('build\obj\' + $variant)) | Out-Null
 
 # Creates a junction whose name is derived from its target, so the same target always gets the
@@ -141,6 +147,8 @@ try {
         "/p:OutDir=$outDir",
         "/p:IntDir=$intDir",
         "/p:IseRouteW=$(if ($RouteW) { 'true' } else { 'false' })",
+        "/p:IseRouteX=$(if ($RouteX) { 'true' } else { 'false' })",
+        "/p:IseRouteXResearch=$(if ($Research) { 'true' } else { 'false' })",
         '/m', '/v:minimal', '/nologo',
         "/flp:logfile=$buildLog;verbosity=normal"
     )
