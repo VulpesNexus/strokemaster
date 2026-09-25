@@ -1,4 +1,4 @@
-// PROPOSED region-prep-2: real-core closed-region replacement for the marked
+// PROPOSED region-prep-7: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -15,7 +15,7 @@
 #include <cstring>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-2";
+constexpr char build[] = "region-prep-7";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -199,12 +199,18 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"effectRegistered\":%s,\"effect\":\"%s\",\"attachment\":\"POST_OBJECT_APPEND\","
         "\"geometryEnabled\":true,\"kernelAdmitted\":%s,\"goCalls\":%llu,\"mutations\":%llu,"
         "\"lastGoError\":%d,\"gate\":\"%s\",\"maxVertexDeviation\":%.17g,\"fixtures\":%llu,"
+        "\"passThroughs\":%llu,\"wrapperPaintFields\":%d,\"wrapperContainsPaint\":%d,"
+        "\"wrapperBase\":%d,\"groupContentsPosition\":%d,\"processingCensus\":\"%s\","
+        "\"readbackAnchorDelta\":%.9g,\"readbackHandleDelta\":%.9g,"
         "\"supportedGate\":\"MARKED_ANALYTIC_FIXTURE_ONLY\"}",
         regionPluginName, build, static_cast<unsigned long>(GetCurrentProcessId()),
         actionError ? "false" : "true", state.effect ? "true" : "false", effectIdentity,
         state.metrics.mutations > 0 ? "true" : "false",
         state.metrics.goCalls, state.metrics.mutations, state.metrics.lastGoError,
-        state.metrics.gate, state.metrics.maxVertexDeviation, state.fixtures);
+        state.metrics.gate, state.metrics.maxVertexDeviation, state.fixtures,
+        state.metrics.passThroughs, state.metrics.wrapperPaintFields, state.metrics.wrapperContainsPaint,
+        state.metrics.wrapperBase, state.metrics.groupContentsPosition, state.metrics.processingCensus,
+        state.metrics.readbackAnchorDelta, state.metrics.readbackHandleDelta);
     return n < 0 || static_cast<size_t>(n) >= capacity ? kBadParameterErr : kNoErr;
 }
 
@@ -238,7 +244,7 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
         });
         if (!actionError) ++state.fixtures;
     }
-    char payload[1024]{};
+    char payload[2048]{};
     auto err = Payload(message.d, state, selector, input[0] == '\0', actionError, payload, sizeof(payload));
     if (err) return err;
     if (actionError) Trace("bridge.action-failed", actionError, selector);
@@ -325,6 +331,16 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
                 else ++metrics.mutations;
                 metrics.failedCalls = metrics.goCalls - metrics.mutations;
                 region_probe::Trace("callback.result", err, metrics.gate);
+                // A refusal leaves the processing copy untouched, so it passes
+                // through as the effect's identity result (the SDK asks effects
+                // to pass through art they cannot handle). Returning the error
+                // made Illustrator raise a modal alert on every redraw. Only a
+                // failed rollback, where the copy may be partly written, is
+                // still reported to the host.
+                if (err && std::strcmp(metrics.gate, "output.rollback-failed") != 0) {
+                    ++metrics.passThroughs;
+                    return finish(kNoErr);
+                }
                 return finish(err);
             }
             return finish(kNoErr);

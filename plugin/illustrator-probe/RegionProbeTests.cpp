@@ -1,4 +1,4 @@
-// region-prep-2 target tests. No Illustrator or real SDK implementation.
+// region-prep-7 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.
@@ -56,6 +56,7 @@ void Setup(){
         if(!e)*h=registered?reinterpret_cast<AILiveEffectHandle>(1):nullptr;return e;
     };
     art.GetArtType=[](AIArtHandle,short*)->AIErr{return kNoErr;};
+    art.GetArtFirstChild=[](AIArtHandle,AIArtHandle* child)->AIErr{*child=nullptr;return kNoErr;};
 }
 SPMessageData Startup(){
     SPMessageData m{};m.basic=&basic;
@@ -106,19 +107,26 @@ int main(){
         // Null processing input is refused without acquiring any suite.
         const int suitesBefore=acquired;
         go.effect=state->effect;go.art=nullptr;
-        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr,"null input refused");
+        Check(PluginMain(goCaller,selector,&go)==kNoErr,"null input refused as a silent pass-through");
         Check(state->metrics.goCalls==1&&state->metrics.mutations==0&&
               std::strcmp(state->metrics.gate,"input.null")==0,"null-input refusal recorded at its gate");
         Check(acquired==suitesBefore,"null-input refusal acquires no suites");
         // Alias and provenance refusals.
         go.art=reinterpret_cast<AIArtHandle>(1);go.srcArt=go.art;
-        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr,"source alias refused");
+        Check(PluginMain(goCaller,selector,&go)==kNoErr,"source alias refused as a silent pass-through");
         Check(std::strcmp(state->metrics.gate,"input.source-alias")==0,"alias refusal recorded at its gate");
         go.srcArt=reinterpret_cast<AIArtHandle>(2);go.parameters=nullptr;
-        Check(PluginMain(goCaller,selector,&go)==kBadParameterErr,"missing marker refused");
+        Check(PluginMain(goCaller,selector,&go)==kNoErr,"missing marker refused as a silent pass-through");
         Check(std::strcmp(state->metrics.gate,"source.parameters-missing")==0,"provenance refusal recorded at its gate");
         Check(state->metrics.goCalls==3&&state->metrics.mutations==0&&
               state->metrics.failedCalls==3,"refusals counted, never mutated");
+        Check(state->metrics.passThroughs==3&&state->metrics.lastGoError==kBadParameterErr,
+              "each refusal is a recorded pass-through, not a host error");
+        Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr&&
+              std::strstr(payload,"\"passThroughs\":3")&&std::strstr(payload,"\"wrapperPaintFields\":-1")&&
+              std::strstr(payload,"\"wrapperContainsPaint\":-1")&&std::strstr(payload,"\"wrapperBase\":0")&&
+              std::strstr(payload,"\"groupContentsPosition\":-1")&&
+              std::strstr(payload,"\"processingCensus\":\"0\""),"status reports pass-throughs, unread wrapper census, and the last processing census");
         char stop2[]=kSPInterfaceShutdownSelector,iface[]=kSPInterfaceCaller;
         Check(PluginMain(iface,stop2,&m)==kNoErr&&m.globals==nullptr,"shutdown frees globals");
         Check(allocated==1&&freed==1,"exactly one owned heap block");

@@ -16,7 +16,8 @@ out = root / 'build/region-native'
 sdk = Path(sys.argv[1]).resolve()
 digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
 frozen = {root / 'build/native-prep4-frozen.aip': '45fab742d70bfb12497b3735a1e3c9d4b14dd8dc9195551f0221f1c4297b1c78',
-          root / 'build/native-prep5-frozen.aip': '201dd19cb25174c7fb9628fd1bf2769aa41e7d4dd4f2c6b77e5e9d7aea0fc9c7'}
+          root / 'build/native-prep5-frozen.aip': '201dd19cb25174c7fb9628fd1bf2769aa41e7d4dd4f2c6b77e5e9d7aea0fc9c7',
+          root / 'build/region-prep2-frozen.aip': 'bd6bd27b905285898f72be0df408bc1f935b3e99e8b0d0855e79bb6938a334cb'}
 assert all(digest(p) == h for p, h in frozen.items()), 'Frozen prep artifact mismatch'
 core_header = root.parents[1] / 'tools/topology_region_core.h'
 core_cpp = root.parents[1] / 'tools/topology_region.cpp'
@@ -57,7 +58,7 @@ assert (out / 'plugin.pipl').read_bytes() in binary.read_bytes(), 'PiPL resource
 assert b'StrokeMasterRegionProbe' in (out / 'plugin.pipl').read_bytes(), 'Wrong PiPL identity'
 assert all(digest(p) == h for p, h in frozen.items()), 'Frozen prep artifact changed during build'
 assert digest(core_header) == header_sha and digest(core_cpp) == cpp_sha, 'Core changed during build'
-record = {'status': 'PROPOSED_GEOMETRY_ENABLED_MARKED_FIXTURE', 'plugin': 'StrokeMasterRegionProbe', 'build': 'region-prep-2',
+record = {'status': 'PROPOSED_GEOMETRY_ENABLED_MARKED_FIXTURE', 'plugin': 'StrokeMasterRegionProbe', 'build': 'region-prep-7',
           'sha256': digest(binary), 'bytes': binary.stat().st_size, 'geometryEnabled': True, 'coreLinked': True,
           'hostTested': False, 'piplEmbedded': True, 'prep4AndPrep5Unchanged': True,
           'coreHeaderSha256': header_sha, 'coreCppSha256': cpp_sha,
