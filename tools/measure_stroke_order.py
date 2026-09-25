@@ -27,7 +27,7 @@ import pikepdf
 import pymupdf
 from scipy import ndimage
 
-PAINT = {'BT', 'ET', 'Tj', 'TJ', 'f', 'f*', 'F', 'S', 's', 'B', 'B*', 'b', 'b*'}
+PAINT = {'BT', 'ET', 'Tj', 'TJ', "'", '"', 'f', 'f*', 'F', 'S', 's', 'B', 'B*', 'b', 'b*', 'q', 'Q'}
 
 
 def render(path, dpi):
@@ -54,9 +54,35 @@ def paint_sequence(path):
     return sequence
 
 
+def paint_events(sequence):
+    """Fill ('F') and stroke ('S') events in painting order, from path operators and from
+    text shows under the current text render mode, which q and Q save and restore."""
+    events, mode, saved = [], 0, []
+    for op in sequence:
+        if op == 'q':
+            saved.append(mode)
+        elif op == 'Q':
+            mode = saved.pop() if saved else 0
+        elif op.startswith('Tr'):
+            mode = int(op[2:])
+        elif op in ('Tj', 'TJ', "'", '"'):
+            if mode in (0, 2, 4, 6):
+                events.append('F')
+            if mode in (1, 2, 5, 6):
+                events.append('S')
+        elif op in ('S', 's'):
+            events.append('S')
+        elif op in ('f', 'f*', 'F'):
+            events.append('F')
+        elif op in ('B', 'B*', 'b', 'b*'):
+            events += ['F', 'S']
+    return events
+
+
 def strokes_before_fills(sequence):
-    strokes = [i for i, op in enumerate(sequence) if op in ('S', 's')]
-    fills = [i for i, op in enumerate(sequence) if op in ('f', 'f*', 'F')]
+    events = paint_events(sequence)
+    strokes = [i for i, e in enumerate(events) if e == 'S']
+    fills = [i for i, e in enumerate(events) if e == 'F']
     return bool(strokes) and bool(fills) and max(strokes) < min(fills)
 
 

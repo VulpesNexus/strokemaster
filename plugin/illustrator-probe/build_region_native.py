@@ -63,7 +63,7 @@ assert (out / 'plugin.pipl').read_bytes() in binary.read_bytes(), 'PiPL resource
 assert b'StrokeMasterRegionProbe' in (out / 'plugin.pipl').read_bytes(), 'Wrong PiPL identity'
 assert all(digest(p) == h for p, h in frozen.items()), 'Frozen prep artifact changed during build'
 assert digest(core_header) == header_sha and digest(core_cpp) == cpp_sha, 'Core changed during build'
-record = {'status': 'PROPOSED_GEOMETRY_ENABLED_MARKED_FIXTURE', 'plugin': 'StrokeMasterRegionProbe', 'build': 'region-prep-9',
+record = {'status': 'PROPOSED_GEOMETRY_ENABLED_MARKED_FIXTURE', 'plugin': 'StrokeMasterRegionProbe', 'build': 'region-prep-10',
           'sha256': digest(binary), 'bytes': binary.stat().st_size, 'geometryEnabled': True, 'coreLinked': True,
           'hostTested': False, 'piplEmbedded': True, 'prep4AndPrep5Unchanged': True,
           'coreHeaderSha256': header_sha, 'coreCppSha256': cpp_sha,

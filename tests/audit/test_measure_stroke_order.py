@@ -51,6 +51,18 @@ class StrokeOrderMetrics(unittest.TestCase):
         self.assertFalse(m.strokes_before_fills(['BT', 'Tj', 'Tr1', 'Tj', 'ET']))
         self.assertFalse(m.strokes_before_fills(['f', 'f']))
 
+    def test_text_render_modes(self):
+        # Illustrator's native character stroke: fills of the run, then its strokes.
+        self.assertFalse(m.strokes_before_fills(['BT', 'Tj', 'Tr1', 'Tj', 'ET']))
+        # The object-level Appearance stroke below the characters: strokes, then fills.
+        self.assertTrue(m.strokes_before_fills(['BT', 'Tr1', 'Tj', 'Tj', 'Tr0', 'Tj', 'ET', 'BT', 'Tj', 'ET']))
+        # Mode 2 fills then strokes in one show.
+        self.assertEqual(m.paint_events(['Tr2', 'Tj']), ['F', 'S'])
+        # Invisible text (mode 3) paints nothing.
+        self.assertEqual(m.paint_events(['Tr3', 'Tj']), [])
+        # q/Q restore the mode.
+        self.assertEqual(m.paint_events(['q', 'Tr1', 'Tj', 'Q', 'Tj']), ['S', 'F'])
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,4 +1,4 @@
-// region-prep-9 target tests. No Illustrator or real SDK implementation.
+// region-prep-10 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.
@@ -26,7 +26,7 @@ void Setup(){
         else if(std::strcmp(name,kAIDictionarySuite)==0)*out=&dict;
         else if(std::strcmp(name,kAIDocumentSuite)==0)*out=&doc;
         else if(std::strcmp(name,kAIBlendStyleSuite)==0)*out=&blend;
-        else return -1235;
+        else {--acquired;return -1235;} // a refused suite is never acquired
         return kNoErr;
     };
     basic.ReleaseSuite=[](const char*,ai::int32)->SPErr{++released;return kNoErr;};
@@ -154,6 +154,14 @@ int main(){
         Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr&&
               std::strstr(payload,"\"census\":{\"registered\":true,\"calls\":2,\"nodes\":1"),
               "status reports the census");
+        // The appearance command refuses cleanly when a suite it needs is unavailable
+        // (the mock host offers no matching-art suite) and reports where it stopped.
+        Check(region_probe::AppearanceStrokeBelow(m,*state)!=kNoErr&&
+              std::strcmp(state->appearance.gate,"suites")==0&&state->appearance.styled==0,
+              "appearance refuses without its suites and styles nothing");
+        Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr&&
+              std::strstr(payload,"\"appearance\":{\"gate\":\"suites\",\"frames\":0,\"styled\":0"),
+              "status reports the appearance gate");
         // Stroke-behind refusals pass through; the transform itself has its own suite.
         go.effect=state->strokeBehind;go.art=nullptr;
         Check(PluginMain(goCaller,selector,&go)==kNoErr,"stroke-behind with no art passes through");

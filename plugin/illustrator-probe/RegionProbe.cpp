@@ -1,4 +1,4 @@
-// PROPOSED region-prep-9: real-core closed-region replacement for the marked
+// PROPOSED region-prep-10: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -9,6 +9,8 @@
 #include "AIUnicodeString.h"
 #include "RegionNative.h"
 #include "StrokeBehind.h"
+#include "AIMatchingArt.h"
+#include "AIMdMemory.h"
 #include <Windows.h>
 #include <array>
 #include <cmath>
@@ -16,7 +18,7 @@
 #include <cstring>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-9";
+constexpr char build[] = "region-prep-10";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -101,8 +103,16 @@ struct CensusStats {
 // outlines while the source stays editable.
 constexpr char strokeBehindIdentity[] = "org.strokemaster.proposed.stroke-behind.v1";
 
+// Result of the last "appearance" bridge command: a native, effect-free object-level
+// stroke added beneath the contents of every text frame in the document.
+struct AppearanceStats {
+    const char* gate = "ready";
+    int frames = 0, styled = 0, fieldsBefore = -1, fieldsAfter = -1, contentsBefore = -1, contentsAfter = -1;
+};
+
 struct State {
     AILiveEffectHandle effect = nullptr;
+    AppearanceStats appearance{};
     AILiveEffectHandle census = nullptr;
     AILiveEffectHandle strokeBehind = nullptr;
     stroke_behind::Stats strokeBehindStats{};
@@ -297,6 +307,83 @@ ASErr CensusGo(AILiveEffectGoMessage& go, State& state) {
     return kNoErr;
 }
 
+// Adds one object-level stroke paint field (0.4 gray, 8 pt, miter join, limit 4) at the
+// bottom of every text frame's art style, below the frame's contents, so the frame's
+// characters paint above it. This writes an ordinary native Appearance, the manual
+// "stroke below Characters" technique; no live effect is involved. Diagnostic only: it
+// acts on every text frame of the current document, which the probe creates itself.
+ASErr AppearanceStrokeBelow(SPMessageData& message, State& state) {
+    auto& stats = state.appearance;
+    stats = AppearanceStats{};
+    Suite<AIMatchingArtSuite> matching(message.basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
+    Suite<AIMdMemorySuite> memory(message.basic, kAIMdMemorySuite, kAIMdMemorySuiteVersion);
+    Suite<AIArtStyleSuite> styles(message.basic, kAIArtStyleSuite, kAIArtStyleVersion);
+    Suite<AIArtStyleParserSuite> parser(message.basic, kAIArtStyleParserSuite, kAIArtStyleParserVersion);
+    for (ASErr e : {matching.error, memory.error, styles.error, parser.error}) if (e) { stats.gate = "suites"; return e; }
+    AIMatchingArtSpec spec(kTextFrameArt, 0, 0);
+    AIArtHandle** matches = nullptr;
+    ai::int32 count = 0;
+    auto err = matching->GetMatchingArt(&spec, 1, &matches, &count);
+    if (err) { stats.gate = "match"; return err; }
+    struct Release {
+        const AIMdMemorySuite& memory; AIArtHandle** matches;
+        ~Release() { if (matches) memory.MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(matches)); }
+    } release{*memory.operator&(), matches};
+    stats.frames = count;
+    if (count <= 0 || count > 64) { stats.gate = count <= 0 ? "no-text-frame" : "too-many-frames"; return kBadParameterErr; }
+    for (ai::int32 i = 0; i < count; ++i) {
+        AIArtHandle frame = (*matches)[i];
+        AIArtStyleHandle style = nullptr;
+        err = styles->GetArtStyle(frame, &style);
+        if (err) { stats.gate = "get-style"; return err; }
+        AIStyleParser p = nullptr;
+        err = parser->NewParser(&p);
+        if (err || !p) { stats.gate = "parser"; return err ? err : kOutOfMemoryErr; }
+        struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } }
+            dispose{*parser.operator&(), p};
+        if (style) {
+            err = parser->ParseStyle(p, style);
+            if (err) { stats.gate = "parse"; return err; }
+        }
+        stats.fieldsBefore = parser->CountPaintFields(p);
+        stats.contentsBefore = parser->GetGroupContentsPosition(p);
+        AIPathStyle base{};
+        base.Init();
+        AIStrokeStyle stroke = base.stroke;
+        stroke.color.kind = kGrayColor;
+        stroke.color.c.g.gray = static_cast<AIReal>(0.4);
+        stroke.width = 8;
+        stroke.join = kAIMiterJoin;
+        stroke.miterLimit = 4;
+        AIParserPaintField field = nullptr;
+        err = parser->NewPaintFieldStroke(&stroke, nullptr, &field);
+        if (err || !field) { stats.gate = "new-stroke"; return err ? err : kOutOfMemoryErr; }
+        err = parser->InsertNthPaintField(p, -1, field);
+        if (err) { parser->DisposePaintField(field); stats.gate = "insert"; return err; }
+        AIArtStyleHandle created = nullptr;
+        err = parser->CreateNewStyle(p, &created);
+        if (err || !created) { stats.gate = "create-style"; return err ? err : kBadParameterErr; }
+        err = styles->SetArtStyle(frame, created);
+        if (err) { stats.gate = "set-style"; return err; }
+        // Read back what the frame now carries.
+        AIArtStyleHandle now = nullptr;
+        err = styles->GetArtStyle(frame, &now);
+        if (err || !now) { stats.gate = "readback"; return err ? err : kBadParameterErr; }
+        AIStyleParser q = nullptr;
+        err = parser->NewParser(&q);
+        if (err || !q) { stats.gate = "readback-parser"; return err ? err : kOutOfMemoryErr; }
+        Dispose disposeQ{*parser.operator&(), q};
+        err = parser->ParseStyle(q, now);
+        if (err) { stats.gate = "readback-parse"; return err; }
+        stats.fieldsAfter = parser->CountPaintFields(q);
+        stats.contentsAfter = parser->GetGroupContentsPosition(q);
+        if (stats.fieldsAfter != stats.fieldsBefore + 1 || parser->ContainsEffects(q)) { stats.gate = "readback-mismatch"; return kBadParameterErr; }
+        ++stats.styled;
+    }
+    stats.gate = "styled";
+    return kNoErr;
+}
+
 ASErr Diagnostics(const State& state, char* output, size_t capacity) {
     int n = std::snprintf(output, capacity,
         "{\"schema\":2,\"plugin\":\"%s\",\"build\":\"%s\",\"processId\":%lu,\"effectRegistered\":%s,"
@@ -346,6 +433,8 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"fillAndStroke\":%d,\"unpainted\":%d,\"truncated\":%s,\"tree\":\"%s\"},"
         "\"strokeBehind\":{\"registered\":%s,\"calls\":%llu,\"published\":%llu,\"refused\":%llu,"
         "\"leaves\":%d,\"stroked\":%d,\"gate\":\"%s\"},"
+        "\"appearance\":{\"gate\":\"%s\",\"frames\":%d,\"styled\":%d,\"fieldsBefore\":%d,\"fieldsAfter\":%d,"
+        "\"contentsBefore\":%d,\"contentsAfter\":%d},"
         "\"supportedGate\":\"MARKED_ANALYTIC_FIXTURE_ONLY\"}",
         regionPluginName, build, static_cast<unsigned long>(GetCurrentProcessId()),
         actionError ? "false" : "true", state.effect ? "true" : "false", effectIdentity,
@@ -361,7 +450,9 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         state.inputCensus.unpainted, state.inputCensus.truncated ? "true" : "false", state.inputCensus.tree,
         state.strokeBehind ? "true" : "false", state.strokeBehindStats.calls, state.strokeBehindStats.published,
         state.strokeBehindStats.refused, state.strokeBehindStats.leaves, state.strokeBehindStats.stroked,
-        state.strokeBehindStats.gate);
+        state.strokeBehindStats.gate,
+        state.appearance.gate, state.appearance.frames, state.appearance.styled, state.appearance.fieldsBefore,
+        state.appearance.fieldsAfter, state.appearance.contentsBefore, state.appearance.contentsAfter);
     return n < 0 || static_cast<size_t>(n) >= capacity ? kBadParameterErr : kNoErr;
 }
 
@@ -387,6 +478,8 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
             static_cast<ai::UnicodeString::offset_type>(std::strlen(payload)), kAIUTF8CharacterEncoding);
     }
     if (std::strcmp(selector, "status") == 0 && input[0] == '\0') actionError = kNoErr;
+    else if (std::strcmp(selector, "appearance") == 0 && std::strcmp(input, "stroke-below") == 0)
+        actionError = AppearanceStrokeBelow(message.d, state);
     else if (std::strcmp(selector, "create") == 0 &&
              (std::strcmp(input, "region") == 0 || std::strcmp(input, "control") == 0)) {
         const bool withEffect = std::strcmp(input, "region") == 0;

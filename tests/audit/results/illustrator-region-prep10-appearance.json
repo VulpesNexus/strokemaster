@@ -1,0 +1,325 @@
+{
+  "schema": 1,
+  "host": {
+    "application": "Adobe Illustrator",
+    "version": "30.7.0",
+    "build": "114R",
+    "platform": "Windows x64"
+  },
+  "plugin": {
+    "name": "StrokeMasterRegionProbe",
+    "build": "region-prep-10",
+    "sha256": "d5eda810fe1163e207132f0fee452712d20a7f3045cd043fb63623a350b8e6bf",
+    "bytes": 910336,
+    "coreHeaderSha256": "97f01eb213e30463bd6161ee2341e3725d284182fadff13c2f2092dc0d17ffa7",
+    "coreCppSha256": "3bab6ab77ef58acd9aade359b6f58c5cd7a29cb61f653419d9de1d5979559c42"
+  },
+  "scope": "Native Appearance route for uniform text strokes: two lines of HH, 48 pt on 34 pt leading, black fills, one uniform 40% gray 8 pt stroke, as a character attribute (native) or as one object-level Appearance stroke beneath the characters written by the probe's bridge (no live effect). PDFs: fill-only reference, native, appearance; the appearance AI reopened in fresh processes with the plugin held out, once as is and once after appending a glyph. MuPDF at 600 dpi.",
+  "probes": {
+    "ap-absent-edited": {
+      "status": "DONE",
+      "contents": "HH/HHH",
+      "visibleBounds": "16,214.1318359375,117.88671875,119.9560546875",
+      "pdf": 241313
+    },
+    "ap-absent": {
+      "status": "DONE",
+      "textFrames": 1,
+      "contents": "HH/HH",
+      "pdf": 238553
+    },
+    "ap1": {
+      "status": "DONE",
+      "build": "region-prep-10",
+      "fill.pdf": 233269,
+      "native.pdf": 230767,
+      "appearance.ok": "true",
+      "appearance.status": "{\"gate\":\"styled\",\"frames\":1,\"styled\":1,\"fieldsBefore\":2,\"fieldsAfter\":3,\"contentsBefore\":1,\"contentsAfter\":1}",
+      "appearance.liveText": "true",
+      "appearance.pdf": 238777,
+      "appearance.ai": 239518
+    }
+  },
+  "measurements": {
+    "ap-absent": {
+      "renderer": "MuPDF 1.28.2",
+      "dpi": 600,
+      "thresholds": {
+        "erode_px": 3,
+        "dark_level": 32,
+        "ink_level": 250,
+        "tolerance_levels": 8
+      },
+      "fill_sha256": "41b56d18dffaba15176ac8821832991412d3d5d5235e74b735167c3057b8f144",
+      "files": {
+        "ap1-native.pdf": {
+          "sha256": "a0c79110eaab17b93a6c4f7f217eb8f8db7b1ffdbf36adff733b3e11a3a39af4",
+          "core_px": 72080,
+          "core_damaged_px": 72080,
+          "core_mean_level": 153.0,
+          "ink_xor_px": 0,
+          "outside_changed_px": 0,
+          "strokes_before_fills": false,
+          "text_chars": 11,
+          "fonts": 1
+        },
+        "ap-absent.pdf": {
+          "sha256": "2c6e58845a0f156b9506e0d977479c2d7e4fa15fb5bacce11b5ee8c00723b362",
+          "core_px": 72080,
+          "core_damaged_px": 0,
+          "core_mean_level": 0.0,
+          "ink_xor_px": 0,
+          "outside_changed_px": 0,
+          "strokes_before_fills": true,
+          "text_chars": 11,
+          "fonts": 1
+        }
+      }
+    },
+    "ap1": {
+      "renderer": "MuPDF 1.28.2",
+      "dpi": 600,
+      "thresholds": {
+        "erode_px": 3,
+        "dark_level": 32,
+        "ink_level": 250,
+        "tolerance_levels": 8
+      },
+      "fill_sha256": "41b56d18dffaba15176ac8821832991412d3d5d5235e74b735167c3057b8f144",
+      "files": {
+        "ap1-native.pdf": {
+          "sha256": "a0c79110eaab17b93a6c4f7f217eb8f8db7b1ffdbf36adff733b3e11a3a39af4",
+          "core_px": 72080,
+          "core_damaged_px": 72080,
+          "core_mean_level": 153.0,
+          "ink_xor_px": 0,
+          "outside_changed_px": 0,
+          "strokes_before_fills": false,
+          "text_chars": 11,
+          "fonts": 1
+        },
+        "ap1-appearance.pdf": {
+          "sha256": "3effce87b9bc6895ad1d7137073748ac516e2d1b1643e2f0458f193ff2d2e3e0",
+          "core_px": 72080,
+          "core_damaged_px": 0,
+          "core_mean_level": 0.0,
+          "ink_xor_px": 0,
+          "outside_changed_px": 0,
+          "strokes_before_fills": true,
+          "text_chars": 11,
+          "fonts": 1
+        }
+      }
+    }
+  },
+  "pdfs": {
+    "ap-absent-edited.pdf": {
+      "sha256": "81ccfe43a95e494fc1740932c24bd2442b9e1dad2b8d0eea24bfb37d40c22676",
+      "bytes": 241313,
+      "extractedTextChars": 13,
+      "fonts": 1,
+      "drawings": [],
+      "operatorCounts": {
+        "BT": 2,
+        "ET": 2,
+        "G": 1,
+        "M": 1,
+        "Q": 1,
+        "Td": 2,
+        "Tf": 2,
+        "Tj": 4,
+        "Tm": 2,
+        "Tr": 2,
+        "W": 1,
+        "gs": 2,
+        "n": 1,
+        "q": 1,
+        "re": 1,
+        "w": 1
+      },
+      "paintSequence": [
+        "q",
+        "path",
+        "W",
+        "n",
+        "BT",
+        "Tr1",
+        "Tj",
+        "Tj",
+        "Tr0",
+        "Tj",
+        "ET",
+        "Q",
+        "BT",
+        "Tj",
+        "ET"
+      ]
+    },
+    "ap-absent.pdf": {
+      "sha256": "2c6e58845a0f156b9506e0d977479c2d7e4fa15fb5bacce11b5ee8c00723b362",
+      "bytes": 238553,
+      "extractedTextChars": 11,
+      "fonts": 1,
+      "drawings": [],
+      "operatorCounts": {
+        "BT": 2,
+        "ET": 2,
+        "G": 1,
+        "M": 1,
+        "Q": 1,
+        "Td": 2,
+        "Tf": 2,
+        "Tj": 4,
+        "Tm": 2,
+        "Tr": 2,
+        "W": 1,
+        "gs": 2,
+        "n": 1,
+        "q": 1,
+        "re": 1,
+        "w": 1
+      },
+      "paintSequence": [
+        "q",
+        "path",
+        "W",
+        "n",
+        "BT",
+        "Tr1",
+        "Tj",
+        "Tj",
+        "Tr0",
+        "Tj",
+        "ET",
+        "Q",
+        "BT",
+        "Tj",
+        "ET"
+      ]
+    },
+    "ap1-appearance.pdf": {
+      "sha256": "3effce87b9bc6895ad1d7137073748ac516e2d1b1643e2f0458f193ff2d2e3e0",
+      "bytes": 238777,
+      "extractedTextChars": 11,
+      "fonts": 1,
+      "drawings": [],
+      "operatorCounts": {
+        "BT": 2,
+        "ET": 2,
+        "G": 1,
+        "M": 1,
+        "Q": 1,
+        "Td": 2,
+        "Tf": 2,
+        "Tj": 4,
+        "Tm": 2,
+        "Tr": 2,
+        "W": 1,
+        "gs": 2,
+        "n": 1,
+        "q": 1,
+        "re": 1,
+        "w": 1
+      },
+      "paintSequence": [
+        "q",
+        "path",
+        "W",
+        "n",
+        "BT",
+        "Tr1",
+        "Tj",
+        "Tj",
+        "Tr0",
+        "Tj",
+        "ET",
+        "Q",
+        "BT",
+        "Tj",
+        "ET"
+      ]
+    },
+    "ap1-fill.pdf": {
+      "sha256": "41b56d18dffaba15176ac8821832991412d3d5d5235e74b735167c3057b8f144",
+      "bytes": 233269,
+      "extractedTextChars": 5,
+      "fonts": 1,
+      "drawings": [],
+      "operatorCounts": {
+        "BT": 2,
+        "ET": 2,
+        "Q": 1,
+        "Tf": 2,
+        "Tj": 2,
+        "Tm": 2,
+        "W": 1,
+        "gs": 2,
+        "n": 1,
+        "q": 1,
+        "re": 1
+      },
+      "paintSequence": [
+        "q",
+        "path",
+        "W",
+        "n",
+        "BT",
+        "Tj",
+        "ET",
+        "Q",
+        "BT",
+        "Tj",
+        "ET"
+      ]
+    },
+    "ap1-native.pdf": {
+      "sha256": "a0c79110eaab17b93a6c4f7f217eb8f8db7b1ffdbf36adff733b3e11a3a39af4",
+      "bytes": 230767,
+      "extractedTextChars": 11,
+      "fonts": 1,
+      "drawings": [],
+      "operatorCounts": {
+        "BT": 3,
+        "ET": 3,
+        "G": 2,
+        "M": 2,
+        "Q": 2,
+        "T*": 1,
+        "Tf": 2,
+        "Tj": 4,
+        "Tm": 3,
+        "Tr": 2,
+        "W": 2,
+        "gs": 2,
+        "n": 2,
+        "q": 2,
+        "re": 2,
+        "w": 2
+      },
+      "paintSequence": [
+        "q",
+        "path",
+        "W",
+        "n",
+        "BT",
+        "Tj",
+        "Tr1",
+        "Tj",
+        "ET",
+        "Q",
+        "BT",
+        "Tj",
+        "ET",
+        "q",
+        "path",
+        "W",
+        "n",
+        "BT",
+        "Tr1",
+        "Tj",
+        "ET",
+        "Q"
+      ]
+    }
+  }
+}
