@@ -6,6 +6,8 @@ SDK and source investigation, September 12–13, 2026. The supervisor independen
 
 “Not established” is a finite conclusion about the inspected SDK, not proof that Adobe has no other extension or private implementation. The smallest unresolved public lead is the dispatch behavior of `kBeforeFrameText`. Its name alone does not establish that returning true suppresses text, much less only its stroke.
 
+**Resolved 2026-09-26 in the host:** InDesign 21.5.1 never dispatches `kBeforeFrameText` or `kBeforeFrameForeground`, in screen, PDF, PNG, EPS, print, or background export, and returning handled for them changes nothing. `kDrawShapeMessage` does veto a whole page item. See [CROSS_FRAME_RESEARCH_2026-09-26.md](../CROSS_FRAME_RESEARCH_2026-09-26.md#4-candidate-host-apis).
+
 ## Evidence boundary
 
 The SDK inspected is the local *Adobe InDesign 2026 SDK* under the sibling *Adobe SDK* directory. References below use exact one-based physical header/source lines. The generated SDK HTML is supplemental; its object-model pages describe implementation assignments but do not expose Adobe’s native text renderer body. Repository HEAD is `fb15301d2b7e2d12998aafc2d112fdb80d95820d`; the audit reads the current modified working tree, not just HEAD. The inspected *IseFillRepaintAdornment.cpp* SHA-256 is `EC036C16EED2277DE8BCBAD671F24DF67745F7E7B48893C2C25F29BFEAEB7948`.

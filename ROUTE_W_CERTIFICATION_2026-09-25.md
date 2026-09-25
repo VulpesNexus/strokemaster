@@ -16,6 +16,13 @@ Statuses: **CERTIFIED** (repeated in two route W sessions, with the native contr
 
 **ROUTE_W_CROSS_FRAME: UNSUPPORTED.** Strokes of one frame over another frame's fills are not reordered, and that includes the frames of one threaded story.
 
+**Addendum, 2026-09-26.** The cross-frame sprint ([CROSS_FRAME_RESEARCH_2026-09-26.md](CROSS_FRAME_RESEARCH_2026-09-26.md)) corrected two boundaries of this certification:
+
+- **Parcel, not frame.** Route W's scope is the parcel: two columns of one frame are separate, and their overlap stays native (2,461 pixels).
+- **Background export.** Every PDF measured here was exported in the foreground by script. File > Export > Adobe PDF exports in the background by default, and the certified build, a UI plugin, is not loaded on that thread, so that export is drawn natively.
+
+Route X (`1e7c417e…`), a model plugin, extends the correction across the frames and columns of one story and also runs in background export. Everything certified here holds for it unchanged.
+
 **STROKEMASTER_MITER: OUT_OF_SCOPE, unchanged.** **STROKEMASTER_CENTER_ALIGNMENT: OUT_OF_SCOPE, unchanged.**
 
 ## 2. Binary and build identity
