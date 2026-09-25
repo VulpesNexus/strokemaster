@@ -5,8 +5,6 @@
 #include <iostream>
 #include <limits>
 #include <stdexcept>
-#include <utility>
-#include <vector>
 
 using namespace ise_stroke_behind;
 static int checks = 0;
@@ -17,16 +15,24 @@ static void Check(bool condition, const char* message)
 }
 
 namespace {
+const std::uint32_t kNone = 1;
 struct Wax { std::uint32_t stroke; };
 Fingerprint Print(std::uint32_t fill, int glyphs, std::int64_t x)
 {
     Fingerprint f; f.fillPaint = fill; f.widthMicro = 8000000; f.glyphCount = glyphs; f.xMicro = x; f.yMicro = 0;
     return f;
 }
-// Every write through a stored pointer is logged, so tests can prove which pointers
-// were dereferenced.
-std::vector<std::pair<void*, std::uint32_t>> writes;
-void Set(void* data, std::uint32_t paint) { writes.push_back({data, paint}); static_cast<Wax*>(data)->stroke = paint; }
+// One visit of either pass, as the glue performs it: recover through the current pointer.
+bool Visit(Ledger& l, Wax& w, const Fingerprint& p)
+{
+    return l.Recover(&w, &w, p, w.stroke == kNone, [&](std::uint32_t paint) { w.stroke = paint; });
+}
+// The stroke pass after recovery: mute an eligible run.
+void MuteRun(Ledger& l, Wax& w, const Fingerprint& p)
+{
+    Check(l.Mute(&w, &w, p, w.stroke), "mute recorded");
+    w.stroke = kNone;
+}
 }
 
 int main()
@@ -44,76 +50,51 @@ int main()
         Check(!Eligible(Alignment::Outside, 8, Method::FillOnly), "no stroke, nothing to move");
         Check(!Eligible(Alignment::Outside, 8, Method::None), "nothing painted, nothing to move");
 
-        const int parcelA = 0, parcelB = 0;
-        const void* A = &parcelA; const void* B = &parcelB;
-        {   // One ordinary draw: per-run restore plus the end-of-draw fallback.
-            Ledger l; writes.clear();
-            Wax r1{11}, r2{12};
-            Check(!l.Mute(&r1, &r1, Print(1, 2, 0), 11, A), "no mute outside an open draw");
-            Check(l.BeginDraw(A), "draw opens");
-            Check(l.Mute(&r1, &r1, Print(1, 2, 0), 11, A) && l.Mute(&r2, &r2, Print(1, 2, 5), 12, A), "two mutes");
-            Check(!l.Mute(&r1, &r1, Print(1, 2, 0), 11, A), "a run is muted once per draw");
-            Check(l.IsMutedNow(&r1) && l.IsMutedNow(&r2), "both muted now");
-            Check(!l.Restore(&r1, &r2, Print(1, 2, 0), [](std::uint32_t) {}), "restore refuses another pointer");
-            Check(!l.Restore(&r1, &r1, Print(9, 2, 0), [](std::uint32_t) {}), "restore refuses another fingerprint");
-            std::uint32_t got = 0;
-            Check(l.Restore(&r1, &r1, Print(1, 2, 0), [&](std::uint32_t p) { got = p; }) && got == 11, "per-run restore");
-            Check(l.EndDraw(A, Set) == 1 && writes.size() == 1 && writes[0].first == &r2 && r2.stroke == 12,
-                  "fallback restores only what is left of this draw");
-            Check(l.Size() == 0 && l.OpenDraws() == 0, "draw closed, nothing left");
+        {   // An ordinary draw: stroke pass mutes, Foreground pass restores.
+            Ledger l; Wax r{11};
+            Check(!Visit(l, r, Print(1, 2, 0)), "nothing to recover before the first mute");
+            MuteRun(l, r, Print(1, 2, 0));
+            Check(r.stroke == kNone && l.IsRecorded(&r), "muted for the Text pass");
+            Check(Visit(l, r, Print(1, 2, 0)) && r.stroke == 11 && l.Size() == 0, "Foreground restores and forgets");
         }
-        {   // A frame anchored in text is drawn inside its host's Text pass.
-            Ledger l; writes.clear();
-            Wax a1{21}, b1{31};
-            l.BeginDraw(A); l.Mute(&a1, &a1, Print(1, 1, 0), 21, A);
-            l.BeginDraw(B); l.Mute(&b1, &b1, Print(2, 1, 0), 31, B);
-            Check(l.EndDraw(B, Set) == 1 && writes.back().first == &b1, "inner draw restores its own run");
-            Check(l.IsMutedNow(&a1), "outer run still muted, its draw still open");
-            Check(l.Restore(&a1, &a1, Print(1, 1, 0), [](std::uint32_t) {}), "outer run restored by its own pass");
-            Check(l.EndDraw(A, Set) == 0 && writes.size() == 1, "nothing else written");
+        {   // The Foreground visit never came: the next draw's first visit restores first.
+            Ledger l; Wax r{12};
+            MuteRun(l, r, Print(1, 2, 0));
+            Check(Visit(l, r, Print(1, 2, 0)) && r.stroke == 12 && l.recovered == 1, "next draw recovers the paint");
+            MuteRun(l, r, Print(1, 2, 0));
+            Check(Visit(l, r, Print(1, 2, 0)) && r.stroke == 12, "and the cycle continues normally");
         }
-        {   // An interrupted draw: the record is healed through the host's current pointer.
-            Ledger l; writes.clear();
-            Wax r1{41};
-            l.BeginDraw(A); l.Mute(&r1, &r1, Print(1, 3, 0), 41, A); r1.stroke = 0; // muted, never restored
-            l.BeginDraw(A); // the same frame drawn again: the earlier draw is abandoned
-            Check(!l.IsMutedNow(&r1), "the abandoned mute is not part of the open draw");
-            std::uint32_t got = 0;
-            Check(l.Heal(&r1, Print(1, 3, 0), [&](std::uint32_t p) { got = p; r1.stroke = p; }) && got == 41 && l.healed == 1,
-                  "healed with the recorded paint");
-            Check(l.EndDraw(A, Set) == 0 && writes.empty(), "no stored pointer from the abandoned draw was written");
+        {   // Recomposed after an interrupted draw, with a new stroke color, same address and
+            // fingerprint: the record must not overwrite the new paint.
+            Ledger l; Wax r{13};
+            MuteRun(l, r, Print(1, 2, 0));
+            r.stroke = 99; // fresh wax carrying the user's new stroke
+            Check(!Visit(l, r, Print(1, 2, 0)) && r.stroke == 99 && l.staleDropped == 1 && l.Size() == 0,
+                  "a run that already has a stroke is never written");
         }
-        {   // An interrupted draw followed by a recomposition: the address now holds other wax.
-            Ledger l; writes.clear();
-            Wax r1{51};
-            l.BeginDraw(A); l.Mute(&r1, &r1, Print(1, 3, 0), 51, A);
-            l.BeginDraw(A);
+        {   // Other wax at the same run address: a different render-data pointer or print.
+            Ledger l; Wax r{14}, other{kNone};
+            MuteRun(l, r, Print(1, 2, 0));
             bool applied = false;
-            Check(!l.Heal(&r1, Print(1, 4, 0), [&](std::uint32_t) { applied = true; }) && !applied && l.staleDropped == 1,
-                  "a stale record is dropped, not applied");
-            Check(l.Size() == 0, "stale record gone");
-            Check(l.EndDraw(A, Set) == 0 && writes.empty(), "nothing written");
+            Check(!l.Recover(&r, &other, Print(1, 2, 0), true, [&](std::uint32_t) { applied = true; }) && !applied,
+                  "another render-data pointer is not the recorded wax");
+            MuteRun(l, r, Print(1, 2, 0));
+            Check(!l.Recover(&r, &r, Print(1, 3, 0), true, [&](std::uint32_t) { applied = true; }) && !applied,
+                  "another fingerprint is not the recorded wax");
+            Check(l.Size() == 0 && l.staleDropped == 2, "both stale records dropped");
         }
-        {   // A stale record is never written by another parcel's fallback either.
-            Ledger l; writes.clear();
-            Wax r1{61}, r2{62};
-            l.BeginDraw(A); l.Mute(&r1, &r1, Print(1, 1, 0), 61, A);
-            l.BeginDraw(A); // abandon
-            l.BeginDraw(B); l.Mute(&r2, &r2, Print(1, 1, 0), 62, B);
-            Check(l.EndDraw(B, Set) == 1 && writes.size() == 1 && writes[0].first == &r2, "only B's own record");
-            Check(l.EndDraw(A, Set) == 0 && writes.size() == 1, "A's abandoned record untouched");
-            Check(l.Size() == 1, "abandoned record waits for a heal or a drop");
+        {   // A new mute replaces an older record for the same run.
+            Ledger l; Wax r{15};
+            Check(l.Mute(&r, &r, Print(1, 2, 0), 15) && l.Mute(&r, &r, Print(1, 2, 0), 16) && l.Size() == 1,
+                  "one record per run");
         }
-        {   // Heal refuses records of an open draw: those belong to the per-run restore.
+        {   // The record cap: beyond it, runs are left to native drawing.
             Ledger l;
-            Wax r1{71};
-            l.BeginDraw(A); l.Mute(&r1, &r1, Print(1, 1, 0), 71, A);
-            Check(!l.Heal(&r1, Print(1, 1, 0), [](std::uint32_t) {}), "no heal inside the open draw");
-        }
-        {   // Caps.
-            Ledger l;
-            for (std::size_t i = 0; i < Ledger::kMaxOpen; ++i) Check(l.BeginDraw(reinterpret_cast<const void*>(i + 1)), "open");
-            Check(!l.BeginDraw(reinterpret_cast<const void*>(Ledger::kMaxOpen + 7)) && l.overflow == 1, "open cap");
+            static int keys[Ledger::kMaxRecords + 1];
+            for (std::size_t i = 0; i < Ledger::kMaxRecords; ++i)
+                Check(l.Mute(&keys[i], &keys[i], Print(1, 1, 0), 2), "under the cap");
+            Check(!l.Mute(&keys[Ledger::kMaxRecords], &keys[Ledger::kMaxRecords], Print(1, 1, 0), 2) && l.overflow == 1,
+                  "the cap refuses, so the caller must not mute");
         }
         std::cout << "PASS: " << checks << " stroke-behind core checks; no host execution.\n";
         return 0;

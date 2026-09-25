@@ -3,13 +3,13 @@
 // EXPERIMENTAL; see IseStrokeBehindCore.h for the mechanism and its pointer-safety rules.
 //
 // Two global text adornments:
-//   IseStrokeBehindAdornment  Background pass. For each eligible run (Outside stroke,
+//   IseStrokeBehindAdornment  A pass before Text. For each eligible run (Outside stroke,
 //                             nonzero weight, stroke paint present), strokes the run's glyph
 //                             outlines at twice the weight with the run's own stroke
 //                             rendering object, join, and miter limit, then records the
 //                             run's stroke paint and sets it to [None] in the run's wax.
-//   IseStrokeRestoreAdornment Foreground pass. Restores each recorded run, and at the end of
-//                             the parcel's pass restores anything this draw left muted.
+//   IseStrokeRestoreAdornment Foreground pass. Restores each recorded run; the stroke
+//                             adornment restores any run left muted before deciding.
 // Native text then draws the muted runs as fill only, in the Text pass, above every stroke
 // of the frame. Center strokes and everything else are left to native drawing. The
 // document's attributes are never changed, so without this plugin the same document draws
@@ -17,8 +17,10 @@
 // PDF keeps its searchable text and fonts.
 //
 // Not yet established by host evidence: that the Text pass honors the muted paint on every
-// output path (screen, PDF, print, EPS), that no other consumer reads the wax between the
-// passes, and underline/strikethrough ordering relative to the moved strokes.
+// output path (screen, PDF, print, EPS); that no other consumer reads or copies the wax
+// between the passes (saving, a background export snapshot); that the Foreground pass
+// visits every muted run (if not, the next draw restores it first); and strikethrough
+// ordering relative to the moved strokes.
 //========================================================================================
 #include "VCPlugInHeaders.h"
 
@@ -128,23 +130,21 @@ Fingerprint PrintOf(const IWaxRun* run, const IWaxRenderData* data, const IWaxGl
     return f;
 }
 
-// Gives a run back its stroke paint if an interrupted draw left it muted, then decides
-// eligibility from the run as it now is.
-bool HealAndDecide(const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs, IDataBase** dbOut)
+// Gives a run back its stroke paint if route W left it muted (the Foreground visit of an
+// earlier draw did not happen, or this is that visit), through the host's current pointer.
+void Recover(const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs, IDataBase* db)
 {
-    if (run == nil || data == nil || glyphs == nil) return false;
-    IDataBase* db = run->GetDataBase();
-    if (db == nil) return false;
     IWaxRenderData* mutableData = const_cast<IWaxRenderData*>(data);
-    ThreadLedger().Heal(run, PrintOf(run, data, glyphs),
-                        [&](std::uint32_t paint) { mutableData->SetColorUID(kTrue, UID(paint)); });
-    if (dbOut) *dbOut = db;
-    return Eligible(AlignmentOf(data), ToDouble(data->GetOutlineWidth()), MethodOf(data, db));
+    const bool strokeIsNone = data->GetColorUID(kTrue) == Utils<ISwatchUtils>()->GetNoneSwatchUID(db);
+    ThreadLedger().Recover(run, data, PrintOf(run, data, glyphs), strokeIsNone,
+                           [&](std::uint32_t paint) { mutableData->SetColorUID(kTrue, UID(paint)); });
 }
 
 } // namespace
 
-/** Background pass: draws eligible runs' strokes and mutes them for the Text pass. */
+/** Pass before Text: draws eligible runs' strokes and mutes them for the Text pass.
+    Asked about every run (GetCheckCouldDraw is kFalse) and decides in Draw, because the
+    SDK promises nothing about when GetCouldDraw is asked. */
 class IseStrokeBehindAdornment : public CPMUnknown<IGlobalTextAdornment>
 {
 public:
@@ -152,42 +152,31 @@ public:
     {
         OutputDebugStringA(kIseStrokeBehindLoaded);
     }
-    /** Late in each run's Background visit, after that run's shading and underline. */
+    /** Background + 0.95 truncates to a pass of its own (DrawPriority::GetPass), after the
+        frame's Background pass (shading, underlines) and before its Text pass. */
     virtual Text::DrawPriority GetDrawPriority() { return Text::DrawPriority(Text::kTAPassPriBackground + 0.95); }
     virtual bool16 GetCheckIsActive() { return kTrue; }
     virtual bool16 GetIsActive(const IParcelShape* parcel, const ITextOptions*, int32) { return parcel != nil; }
-    virtual bool16 GetCheckCouldDraw() { return kTrue; }
-    virtual bool16 GetCouldDraw(const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs)
-    {
-        return HealAndDecide(run, data, glyphs, nil);
-    }
+    virtual bool16 GetCheckCouldDraw() { return kFalse; }
+    virtual bool16 GetCouldDraw(const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) { return kTrue; }
     /** The moved stroke occupies the ink the run's native Outside stroke already claims. */
     virtual bool16 GetHasInkBounds() { return kFalse; }
     virtual void GetInkBounds(PMRect*, const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) {}
-    virtual void StartOfParcelDraw(GraphicsData*, int32, const IParcelShape* parcel)
-    {
-        tParcelOpen = parcel != nil && ThreadLedger().BeginDraw(parcel);
-        tParcel = parcel;
-    }
+    virtual void StartOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
     virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
     virtual void Draw(GraphicsData* gd, int32 flags, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs);
-private:
-    // The service boss is shared by every thread that draws, so the open parcel is kept
-    // per thread, like the ledger.
-    static thread_local const IParcelShape* tParcel;
-    static thread_local bool tParcelOpen;
 };
-
-thread_local const IParcelShape* IseStrokeBehindAdornment::tParcel = nil;
-thread_local bool IseStrokeBehindAdornment::tParcelOpen = false;
 
 CREATE_PMINTERFACE(IseStrokeBehindAdornment, kIseStrokeBehindAdornmentImpl)
 
 void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run, const IWaxRenderData* data,
                                     const IWaxGlyphs* glyphs)
 {
-    IDataBase* db = nil;
-    if (!tParcelOpen || gd == nil || !HealAndDecide(run, data, glyphs, &db)) return;
+    if (gd == nil || run == nil || data == nil || glyphs == nil) return;
+    IDataBase* db = run->GetDataBase();
+    if (db == nil) return;
+    Recover(run, data, glyphs, db);
+    if (!Eligible(AlignmentOf(data), ToDouble(data->GetOutlineWidth()), MethodOf(data, db))) return;
     IGraphicsPort* port = gd->GetGraphicsPort();
     const int32 count = glyphs->GetGlyphCount();
     const Text::GlyphID* ids = glyphs->PeekGlyphArray();
@@ -203,8 +192,7 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     if (instance == nil || stroke == nil || none == kInvalidUID) return;
     // Record before drawing: if the record cannot be kept, draw nothing and leave the run
     // to native drawing, rather than draw a stroke that native text would draw again.
-    const Fingerprint print = PrintOf(run, data, glyphs);
-    if (!ThreadLedger().Mute(run, mutableData, print, strokePaint.Get(), tParcel)) return;
+    if (!ThreadLedger().Mute(run, data, PrintOf(run, data, glyphs), strokePaint.Get())) return;
     {
         AutoGSave save(port);
         stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
@@ -236,7 +224,8 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     mutableData->SetColorUID(kTrue, none);
 }
 
-/** Foreground pass: gives every muted run its stroke paint back. */
+/** Foreground pass: gives every muted run its stroke paint back. Asked about every run
+    and decides in Draw, like the stroke adornment. */
 class IseStrokeRestoreAdornment : public CPMUnknown<IGlobalTextAdornment>
 {
 public:
@@ -245,27 +234,18 @@ public:
     virtual Text::DrawPriority GetDrawPriority() { return Text::DrawPriority(Text::kTAPassPriForeground + 0.99); }
     virtual bool16 GetCheckIsActive() { return kTrue; }
     virtual bool16 GetIsActive(const IParcelShape* parcel, const ITextOptions*, int32) { return parcel != nil; }
-    virtual bool16 GetCheckCouldDraw() { return kTrue; }
-    virtual bool16 GetCouldDraw(const IWaxRun* run, const IWaxRenderData*, const IWaxGlyphs*)
-    {
-        return run != nil && ThreadLedger().IsMutedNow(run);
-    }
+    virtual bool16 GetCheckCouldDraw() { return kFalse; }
+    virtual bool16 GetCouldDraw(const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) { return kTrue; }
     virtual bool16 GetHasInkBounds() { return kFalse; }
     virtual void GetInkBounds(PMRect*, const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) {}
     virtual void StartOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
-    virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape* parcel)
-    {
-        if (parcel == nil) return;
-        ThreadLedger().EndDraw(parcel, [](void* data, std::uint32_t paint) {
-            static_cast<IWaxRenderData*>(data)->SetColorUID(kTrue, UID(paint));
-        });
-    }
+    virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
     virtual void Draw(GraphicsData*, int32, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs)
     {
-        if (run == nil || data == nil) return;
-        IWaxRenderData* mutableData = const_cast<IWaxRenderData*>(data);
-        ThreadLedger().Restore(run, mutableData, PrintOf(run, data, glyphs),
-                               [&](std::uint32_t paint) { mutableData->SetColorUID(kTrue, UID(paint)); });
+        if (run == nil || data == nil || glyphs == nil) return;
+        IDataBase* db = run->GetDataBase();
+        if (db == nil) return;
+        Recover(run, data, glyphs, db);
     }
 };
 
