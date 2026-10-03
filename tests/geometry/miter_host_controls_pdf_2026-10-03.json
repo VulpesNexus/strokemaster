@@ -1,0 +1,3706 @@
+{
+ "schema": 1,
+ "status": "PDF_MEASURED_WITH_FAILURES",
+ "host": "21.6.0.57",
+ "run": "miter-controls-1791013114285",
+ "dpi": 1200,
+ "tolerances": {
+  "areaPt2": 0.5,
+  "boundsPt": 0.12
+ },
+ "renderers": {
+  "mupdf": "1.28.2",
+  "poppler": "pdftoppm version 20.08.0",
+  "ghostscript": "9.23",
+  "indesign": "InDesign PNG export, 1200 ppi, anti-aliased"
+ },
+ "hashes": {
+  "controls.pdf": "b7977981568c638d4640158a9eee389541b8977573915614039d33b0805953cc",
+  "controls.json": "98f5621fda835424ecc3f994cd8e8fa1b08a02ce3459cd5f7df641edb59537bf",
+  "tools/measure_miter_controls.py": "840b19e2ef865e0c8f58e9526dbe8ecfb9d2cc8ff31d8135c306a8687722bb61"
+ },
+ "summary": {
+  "cases": 42,
+  "operatorsMatch": 42,
+  "allPass": 0,
+  "perRenderer": {
+   "mupdf": 42,
+   "poppler": 42,
+   "ghostscript": 3,
+   "indesign": 2
+  },
+  "edgeOffsetPt": {
+   "mupdf": 0.00011721925133677973,
+   "poppler": 0.0,
+   "ghostscript": 0.008003636363635883,
+   "indesign": -0.008811122994652526
+  },
+  "maxAbsEdgeBiasResidualPt2": {
+   "mupdf": 0.09716844989737197,
+   "poppler": 0.2623552941176257,
+   "ghostscript": 0.17311707400058274,
+   "indesign": 0.16089778301472535
+  }
+ },
+ "cases": [
+  {
+   "id": "MC00",
+   "page": 1,
+   "kind": "segment",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.0,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC01",
+   "page": 2,
+   "kind": "exact-uturn",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.0635294117647,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.06352941176470495,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.06352941176470495
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC02",
+   "page": 3,
+   "kind": "closed-two-anchor",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.00070588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.000705882352932008,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.000705882352932008
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC03",
+   "page": 4,
+   "kind": "segment",
+   "join": "miter",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 1,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 97.06858347057704,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.42477796076938,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 96.97955294117645,
+     "bounds": [
+      -1.4600000000000009,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.08903052940058842,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.09716844989737197
+    },
+    "poppler": {
+     "area": 97.05988235294116,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.008701117635879996,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.008701117635879996
+    },
+    "ghostscript": {
+     "area": 97.60535999999999,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5367765294229514,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.018874148001209456
+    },
+    "indesign": {
+     "area": 96.45471529411763,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6138681764594054,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.0021579189706244506
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC04",
+   "page": 5,
+   "kind": "exact-uturn",
+   "join": "miter",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 1,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 93.53429173528852,
+    "bounds": [
+     -1.5,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 67.71238898038469,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 93.48830117647059,
+     "bounds": [
+      -1.4600000000000009,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.0459905588179339,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.05392775436043941
+    },
+    "poppler": {
+     "area": 93.53301176470588,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.0012799705826438412,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.0012799705826438412
+    },
+    "ghostscript": {
+     "area": 94.07759999999999,
+     "bounds": [
+      -1.5200000000000031,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5433082647114702,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0013629259994056842
+    },
+    "indesign": {
+     "area": 92.94660705882353,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5876846764649883,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.008937511102935503
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC05",
+   "page": 6,
+   "kind": "closed-two-anchor",
+   "join": "miter",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 1,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.00070588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.000705882352932008,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.000705882352932008
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC06",
+   "page": 7,
+   "kind": "segment",
+   "join": "miter",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 2,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 99.0,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 72.0,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 99.00844235294117,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.00844235294117368,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 2.5668449255399767e-06
+    },
+    "poppler": {
+     "area": 99.0,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "ghostscript": {
+     "area": 99.57623999999998,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5762399999999843,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -2.1818181799249103e-05
+    },
+    "indesign": {
+     "area": 98.3316988235294,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6683011764706066,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.033900320855624666
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC07",
+   "page": 8,
+   "kind": "exact-uturn",
+   "join": "miter",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 2,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 94.5,
+    "bounds": [
+     -1.5,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.0,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 94.5080894117647,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.008089411764700571,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 1.283422462769121e-06
+    },
+    "poppler": {
+     "area": 94.5635294117647,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.06352941176470495,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.06352941176470495
+    },
+    "ghostscript": {
+     "area": 95.05223999999998,
+     "bounds": [
+      -1.5200000000000031,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5522399999999834,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -1.0909090892519124e-05
+    },
+    "indesign": {
+     "area": 93.89058352941176,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6094164705882434,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.001448983957219152
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC08",
+   "page": 9,
+   "kind": "closed-two-anchor",
+   "join": "miter",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 2,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.00070588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.000705882352932008,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.000705882352932008
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC09",
+   "page": 10,
+   "kind": "right-angle",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 120.0,
+    "bounds": [
+     -1.5,
+     20.0,
+     -20.0,
+     1.5
+    ],
+    "perimeter": 86.0,
+    "rule": "two 20 pt legs; outer corner filled by the join"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 120.01500705882351,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.01500705882351383,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.004926203208550773
+    },
+    "poppler": {
+     "area": 120.24,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.23999999999999488,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.23999999999999488
+    },
+    "ghostscript": {
+     "area": 120.70031999999999,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.7003199999999907,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.01200727272730473
+    },
+    "indesign": {
+     "area": 119.22312,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": -0.7768800000000056,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.019123422459888295
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC10",
+   "page": 11,
+   "kind": "near-uturn",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": -0.01,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.15,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.51,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.18773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0377364705882286,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": 0.030000000000001137
+    },
+    "poppler": {
+     "area": 90.00777882352939,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.1422211764706134,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": -0.1422211764706134
+    },
+    "ghostscript": {
+     "area": 90.76559999999998,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.6155999999999722,
+     "boundsError": 0.03999999999999204,
+     "pass": false,
+     "edgeBiasResidual": 0.08736000000000388
+    },
+    "indesign": {
+     "area": 89.65151999999999,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.4984800000000149,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": 0.08305411764705184
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC11",
+   "page": 12,
+   "kind": "near-uturn",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": -0.001,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.015,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.501,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.007263529411773106,
+     "boundsError": 0.021000000000003016,
+     "pass": true,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "poppler": {
+     "area": 90.00777882352939,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.00722117647060827,
+     "boundsError": 0.021000000000003016,
+     "pass": true,
+     "edgeBiasResidual": -0.00722117647060827
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5132399999999677,
+     "boundsError": 0.03999999999999204,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5965341176470673,
+     "boundsError": 0.021000000000003016,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC12",
+   "page": 13,
+   "kind": "near-uturn",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": 0.001,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.015,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.5,
+     1.501
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.007263529411773106,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "poppler": {
+     "area": 90.00777882352939,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.00722117647060827,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.00722117647060827
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5132399999999677,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5965341176470673,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC13",
+   "page": 14,
+   "kind": "near-uturn",
+   "join": "miter",
+   "cap": "butt",
+   "epsilon": 0.01,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 0,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.15,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.5,
+     1.51
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.12776470588236,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.022235294117649573,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.029971764705877035
+    },
+    "poppler": {
+     "area": 90.32206588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.17206588235292486,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.17206588235292486
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.3782399999999626,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.15000000000000568
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.7315341176470724,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.15000000000000568
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC14",
+   "page": 15,
+   "kind": "segment",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.0,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC15",
+   "page": 16,
+   "kind": "exact-uturn",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.0635294117647,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.06352941176470495,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.06352941176470495
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC16",
+   "page": 17,
+   "kind": "closed-two-anchor",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.00070588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.000705882352932008,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.000705882352932008
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC17",
+   "page": 18,
+   "kind": "segment",
+   "join": "bevel",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 1,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 97.06858347057704,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.42477796076938,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 96.97955294117645,
+     "bounds": [
+      -1.4600000000000009,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.08903052940058842,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.09716844989737197
+    },
+    "poppler": {
+     "area": 97.05988235294116,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.008701117635879996,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.008701117635879996
+    },
+    "ghostscript": {
+     "area": 97.60535999999999,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5367765294229514,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.018874148001209456
+    },
+    "indesign": {
+     "area": 96.45471529411763,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6138681764594054,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.0021579189706244506
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC18",
+   "page": 19,
+   "kind": "exact-uturn",
+   "join": "bevel",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 1,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 93.53429173528852,
+    "bounds": [
+     -1.5,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 67.71238898038469,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 93.48830117647059,
+     "bounds": [
+      -1.4600000000000009,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.0459905588179339,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.05392775436043941
+    },
+    "poppler": {
+     "area": 93.53301176470588,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.0012799705826438412,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.0012799705826438412
+    },
+    "ghostscript": {
+     "area": 94.07759999999999,
+     "bounds": [
+      -1.5200000000000031,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5433082647114702,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0013629259994056842
+    },
+    "indesign": {
+     "area": 92.94660705882353,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5876846764649883,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.008937511102935503
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC19",
+   "page": 20,
+   "kind": "closed-two-anchor",
+   "join": "bevel",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 1,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.00070588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.000705882352932008,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.000705882352932008
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC20",
+   "page": 21,
+   "kind": "segment",
+   "join": "bevel",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 2,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 99.0,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 72.0,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 99.00844235294117,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.00844235294117368,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 2.5668449255399767e-06
+    },
+    "poppler": {
+     "area": 99.0,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "ghostscript": {
+     "area": 99.57623999999998,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5762399999999843,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -2.1818181799249103e-05
+    },
+    "indesign": {
+     "area": 98.3316988235294,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6683011764706066,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.033900320855624666
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC21",
+   "page": 22,
+   "kind": "exact-uturn",
+   "join": "bevel",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 2,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 94.5,
+    "bounds": [
+     -1.5,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.0,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 94.5080894117647,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.008089411764700571,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 1.283422462769121e-06
+    },
+    "poppler": {
+     "area": 94.5635294117647,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.06352941176470495,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.06352941176470495
+    },
+    "ghostscript": {
+     "area": 95.05223999999998,
+     "bounds": [
+      -1.5200000000000031,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5522399999999834,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -1.0909090892519124e-05
+    },
+    "indesign": {
+     "area": 93.89058352941176,
+     "bounds": [
+      -1.5200000000000031,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6094164705882434,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.001448983957219152
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC22",
+   "page": 23,
+   "kind": "closed-two-anchor",
+   "join": "bevel",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 2,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.00070588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.000705882352932008,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.000705882352932008
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC23",
+   "page": 24,
+   "kind": "right-angle",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 118.875,
+    "bounds": [
+     -1.5,
+     20.0,
+     -20.0,
+     1.5
+    ],
+    "perimeter": 85.12132034355965,
+    "rule": "two 20 pt legs; outer corner filled by the join"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 118.8841976470588,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.009197647058797997,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.0007802103846722627
+    },
+    "poppler": {
+     "area": 119.13735529411763,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.2623552941176257,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.2623552941176257
+    },
+    "ghostscript": {
+     "area": 119.57184,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.6968399999999946,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.015559905177581768
+    },
+    "indesign": {
+     "area": 118.10351999999999,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": -0.771480000000011,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.02146557698568874
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC24",
+   "page": 25,
+   "kind": "near-uturn",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": -0.01,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.15,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.51,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.18773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0377364705882286,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": 0.030000000000001137
+    },
+    "poppler": {
+     "area": 90.00777882352939,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.1422211764706134,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": -0.1422211764706134
+    },
+    "ghostscript": {
+     "area": 90.76559999999998,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.6155999999999722,
+     "boundsError": 0.03999999999999204,
+     "pass": false,
+     "edgeBiasResidual": 0.08736000000000388
+    },
+    "indesign": {
+     "area": 89.65151999999999,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.4984800000000149,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": 0.08305411764705184
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC25",
+   "page": 26,
+   "kind": "near-uturn",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": -0.001,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.015,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.501,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.007263529411773106,
+     "boundsError": 0.021000000000003016,
+     "pass": true,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "poppler": {
+     "area": 90.00777882352939,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.00722117647060827,
+     "boundsError": 0.021000000000003016,
+     "pass": true,
+     "edgeBiasResidual": -0.00722117647060827
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5132399999999677,
+     "boundsError": 0.03999999999999204,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5965341176470673,
+     "boundsError": 0.021000000000003016,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC26",
+   "page": 27,
+   "kind": "near-uturn",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": 0.001,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.015,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.5,
+     1.501
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.007263529411773106,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "poppler": {
+     "area": 90.00777882352939,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.00722117647060827,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.00722117647060827
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5132399999999677,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5965341176470673,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.015000000000000568
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC27",
+   "page": 28,
+   "kind": "near-uturn",
+   "join": "bevel",
+   "cap": "butt",
+   "epsilon": 0.01,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 2,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.15,
+    "bounds": [
+     0.0,
+     30.0,
+     -1.5,
+     1.51
+    ],
+    "perimeter": 66.0,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.12776470588236,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.022235294117649573,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.029971764705877035
+    },
+    "poppler": {
+     "area": 90.32206588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.17206588235292486,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.17206588235292486
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.3782399999999626,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.15000000000000568
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.7315341176470724,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.15000000000000568
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC28",
+   "page": 29,
+   "kind": "segment",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 90.0,
+    "bounds": [
+     -0.0,
+     30.0,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 66.0,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 90.00773647058823,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.007736470588227462,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "poppler": {
+     "area": 90.0,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "ghostscript": {
+     "area": 90.52823999999997,
+     "bounds": [
+      -0.020000000000003126,
+      30.039999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5282399999999683,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    },
+    "indesign": {
+     "area": 89.41846588235293,
+     "bounds": [
+      -0.020000000000003126,
+      29.980000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5815341176470668,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.0
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC29",
+   "page": 30,
+   "kind": "exact-uturn",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 93.53429173528852,
+    "bounds": [
+     0.0,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 67.71238898038469,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 93.4989882352941,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.035303499994412846,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.04324069553691835
+    },
+    "poppler": {
+     "area": 93.5904,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.056108264711483,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.056108264711483
+    },
+    "ghostscript": {
+     "area": 94.056,
+     "bounds": [
+      -0.020000000000003126,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5217082647114779,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.020237074000586608
+    },
+    "indesign": {
+     "area": 92.92510588235294,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6091858529355818,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.012563665367657961
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC30",
+   "page": 31,
+   "kind": "closed-two-anchor",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 97.06858347057704,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.42477796076938,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 96.97955294117645,
+     "bounds": [
+      -1.4600000000000009,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.08903052940058842,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.09716844989737197
+    },
+    "poppler": {
+     "area": 97.05988235294116,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.008701117635879996,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.008701117635879996
+    },
+    "ghostscript": {
+     "area": 97.60535999999999,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5367765294229514,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.018874148001209456
+    },
+    "indesign": {
+     "area": 96.45155294117646,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.61703052940058,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.005320271911799068
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC31",
+   "page": 32,
+   "kind": "segment",
+   "join": "round",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 1,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 97.06858347057704,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.42477796076938,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 96.97955294117645,
+     "bounds": [
+      -1.4600000000000009,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.08903052940058842,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.09716844989737197
+    },
+    "poppler": {
+     "area": 97.05988235294116,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.008701117635879996,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.008701117635879996
+    },
+    "ghostscript": {
+     "area": 97.60535999999999,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5367765294229514,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.018874148001209456
+    },
+    "indesign": {
+     "area": 96.45471529411763,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6138681764594054,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.0021579189706244506
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC32",
+   "page": 33,
+   "kind": "exact-uturn",
+   "join": "round",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 1,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 97.06858347057704,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.42477796076938,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 96.97955294117645,
+     "bounds": [
+      -1.4600000000000009,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.08903052940058842,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.09716844989737197
+    },
+    "poppler": {
+     "area": 97.05988235294116,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.008701117635879996,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.008701117635879996
+    },
+    "ghostscript": {
+     "area": 97.60535999999999,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5367765294229514,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.018874148001209456
+    },
+    "indesign": {
+     "area": 96.45324705882352,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6153364117535176,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.0036261542647366696
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC33",
+   "page": 34,
+   "kind": "closed-two-anchor",
+   "join": "round",
+   "cap": "round",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 1,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 97.06858347057704,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.42477796076938,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 96.97955294117645,
+     "bounds": [
+      -1.4600000000000009,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.08903052940058842,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.09716844989737197
+    },
+    "poppler": {
+     "area": 97.05988235294116,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.008701117635879996,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.008701117635879996
+    },
+    "ghostscript": {
+     "area": 97.60535999999999,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5367765294229514,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.018874148001209456
+    },
+    "indesign": {
+     "area": 96.45155294117646,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.61703052940058,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.005320271911799068
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC34",
+   "page": 35,
+   "kind": "segment",
+   "join": "round",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 2,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 99.0,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 72.0,
+    "rule": "two caps on one 30 pt segment"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 99.00844235294117,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.00844235294117368,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 2.5668449255399767e-06
+    },
+    "poppler": {
+     "area": 99.0,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.0,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.0
+    },
+    "ghostscript": {
+     "area": 99.57623999999998,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5762399999999843,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -2.1818181799249103e-05
+    },
+    "indesign": {
+     "area": 98.3316988235294,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6683011764706066,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.033900320855624666
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC35",
+   "page": 36,
+   "kind": "exact-uturn",
+   "join": "round",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 2,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 98.03429173528852,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 70.71238898038469,
+    "rule": "coincident legs; reversal join beveled unless round; coincident caps"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 97.99934117647058,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.034950558817939736,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.04323941211445558
+    },
+    "poppler": {
+     "area": 98.0904,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.056108264711483,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.056108264711483
+    },
+    "ghostscript": {
+     "area": 98.57999999999998,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5457082647114646,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.02024798309150755
+    },
+    "indesign": {
+     "area": 97.39722352941176,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6370682058767585,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.014012649324877113
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC36",
+   "page": 37,
+   "kind": "closed-two-anchor",
+   "join": "round",
+   "cap": "projecting",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 2,
+    "dash": null,
+    "closed": true,
+    "curves": 0,
+    "closingSegmentWritten": true,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 97.06858347057704,
+    "bounds": [
+     -1.5,
+     31.5,
+     -1.5,
+     1.5
+    ],
+    "perimeter": 69.42477796076938,
+    "rule": "closed reversal; joins at both ends, caps do not apply"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 96.97955294117645,
+     "bounds": [
+      -1.4600000000000009,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.08903052940058842,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.09716844989737197
+    },
+    "poppler": {
+     "area": 97.05988235294116,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.008701117635879996,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.008701117635879996
+    },
+    "ghostscript": {
+     "area": 97.60535999999999,
+     "bounds": [
+      -1.5200000000000031,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5367765294229514,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.018874148001209456
+    },
+    "indesign": {
+     "area": 96.45155294117646,
+     "bounds": [
+      -1.5200000000000031,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.61703052940058,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.005320271911799068
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC37",
+   "page": 38,
+   "kind": "right-angle",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": null,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 119.51714586764426,
+    "bounds": [
+     -1.5,
+     20.0,
+     -20.0,
+     1.5
+    ],
+    "perimeter": 85.35619449019235,
+    "rule": "two 20 pt legs; outer corner filled by the join"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 119.50770352941173,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": -0.00944233823253171,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.01944772744762862
+    },
+    "poppler": {
+     "area": 119.74290352941178,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.225757661767517,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.225757661767517
+    },
+    "ghostscript": {
+     "area": 120.20807999999998,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": 0.6909341323557214,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": 0.007774190272441084
+    },
+    "indesign": {
+     "area": 118.74744,
+     "bounds": [
+      -1.5200000000000031,
+      20.019999999999996,
+      -20.019999999999996,
+      1.5200000000000031
+     ],
+     "areaError": -0.7697058676442623,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.01762193963569525
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC38",
+   "page": 39,
+   "kind": "near-uturn",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": -0.01,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 93.68429173528853,
+    "bounds": [
+     0.0,
+     31.5,
+     -1.51,
+     1.5
+    ],
+    "perimeter": 67.71238898038469,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 93.67898823529411,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.005303499994411709,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": -0.013240695536917216
+    },
+    "poppler": {
+     "area": 93.53349176470587,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.1507999705826535,
+     "boundsError": 0.030000000000003135,
+     "pass": true,
+     "edgeBiasResidual": -0.1507999705826535
+    },
+    "ghostscript": {
+     "area": 94.29551999999998,
+     "bounds": [
+      -0.020000000000003126,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.6112282647114569,
+     "boundsError": 0.03999999999999204,
+     "pass": false,
+     "edgeBiasResidual": 0.06928292599939234
+    },
+    "indesign": {
+     "area": 93.15982588235292,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.5244658529356059,
+     "boundsError": 0.030000000000003135,
+     "pass": false,
+     "edgeBiasResidual": 0.07215633463231796
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC39",
+   "page": 40,
+   "kind": "near-uturn",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": -0.001,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 93.54929173528852,
+    "bounds": [
+     0.0,
+     31.5,
+     -1.501,
+     1.5
+    ],
+    "perimeter": 67.71238898038469,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 93.4989882352941,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.050303499994413414,
+     "boundsError": 0.021000000000003016,
+     "pass": true,
+     "edgeBiasResidual": -0.05824069553691892
+    },
+    "poppler": {
+     "area": 93.53349176470587,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.01579997058264837,
+     "boundsError": 0.021000000000003016,
+     "pass": true,
+     "edgeBiasResidual": -0.01579997058264837
+    },
+    "ghostscript": {
+     "area": 94.056,
+     "bounds": [
+      -0.020000000000003126,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5067082647114773,
+     "boundsError": 0.03999999999999204,
+     "pass": false,
+     "edgeBiasResidual": -0.035237074000587176
+    },
+    "indesign": {
+     "area": 92.92657411764705,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6227176176414702,
+     "boundsError": 0.021000000000003016,
+     "pass": false,
+     "edgeBiasResidual": -0.02609543007354631
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC40",
+   "page": 41,
+   "kind": "near-uturn",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": 0.001,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 93.54929173528852,
+    "bounds": [
+     0.0,
+     31.5,
+     -1.5,
+     1.501
+    ],
+    "perimeter": 67.71238898038469,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 93.4989882352941,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.050303499994413414,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.05824069553691892
+    },
+    "poppler": {
+     "area": 93.53349176470587,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.01579997058264837,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.01579997058264837
+    },
+    "ghostscript": {
+     "area": 94.056,
+     "bounds": [
+      -0.020000000000003126,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.5067082647114773,
+     "boundsError": 0.03999999999999915,
+     "pass": false,
+     "edgeBiasResidual": -0.035237074000587176
+    },
+    "indesign": {
+     "area": 92.92657411764705,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.6227176176414702,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.02609543007354631
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC41",
+   "page": 42,
+   "kind": "near-uturn",
+   "join": "round",
+   "cap": "butt",
+   "epsilon": 0.01,
+   "operators": {
+    "strokeEvents": 1,
+    "width": 3.0,
+    "miterLimit": 4.0,
+    "joinCode": 1,
+    "capCode": 0,
+    "dash": null,
+    "closed": false,
+    "curves": 0,
+    "closingSegmentWritten": false,
+    "vertexDeviation": 0.0,
+    "match": true
+   },
+   "expected": {
+    "area": 93.68429173528853,
+    "bounds": [
+     0.0,
+     31.5,
+     -1.5,
+     1.51
+    ],
+    "perimeter": 67.71238898038469,
+    "rule": "near reversal beveled unless round; sliver 15|eps|; O(eps^2) neglected"
+   },
+   "renders": {
+    "mupdf": {
+     "area": 93.61901647058822,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.06527526470030409,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": -0.0732124602428096
+    },
+    "poppler": {
+     "area": 93.8477788235294,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": 0.16348708824087055,
+     "boundsError": 0.020000000000003126,
+     "pass": true,
+     "edgeBiasResidual": 0.16348708824087055
+    },
+    "ghostscript": {
+     "area": 94.05312,
+     "bounds": [
+      -0.020000000000003126,
+      31.539999999999992,
+      -1.5399999999999991,
+      1.5200000000000031
+     ],
+     "areaError": 0.3688282647114818,
+     "boundsError": 0.03999999999999915,
+     "pass": true,
+     "edgeBiasResidual": -0.17311707400058274
+    },
+    "indesign": {
+     "area": 92.92677176470588,
+     "bounds": [
+      -0.020000000000003126,
+      31.480000000000004,
+      -1.4799999999999969,
+      1.5200000000000031
+     ],
+     "areaError": -0.7575199705826492,
+     "boundsError": 0.020000000000003126,
+     "pass": false,
+     "edgeBiasResidual": -0.16089778301472535
+    }
+   },
+   "pass": false
+  }
+ ],
+ "limitations": [
+  "Analytic expectations are hand derivations from the PDF stroking rules, not a stroker.",
+  "Coverage area depends on each renderer's anti-aliasing; the tolerance was fixed before measuring.",
+  "Bounds compare 50%-coverage pixels, so a sub-pixel feature narrower than a pixel is not resolved."
+ ]
+}
