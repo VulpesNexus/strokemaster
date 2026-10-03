@@ -1,0 +1,166 @@
+{
+  "schema": 1,
+  "utc": "2026-09-30T00:48:28.078Z",
+  "baselineHead": "b737916f8c8a9948b2ebedf6a389a5cb9f5ab4d9",
+  "installedPluginSha256": "1e7c417e998c4ab8314384d6dc865d81f949b6ed3c7e8d0139da23d5ee3e1ef8",
+  "inputs": {
+    "tools/jsx/miter-host-cases.jsx": "f1f8ea96d8e706d713bbcb19e8bd6d6abb6091ebf9b5b246f7917eca70f7821f",
+    "tools/jsx/probe-miter-host-controls.jsx": "a13f0c5f667e6dac429691ae0e4badae4663719412866e94859759f11a90d55f",
+    "tests/geometry/test_miter_host_controls.js": "8940c11e14894b1b31bd0bd0e3010d1c80a9837eef42d4771818ef2c13770f61",
+    "tools/jsx/ise-clip-miter.jsx": "cc15480858035e1033a0e201aeb4d116d6ee84db92e1f90d9cc49e8527944928",
+    "tools/jsx/ise-lib.jsx": "8e33bf2264dd97efaf4506b5fc650791fa68fefc9cbf5fe9c6637007805b6139",
+    "build/takeover/extreme.json": "ee3e508b3f8b992ac5646b3de1b7e7f28d3488b99ae9cd90c771aed84e3290e3"
+  },
+  "status": "IN_PROCESS_TESTS_ONLY",
+  "checks": [
+    {
+      "name": "42 unique controls",
+      "passed": true
+    },
+    {
+      "name": "join/cap census",
+      "passed": true
+    },
+    {
+      "name": "exact reversal and closed degeneracy are separate inputs",
+      "passed": true
+    },
+    {
+      "name": "near reversal has both signs at two scales",
+      "passed": true
+    },
+    {
+      "name": "ASCII and syntax",
+      "passed": true
+    },
+    {
+      "name": "successful export double restores owner state",
+      "passed": true
+    },
+    {
+      "name": "host geometry refusal remains in census",
+      "passed": true
+    },
+    {
+      "name": "host normalization is recorded instead of accepted as requested geometry",
+      "passed": true
+    },
+    {
+      "name": "style failure cannot become a geometry pass",
+      "passed": true
+    },
+    {
+      "name": "export failure restores state and cannot pass",
+      "passed": true
+    },
+    {
+      "name": "zero-fill-area contours can still have extent",
+      "passed": true
+    },
+    {
+      "name": "two-anchor curved loops are not classified by cardinality",
+      "passed": true
+    },
+    {
+      "name": "exact determinant survives rounded-product cancellation",
+      "passed": true
+    },
+    {
+      "name": "existing JSX still refuses exact reversals in every join mode",
+      "passed": true
+    },
+    {
+      "name": "retained benchmark failure census reproduced",
+      "passed": true
+    }
+  ],
+  "passed": 15,
+  "nativeExecuted": false,
+  "extraction": {
+    "status": "EXTRACTION_GEOMETRY_ONLY",
+    "counts": {
+      "contours": 3336,
+      "twoAnchor": 128,
+      "twoAnchorCollinear": 12,
+      "twoAnchorNoncollinear": 116,
+      "collinearClosed": 47,
+      "collinearClosedWithExtent": 47
+    },
+    "collinearClosedIndices": [
+      100,
+      125,
+      220,
+      327,
+      516,
+      581,
+      781,
+      812,
+      832,
+      844,
+      883,
+      908,
+      918,
+      930,
+      932,
+      994,
+      1051,
+      1171,
+      1201,
+      1241,
+      1245,
+      1468,
+      1498,
+      1568,
+      1697,
+      1722,
+      1817,
+      1921,
+      1997,
+      2041,
+      2047,
+      2295,
+      2318,
+      2378,
+      2391,
+      2432,
+      2500,
+      2507,
+      2609,
+      2624,
+      2629,
+      2693,
+      2702,
+      2939,
+      2965,
+      2991,
+      3013
+    ],
+    "limitations": [
+      "Exact dyadic cross products on extracted binary coordinates only; not a glyph/font mapping.",
+      "Collinear Bezier controls imply zero filled area but do not imply zero stroke ink.",
+      "No contours were removed; native U-turn/cap/closure semantics remain unmeasured."
+    ]
+  },
+  "joins": {
+    "status": "HYPOTHETICAL_LOCAL_JOINS_ONLY",
+    "counts": {
+      "cornerCandidates": 10960,
+      "valid": 10781,
+      "straight": 0,
+      "tiny": 0,
+      "failed": 179,
+      "failedCollinear": 94,
+      "failedOther": 85,
+      "failedTwoAnchor": 24
+    },
+    "errors": {
+      "cusp or unresolved turn: outward side is undefined": 179
+    },
+    "failedContours": 92,
+    "allCollinearContoursHaveFailures": true,
+    "halfWidth": 1.5,
+    "clipRatio": 1.4142135623730951,
+    "nativeExecuted": false
+  },
+  "lastVerification": "Node CLI, 15 checks passed; no Adobe execution"
+}
