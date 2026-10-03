@@ -88,8 +88,14 @@ Session C5 repeats C4 in a fresh process with the candidate (78,848 bytes, `8c1d
 
 Not yet measured for the miter correction: EPS, PostScript, and screen drawing of suite B (they draw the same stroke operators), Center strokes (left to InDesign, spikes included), and real documents. Earlier builds are kept: `301fe06b` in *build/Release-RouteX-301fe06b* and the installer backup *20261003T102150Z-backup*, the research builds beside them.
 
+## Owner verification and decisions
+
+- **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.
+- **Separate stories: only behind a switch.** Correcting one story's stroke over another story's text would need an explicit switch, because separate stories can overlap on purpose (Q26). Until one is designed, they stay as InDesign stacks them.
+- **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and the before and after PDFs (*B-miter - before (spikes, correction off).pdf* from session M0, *B-miter - after (route X 8c1d42aa).pdf* from C5).
+
 ## Next
 
-1. The owner's view of suite B and *cert-X.indd* at 400%, and a real multi-page document.
+1. The owner's look at the miter suite at 400%, on screen and in the before and after PDFs.
 2. EPS, PostScript, and screen checks of the miter correction; a font sweep beyond Minion (sans, script, a variable font) at large Outside weights.
 3. XE2 by hand: whether InDesign's interface threads anchored frames at all.

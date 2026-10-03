@@ -1,20 +1,47 @@
 # Using StrokeMaster
 
-Status, 2026-09-13: these are prototype workflows. The current native InDesign safety build performs no repaint because the earlier overlay changed benign edges, covered decorations, and missed unstroked victims. Use the scripts within their stated scope for current corrections. Uniform and varied split pairs preserve their measured rendering through INDD/IDML round-trips. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the exact tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
 | Your situation | Use | Why |
 | --- | --- | --- |
-| You need one live story with an invisible correction | Native correction is currently unavailable | The safety build leaves Adobe's drawing unchanged while its replacement is investigated. |
-| Someone else opens the file, or you hand over an INDD or IDML | The **split** command, within its supported appearance | Uses ordinary document frames; recipients need no plugin to render them. Fonts, composition, and synchronization still matter. |
-| You export PDF and nothing else | A supported **split** or **outline** workflow, followed by output inspection | These use ordinary document objects. Previously corrected PDFs retain their embedded appearance, but the current native safety build adds no correction. |
+| You work and export on a machine with the plugin | The **plugin** | Strokes are drawn beneath the fills of their story on screen and in every tested export (PDF in the foreground and background, PNG, EPS, PostScript), and interior miter spikes are dropped (measured in PDF and PNG); the text stays live and the document is never changed. |
+| You export PDF and hand that over | The **plugin**, then inspect the PDF | The correction is written into the PDF as vector paths beneath live text; the PDF looks the same everywhere. |
+| Someone else opens the INDD or IDML | The **split** command, within its supported appearance | Without the plugin InDesign draws the document natively, overlaps and spikes included. Split frames are ordinary document objects that need no plugin. |
 | You are converting type to outlines | The **outline** command | Native *Type > Create Outlines* loses the fill and halves the halo. |
 | You have split frames and need to edit the text | **resync**, or **watch** | Splitting makes two stories; these keep them together. |
 
-## Installing
+## The plugin
 
-**Native builds are diagnostics, not an installation recommendation.** Replacing a loaded InDesign binary requires an InDesign restart. The current safety binary deliberately adds no correction. Illustrator's separate diagnostic has unresolved callback and host-lifecycle gates; it is not a miter repair. Native development details are in [the load report](../ILLUSTRATOR_NATIVE_LOAD_REPORT.md) and [the InDesign root-cause report](../UNSTROKED_VICTIM_ROOT_CAUSE.md).
+**What it does.** For every text run with an Outside stroke, the plugin draws the stroke itself, in a pass before the frame's text, and InDesign then draws the run's fill on top. So a line's stroke no longer covers another line's fill: within a frame, across the columns of a frame, and across the threaded frames of one story. A run with a Miter join is stroked with bevel joins, and only the corners whose join points away from the letter get their miter back, with the run's own miter limit, so no miter tip can poke through a thin part of a letter. Nothing is written into the document; the same file opens and draws natively on a machine without the plugin.
+
+**Where it stops, on purpose or for now:**
+
+- **Separate stories are left as InDesign stacks them.** One story's stroke over another story's text looks the same as a deliberate halo, so it is not changed. A correction there would need a switch, and none exists yet.
+- **Center strokes are left to InDesign**, miter spikes included.
+- **Content drawn between two frames of a story** (an unrelated filled or stroked object stacked between them) keeps InDesign's order where it covers a letter; invisible objects, such as empty frames, do not.
+- **A translucent upstream frame** is not corrected, and exporting a single page item draws the per-frame correction only.
+
+**Measured hosts:** InDesign 21.5.1.73 and 21.6.0.57 on Windows. A plugin must be rebuilt for each major InDesign version.
+
+**Installing.** Building needs the InDesign 2026 SDK and Visual Studio's MSVC 14.42 or 14.39 toolset:
+
+```powershell
+powershell -NoProfile -File plugin\build-plugin.ps1 -SdkPath "<InDesign 2026 SDK folder>" -RouteX
+```
+
+Then, with InDesign closed, from an elevated PowerShell (the *Plug-Ins* folder is writable by administrators only):
+
+```powershell
+powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-RouteX
+```
+
+It backs up the installed plugin first, verifies the copy by hash, and prints the backup folder; `-Restore <that folder>` puts the previous plugin back, and `-ValidateOnly` with either form shows the plan without writing anything. Start InDesign to load the new plugin. The ID prefix is a development placeholder, so this build is for your own machine, not for distribution ([distribution notes](PLUGIN_DISTRIBUTION.md)).
+
+Native development details are in [the load report](../ILLUSTRATOR_NATIVE_LOAD_REPORT.md), [the InDesign root-cause report](../UNSTROKED_VICTIM_ROOT_CAUSE.md), and [the cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md). Illustrator's plugin is a separate diagnostic, not a release.
+
+## Installing the scripts
 
 **The scripts**: copy the whole *tools/jsx* folder into InDesign's *Scripts Panel* folder (*Window > Utilities > Scripts*, right-click a folder, *Reveal in Explorer*). Then double-click *strokemaster.jsx* in the panel and pick a command.
 
@@ -42,20 +69,21 @@ Duplicating a labeled pair within the same document creates ambiguous tokens. Th
 
 ## What to know before relying on it
 
-- **Native compatibility requires per-host validation.** The recorded InDesign target is 21.5.1.73. Other builds require ABI, load, edit, and export checks. The current native safety build provides no drawing correction on any machine.
+- **The plugin's correction exists only where the plugin runs.** A recipient without it sees InDesign's own drawing. Hand over a PDF exported with the plugin, or use **split**.
+- **Native compatibility requires per-host validation.** The plugin is measured on InDesign 21.5.1.73 and 21.6.0.57; other builds need load, edit, and export checks.
 - **Split frames are ordinary document objects.** They travel without a plugin, but remain two independent stories. Unsupported frame paint/effects are refused. After sending the file, edits require another resync by someone running the script, or manual maintenance of both stories.
 - **A split story lives in two frames.** The investigated linked-story configuration overwrote the child's formatting. That finite result does not rule out every native mapping or SDK route. The implemented **resync** and **watch** commands require the scripts to run.
 - **resync needs the stroke to be uniform** across the bottom frame. A pair whose stroke varies within the story is reported and skipped rather than guessed at, because character positions recorded before an edit no longer mean anything after one.
-- **The earlier native overlay changed benign antialiased edges and decoration order.** It is disabled in the current source. Splitting avoids that second fill pass but still has its own appearance and synchronization restrictions.
-- **Neither reaches text that is already outlined.** That damage is baked into the paths; convert with **outline** in the first place.
-- **Cross-frame overlap and the original native text overlap remain uncorrected.** The safety build refuses repaint; it does not solve these host behaviors. The supported split-frame reference corrects the measured unstroked-victim example within one frame.
+- **The plugin's stroke edges are drawn as paths, not as text strokes.** They match InDesign's geometry exactly, but anti-aliased edge pixels can differ from a native stroke's, within two device pixels of an edge.
+- **Nothing reaches text that is already outlined.** That damage is baked into the paths; convert with **outline** in the first place.
 - **The native prefix is still a development placeholder.** Prefix allocation, signing, and Creative Cloud listing are separate steps described in [the distribution notes](PLUGIN_DISTRIBUTION.md); the current build is not a Marketplace release.
 
 After replacing the script files, invoke *strokemaster.jsx* again to load the revised libraries. If watching is enabled, run **unwatch**, then **watch** to recreate its listener. Updating these JSX files does not require an InDesign restart. Loading a new native plugin binary does.
 
 ## If something looks wrong
 
-- *Nothing happened.* Check that a text frame is selected, and that its stroke is Outside rather than Center.
+- *The plugin changed nothing.* Check that the stroke is Outside rather than Center, and that InDesign was restarted after installing. Overlap between two separate stories is left alone on purpose.
+- *A stroke still covers letters in another frame of the same story.* Something drawn between the frames (a filled or stroked object stacked between them) covers those letters; InDesign's order is kept there.
+- *Nothing happened.* For the scripts, check that a text frame is selected, and that its stroke is Outside rather than Center.
 - *The halo disappeared after converting to outlines.* That is the native command, not this one. Undo and use **outline**.
 - *The two frames of a pair show different text.* Run **resync**, or **watch** to keep it from recurring.
-- *An older native prototype and the safety build look different.* The safety build intentionally removes repaint. Use supported **split** frames when a portable document correction is needed, and inspect the exported result.
