@@ -595,6 +595,38 @@ std::vector<Box> FramePaintBoxes(IPMUnknown* item, bool stroke)
     return out;
 }
 
+// A spline that paints nothing of its own when its shape draws: no fill, no stroke, no children
+// (a placed graphic or path text is a child), no text column, and no transparency. Its frame
+// fill and stroke events already report nothing; counting its geometry as content would stop
+// the correction under an invisible rectangle or an empty frame stacked between two frames of
+// a story (cert-X2 XE6, measured 2026-10-03). Anything this cannot establish keeps its box.
+bool PaintsNothing(IPMUnknown* item)
+{
+    if (item == nil) return false;
+    InterfacePtr<IParcelShape> parcelShape(item, UseDefaultIID());
+    if (parcelShape != nil) return false;
+    InterfacePtr<IGraphicStyleDescriptor> style(item, UseDefaultIID());
+    InterfacePtr<IHierarchy> hierarchy(item, UseDefaultIID());
+    InterfacePtr<IShape> shape(item, UseDefaultIID());
+    IDataBase* db = ::GetDataBase(item);
+    if (style == nil || hierarchy == nil || shape == nil || db == nil) return false;
+    if (hierarchy->GetChildCount() != 0) return false;
+    InterfacePtr<IXPManager> xp(Utils<IXPUtils>()->QueryXPManager(db));
+    if (xp == nil || xp->ItemHasTransparency(shape) != 0) return false;
+    const UID none = Utils<ISwatchUtils>()->GetNoneSwatchUID(db);
+    UID fill = kInvalidUID, stroke = kInvalidUID;
+    if (Utils<IGraphicAttributeUtils>()->GetFillRenderingUID(fill, style) != kSuccess) return false;
+    if (Utils<IGraphicAttributeUtils>()->GetStrokeRenderingUID(stroke, style) != kSuccess) return false;
+    const bool fillNone = fill == kInvalidUID || fill == none;
+    bool strokeNone = stroke == kInvalidUID || stroke == none;
+    if (!strokeNone) {
+        PMReal weight = 0;
+        Utils<IGraphicAttributeUtils>()->GetStrokeWeight(weight, style);
+        strokeNone = weight <= 0;
+    }
+    return fillNone && strokeNone;
+}
+
 Box Placed(const PMRect& r, const PMMatrix& m1, const PMMatrix* m2 = nullptr)
 {
     Box b;
@@ -725,7 +757,7 @@ bool16 IseXfDrawEvents::HandleDrawEvent(ClassID eventID, void* eventData)
     if (CrossFrameMode() && t.Active() && t.PaintedRecords() > 0) {
         if (eventID == kBeginShapeMessage || eventID == kBeginFrameFillDrawMessage || eventID == kBeginFrameStrokeDrawMessage) {
             const std::vector<Box> boxes = eventID == kBeginShapeMessage
-                ? std::vector<Box>{ContentBox(ded->changedBy)}
+                ? (PaintsNothing(ded->changedBy) ? std::vector<Box>{} : std::vector<Box>{ContentBox(ded->changedBy)})
                 : FramePaintBoxes(ded->changedBy, eventID == kBeginFrameStrokeDrawMessage);
             for (const Box& b : boxes) {
                 ContentEvent e;
