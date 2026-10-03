@@ -13,7 +13,8 @@
 // The research build (ISE_ROUTE_X_RESEARCH) also reads a control file and writes a trace,
 // both named by environment variables of the InDesign process and absent otherwise:
 //   ISE_XF_CONTROL  lines of key=value: mode=native|routew|story|overlap, trace=0|1,
-//                   suppress_shape=<uid>, suppress_text=<uid>, defer_probe=0|1
+//                   suppress_shape=<uid>, suppress_text=<uid>, defer_probe=0|1,
+//                   miter=0|1 (route W's miter correction; on by default)
 //   ISE_XF_TRACE    the trace file, appended to
 // Without the control file the research build behaves as route W. The production candidate
 // has neither: its mode is Story.
@@ -86,6 +87,7 @@ struct Control {
     bool trace = false;
     std::uint32_t suppressShape = 0, suppressText = 0;
     bool deferProbe = false;
+    bool miter = true;   // route W's miter correction (IseMiterCore.h)
 };
 
 #ifdef ISE_ROUTE_X_RESEARCH
@@ -122,6 +124,8 @@ void ReloadControl()
             c.suppressText = static_cast<std::uint32_t>(std::strtoul(value, nullptr, 10));
         } else if (k == "defer_probe") {
             c.deferProbe = v == "1";
+        } else if (k == "miter") {
+            c.miter = v != "0";
         }
     }
     std::fclose(f);
@@ -338,6 +342,8 @@ bool CrossFrameMode() { const Mode m = Ctl().mode; return m == Mode::Story || m 
 Mode CurrentMode() { return Ctl().mode; }
 
 bool RouteWEnabled() { return Ctl().mode != Mode::Native; }
+
+bool MiterCorrectionEnabled() { return Ctl().miter; }
 
 void NoteParcel(const IParcelShape* parcelShape, char tag, int32 flags)
 {

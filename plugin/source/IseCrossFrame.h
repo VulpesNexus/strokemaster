@@ -19,6 +19,8 @@ namespace ise_cross_frame {
 Mode CurrentMode();
 // Route W's own stroke pass runs (false only in the research build's Native mode).
 bool RouteWEnabled();
+// Route W's miter correction runs (false only when the research build's control says miter=0).
+bool MiterCorrectionEnabled();
 // A parcel is about to be drawn in the pass named by tag ('W' stroke pass, 'R' restore pass).
 void NoteParcel(const IParcelShape* parcel, char tag, int32 flags);
 // Stroke pass, every run: remember a fill this parcel is about to paint.

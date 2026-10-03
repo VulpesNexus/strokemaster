@@ -8,6 +8,9 @@
 //                             outlines at twice the weight with the run's own stroke
 //                             rendering object, join, and miter limit, then records the
 //                             run's stroke paint and sets it to [None] in the run's wax.
+//                             A mitered run is stroked with bevel joins, and only its
+//                             exterior corners are restroked with the miter, so no interior
+//                             miter tip can leave a thin glyph (IseMiterCore.h).
 //   IseStrokeRestoreAdornment Foreground pass. Restores each recorded run; the stroke
 //                             adornment restores any run left muted before deciding.
 // Native text then draws the muted runs as fill only, in the Text pass, above every stroke
@@ -53,6 +56,7 @@
 // Project includes:
 #include "IseID.h"
 #include "IseStrokeBehindCore.h"
+#include "IseMiterCore.h"
 #ifdef ISE_ROUTE_X
 #include "IseCrossFrame.h"
 #endif
@@ -75,27 +79,52 @@ const char kIseStrokeBehindLoaded[] =
 class TransformedOutline : public IOutlineInfo
 {
 public:
-    explicit TransformedOutline(IGraphicsPort* port) : fPort(port), fX(0), fY(0) {}
+    /** With a recorder, the same placed outline is also kept for the miter correction; the
+        port receives exactly the same path either way. */
+    explicit TransformedOutline(IGraphicsPort* port, ise_miter::Recorder* recorder = nullptr)
+        : fPort(port), fRecorder(recorder), fX(0), fY(0) {}
     void SetMatrix(const PMMatrix& m) { fMatrix = m; }
     void SetOffset(const PMReal& x, const PMReal& y) { fX = x; fY = y; }
     virtual void BeginPath() {}
     virtual void EndPath() {}
-    virtual void moveto(const PMReal& x, const PMReal& y) { PMReal a = x, b = y; Place(&a, &b); fPort->moveto(a, b); }
-    virtual void lineto(const PMReal& x, const PMReal& y) { PMReal a = x, b = y; Place(&a, &b); fPort->lineto(a, b); }
+    virtual void moveto(const PMReal& x, const PMReal& y)
+    {
+        PMReal a = x, b = y; Place(&a, &b); fPort->moveto(a, b);
+        if (fRecorder) fRecorder->MoveTo(P(a, b));
+    }
+    virtual void lineto(const PMReal& x, const PMReal& y)
+    {
+        PMReal a = x, b = y; Place(&a, &b); fPort->lineto(a, b);
+        if (fRecorder) fRecorder->LineTo(P(a, b));
+    }
     virtual void curveto(const PMReal& x1, const PMReal& y1, const PMReal& x2, const PMReal& y2,
                          const PMReal& x3, const PMReal& y3)
     {
         PMReal ax = x1, ay = y1, bx = x2, by = y2, cx = x3, cy = y3;
         Place(&ax, &ay); Place(&bx, &by); Place(&cx, &cy);
         fPort->curveto(ax, ay, bx, by, cx, cy);
+        if (fRecorder) fRecorder->CurveTo(P(ax, ay), P(bx, by), P(cx, cy));
     }
-    virtual void closepath() { fPort->closepath(); }
+    virtual void closepath() { fPort->closepath(); if (fRecorder) fRecorder->Close(); }
 private:
+    static ise_miter::Pt P(const PMReal& x, const PMReal& y) { return {ToDouble(x), ToDouble(y)}; }
     void Place(PMReal* x, PMReal* y) const { fMatrix.Transform(x, y); *x = *x + fX; *y = *y + fY; }
     IGraphicsPort* fPort;
+    ise_miter::Recorder* fRecorder;
     PMMatrix fMatrix;
     PMReal fX, fY;
 };
+
+/** Whether route W corrects this run's miter joins (always, outside the research build). */
+bool CorrectMiter(int32 join)
+{
+    if (join != kPMMiterJoin) return false;
+#ifdef ISE_ROUTE_X
+    return ise_cross_frame::MiterCorrectionEnabled();
+#else
+    return true;
+#endif
+}
 
 Alignment AlignmentOf(const IWaxRenderData* data)
 {
@@ -226,11 +255,16 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
 #endif
         stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
         // Outside alignment is drawn by InDesign as a centered stroke of twice the weight
-        // beneath the fill; reproduce that geometry explicitly.
+        // beneath the fill; reproduce that geometry explicitly. A mitered run is stroked with
+        // bevel joins first, and its exterior corners get their miters back below (see
+        // IseMiterCore.h): the interior miters, whose tips can leave a thin glyph, are not drawn.
+        const int32 join = mutableData->GetOutlineJoin();
+        const bool correctMiter = CorrectMiter(join);
         port->setlinewidth(mutableData->GetOutlineWidth() * 2);
-        port->setlinejoin(mutableData->GetOutlineJoin());
+        port->setlinejoin(correctMiter ? kPMBevelJoin : join);
         port->setmiterlimit(mutableData->GetMiterLimit());
-        TransformedOutline writer(port);
+        ise_miter::Recorder recorder;
+        TransformedOutline writer(port, correctMiter ? &recorder : nullptr);
         writer.SetOffset(run->GetXPosition(), run->GetYPosition());
         const bool16 hasMatrix = glyphs->HasGlyphMatrix();
         port->newpath();
@@ -249,6 +283,24 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
             instance->GetOutlineInfo(&writer, ids[i], where.GetXTranslation(), where.GetYTranslation());
         }
         port->stroke();
+        if (correctMiter) {
+            ise_miter::Options options;
+            options.halfWidth = ToDouble(mutableData->GetOutlineWidth());
+            const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(recorder.Contours(), options);
+            if (!stubs.empty()) {
+                // Each stub follows its corner's own tangents, so the renderer's stroker builds
+                // the same miter, and applies the same limit, as it would for the native stroke.
+                port->setlinejoin(kPMMiterJoin);
+                port->setlinecap(kPMButtCap);
+                port->newpath();
+                for (const ise_miter::Stub& s : stubs) {
+                    port->moveto(s.a.x, s.a.y);
+                    port->lineto(s.v.x, s.v.y);
+                    port->lineto(s.b.x, s.b.y);
+                }
+                port->stroke();
+            }
+        }
     }
     mutableData->SetColorUID(kTrue, none);
 }

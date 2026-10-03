@@ -1,4 +1,4 @@
-"""Build/run the native refusal, stroke-behind core, and cross-frame core tests with MSVC; never load Adobe or write to its SDK."""
+"""Build/run the native refusal, stroke-behind core, cross-frame core, and miter core tests with MSVC; never load Adobe or write to its SDK."""
 import os
 from pathlib import Path
 import subprocess
@@ -44,7 +44,12 @@ def main():
         'tests\\native-repaint\\CrossFrameCoreTests.cpp '
         '/Febuild\\native-refusal\\CrossFrameCoreTests.exe '
         '/Fobuild\\native-refusal\\CrossFrameCoreTests.obj && '
-        'build\\native-refusal\\CrossFrameCoreTests.exe'
+        'build\\native-refusal\\CrossFrameCoreTests.exe && '
+        'cl /nologo /EHsc /std:c++17 /W4 /WX '
+        'tests\\native-repaint\\MiterCoreTests.cpp '
+        '/Febuild\\native-refusal\\MiterCoreTests.exe '
+        '/Fobuild\\native-refusal\\MiterCoreTests.obj && '
+        'build\\native-refusal\\MiterCoreTests.exe'
     )
     result = subprocess.run(
         'cmd.exe /d /s /c "' + command + '"', cwd=repo, env=env,
