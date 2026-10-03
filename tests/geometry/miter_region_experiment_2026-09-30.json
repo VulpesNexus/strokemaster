@@ -1,0 +1,2221 @@
+{
+  "schema": 1,
+  "utc": "2026-09-30T00:48:28.087Z",
+  "status": "OFFLINE_EXPERIMENT_EXECUTED_NATIVE_CONTROLS_BLOCKED",
+  "baselineHead": "b737916f8c8a9948b2ebedf6a389a5cb9f5ab4d9",
+  "sources": {
+    "tools/compare_embedded_region.py": "10f921ecea4d9c5ce3898140039cb3d1c89ad6e7bdbf10e2460431e8afd552da",
+    "tools/measure_miter_calibration.py": "f1f54aa73f2e96e2644853440256476256ed14a2787af3bfc72e16a56a143d3a",
+    "tools/measure_miter_refinement.py": "309c9c924b4d520b526ed6717a60ff796ff636a51f4f54baa5d9e981e637440f",
+    "tests/geometry/test_embedded_region.py": "f9db20f144ce54433cf3bd59127f61c7a5a26be93d47488e50581eb66ce80bf1"
+  },
+  "records": [
+    {
+      "path": "build/miter-calibration-limit4.json",
+      "sha256": "23c737d74d773b391ba51ceb0813e11dbf56d541f55152e8c39a4ae2f495da24",
+      "record": [
+        {
+          "pdf_sha256": "ea644f7d31a357fe62377ba3a315ec847e7cbb1488f1a00b6755b777d826844d",
+          "target_text": "VWAMNvwkyzK",
+          "observed": {
+            "width": 8,
+            "miter": 4,
+            "join": 0,
+            "ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "font": "/T1_0",
+            "size": 1,
+            "mode": 1,
+            "tm": [
+              36,
+              0,
+              0,
+              36,
+              24,
+              653.8284
+            ]
+          },
+          "font_size_pt": 36,
+          "stroke_half_width_pt": 4,
+          "scope": "first matching stroke text run at requested limit, direct page, identity stroke CTM"
+        },
+        {
+          "pdf_sha256": "c24f3e94a66ee571160950619de888c0d8f3ea7f723ce5edb850193e542173fa",
+          "target_text": "Lorem ipsum",
+          "observed": {
+            "width": 3,
+            "miter": 4,
+            "join": 0,
+            "ctm": [
+              1,
+              0,
+              0,
+              1,
+              0,
+              0
+            ],
+            "font": "/TT0",
+            "size": 1,
+            "mode": 1,
+            "tm": [
+              12,
+              0,
+              0,
+              12,
+              101.668,
+              788.5996
+            ]
+          },
+          "font_size_pt": 12,
+          "stroke_half_width_pt": 1.5,
+          "scope": "first matching stroke text run at requested limit, direct page, identity stroke CTM"
+        }
+      ]
+    },
+    {
+      "path": "build/miter-region-minion-r10.json",
+      "sha256": "cf4298e15243f2f4a15ada11bfb2cfcb9ddc8c31fc942f1a44fd6836c4882ebb",
+      "record": {
+        "schema": 1,
+        "status": "BOUNDED_OFFLINE_REGION_COMPARISON",
+        "nativeExecuted": false,
+        "pdf_sha256": "ea644f7d31a357fe62377ba3a315ec847e7cbb1488f1a00b6755b777d826844d",
+        "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+        "size_pt": 36,
+        "half_width_pt": 4,
+        "tolerance_pt": 0.01,
+        "limit": 4,
+        "fonts": [
+          {
+            "font_sha256": "04026ca2e330fa954f0a648fb1ec9286e6be9db47b684c1853ad94ec108817dd",
+            "kind": "Type1C",
+            "font_unit_to_pt": 0.036000000000000004,
+            "h_font_units": 111.1111111111111,
+            "tolerance_font_units": 0.27777777777777773,
+            "outcomes": {
+              "CORE_OK": 11
+            },
+            "glyphs": [
+              {
+                "character": "A",
+                "status": "CORE_OK",
+                "contours": 2,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.830089342076445
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.830089342076445
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "K",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "N",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "V",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "region_holes": 1
+              },
+              {
+                "character": "W",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "k",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.496,
+                  -4.09844105171384,
+                  22.468,
+                  31.102900810526975
+                ],
+                "symmetric_bounds_pt": [
+                  -3.496,
+                  -4.09844105171384,
+                  22.468,
+                  31.102900810526975
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.3719566692771172,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396000000000001,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.817880924834315,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 1.9298764171757927,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  21.795330038636138
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "y",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.964,
+                  -13.25708600748225,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.964,
+                  -13.25708600748225,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.12710444532189702,
+                "region_bounds_pt": [
+                  -3.41986091464439,
+                  -4,
+                  19.914410392432913,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.41986091464439,
+                  -4,
+                  19.914410392432913,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Sizes and widths are explicit caller calibration, not inferred from Tf alone.",
+          "Glyphs are processed independently; no story, run, or neighboring-glyph union is authorized.",
+          "Core joins are Boost miter semantics, not certified Adobe miter/bevel semantics.",
+          "Fill-rule resolution, cusp behavior, and native font mapping remain separate gates."
+        ]
+      }
+    },
+    {
+      "path": "build/miter-region-minion-r05.json",
+      "sha256": "4ac5188c5424b5ad96a73a52333270daf17ff3e0d59456a7703072590d8dd6a5",
+      "record": {
+        "schema": 1,
+        "status": "BOUNDED_OFFLINE_REGION_COMPARISON",
+        "nativeExecuted": false,
+        "pdf_sha256": "ea644f7d31a357fe62377ba3a315ec847e7cbb1488f1a00b6755b777d826844d",
+        "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+        "size_pt": 36,
+        "half_width_pt": 4,
+        "tolerance_pt": 0.005,
+        "limit": 4,
+        "fonts": [
+          {
+            "font_sha256": "04026ca2e330fa954f0a648fb1ec9286e6be9db47b684c1853ad94ec108817dd",
+            "kind": "Type1C",
+            "font_unit_to_pt": 0.036000000000000004,
+            "h_font_units": 111.1111111111111,
+            "tolerance_font_units": 0.13888888888888887,
+            "outcomes": {
+              "CORE_OK": 11
+            },
+            "glyphs": [
+              {
+                "character": "A",
+                "status": "CORE_OK",
+                "contours": 2,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.829555039852526
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.829555039852526
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "K",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "N",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "V",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "region_holes": 1
+              },
+              {
+                "character": "W",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.41600000000001,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.41600000000001,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "k",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.496,
+                  -4.09844105171384,
+                  22.468,
+                  31.145099683571797
+                ],
+                "symmetric_bounds_pt": [
+                  -3.496,
+                  -4.09844105171384,
+                  22.468,
+                  31.145099683571797
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.3719566692771172,
+                "region_bounds_pt": [
+                  -4.072000000000001,
+                  -4.396,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072000000000001,
+                  -6.817880924834315,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 1.9298764171757927,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  21.795330038636138
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "y",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.964,
+                  -13.25708600748225,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.964,
+                  -13.25708600748225,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11979082035932134,
+                "region_bounds_pt": [
+                  -3.4477647712229733,
+                  -4,
+                  19.914410392432913,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.4477647712229733,
+                  -4,
+                  19.914410392432913,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Sizes and widths are explicit caller calibration, not inferred from Tf alone.",
+          "Glyphs are processed independently; no story, run, or neighboring-glyph union is authorized.",
+          "Core joins are Boost miter semantics, not certified Adobe miter/bevel semantics.",
+          "Fill-rule resolution, cusp behavior, and native font mapping remain separate gates."
+        ]
+      }
+    },
+    {
+      "path": "build/miter-region-minion-r025.json",
+      "sha256": "d4af2af2621a8125ec63ee62a200b90d736441772f057379899d0fc756d166c4",
+      "record": {
+        "schema": 1,
+        "status": "BOUNDED_OFFLINE_REGION_COMPARISON",
+        "nativeExecuted": false,
+        "pdf_sha256": "ea644f7d31a357fe62377ba3a315ec847e7cbb1488f1a00b6755b777d826844d",
+        "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+        "size_pt": 36,
+        "half_width_pt": 4,
+        "tolerance_pt": 0.0025,
+        "limit": 4,
+        "fonts": [
+          {
+            "font_sha256": "04026ca2e330fa954f0a648fb1ec9286e6be9db47b684c1853ad94ec108817dd",
+            "kind": "Type1C",
+            "font_unit_to_pt": 0.036000000000000004,
+            "h_font_units": 111.1111111111111,
+            "tolerance_font_units": 0.06944444444444443,
+            "outcomes": {
+              "CORE_OK": 11
+            },
+            "glyphs": [
+              {
+                "character": "A",
+                "status": "CORE_OK",
+                "contours": 2,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.829555039852526
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.829555039852526
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "K",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "N",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "V",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "region_holes": 1
+              },
+              {
+                "character": "W",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.41600000000001,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.41600000000001,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "k",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.496,
+                  -4.0982575982368985,
+                  22.468,
+                  31.145099683571797
+                ],
+                "symmetric_bounds_pt": [
+                  -3.496,
+                  -4.0982575982368985,
+                  22.468,
+                  31.145099683571797
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.232139111476951,
+                "region_bounds_pt": [
+                  -4.072000000000001,
+                  -4.396,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072000000000001,
+                  -6.734728527181773,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.0123893012068756,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  21.850233708499964
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "y",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.964,
+                  -13.253232882828803,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.964,
+                  -13.253232882828803,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11764251591131468,
+                "region_bounds_pt": [
+                  -3.4477647712229733,
+                  -4,
+                  19.928708926169104,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.4477647712229733,
+                  -4,
+                  19.928708926169104,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Sizes and widths are explicit caller calibration, not inferred from Tf alone.",
+          "Glyphs are processed independently; no story, run, or neighboring-glyph union is authorized.",
+          "Core joins are Boost miter semantics, not certified Adobe miter/bevel semantics.",
+          "Fill-rule resolution, cusp behavior, and native font mapping remain separate gates."
+        ]
+      }
+    },
+    {
+      "path": "build/miter-region-minion-f0.json",
+      "sha256": "a50defeec120ddb2edb9a5095f5bf9e83f27f03cb62111705ea7e7324f9ed9db",
+      "record": {
+        "schema": 1,
+        "status": "BOUNDED_OFFLINE_REGION_COMPARISON",
+        "nativeExecuted": false,
+        "pdf_sha256": "ea644f7d31a357fe62377ba3a315ec847e7cbb1488f1a00b6755b777d826844d",
+        "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+        "size_pt": 36,
+        "half_width_pt": 4,
+        "tolerance_pt": 0.00125,
+        "limit": 4,
+        "fonts": [
+          {
+            "font_sha256": "04026ca2e330fa954f0a648fb1ec9286e6be9db47b684c1853ad94ec108817dd",
+            "kind": "Type1C",
+            "font_unit_to_pt": 0.036000000000000004,
+            "h_font_units": 111.1111111111111,
+            "tolerance_font_units": 0.03472222222222222,
+            "outcomes": {
+              "CORE_OK": 11
+            },
+            "glyphs": [
+              {
+                "character": "A",
+                "status": "CORE_OK",
+                "contours": 2,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.828931195837654
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.828931195837654
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "K",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064000000000001,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064000000000001,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "N",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "V",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "region_holes": 1
+              },
+              {
+                "character": "W",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "k",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.496,
+                  -4.0982575982368985,
+                  22.468,
+                  31.164109703314757
+                ],
+                "symmetric_bounds_pt": [
+                  -3.496,
+                  -4.0982575982368985,
+                  22.468,
+                  31.164109703314757
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.232139111476951,
+                "region_bounds_pt": [
+                  -4.072000000000001,
+                  -4.396000000000001,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072000000000001,
+                  -6.734728527181773,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.066700514095146,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  21.885901838331577
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "y",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.964,
+                  -13.253232882828803,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.964,
+                  -13.253232882828803,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11432096979423581,
+                "region_bounds_pt": [
+                  -3.4638280983314926,
+                  -4,
+                  19.928708926169104,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.4638280983314926,
+                  -4,
+                  19.928708926169104,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Sizes and widths are explicit caller calibration, not inferred from Tf alone.",
+          "Glyphs are processed independently; no story, run, or neighboring-glyph union is authorized.",
+          "Core joins are Boost miter semantics, not certified Adobe miter/bevel semantics.",
+          "Fill-rule resolution, cusp behavior, and native font mapping remain separate gates."
+        ]
+      }
+    },
+    {
+      "path": "build/miter-region-minion-f1.json",
+      "sha256": "54ab66dbe1902eda4c24b73b8af13c3fb1e7bcfde2740c771464c46634627d27",
+      "record": {
+        "schema": 1,
+        "status": "BOUNDED_OFFLINE_REGION_COMPARISON",
+        "nativeExecuted": false,
+        "pdf_sha256": "ea644f7d31a357fe62377ba3a315ec847e7cbb1488f1a00b6755b777d826844d",
+        "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+        "size_pt": 36,
+        "half_width_pt": 4,
+        "tolerance_pt": 0.000625,
+        "limit": 4,
+        "fonts": [
+          {
+            "font_sha256": "04026ca2e330fa954f0a648fb1ec9286e6be9db47b684c1853ad94ec108817dd",
+            "kind": "Type1C",
+            "font_unit_to_pt": 0.036000000000000004,
+            "h_font_units": 111.1111111111111,
+            "tolerance_font_units": 0.01736111111111111,
+            "outcomes": {
+              "CORE_OK": 11
+            },
+            "glyphs": [
+              {
+                "character": "A",
+                "status": "CORE_OK",
+                "contours": 2,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.828526071397306
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.828526071397306
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "K",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -2.5600000000000005,
+                  -4,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064000000000001,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064000000000001,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "N",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "V",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "region_holes": 1
+              },
+              {
+                "character": "W",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "k",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.496,
+                  -4.098157698468507,
+                  22.468,
+                  31.164109703314757
+                ],
+                "symmetric_bounds_pt": [
+                  -3.496,
+                  -4.098157698468507,
+                  22.468,
+                  31.164109703314757
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.158743006006036,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396000000000001,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.690319030401741,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.066700671637367,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  21.885901838331577
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "y",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.964,
+                  -13.252303539356648,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.964,
+                  -13.252303539356648,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11330044557477353,
+                "region_bounds_pt": [
+                  -3.4638280983314926,
+                  -4,
+                  19.93716155249706,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.4638280983314926,
+                  -4,
+                  19.93716155249706,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Sizes and widths are explicit caller calibration, not inferred from Tf alone.",
+          "Glyphs are processed independently; no story, run, or neighboring-glyph union is authorized.",
+          "Core joins are Boost miter semantics, not certified Adobe miter/bevel semantics.",
+          "Fill-rule resolution, cusp behavior, and native font mapping remain separate gates."
+        ]
+      }
+    },
+    {
+      "path": "build/miter-region-minion-f2.json",
+      "sha256": "f2c79e27853b820ea1b6dfcf130a9f4e8a2fe59e468cbbcaee95db55d9428d16",
+      "record": {
+        "schema": 1,
+        "status": "BOUNDED_OFFLINE_REGION_COMPARISON",
+        "nativeExecuted": false,
+        "pdf_sha256": "ea644f7d31a357fe62377ba3a315ec847e7cbb1488f1a00b6755b777d826844d",
+        "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+        "size_pt": 36,
+        "half_width_pt": 4,
+        "tolerance_pt": 0.0003125,
+        "limit": 4,
+        "fonts": [
+          {
+            "font_sha256": "04026ca2e330fa954f0a648fb1ec9286e6be9db47b684c1853ad94ec108817dd",
+            "kind": "Type1C",
+            "font_unit_to_pt": 0.036000000000000004,
+            "h_font_units": 111.1111111111111,
+            "tolerance_font_units": 0.008680555555555554,
+            "outcomes": {
+              "CORE_OK": 11
+            },
+            "glyphs": [
+              {
+                "character": "A",
+                "status": "CORE_OK",
+                "contours": 2,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.828526071397306
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4,
+                  28.228000000000005,
+                  28.828526071397306
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "K",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -2.5600000000000005,
+                  -4.000000000000001,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -2.5600000000000005,
+                  -4.000000000000001,
+                  28.012000000000008,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "N",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.28,
+                  -4.324,
+                  29.883999999999997,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "V",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.352000000000001,
+                  -4.36,
+                  28.732000000000003,
+                  27.400000000000002
+                ],
+                "region_holes": 1
+              },
+              {
+                "character": "W",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "symmetric_bounds_pt": [
+                  -3.424,
+                  -4.36,
+                  38.416000000000004,
+                  27.400000000000002
+                ],
+                "region_holes": 2
+              },
+              {
+                "character": "k",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.496,
+                  -4.098157698468507,
+                  22.468,
+                  31.164109703314757
+                ],
+                "symmetric_bounds_pt": [
+                  -3.496,
+                  -4.098157698468507,
+                  22.468,
+                  31.164109703314757
+                ],
+                "region_holes": 1
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.158743006006036,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.690319030401741,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.0972755124132725,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  21.905819059299535
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "y",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0,
+                "region_bounds_pt": [
+                  -3.964,
+                  -13.252303539356648,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.964,
+                  -13.252303539356648,
+                  21.208000000000006,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11172053134304094,
+                "region_bounds_pt": [
+                  -3.472520426058011,
+                  -4,
+                  19.93716155249706,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.472520426058011,
+                  -4,
+                  19.93716155249706,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Sizes and widths are explicit caller calibration, not inferred from Tf alone.",
+          "Glyphs are processed independently; no story, run, or neighboring-glyph union is authorized.",
+          "Core joins are Boost miter semantics, not certified Adobe miter/bevel semantics.",
+          "Fill-rule resolution, cusp behavior, and native font mapping remain separate gates."
+        ]
+      }
+    },
+    {
+      "path": "build/miter-region-extreme-r10.json",
+      "sha256": "dcd5d814e5f3e4df55f1365d89cdc00f514171b3c74b68bbfdf65d26a2eed1df",
+      "record": {
+        "schema": 1,
+        "status": "BOUNDED_OFFLINE_REGION_COMPARISON",
+        "nativeExecuted": false,
+        "pdf_sha256": "c24f3e94a66ee571160950619de888c0d8f3ea7f723ce5edb850193e542173fa",
+        "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+        "size_pt": 12,
+        "half_width_pt": 1.5,
+        "tolerance_pt": 0.01,
+        "limit": 4,
+        "fonts": [
+          {
+            "font_sha256": "58dd2f9e81598200d53e86781b794ae2b0dfd3eaa0bed2ac010f436685401586",
+            "kind": "TrueType",
+            "font_unit_to_pt": 0.012,
+            "h_font_units": 125,
+            "tolerance_font_units": 0.8333333333333334,
+            "outcomes": {
+              "EMPTY_GLYPH_NO_REGION": 1,
+              "ADAPTER_REFUSED": 9
+            },
+            "glyphs": [
+              {
+                "character": " ",
+                "status": "EMPTY_GLYPH_NO_REGION",
+                "contours": 0
+              },
+              {
+                "character": "L",
+                "status": "ADAPTER_REFUSED",
+                "contours": 289,
+                "reason": "contours cross or touch; fill-rule resolution is not supported"
+              },
+              {
+                "character": "e",
+                "status": "ADAPTER_REFUSED",
+                "contours": 120,
+                "reason": "contour has fewer than three distinct points"
+              },
+              {
+                "character": "i",
+                "status": "ADAPTER_REFUSED",
+                "contours": 38,
+                "reason": "contour has fewer than three distinct points"
+              },
+              {
+                "character": "m",
+                "status": "ADAPTER_REFUSED",
+                "contours": 266,
+                "reason": "contour has fewer than three distinct points"
+              },
+              {
+                "character": "o",
+                "status": "ADAPTER_REFUSED",
+                "contours": 508,
+                "reason": "contour has fewer than three distinct points"
+              },
+              {
+                "character": "p",
+                "status": "ADAPTER_REFUSED",
+                "contours": 321,
+                "reason": "contour has fewer than three distinct points"
+              },
+              {
+                "character": "r",
+                "status": "ADAPTER_REFUSED",
+                "contours": 648,
+                "reason": "contour has fewer than three distinct points"
+              },
+              {
+                "character": "s",
+                "status": "ADAPTER_REFUSED",
+                "contours": 377,
+                "reason": "contour has fewer than three distinct points"
+              },
+              {
+                "character": "u",
+                "status": "ADAPTER_REFUSED",
+                "contours": 719,
+                "reason": "contour has fewer than three distinct points"
+              }
+            ]
+          }
+        ],
+        "limitations": [
+          "Sizes and widths are explicit caller calibration, not inferred from Tf alone.",
+          "Glyphs are processed independently; no story, run, or neighboring-glyph union is authorized.",
+          "Core joins are Boost miter semantics, not certified Adobe miter/bevel semantics.",
+          "Fill-rule resolution, cusp behavior, and native font mapping remain separate gates."
+        ]
+      }
+    },
+    {
+      "path": "build/miter-refinement/summary.json",
+      "sha256": "3f7644e9c8825e9ad79aa3703cd40fa4331059023d904b1f47e56806925534d7",
+      "record": {
+        "schema": 1,
+        "status": "REFINEMENT_NOT_CONVERGED",
+        "nativeExecuted": false,
+        "criterion": {
+          "successive_excess_area_delta_pt2": 0.01,
+          "successive_bounds_delta_pt": 0.005
+        },
+        "converged_on_corpus": false,
+        "runs": [
+          {
+            "tolerance_pt": 0.00015625,
+            "max_area_delta_pt2": null,
+            "max_bounds_delta_pt": null,
+            "converged": false,
+            "glyphs": [
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.121082741883063,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396000000000001,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.667316548885976,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.0972753538960447,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396000000000001,
+                  29.056,
+                  21.905819059299535
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11122392346088353,
+                "region_bounds_pt": [
+                  -3.472520426058011,
+                  -4,
+                  19.941737138900592,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.472520426058011,
+                  -4,
+                  19.941737138900592,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          },
+          {
+            "tolerance_pt": 0.000078125,
+            "max_area_delta_pt2": 0.016162191364331946,
+            "max_bounds_delta_pt": 0.010483499931332574,
+            "converged": false,
+            "glyphs": [
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.121082741883063,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396000000000001,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.667316548885976,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.1134375452603766,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  21.916302559230868
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11045306514831021,
+                "region_bounds_pt": [
+                  -3.477052357704481,
+                  -4,
+                  19.941737138900592,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.477052357704481,
+                  -4,
+                  19.941737138900592,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          },
+          {
+            "tolerance_pt": 0.0000390625,
+            "max_area_delta_pt2": 0.019081800345640776,
+            "max_bounds_delta_pt": 0.011713760875045942,
+            "converged": false,
+            "glyphs": [
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.102000941537422,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.65560278801093,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.1134375633205056,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  21.916302559230868
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.11020776564336593,
+                "region_bounds_pt": [
+                  -3.477052357704481,
+                  -4,
+                  19.94411558801826,
+                  20.524
+                ],
+                "symmetric_bounds_pt": [
+                  -3.477052357704481,
+                  -4,
+                  19.94411558801826,
+                  20.524
+                ],
+                "region_holes": 0
+              }
+            ]
+          },
+          {
+            "tolerance_pt": 0.00001953125,
+            "max_area_delta_pt2": 0.008302423604191755,
+            "max_bounds_delta_pt": 0.005373514661329182,
+            "converged": false,
+            "glyphs": [
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.102000941537422,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.65560278801093,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.1217399869246973,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  21.921676073892197
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.10982734135485307,
+                "region_bounds_pt": [
+                  -3.479367656320867,
+                  -4,
+                  19.94411558801826,
+                  20.524000000000004
+                ],
+                "symmetric_bounds_pt": [
+                  -3.479367656320867,
+                  -4,
+                  19.94411558801826,
+                  20.524000000000004
+                ],
+                "region_holes": 0
+              }
+            ]
+          },
+          {
+            "tolerance_pt": 0.000009765625,
+            "max_area_delta_pt2": 0.009609012353206214,
+            "max_bounds_delta_pt": 0.005911788448599076,
+            "converged": false,
+            "glyphs": [
+              {
+                "character": "M",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.08917993536317641,
+                "region_bounds_pt": [
+                  -3.064,
+                  -4,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "symmetric_bounds_pt": [
+                  -3.064,
+                  -4.18878326776958,
+                  34.99600000000001,
+                  27.400000000000006
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "v",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.092391929184216,
+                "region_bounds_pt": [
+                  -4.072,
+                  -4.396,
+                  21.172,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -4.072,
+                  -6.649690999562331,
+                  21.172,
+                  19.732000000000003
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "w",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 2.1217400031951423,
+                "region_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  19.732000000000003
+                ],
+                "symmetric_bounds_pt": [
+                  -3.6759999999999997,
+                  -4.396,
+                  29.056,
+                  21.921676073892197
+                ],
+                "region_holes": 0
+              },
+              {
+                "character": "z",
+                "status": "CORE_OK",
+                "contours": 1,
+                "fill_loss_normalized": 0,
+                "symmetric_excess_area_pt2": 0.10970532889177682,
+                "region_bounds_pt": [
+                  -3.479367656320867,
+                  -4,
+                  19.945327921871556,
+                  20.524000000000004
+                ],
+                "symmetric_bounds_pt": [
+                  -3.479367656320867,
+                  -4,
+                  19.945327921871556,
+                  20.524000000000004
+                ],
+                "region_holes": 0
+              }
+            ]
+          }
+        ],
+        "failure": {
+          "stage": "core comparison",
+          "type": "TimeoutExpired",
+          "timeout_seconds": 60,
+          "tolerance_pt": 0.0000048828125,
+          "index": 5,
+          "nativeExecuted": false,
+          "recoveredFrom": "observed subprocess timeout after five retained checkpoints"
+        },
+        "source_sha256": "10f921ecea4d9c5ce3898140039cb3d1c89ad6e7bdbf10e2460431e8afd552da",
+        "limitations": [
+          "Successive stability is measured on four glyphs; it is not a universal stroke error bound.",
+          "No native control, coordinate-level outline provenance, or Adobe miter acceptance is established."
+        ]
+      }
+    }
+  ],
+  "host": {
+    "inDesignFileVersion": "21.6",
+    "illustratorFileVersion": "30.8.2",
+    "freshNativeControlsExecuted": false,
+    "installedPluginSha256": "1e7c417e998c4ab8314384d6dc865d81f949b6ed3c7e8d0139da23d5ee3e1ef8",
+    "comActivationError": "80080005 CO_E_SERVER_EXEC_FAILURE",
+    "existingObjectError": "800401E3 MK_E_UNAVAILABLE",
+    "computerUseError": "native pipe unavailable, os error 2",
+    "extraComHostExited": true,
+    "originalHostsClosed": false
+  },
+  "tests": {
+    "geometryBaseline": {
+      "passed": 90,
+      "skipped": 0
+    },
+    "newPython": {
+      "passed": 13
+    },
+    "audit": {
+      "passed": 56,
+      "skipped": 0,
+      "environment": "outside restricted process sandbox; prior sandbox temp-file failures retained as execution errors"
+    },
+    "nodeBaseline": {
+      "passed": 313,
+      "skipped": 0
+    },
+    "miterControlPreflight": {
+      "passed": 15,
+      "nativeExecuted": false
+    },
+    "native": {
+      "refusal": 33,
+      "strokeBehind": 65563,
+      "crossFrame": 43,
+      "hostExecuted": false
+    }
+  },
+  "limits": [
+    "No production miter correction or fresh Adobe rendering.",
+    "Refinement criterion not met; finer core batch timed out after 60 seconds.",
+    "Every nonempty KerberosFang test glyph remains refused without contour removal."
+  ]
+}
