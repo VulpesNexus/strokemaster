@@ -1,12 +1,12 @@
 {
  "schema": 1,
- "label": "route X 1e7c417e on InDesign 21.6.0.57 (C3) against the 21.5.1 native and route W references",
+ "label": "route X 1e7c417e on InDesign 21.6.0.57 (C3) against same-day 21.6 native and route W (research build 7b178414, N3 and W3)",
  "census": "X",
  "sessions": {
-  "native": "research build 2da2d236 mode=native, corpus with XB5-XB7",
-  "route_w": "research build 2da2d236 mode=routew",
+  "native": "native control: research build 7b178414 mode=native, fresh process, InDesign 21.6.0.57",
+  "route_w": "research build 7b178414 mode=routew, same process, InDesign 21.6.0.57",
   "route_x": "route X production candidate 1e7c417e, fresh process, InDesign 21.6.0.57",
-  "overlap": "research build a05acd09 mode=overlap",
+  "overlap": null,
   "reference": "route X production candidate 1e7c417e, fresh process, InDesign 21.6.0.57"
  },
  "corpus_sha256": "29237a413ebddba2d7cff7323ab22bb38444f5df9b62d436b5d85ec63c4b62ff",
@@ -26,7 +26,6 @@
      "route_x_damage_px": 2758,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -35,7 +34,6 @@
      "route_x_damage_px": 2758,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -44,7 +42,6 @@
      "route_x_damage_px": 2750,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -53,7 +50,6 @@
      "route_x_damage_px": 2706,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -62,7 +58,6 @@
      "route_x_damage_px": 2752,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -71,7 +66,6 @@
      "route_x_damage_px": 2752,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -157,7 +151,6 @@
      "route_x_damage_px": 2758,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -166,7 +159,6 @@
      "route_x_damage_px": 2758,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -175,7 +167,6 @@
      "route_x_damage_px": 2750,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -184,7 +175,6 @@
      "route_x_damage_px": 2706,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -193,7 +183,6 @@
      "route_x_damage_px": 2752,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -202,7 +191,6 @@
      "route_x_damage_px": 2752,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -288,7 +276,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -297,7 +284,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -306,7 +292,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -315,7 +300,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -324,7 +308,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -333,7 +316,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -419,7 +401,6 @@
      "route_x_damage_px": 4198,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -428,7 +409,6 @@
      "route_x_damage_px": 4198,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -437,7 +417,6 @@
      "route_x_damage_px": 4198,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -446,7 +425,6 @@
      "route_x_damage_px": 4214,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -455,7 +433,6 @@
      "route_x_damage_px": 4248,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -464,7 +441,6 @@
      "route_x_damage_px": 4248,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -550,7 +526,6 @@
      "route_x_damage_px": 2758,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -559,7 +534,6 @@
      "route_x_damage_px": 2758,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -568,7 +542,6 @@
      "route_x_damage_px": 2750,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -577,7 +550,6 @@
      "route_x_damage_px": 2706,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -586,7 +558,6 @@
      "route_x_damage_px": 2752,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -595,7 +566,6 @@
      "route_x_damage_px": 2752,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -681,7 +651,6 @@
      "route_x_damage_px": 278,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -690,7 +659,6 @@
      "route_x_damage_px": 278,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -699,7 +667,6 @@
      "route_x_damage_px": 278,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -708,7 +675,6 @@
      "route_x_damage_px": 273,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -717,7 +683,6 @@
      "route_x_damage_px": 270,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -726,7 +691,6 @@
      "route_x_damage_px": 270,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -812,7 +776,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -821,7 +784,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -830,7 +792,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -839,7 +800,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -848,7 +808,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -857,7 +816,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -943,7 +901,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -952,7 +909,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -961,7 +917,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -970,7 +925,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -979,7 +933,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -988,7 +941,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -1074,7 +1026,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -1083,7 +1034,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -1092,7 +1042,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -1101,7 +1050,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -1110,7 +1058,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -1119,7 +1066,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -1205,7 +1151,6 @@
      "route_x_damage_px": 3274,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 4150,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -1214,7 +1159,6 @@
      "route_x_damage_px": 3274,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 4150,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -1223,7 +1167,6 @@
      "route_x_damage_px": 3320,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 4196,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -1232,7 +1175,6 @@
      "route_x_damage_px": 3272,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 4204,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -1241,7 +1183,6 @@
      "route_x_damage_px": 3372,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 4248,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -1250,7 +1191,6 @@
      "route_x_damage_px": 3372,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 4248,
      "verdict": "PASS"
     }
    },
@@ -1336,7 +1276,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -1345,7 +1284,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -1354,7 +1292,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -1363,7 +1300,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -1372,7 +1308,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -1381,7 +1316,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -1467,7 +1401,6 @@
      "route_x_damage_px": 219,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 219,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -1476,7 +1409,6 @@
      "route_x_damage_px": 219,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 219,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -1485,7 +1417,6 @@
      "route_x_damage_px": 218,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 218,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -1494,7 +1425,6 @@
      "route_x_damage_px": 206,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 206,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -1503,7 +1433,6 @@
      "route_x_damage_px": 355,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 355,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -1512,7 +1441,6 @@
      "route_x_damage_px": 355,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 355,
      "verdict": "PASS"
     }
    },
@@ -1598,7 +1526,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -1607,7 +1534,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -1616,7 +1542,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -1625,7 +1550,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -1634,7 +1558,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -1643,7 +1566,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -1729,7 +1651,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -1738,7 +1659,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -1747,7 +1667,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -1756,7 +1675,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -1765,7 +1683,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -1774,7 +1691,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -1860,7 +1776,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -1869,7 +1784,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -1878,7 +1792,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -1887,7 +1800,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -1896,7 +1808,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -1905,7 +1816,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -1991,7 +1901,6 @@
      "route_x_damage_px": 4196,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 4196,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -2000,7 +1909,6 @@
      "route_x_damage_px": 4196,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 4196,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -2009,7 +1917,6 @@
      "route_x_damage_px": 4196,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 4196,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -2018,7 +1925,6 @@
      "route_x_damage_px": 4148,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 4148,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -2027,7 +1933,6 @@
      "route_x_damage_px": 4248,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 4248,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -2036,7 +1941,6 @@
      "route_x_damage_px": 4248,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 4248,
      "verdict": "PASS"
     }
    },
@@ -2122,7 +2026,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -2131,7 +2034,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -2140,7 +2042,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -2149,7 +2050,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -2158,7 +2058,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -2167,7 +2066,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -2253,7 +2151,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -2262,7 +2159,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -2271,7 +2167,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -2280,7 +2175,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -2289,7 +2183,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -2298,7 +2191,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -2384,7 +2276,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -2393,7 +2284,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -2402,7 +2292,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -2411,7 +2300,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -2420,7 +2308,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -2429,7 +2316,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -2515,7 +2401,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -2524,7 +2409,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -2533,7 +2417,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -2542,7 +2425,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -2551,7 +2433,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -2560,7 +2441,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },
@@ -2646,7 +2526,6 @@
      "route_x_damage_px": 21056,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 21056,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -2655,7 +2534,6 @@
      "route_x_damage_px": 21056,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 21056,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -2664,7 +2542,6 @@
      "route_x_damage_px": 21056,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 21056,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -2673,7 +2550,6 @@
      "route_x_damage_px": 21056,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 21056,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -2682,7 +2558,6 @@
      "route_x_damage_px": 21056,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 21056,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -2691,7 +2566,6 @@
      "route_x_damage_px": 21056,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 21056,
      "verdict": "PASS"
     }
    },
@@ -2777,7 +2651,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "2cb2927e9b3787ec11a8d56ec2f6b5244c330d509013247830ed4d5aa6f2ed66",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x4.pdf": {
@@ -2786,7 +2659,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "f7708c8cd8e8c7f3bab839eabeef5058c13df22a3123526687cfb5bbaa03087d",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "x1a.pdf": {
@@ -2795,7 +2667,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "635fdcb7f80fce508b365b6ce2a2d26e46ab915e1e2791bb930ded0a892f01a6",
      "renderer": "MuPDF 1.28.2",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "png600.png": {
@@ -2804,7 +2675,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
      "renderer": "InDesign PNG",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "eps.eps": {
@@ -2813,7 +2683,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "50586a16e44826ce02fd37b58df85b2a2aba3801a8ca947623835bbcdd5f4d3b",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     },
     "pshigh.ps": {
@@ -2822,7 +2691,6 @@
      "route_x_damage_px": 0,
      "route_x_sha256": "90b5f0a4937ba3ea3fe6a37a1aa8c9a55b4995fcf95f38cca666acadd06e1414",
      "renderer": "Ghostscript",
-     "overlap_mode_damage_px": 0,
      "verdict": "PASS"
     }
    },

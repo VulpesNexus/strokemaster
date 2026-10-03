@@ -16,6 +16,8 @@
 //   XE6  threaded pair with an invisible rectangle (no fill, no stroke) stacked between the
 //        frames over the seam: nothing is drawn in between, so the pair must still be corrected
 //   XE7  threaded pair inside a group nested in another group
+//   XE8  XE6 with a 1 pt black border on the rectangle: content drawn in between, so glyphs
+//        under the border keep InDesign's order (partial, like cert-X XB3)
 //
 // Parent-page items are drawn beneath every page item, so the census backdrop (Black 50%) lives
 // on the parent page here, not on the document page as in the other corpus files.
@@ -28,7 +30,7 @@
         var PITCH = 195, W = 170, H = 165;
         function cell(k) { var x = 20 + (k % 4) * PITCH, y = 20 + Math.floor(k / 4) * PITCH; return [y, x, y + H, x + W]; }
 
-        var PW = 800, PH = 420;
+        var PW = 800, PH = 600;   // three rows of cells
         var doc = lib.newDoc(PW, PH);
         // Move the backdrop to the parent page.
         var pageBackdrop = doc.pages[0].rectangles[0];
@@ -185,7 +187,9 @@
             var b = cell(6), y = b[0];
             var f1 = frame('f1', [y, b[1], y + 30, b[3]]);
             var r = doc.pages[0].rectangles.add(base, { geometricBounds: [y + 18, b[1], y + 42, (b[1] + b[3]) / 2] });
-            r.fillColor = none; r.strokeColor = none; r.strokeWeight = 0; r.name = 'XE6 invisible rectangle';
+            // Stroke None only: a weight of 0 set after None turns a 1 pt black stroke back on
+            // (the first build of this case did that, and became XE8).
+            r.fillColor = none; r.strokeColor = none; r.name = 'XE6 invisible rectangle';
             r.textWrapPreferences.textWrapMode = TextWrapModes.NONE;
             var f2 = frame('f2', [y + 30, b[1], y + 60, b[3]]);
             f1.nextTextFrame = f2;
@@ -209,6 +213,20 @@
             inner.name = 'XE7 inner group'; outer.name = 'XE7 outer group';
             name([p.f1, p.f2], 'XE7');
             return { bounds: p.bounds };
+        });
+
+        variant('XE8', 'threaded pair with an unfilled rectangle with a 1 pt black border stacked between the frames over the seam', function () {
+            var b = cell(8), y = b[0];
+            var f1 = frame('f1', [y, b[1], y + 30, b[3]]);
+            var r = doc.pages[0].rectangles.add(base, { geometricBounds: [y + 18, b[1], y + 42, (b[1] + b[3]) / 2] });
+            r.fillColor = none; r.strokeColor = doc.swatches.itemByName('Black'); r.strokeWeight = 1; r.name = 'XE8 bordered rectangle';
+            var f2 = frame('f2', [y + 30, b[1], y + 60, b[3]]);
+            f1.nextTextFrame = f2;
+            f1.contents = 'HH\rHH\rHH\rHH';
+            styleStory(f1.parentStory);
+            f2.bringToFront(); f1.sendToBack();
+            name([f1, f2], 'XE8');
+            return { bounds: [y, b[1], y + 60, b[3]], note: 'stroke weight=' + r.strokeWeight };
         });
 
         lib.manifest.app = app.version;

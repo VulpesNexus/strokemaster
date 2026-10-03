@@ -66,6 +66,7 @@ XECASES = {
     'XE5': ('same story', 'corrected', 'downstream frame scaled 125% in its matrix'),
     'XE6': ('same story', 'corrected', 'an invisible rectangle stacked between the frames draws nothing in between'),
     'XE7': ('same story', 'corrected', 'threaded pair in a group nested in another group'),
+    'XE8': ('same story', 'partial', 'an unfilled rectangle with a 1 pt border stacked between the frames: glyphs under the border keep InDesign\'s order'),
 }
 CENSUS = {'X': XCASES, 'X2': XECASES}
 OUTPUTS = ('hqp.pdf', 'x4.pdf', 'x1a.pdf', 'png600.png', 'eps.eps', 'pshigh.ps')
