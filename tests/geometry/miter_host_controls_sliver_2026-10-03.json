@@ -1,0 +1,999 @@
+{
+ "schema": 1,
+ "status": "SLIVER_MISMATCH",
+ "host": "21.6.0.57",
+ "run": "miter-controls-1791013114285",
+ "pixelsPerPoint": 1000,
+ "tolerances": {
+  "areaPt2": 0.005,
+  "profileRelative": 0.1,
+  "fitX": [
+   1.0,
+   29.0
+  ]
+ },
+ "renderers": {
+  "mupdf": "1.28.2",
+  "poppler": "pdftoppm version 20.08.0",
+  "ghostscript": "9.23"
+ },
+ "hashes": {
+  "controls.pdf": "b7977981568c638d4640158a9eee389541b8977573915614039d33b0805953cc",
+  "tools/measure_miter_sliver.py": "99c243055630dc3893a1b4ceec95bf20313f39b11da30cc6da318d5456c5fb8d"
+ },
+ "summary": {
+  "cases": 12,
+  "allPass": 6,
+  "perRenderer": {
+   "mupdf": 12,
+   "poppler": 12,
+   "ghostscript": 6
+  }
+ },
+ "cases": [
+  {
+   "id": "MC10",
+   "page": 11,
+   "join": "miter",
+   "epsilon": -0.01,
+   "control": "MC01",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.00024559215686274343,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00024559215686274343,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.0001729568627450979,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.0001729568627450979,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00039386666666666603,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00039386666666666603,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.15129023137254904,
+      "fitHeightAtX0": 0.01003498709749927,
+      "fitHeightAtX30": 3.5690773649168714e-05,
+      "fitRms": 1.920022491323228e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.00129023137254905,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.15108310196078434,
+      "fitHeightAtX0": 0.010029653047238185,
+      "fitHeightAtX30": 3.3028185254796796e-05,
+      "fitRms": 9.116544276547188e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.001083101960784344,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.146242,
+      "fitHeightAtX0": 0.009867743390946208,
+      "fitHeightAtX30": -0.00013590053380336913,
+      "fitRms": 7.37072593928211e-05,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.15,
+      "areaError": -0.0037579999999999836,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "MC11",
+   "page": 12,
+   "join": "miter",
+   "epsilon": -0.001,
+   "control": "MC01",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 2.9352941176470496e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 2.9352941176470496e-05,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 6.263529411764685e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 6.263529411764685e-05,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00025893333333333287,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00025893333333333287,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.016054901960784313,
+      "fitHeightAtX0": 0.0010392707089261419,
+      "fitHeightAtX30": 3.1317526367974054e-05,
+      "fitRms": 1.9225588299467728e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0010549019607843137,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.015970807843137258,
+      "fitHeightAtX0": 0.0010999785748921531,
+      "fitHeightAtX30": -3.9599863407561563e-05,
+      "fitRms": 8.550100224063406e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0009708078431372585,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.011112066666666663,
+      "fitHeightAtX0": 0.0008321947023986909,
+      "fitHeightAtX30": -0.0001003804166844071,
+      "fitRms": 6.814461070905443e-05,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.015,
+      "areaError": -0.0038879333333333363,
+      "framed": true,
+      "pass": false
+     }
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC12",
+   "page": 13,
+   "join": "miter",
+   "epsilon": 0.001,
+   "control": "MC01",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.014054901960784313,
+      "fitHeightAtX0": 0.0009728980884499333,
+      "fitHeightAtX30": -3.5923298533968476e-05,
+      "fitRms": 1.9318771779853354e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": -0.0009450980392156864,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.015970807843137258,
+      "fitHeightAtX0": 0.0010999785748921531,
+      "fitHeightAtX30": -3.9599863407561563e-05,
+      "fitRms": 8.550100224063406e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0009708078431372585,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.01909053333333334,
+      "fitHeightAtX0": 0.0010988473396381262,
+      "fitHeightAtX30": 0.00016531456512377727,
+      "fitRms": 6.814048532381081e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0040905333333333405,
+      "framed": true,
+      "pass": false
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 2.9356862745097946e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 2.9356862745097946e-05,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.003827356862745097,
+      "fitHeightAtX0": 0.0001254901960784315,
+      "fitHeightAtX30": 0.0001254901960784312,
+      "fitRms": 8.190465850387116e-20,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.003827356862745097,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00025979999999999954,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.0,
+      "areaError": 0.00025979999999999954,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC13",
+   "page": 14,
+   "join": "miter",
+   "epsilon": 0.01,
+   "control": "MC01",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.14929022745098042,
+      "fitHeightAtX0": 0.00996828663159862,
+      "fitHeightAtX30": -3.099811619247314e-05,
+      "fitRms": 1.920000996598035e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": -0.0007097725490195772,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.15108301960784315,
+      "fitHeightAtX0": 0.010029653047238185,
+      "fitHeightAtX30": 3.3028185254796796e-05,
+      "fitRms": 9.116544276547184e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.0010830196078431553,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.15422733333333336,
+      "fitHeightAtX0": 0.010133893940630311,
+      "fitHeightAtX30": 0.00013033939270300568,
+      "fitRms": 7.36512114037289e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.004227333333333361,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.0002456235294117639,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.0002456235294117639,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.003937678431372547,
+      "fitHeightAtX0": 0.0001254901960784315,
+      "fitHeightAtX30": 0.0001254901960784312,
+      "fitRms": 8.190465850387116e-20,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.003937678431372547,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.0003939333333333327,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.0,
+      "areaError": 0.0003939333333333327,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "MC24",
+   "page": 25,
+   "join": "bevel",
+   "epsilon": -0.01,
+   "control": "MC15",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.00024559215686274343,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00024559215686274343,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.0001729568627450979,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.0001729568627450979,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00039386666666666603,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00039386666666666603,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.15129023137254904,
+      "fitHeightAtX0": 0.01003498709749927,
+      "fitHeightAtX30": 3.5690773649168714e-05,
+      "fitRms": 1.920022491323228e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.00129023137254905,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.15108310196078434,
+      "fitHeightAtX0": 0.010029653047238185,
+      "fitHeightAtX30": 3.3028185254796796e-05,
+      "fitRms": 9.116544276547188e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.001083101960784344,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.146242,
+      "fitHeightAtX0": 0.009867743390946208,
+      "fitHeightAtX30": -0.00013590053380336913,
+      "fitRms": 7.37072593928211e-05,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.15,
+      "areaError": -0.0037579999999999836,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "MC25",
+   "page": 26,
+   "join": "bevel",
+   "epsilon": -0.001,
+   "control": "MC15",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 2.9352941176470496e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 2.9352941176470496e-05,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 6.263529411764685e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 6.263529411764685e-05,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00025893333333333287,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00025893333333333287,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.016054901960784313,
+      "fitHeightAtX0": 0.0010392707089261419,
+      "fitHeightAtX30": 3.1317526367974054e-05,
+      "fitRms": 1.9225588299467728e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0010549019607843137,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.015970807843137258,
+      "fitHeightAtX0": 0.0010999785748921531,
+      "fitHeightAtX30": -3.9599863407561563e-05,
+      "fitRms": 8.550100224063406e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0009708078431372585,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.011112066666666663,
+      "fitHeightAtX0": 0.0008321947023986909,
+      "fitHeightAtX30": -0.0001003804166844071,
+      "fitRms": 6.814461070905443e-05,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.015,
+      "areaError": -0.0038879333333333363,
+      "framed": true,
+      "pass": false
+     }
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC26",
+   "page": 27,
+   "join": "bevel",
+   "epsilon": 0.001,
+   "control": "MC15",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.014054901960784313,
+      "fitHeightAtX0": 0.0009728980884499333,
+      "fitHeightAtX30": -3.5923298533968476e-05,
+      "fitRms": 1.9318771779853354e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": -0.0009450980392156864,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.015970807843137258,
+      "fitHeightAtX0": 0.0010999785748921531,
+      "fitHeightAtX30": -3.9599863407561563e-05,
+      "fitRms": 8.550100224063406e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0009708078431372585,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.01909053333333334,
+      "fitHeightAtX0": 0.0010988473396381262,
+      "fitHeightAtX30": 0.00016531456512377727,
+      "fitRms": 6.814048532381081e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0040905333333333405,
+      "framed": true,
+      "pass": false
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 2.9356862745097946e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 2.9356862745097946e-05,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.003827356862745097,
+      "fitHeightAtX0": 0.0001254901960784315,
+      "fitHeightAtX30": 0.0001254901960784312,
+      "fitRms": 8.190465850387116e-20,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.003827356862745097,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00025979999999999954,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.0,
+      "areaError": 0.00025979999999999954,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC27",
+   "page": 28,
+   "join": "bevel",
+   "epsilon": 0.01,
+   "control": "MC15",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.14929022745098042,
+      "fitHeightAtX0": 0.00996828663159862,
+      "fitHeightAtX30": -3.099811619247314e-05,
+      "fitRms": 1.920000996598035e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": -0.0007097725490195772,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.15108301960784315,
+      "fitHeightAtX0": 0.010029653047238185,
+      "fitHeightAtX30": 3.3028185254796796e-05,
+      "fitRms": 9.116544276547184e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.0010830196078431553,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.15422733333333336,
+      "fitHeightAtX0": 0.010133893940630311,
+      "fitHeightAtX30": 0.00013033939270300568,
+      "fitRms": 7.36512114037289e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.004227333333333361,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.0002456235294117639,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.0002456235294117639,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.003937678431372547,
+      "fitHeightAtX0": 0.0001254901960784315,
+      "fitHeightAtX30": 0.0001254901960784312,
+      "fitRms": 8.190465850387116e-20,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.003937678431372547,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.0003939333333333327,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.0,
+      "areaError": 0.0003939333333333327,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "MC38",
+   "page": 39,
+   "join": "round",
+   "epsilon": -0.01,
+   "control": "MC29",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.00021751764705882197,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00021751764705882197,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.0001729019607843136,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.0001729019607843136,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.0002613333333333329,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.0002613333333333329,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.1510661568627451,
+      "fitHeightAtX0": 0.01003498709749927,
+      "fitHeightAtX30": 3.5690773649168714e-05,
+      "fitRms": 1.920022491323228e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.0010661568627451101,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.15097794901960787,
+      "fitHeightAtX0": 0.010029653047238185,
+      "fitHeightAtX30": 3.3028185254796796e-05,
+      "fitRms": 9.116544276547188e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.0009779490196078766,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.14585333333333336,
+      "fitHeightAtX0": 0.009867743390946208,
+      "fitHeightAtX30": -0.00013590053380336913,
+      "fitRms": 7.37072593928211e-05,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.15,
+      "areaError": -0.004146666666666632,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": true
+  },
+  {
+   "id": "MC39",
+   "page": 40,
+   "join": "round",
+   "epsilon": -0.001,
+   "control": "MC29",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 2.9352941176470496e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 2.9352941176470496e-05,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 6.258039215686254e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 6.258039215686254e-05,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00013306666666666655,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00013306666666666655,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.01605389411764706,
+      "fitHeightAtX0": 0.0010392707089261419,
+      "fitHeightAtX30": 3.1317526367974054e-05,
+      "fitRms": 1.9225588299467728e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.001053894117647062,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.015979380392156867,
+      "fitHeightAtX0": 0.0010999785748921531,
+      "fitHeightAtX30": -3.9599863407561563e-05,
+      "fitRms": 8.550100224063406e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.000979380392156868,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.010857866666666664,
+      "fitHeightAtX0": 0.0008321947023986909,
+      "fitHeightAtX30": -0.0001003804166844071,
+      "fitRms": 6.814461070905443e-05,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.015,
+      "areaError": -0.004142133333333336,
+      "framed": true,
+      "pass": false
+     }
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC40",
+   "page": 41,
+   "join": "round",
+   "epsilon": 0.001,
+   "control": "MC29",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.014052109803921567,
+      "fitHeightAtX0": 0.0009728980884499333,
+      "fitHeightAtX30": -3.5923298533968476e-05,
+      "fitRms": 1.9318771779853354e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": -0.0009478901960784328,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.015970752941176475,
+      "fitHeightAtX0": 0.0010999785748921531,
+      "fitHeightAtX30": -3.9599863407561563e-05,
+      "fitRms": 8.550100224063406e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.0009707529411764754,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.019071666666666674,
+      "fitHeightAtX0": 0.0010988473396381262,
+      "fitHeightAtX30": 0.00016531456512377727,
+      "fitRms": 6.814048532381081e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.015,
+      "areaError": 0.004071666666666675,
+      "framed": true,
+      "pass": false
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 4.090980392156854e-05,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 4.090980392156854e-05,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.003835929411764705,
+      "fitHeightAtX0": 0.0001254901960784315,
+      "fitHeightAtX30": 0.0001254901960784312,
+      "fitRms": 8.190465850387116e-20,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.003835929411764705,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.00013306666666666655,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.0,
+      "areaError": 0.00013306666666666655,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": false
+  },
+  {
+   "id": "MC41",
+   "page": 42,
+   "join": "round",
+   "epsilon": 0.01,
+   "control": "MC29",
+   "strips": {
+    "top": {
+     "mupdf": {
+      "area": 0.1490661843137255,
+      "fitHeightAtX0": 0.00996828663159862,
+      "fitHeightAtX30": -3.099811619247314e-05,
+      "fitRms": 1.920000996598035e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": -0.0009338156862744862,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.15096923921568628,
+      "fitHeightAtX0": 0.010029653047238185,
+      "fitHeightAtX30": 3.3028185254796796e-05,
+      "fitRms": 9.116544276547184e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.000969239215686285,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.15407526666666668,
+      "fitHeightAtX0": 0.010133893940630311,
+      "fitHeightAtX30": 0.00013033939270300568,
+      "fitRms": 7.36512114037289e-05,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.15,
+      "areaError": 0.004075266666666688,
+      "framed": true,
+      "pass": true
+     }
+    },
+    "bottom": {
+     "mupdf": {
+      "area": 0.00022503529411764634,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.00022503529411764634,
+      "framed": true,
+      "pass": true
+     },
+     "poppler": {
+      "area": 0.003946250980392156,
+      "fitHeightAtX0": 0.0001254901960784315,
+      "fitHeightAtX30": 0.0001254901960784312,
+      "fitRms": 8.190465850387116e-20,
+      "controlInkThickness": 0.5,
+      "expectedArea": 0.0,
+      "areaError": 0.003946250980392156,
+      "framed": true,
+      "pass": true
+     },
+     "ghostscript": {
+      "area": 0.0002613333333333329,
+      "fitHeightAtX0": 0.0,
+      "fitHeightAtX30": 0.0,
+      "fitRms": 0.0,
+      "controlInkThickness": 0.5002666666666665,
+      "expectedArea": 0.0,
+      "areaError": 0.0002613333333333329,
+      "framed": true,
+      "pass": true
+     }
+    }
+   },
+   "pass": true
+  }
+ ],
+ "limitations": [
+  "Strips cover 1 pt around each nominal edge; ink farther away is not measured here.",
+  "InDesign's own raster is not included: its PNG export cannot reach this resolution."
+ ]
+}

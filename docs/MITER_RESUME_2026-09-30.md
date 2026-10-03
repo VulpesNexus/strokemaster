@@ -151,4 +151,16 @@ Every bounds error over all 168 renders is at most 0.04 pt. Ghostscript and InDe
 - The closed two-anchor contour is inked as a full 30 × 3 pt bar in every renderer, with flush or round ends by join and no caps. Such contours carry stroke ink and cannot be dropped from glyph outlines.
 - InDesign's PDF carries the requested stroke parameters unchanged, so its PDF and the independent renderers agree with the rule, and InDesign's own raster differs only by its edge offset.
 
-**Not resolved:** the near-reversal sliver (15|eps| pt², at most 0.17 px tall at 1200 dpi) is below these renders' resolution. Its residual flips sign with eps in Poppler, Ghostscript, and InDesign, by about the sliver's own area; only MuPDF stays within 0.03 pt². A cropped high-resolution render would settle it; it does not affect the spike question.
+**Resolved below:** the near-reversal sliver (15|eps| pt², at most 0.17 px tall at 1200 dpi) is below these renders' resolution. Its residual flips sign with eps in Poppler, Ghostscript, and InDesign, by about the sliver's own area; only MuPDF stays within 0.03 pt². The high-resolution render in the next section settles it; it does not affect the spike question.
+
+## Near-reversal sliver at 1000 px per point — October 3, 2026
+
+[*tools/measure_miter_sliver.py*](../tools/measure_miter_sliver.py) renders two 32.1 × 1 pt strips per page, along each stroke edge at y = ±1.5, at 72,000 dpi in MuPDF, Poppler, and Ghostscript, for the 12 near U-turns and for the exact U-turn with the same join, which serves as the control on the same pixel grid. The difference cancels each renderer's edge bias and is fitted column by column, over 1 ≤ x ≤ 29, against the expected wedge eps(30 − x)/30. The tolerances were fixed before measuring: 0.005 pt² of area, and 10% of |eps| for the fitted height at x = 0 and at x = 30. A framing guard rejects any strip whose control ink is not 0.5 pt thick; it was added after Ghostscript's first run rendered blank strips, because Ghostscript 9.23 with fixed media applies a y *PageOffset* with the opposite sign. The record is [*miter_host_controls_sliver_2026-10-03.json*](../tests/geometry/miter_host_controls_sliver_2026-10-03.json), with 7 unit tests.
+
+| Renderer | Pass | Wedge at eps = ±0.01 (expected 0.150 pt²; height 0.0100 pt at x = 0) | Wedge at eps = ±0.001 (expected 0.015 pt²; height 0.0010 pt) |
+| --- | ---: | --- | --- |
+| MuPDF | 12 of 12 | 0.149–0.151 pt²; 0.00997–0.01003 pt | 0.014–0.016 pt²; 0.00097–0.00104 pt |
+| Poppler | 12 of 12 | 0.151 pt²; 0.01003 pt | 0.016 pt²; 0.00110 pt |
+| Ghostscript | 6 of 12 | 0.146–0.154 pt²; 0.00987–0.01013 pt | 0.011–0.019 pt²; 0.00083–0.00110 pt, ending 0.0001–0.00017 pt off zero at x = 30 |
+
+**The sliver is real geometry, drawn by every renderer.** In all 12 cases and all three renderers the wedge appears on the side of eps only and tapers linearly to zero at x = 30, while the opposite edge matches its control within 0.0004 pt² (Poppler's opposite edge moves a uniform 0.13 px, 0.004 pt², inside the tolerance). Ghostscript fails only at |eps| = 0.001, where its tilted edge lands 0.1–0.17 px from the exact line, beyond 10% of a one-pixel wedge; the result status is `SLIVER_MISMATCH` for that reason, not a missing or misplaced sliver. The sign-flipping residuals at 1200 dpi were anti-aliasing quantization of a sub-pixel feature. InDesign's own raster is not included: its PNG export cannot reach this resolution.
