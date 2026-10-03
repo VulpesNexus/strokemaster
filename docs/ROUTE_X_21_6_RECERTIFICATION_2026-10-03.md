@@ -88,10 +88,36 @@ Session C5 repeats C4 in a fresh process with the candidate (78,848 bytes, `8c1d
 
 Not yet measured for the miter correction: EPS, PostScript, and screen drawing of suite B (they draw the same stroke operators), Center strokes (left to InDesign, spikes included), and real documents. Earlier builds are kept: `301fe06b` in *build/Release-RouteX-301fe06b* and the installer backup *20261003T102150Z-backup*, the research builds beside them.
 
+## Center strokes: escaping tips only, route X candidate `8dbde64e`
+
+The owner's look at the miter suite flagged the Center 8 pt line (spikes on v and w), and chose to remove only the escaping tips. A Center stroke lies over its own fill, so an interior miter there is visible and belongs; only its part outside the letter escapes.
+
+Route W leaves a mitered Center run native and in InDesign's own drawing order. In its pass before Text it records the run's join in a second ledger (the same mute-and-recover rules as the stroke paint, *ThreadJoinLedger*) and sets it to bevel in the wax; InDesign then draws the run with bevel joins. In the Foreground pass, before the join is given back, it restrokes the run's corners with the native miter and limit: the exterior ones as they are, the interior ones clipped to the run's glyph outlines (nonzero), so an interior miter is kept inside the letter and only its escaping part is lost. Every stub is a short piece of the outline itself on each side of its corner (*CubicHead*, *CubicTail* in *IseMiterCore.h*): the first build's straight tangent stubs stuck out of the stroke where a letter curves tightly next to a corner, which a Center stroke shows and an Outside stroke hides under the fill. Tests: 39 miter-core checks (interior corners, curve pieces) and 12 join-ledger checks.
+
+A/B in one process (research build `f0d94de3`, *miter=0* then *miter=1*, sessions M4 and M5), measured in MuPDF at 288 dpi and in InDesign's PNG:
+
+| Suite B line | MuPDF: ink lost above 64 levels | Where | Ink gained above 32 levels |
+| --- | --- | --- | --- |
+| Center 8 pt, limit 4 | 65 px | the two predicted spikes (29 and 34 px), plus two single pixels | 305 px, all within two pixels of the stroke edge |
+| Center 8 pt, limit 1 | 0 | — | 329 px, all within two pixels of the stroke edge |
+| Outside lines | spikes only, as before | — | none |
+
+The gained edge pixels are the path-against-text-stroke edge difference route W's certification already describes: the stubs are paths beside InDesign's text stroke, rasterized slightly apart. InDesign's own PNG shows the same class (up to 106 levels, within two pixels of an edge, both ways); nothing in it loses more than 128 levels. Inside the letters nothing changes.
+
+**ROUTE_W_MITER for Center strokes: CERTIFIED_WITH_VARIANCE on 21.6; installed now as `8dbde64e`.** Session C6 repeats C5 with the candidate (84,480 bytes, `8dbde64e148883a57457081eb70640003c0a65f9ad976515d00fe714f6831c7f`, hash read from the loaded module):
+
+- Every fill-core damage count of its 110 measured lines equals C5's; three comparisons against renders made under an earlier plugin moved by 2 to 9 pixels.
+- Its PNGs equal C5's byte for byte except the scope fixture's (5 pixels, at most 7 levels: E09's mitered anchored frame, now with curve-following stubs).
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases against same-day native and route W ([*cross_frame_census_21.6_8dbde64e.json*](../tests/audit/results/cross_frame_census_21.6_8dbde64e.json), [*cross_frame_extension_census_8dbde64e.json*](../tests/audit/results/cross_frame_extension_census_8dbde64e.json)).
+- Suite B in its foreground and background PDF has no ink in any predicted spike, Outside or Center; the Outside fringe outside the envelope fell to 0.01–0.09 pt² with the curve-following stubs. The Center lines lose ink only at the two spikes in both exports.
+- The 13 documents it saved carry no plugin state ([*C6-state.json*](../tests/audit/results/routex/C6-state.json)).
+
 ## Owner verification and decisions
 
 - **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.
-- **Separate stories: only behind a switch.** Correcting one story's stroke over another story's text would need an explicit switch, because separate stories can overlap on purpose (Q26). Until one is designed, they stay as InDesign stacks them.
+- **The inner half of Center strokes: only behind a switch.** The half of a Center stroke painted over its own letter is sometimes wanted and sometimes not; hiding it would need an explicit switch (Q28).
+- **Separate stories: a switch would be useful.** Captions, callouts, and split headlines are often separate unthreaded frames whose strokes cover a neighbor's letters by accident, but a halo over another frame is deliberate; a per-document switch, off by default, fits both (Q26). Until one is designed, separate stories stay as InDesign stacks them.
+- **Miter suite findings.** The Center line's spikes are now corrected (above). The flat-topped triangles are page items, beveled by InDesign past the miter limit; the outlined bottom line is InDesign's own *Create Outlines* defect. The owner chose to bring page-item strokes under the plugin, with the same interior rule and, past the limit, a point cut at the limit distance instead of a bevel at the vertex (Q29).
 - **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and the before and after PDFs (*B-miter - before (spikes, correction off).pdf* from session M0, *B-miter - after (route X 8c1d42aa).pdf* from C5).
 
 ## Next

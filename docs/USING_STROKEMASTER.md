@@ -14,12 +14,13 @@ Which correction to use depends on one question: **does the file have to look ri
 
 ## The plugin
 
-**What it does.** For every text run with an Outside stroke, the plugin draws the stroke itself, in a pass before the frame's text, and InDesign then draws the run's fill on top. So a line's stroke no longer covers another line's fill: within a frame, across the columns of a frame, and across the threaded frames of one story. A run with a Miter join is stroked with bevel joins, and only the corners whose join points away from the letter get their miter back, with the run's own miter limit, so no miter tip can poke through a thin part of a letter. Nothing is written into the document; the same file opens and draws natively on a machine without the plugin.
+**What it does.** For every text run with an Outside stroke, the plugin draws the stroke itself, in a pass before the frame's text, and InDesign then draws the run's fill on top. So a line's stroke no longer covers another line's fill: within a frame, across the columns of a frame, and across the threaded frames of one story. A run with a Miter join is stroked with bevel joins, and only the corners whose join points away from the letter get their miter back, with the run's own miter limit, so no miter tip can poke through a thin part of a letter. A Center stroke stays InDesign's own, in InDesign's order; only the parts of its miters that poke out of a letter are removed, and its miters inside the letter are kept. Nothing is written into the document; the same file opens and draws natively on a machine without the plugin.
 
 **Where it stops, on purpose or for now:**
 
 - **Separate stories are left as InDesign stacks them.** One story's stroke over another story's text looks the same as a deliberate halo, so it is not changed. A correction there would need a switch, and none exists yet.
-- **Center strokes are left to InDesign**, miter spikes included.
+- **Center strokes keep InDesign's drawing and order**; only their escaping miter tips are removed. Hiding the half of a Center stroke that lies over its letter would need a switch, and none exists yet.
+- **Shapes and outlined text are left to InDesign**, spikes and beveled points included; taking over their strokes is planned.
 - **Content drawn between two frames of a story** (an unrelated filled or stroked object stacked between them) keeps InDesign's order where it covers a letter; invisible objects, such as empty frames, do not.
 - **A translucent upstream frame** is not corrected, and exporting a single page item draws the per-frame correction only.
 
