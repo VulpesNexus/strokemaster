@@ -1,6 +1,6 @@
 # Route X on InDesign 21.6, 2026-10-03
 
-Route X (`1e7c417e…`) was certified on InDesign 21.5.1.73 ([cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md), [route W certification](../ROUTE_W_CERTIFICATION_2026-09-25.md)). The host is now 21.6.0.57. This pass recertifies route X on 21.6 against same-day controls, adds an extension census for the cases the research left untested, fixes the one route X gap that census found, validates the miter-spike model against InDesign's output, and corrects the spikes in route W's stroke pass.
+Route X (`1e7c417e…`) was certified on InDesign 21.5.1.73 ([cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md), [route W certification](../ROUTE_W_CERTIFICATION_2026-09-25.md)). The host is now 21.6.0.57. This pass recertifies route X on 21.6 against same-day controls, adds an extension census for the cases the research left untested, fixes the one route X gap that census found, validates the miter-spike model against InDesign's output, corrects the spikes in route W's stroke pass, and takes over plain page-item strokes.
 
 ## Verdict
 
@@ -104,7 +104,7 @@ A/B in one process (research build `f0d94de3`, *miter=0* then *miter=1*, session
 
 The gained edge pixels are the path-against-text-stroke edge difference route W's certification already describes: the stubs are paths beside InDesign's text stroke, rasterized slightly apart. InDesign's own PNG shows the same class (up to 106 levels, within two pixels of an edge, both ways); nothing in it loses more than 128 levels. Inside the letters nothing changes.
 
-**ROUTE_W_MITER for Center strokes: CERTIFIED_WITH_VARIANCE on 21.6; installed now as `8dbde64e`.** Session C6 repeats C5 with the candidate (84,480 bytes, `8dbde64e148883a57457081eb70640003c0a65f9ad976515d00fe714f6831c7f`, hash read from the loaded module):
+**ROUTE_W_MITER for Center strokes: CERTIFIED_WITH_VARIANCE on 21.6 as `8dbde64e`; superseded by `48e27348`, which adds page-item strokes (below).** Session C6 repeats C5 with the candidate (84,480 bytes, `8dbde64e148883a57457081eb70640003c0a65f9ad976515d00fe714f6831c7f`, hash read from the loaded module):
 
 - Every fill-core damage count of its 110 measured lines equals C5's; three comparisons against renders made under an earlier plugin moved by 2 to 9 pixels.
 - Its PNGs equal C5's byte for byte except the scope fixture's (5 pixels, at most 7 levels: E09's mitered anchored frame, now with curve-following stubs).
@@ -112,16 +112,53 @@ The gained edge pixels are the path-against-text-stroke edge difference route W'
 - Suite B in its foreground and background PDF has no ink in any predicted spike, Outside or Center; the Outside fringe outside the envelope fell to 0.01–0.09 pt² with the curve-following stubs. The Center lines lose ink only at the two spikes in both exports.
 - The 13 documents it saved carry no plugin state ([*C6-state.json*](../tests/audit/results/routex/C6-state.json)).
 
+## Page-item strokes: route X candidate `48e27348`
+
+The owner chose to bring page-item strokes (shapes, frames, outlined text) under the plugin with the text rule, and, past the miter limit, to keep a corner's point cut flat at the limit distance instead of InDesign's bevel at the vertex (Q29). InDesign stroke-draws a page item after asking the draw-event dispatcher (*kBeginFrameStrokeDrawMessage*); route X's handler now draws the stroke itself at that moment, in the item's inner coordinates, and reports the event handled, so InDesign skips its own stroke for that item and drawing order is kept (*plugin/source/IsePageItemStroke.cpp*).
+
+**What it takes.** Only strokes it can draw exactly: closed paths; a solid stroke type; a Miter join; Center or Outside alignment; no corner effects; no transparency on the item; no scaling (rotation and translation only); an outline whose nonzero and even-odd regions agree wherever a clip is needed (Outside, or Center with an interior corner); no stroke overprint when a corner needs a cut. Everything else, Inside strokes, open paths, dashes, stroke styles, and arrowheads included, stays InDesign's.
+
+**What it draws** (*IseMiterCore.h*): the outline from *IPathPageItem::GetOutlineInfo* (corner effects included), stroked with bevel joins, then each exterior corner restroked with the miter as for text, and for Center each interior corner restroked under a clip to the item's fill. An exterior corner past the limit is filled as its miter cut at the limit distance (*CutMiter*; the join is defined by the tangents at the vertex, so the polygon is exact on curves too). For Outside, the stroke is drawn at twice the weight under a clip to outside the fill.
+
+Three host facts shaped it, each found in the first A/B and measured in its PDF operators:
+
+- **InDesign's PDF port rewrites clips.** It merged the cut clip of an Outside wedge with the outside clip, and dropped it from a Center wedge, whose tip then drew in full (P1: 16.44 to more than 30 pt). The cut is therefore filled, not clipped.
+- **It also changes a clip's rule and frame.** An even-odd clip came out as `W` (nonzero), and its rectangular frame as `re`, with the port's own winding; the result was right only because suite B's contours happen to wind against `re`. The outside clip is now an octagon frame with each contour wound explicitly by nesting depth (*OutsideClip*), and probe points off every edge confirm that its nonzero reading is exactly the outside of the fill; where it is not, the item stays InDesign's.
+- **For an Outside stroke, InDesign fills an offset of the outline, not the outline,** by half the weight, and strokes that; *IPathPageItem::Fill* fills the same offset. Its offset breaks on the outlined bottom line's overlapping and reversed contours: that is the line's "missing fill" on N, painted over by the offset stroke, and the gaps in A and N once the stroke was ours. The outline is now filled again in the item's paint before its stroke (identical pixels where the offset fill is whole; gradient fills are not refilled).
+
+Core tests: 75 miter-core checks (the cut miter, reversal with curves, the outside clip under every winding of a holed square, opposite windings side by side, the same-direction hole it refuses).
+
+A/B in one process (research build `43a9b310`, *miter=1*, *shapes=0* then *shapes=1*, sessions P4 and P5), suite B's wedges in MuPDF at 16 px/pt (apex height above the vertex, pt):
+
+| Wedges, limit 4 | Native (P4) | Page-item strokes (P5) | Expected |
+| --- | ---: | ---: | ---: |
+| 10–28°, Outside 4 pt | 2.19–2.50, flat top | 16.00 | 16.00, cut at the limit |
+| 10–28°, Center 8 pt | 0.38–1.00, flat top | 16.00 | 16.00, cut at the limit |
+| 30–60°, both | 8.00–15.38 | 7.94–15.31 | 8.00–15.45, the full miter |
+
+The outlined bottom line (Outside) draws whole: every letter filled, every stroke clean; the outlined line as converted (Center) lost 151 pixels and gained none, at its spikes. P4 and P5 measure identical fill-core damage on every output of the victims, scope, cross-frame, transparency, color, and extension censuses and the saved suites ([*P4.json*](../tests/audit/results/routex/P4.json), [*P5.json*](../tests/audit/results/routex/P5.json)); outside suite B, one pixel of one PNG changed. In suite B, only the wedges past the limit and the two outlined lines changed by more than 32 levels.
+
+**ROUTE_X page-item strokes: CERTIFIED on 21.6; installed now as `48e27348`.** Session C7 repeats C6 in a fresh process with the candidate (103,424 bytes, `48e27348e268609331bfd4dd52db1a76d209aa758c45c670c2f4fe8223702a72`, hash read from the loaded module):
+
+- All 110 measured lines equal C6's.
+- Its PNGs equal C6's byte for byte except the two holding bordered rectangles, cert-X and cert-X2: 5 to 11 corner pixels each, at most 29 levels (one pixel at 43), the bevel-and-stub drawing of a right-angle corner against InDesign's own miter.
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases against same-day native and route W ([*cross_frame_census_21.6_48e27348.json*](../tests/audit/results/cross_frame_census_21.6_48e27348.json), [*cross_frame_extension_census_48e27348.json*](../tests/audit/results/cross_frame_extension_census_48e27348.json)); the 13 documents it saved carry no plugin state ([*C7-state.json*](../tests/audit/results/routex/C7-state.json)).
+- Suite B in its foreground and background PDF matches P5 (no pixel above 32 levels apart), its wedges as in the table, and no ink in any predicted text spike.
+
+Not yet covered: Inside strokes, open paths and their caps, corner effects, scaled items, dashes and stroke styles, and outlines whose fill rules disagree; EPS, PostScript, and screen drawing of the wedges are unmeasured. Earlier builds stay in the installer's backups (`8dbde64e` in *20261003T160232Z-backup*).
+
 ## Owner verification and decisions
 
 - **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.
 - **The inner half of Center strokes: only behind a switch.** The half of a Center stroke painted over its own letter is sometimes wanted and sometimes not; hiding it would need an explicit switch (Q28).
 - **Separate stories: a switch would be useful.** Captions, callouts, and split headlines are often separate unthreaded frames whose strokes cover a neighbor's letters by accident, but a halo over another frame is deliberate; a per-document switch, off by default, fits both (Q26). Until one is designed, separate stories stay as InDesign stacks them.
 - **Miter suite findings.** The Center line's spikes are now corrected (above). The flat-topped triangles are page items, beveled by InDesign past the miter limit; the outlined bottom line is InDesign's own *Create Outlines* defect. The owner chose to bring page-item strokes under the plugin, with the same interior rule and, past the limit, a point cut at the limit distance instead of a bevel at the vertex (Q29).
-- **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and the before and after PDFs (*B-miter - before (spikes, correction off).pdf* from session M0, *B-miter - after (route X 8c1d42aa).pdf* from C5).
+- **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and its PDFs: before (session M0), after the Outside correction (C5), after the Center correction (C6), and *B-miter - after (route X 48e27348, text and page items).pdf* (C7).
+- **Center miter correction: confirmed.** The owner looked at the C6 files: the last character spikes are gone. The outlined bottom line was the remaining outlier, which page-item strokes now draw whole.
 
 ## Next
 
-1. The owner's look at the miter suite at 400%, on screen and in the before and after PDFs.
-2. EPS, PostScript, and screen checks of the miter correction; a font sweep beyond Minion (sans, script, a variable font) at large Outside weights.
-3. XE2 by hand: whether InDesign's interface threads anchored frames at all.
+1. The owner's look at the page-item strokes: suite B's triangles and outlined lines, and shapes in their own documents.
+2. Page-item coverage: Inside strokes, open paths and caps, corner effects, scaled items, and outlines whose fill rules disagree.
+3. EPS, PostScript, and screen checks of the miter correction, text and page items; a font sweep beyond Minion (sans, script, a variable font) at large Outside weights.
+4. XE2 by hand: whether InDesign's interface threads anchored frames at all.
