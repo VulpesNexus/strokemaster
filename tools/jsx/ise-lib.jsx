@@ -107,6 +107,35 @@ $.global.ISE_LIB = (function () {
         }
     }
 
+    // InDesign 21.6 couples the two PDF profiles: pdfXProfile = USE_NO_PROFILE resets the
+    // destination to USE_DOCUMENT, and destination = WORKING sets pdfXProfile to WORKING, so the
+    // passes above cannot restore a saved pair such as a named destination with no PDF/X profile.
+    // Leaving the color space unchanged and setting it back makes InDesign pick the working
+    // profile by name, with the PDF/X profile kept. Try each order; report which one worked.
+    function restoreProfiles(o, s, adjusted) {
+        var d = 'pdfDestinationProfile', x = 'pdfXProfile', cs = 'pdfColorSpace';
+        if (!s.vals.hasOwnProperty(d) || !s.vals.hasOwnProperty(x)) { return; }
+        function same() {
+            return sameValue(o[d], s.vals[d]) && sameValue(o[x], s.vals[x]) &&
+                (!s.vals.hasOwnProperty(cs) || sameValue(o[cs], s.vals[cs]));
+        }
+        try { if (same()) { return; } } catch (e0) { return; }
+        var orders = [
+            ['destination then PDF/X', function () { o[d] = copyValue(s.vals[d]); o[x] = copyValue(s.vals[x]); }],
+            ['PDF/X then destination', function () { o[x] = copyValue(s.vals[x]); o[d] = copyValue(s.vals[d]); }]
+        ];
+        if (typeof PDFColorSpace !== 'undefined' && s.vals.hasOwnProperty(cs)) {
+            orders.push(['PDF/X under unchanged color, then color', function () {
+                o[cs] = PDFColorSpace.UNCHANGED_COLOR_SPACE; o[x] = copyValue(s.vals[x]); o[cs] = copyValue(s.vals[cs]);
+            }]);
+        }
+        for (var i = 0; i < orders.length; i++) {
+            try { orders[i][1](); } catch (e1) {}
+            try { if (same()) { adjusted.push('profiles: ' + orders[i][0]); return; } } catch (e2) {}
+        }
+        adjusted.push('profiles: no order reached the saved pair');
+    }
+
     function restore(o, s, first) {
         var fails = [], done = {}, diff = [], adjusted = [], unverified = s.unverified.slice(0), i, n, pass;
         for (i = 0; i < first.length; i++) {
@@ -127,12 +156,18 @@ $.global.ISE_LIB = (function () {
             if (!changed) { break; }
         }
         restoreThresholds(o, s, adjusted);
+        restoreProfiles(o, s, adjusted);
         if (adjusted.length) {
             var remaining = [];
             for (i = 0; i < fails.length; i++) {
                 var failedKey = fails[i].split(':')[0], cleared = false;
                 for (var t = 0; t < THRESHOLDS.length; t++) {
                     if (THRESHOLDS[t][0] === failedKey && sameValue(o[failedKey], s.vals[failedKey])) { cleared = true; }
+                }
+                // The read-only effective profiles fail to be set while the profiles differ;
+                // once restoreProfiles has restored the pair, they match again.
+                if (/^(pdfDestinationProfile|pdfXProfile|effectivePDFDestinationProfile|effectivePDFXProfile)$/.test(failedKey)) {
+                    try { if (sameValue(o[failedKey], s.vals[failedKey])) { cleared = true; } } catch (e3) {}
                 }
                 if (!cleared) { remaining.push(fails[i]); }
             }

@@ -208,6 +208,39 @@ test('PURE: a preference reset by a later restore is restored again', () => {
     assert.match(report, /pdfExportPreferences restore: fails=0 diff=0 unverified=0/);
 });
 
+// Host 21.6, measured 2026-10-03: pdfXProfile = USE_NO_PROFILE resets the destination to
+// USE_DOCUMENT; destination = WORKING sets pdfXProfile to WORKING; a named destination does not
+// stick by assignment; leaving the color space unchanged locks the destination, and setting it
+// back picks the working profile by name. The read-only effective profile follows the pair.
+const COUPLED_PROFILES = `
+    var PDFColorSpace = { UNCHANGED_COLOR_SPACE: 'UNCHANGED' };
+    var dest = 'sRGB IEC61966-2.1', x = 'USE_NO_PROFILE', space = 'REPURPOSE_RGB';
+    app.pdfExportPreferences = { reflect: { properties: [{ name: 'pdfDestinationProfile' }, { name: 'effectivePDFDestinationProfile' },
+        { name: 'pdfXProfile' }, { name: 'pdfColorSpace' }] } };
+    Object.defineProperty(app.pdfExportPreferences, 'pdfDestinationProfile', { get: function () { return dest; }, set: function (v) {
+        if (space === 'UNCHANGED') { throw Error('The property\\'s value is locked and cannot be changed.'); }
+        if (v === 'WORKING') { dest = 'WORKING'; x = 'WORKING'; } else if (v === 'USE_DOCUMENT') { dest = v; } } });
+    Object.defineProperty(app.pdfExportPreferences, 'effectivePDFDestinationProfile', { get: function () {
+        return dest === 'USE_DOCUMENT' ? '' : 'sRGB IEC61966-2.1'; }, set: function (v) { throw Error('read only'); } });
+    Object.defineProperty(app.pdfExportPreferences, 'pdfXProfile', { get: function () { return x; }, set: function (v) {
+        x = v; if (v === 'USE_NO_PROFILE') { dest = 'USE_DOCUMENT'; } } });
+    Object.defineProperty(app.pdfExportPreferences, 'pdfColorSpace', { get: function () { return space; }, set: function (v) {
+        if (space === 'UNCHANGED' && v === 'REPURPOSE_RGB' && x === 'USE_NO_PROFILE') { dest = 'sRGB IEC61966-2.1'; } space = v; } });
+`;
+
+test('PURE: coupled PDF profiles are restored through the color space (host 21.6)', () => {
+    const rt = preferences(COUPLED_PROFILES);
+    const report = rt.globals.ISE_LIB.run(() => rt.evaluate("dest = 'USE_DOCUMENT';"));
+    assert.equal(rt.evaluate('dest + "|" + x + "|" + space'), 'sRGB IEC61966-2.1|USE_NO_PROFILE|REPURPOSE_RGB');
+    assert.match(report, /pdfExportPreferences restore: fails=0 diff=0 unverified=0 adjusted=\[profiles: PDF\/X under unchanged color, then color\]/);
+});
+
+test('PURE: an unreachable coupled profile pair is still reported as a difference', () => {
+    const rt = preferences(COUPLED_PROFILES + "dest = 'WORKING';");
+    const report = rt.globals.ISE_LIB.run(() => rt.evaluate("dest = 'USE_DOCUMENT';"));
+    assert.match(report, /pdfExportPreferences restore: .*diff=[1-9].*adjusted=\[profiles: no order reached the saved pair\]/);
+});
+
 test('PURE: a compression threshold refused below the hidden sampling resolution is restored', () => {
     // Host 21.5.1: after [High Quality Print], thresholdToCompressMonochrome = 450 was refused
     // ("Data is out of range") while sampling was off and the hidden resolution was 1200.
