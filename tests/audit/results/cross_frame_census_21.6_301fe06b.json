@@ -1,0 +1,2923 @@
+{
+ "schema": 1,
+ "label": "route X candidate 301fe06b on InDesign 21.6.0.57 (C4) against same-day native and route W (N3, W3)",
+ "census": "X",
+ "sessions": {
+  "native": "native control: research build 7b178414 mode=native, fresh process, InDesign 21.6.0.57",
+  "route_w": "research build 7b178414 mode=routew, same process, InDesign 21.6.0.57",
+  "route_x": "route X candidate 301fe06b (paints-nothing fix), fresh process, InDesign 21.6.0.57",
+  "overlap": null,
+  "reference": "route X candidate 301fe06b (paints-nothing fix), fresh process, InDesign 21.6.0.57"
+ },
+ "corpus_sha256": "29237a413ebddba2d7cff7323ab22bb38444f5df9b62d436b5d85ec63c4b62ff",
+ "verdict_counts": {
+  "PASS": 22
+ },
+ "cases": [
+  {
+   "key": "XA0",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories; the upper frame's stroke over the lower frame's fill is page-item stacking",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2750,
+     "route_w_damage_px": 2750,
+     "route_x_damage_px": 2750,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2706,
+     "route_w_damage_px": 2706,
+     "route_x_damage_px": 2706,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 53,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 362,
+      "1": 78,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 71,
+     "px_over_64": 4,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 420,
+      "1": 82,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 75,
+     "px_over_64": 8,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 419,
+      "1": 83,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 140,
+     "px_over_64": 112,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 513,
+      "1": 152,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 77,
+     "px_over_64": 4,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 379,
+      "1": 188,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 59,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 332,
+      "1": 166,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XA1",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories; stroked upper frame over an unstroked lower frame",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2750,
+     "route_w_damage_px": 2750,
+     "route_x_damage_px": 2750,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2706,
+     "route_w_damage_px": 2706,
+     "route_x_damage_px": 2706,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 47,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 307,
+      "1": 53,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 47,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 307,
+      "1": 53,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 48,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 310,
+      "1": 46,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 140,
+     "px_over_64": 313,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 525,
+      "1": 385,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 77,
+     "px_over_64": 6,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 696,
+      "1": 157,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 59,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 640,
+      "1": 136,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XA2",
+   "relation": "independent",
+   "expectation": "control",
+   "why": "the stroked frame is below: no damage natively",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 61,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 368,
+      "1": 284,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 61,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 368,
+      "1": 284,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 63,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 354,
+      "1": 284,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 88,
+     "px_over_64": 26,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 500,
+      "1": 141,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 78,
+     "px_over_64": 6,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 251,
+      "1": 133,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 42,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 196,
+      "1": 90,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XA3",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories in touching frames: the XB0 geometry without the thread",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 4198,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 4198,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 4198,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 4214,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 57,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 639,
+      "1": 127,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 57,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 639,
+      "1": 127,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 64,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 633,
+      "1": 123,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 178,
+     "px_over_64": 130,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 745,
+      "1": 194,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 77,
+     "px_over_64": 4,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 504,
+      "1": 322,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 60,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 454,
+      "1": 297,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XA4",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories on two layers",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2750,
+     "route_w_damage_px": 2750,
+     "route_x_damage_px": 2750,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2706,
+     "route_w_damage_px": 2706,
+     "route_x_damage_px": 2706,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 53,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 362,
+      "1": 78,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 53,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 362,
+      "1": 78,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 54,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 355,
+      "1": 75,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 140,
+     "px_over_64": 112,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 513,
+      "1": 152,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 77,
+     "px_over_64": 4,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 374,
+      "1": 187,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 59,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 331,
+      "1": 167,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XA5",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "a headline halo over another frame's text: the same geometry as XA0, drawn on purpose",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 278,
+     "route_w_damage_px": 278,
+     "route_x_damage_px": 278,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 278,
+     "route_w_damage_px": 278,
+     "route_x_damage_px": 278,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 278,
+     "route_w_damage_px": 278,
+     "route_x_damage_px": 278,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 273,
+     "route_w_damage_px": 273,
+     "route_x_damage_px": 273,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 270,
+     "route_w_damage_px": 270,
+     "route_x_damage_px": 270,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 270,
+     "route_w_damage_px": 270,
+     "route_x_damage_px": 270,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 73,
+     "px_over_64": 7,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 378,
+      "1": 120,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 73,
+     "px_over_64": 7,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 378,
+      "1": 120,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 77,
+     "px_over_64": 10,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 386,
+      "1": 103,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 140,
+     "px_over_64": 131,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 847,
+      "1": 265,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 75,
+     "px_over_64": 3,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 660,
+      "1": 491,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 90,
+     "px_over_64": 5,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 698,
+      "1": 161,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XB0",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded continuation, downstream frame in front (E00)",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 141,
+     "px_over_64": 380,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1908,
+      "1": 300,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 141,
+     "px_over_64": 385,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1986,
+      "1": 312,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 144,
+     "px_over_64": 390,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1970,
+      "1": 314,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 220,
+     "px_over_64": 1291,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2014,
+      "1": 316,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1180,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1641,
+      "1": 689,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1176,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1591,
+      "1": 663,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XB1",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded, upstream frame in front",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 6992,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 6992,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 6974,
+     "route_w_damage_px": 4194,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 6932,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 7030,
+     "route_w_damage_px": 4246,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 7030,
+     "route_w_damage_px": 4246,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 102,
+     "px_over_64": 355,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2040,
+      "1": 418,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 102,
+     "px_over_64": 360,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2118,
+      "1": 430,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 113,
+     "px_over_64": 374,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2115,
+      "1": 256,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 255,
+     "px_over_64": 1082,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1721,
+      "1": 692,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1063,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2133,
+      "1": 442,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1059,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2083,
+      "1": 415,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XB2",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded frames that overlap",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 9994,
+     "route_w_damage_px": 4826,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 9994,
+     "route_w_damage_px": 4826,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 9986,
+     "route_w_damage_px": 4818,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 9898,
+     "route_w_damage_px": 4774,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 9988,
+     "route_w_damage_px": 4784,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 9988,
+     "route_w_damage_px": 4784,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 141,
+     "px_over_64": 422,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3167,
+      "1": 474,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 141,
+     "px_over_64": 422,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3166,
+      "1": 474,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 144,
+     "px_over_64": 439,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3131,
+      "1": 303,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 229,
+     "px_over_64": 1749,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2910,
+      "1": 665,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1459,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2545,
+      "1": 784,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1451,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2417,
+      "1": 716,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XB3",
+   "relation": "same story",
+   "expectation": "partial",
+   "why": "an unrelated rectangle stacked between the frames covers the upstream second line, which keeps InDesign's order; the first line is corrected",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4150,
+     "route_x_damage_px": 3274,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4150,
+     "route_x_damage_px": 3274,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 3320,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4204,
+     "route_x_damage_px": 3272,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 3372,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 3372,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 223,
+     "px_over_64": 80837,
+     "over_64_beyond_band": 68287,
+     "over_16_by_edge_distance_px": {
+      "0": 4339,
+      "1": 5436,
+      "2": 5210,
+      "3": 67806
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 223,
+     "px_over_64": 80835,
+     "over_64_beyond_band": 68283,
+     "over_16_by_edge_distance_px": {
+      "0": 4339,
+      "1": 5436,
+      "2": 5210,
+      "3": 67802
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 224,
+     "px_over_64": 81045,
+     "over_64_beyond_band": 67828,
+     "over_16_by_edge_distance_px": {
+      "0": 4632,
+      "1": 5655,
+      "2": 5200,
+      "3": 67330
+     }
+    },
+    "png600.png": {
+     "max_diff": 255,
+     "px_over_64": 81017,
+     "over_64_beyond_band": 68125,
+     "over_16_by_edge_distance_px": {
+      "0": 4054,
+      "1": 5460,
+      "2": 5201,
+      "3": 67672
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 81541,
+     "over_64_beyond_band": 69715,
+     "over_16_by_edge_distance_px": {
+      "0": 3680,
+      "1": 5256,
+      "2": 4875,
+      "3": 69091
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 81525,
+     "over_64_beyond_band": 69705,
+     "over_16_by_edge_distance_px": {
+      "0": 3628,
+      "1": 5229,
+      "2": 4875,
+      "3": 69083
+     }
+    }
+   }
+  },
+  {
+   "key": "XB4",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "downstream frame fill that does not reach the upstream glyphs",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 141,
+     "px_over_64": 380,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 4577,
+      "1": 4789,
+      "2": 3558,
+      "3": 78679
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 141,
+     "px_over_64": 380,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 4577,
+      "1": 4789,
+      "2": 3558,
+      "3": 78679
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 144,
+     "px_over_64": 381,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 6165,
+      "1": 4788,
+      "2": 3558,
+      "3": 78634
+     }
+    },
+    "png600.png": {
+     "max_diff": 215,
+     "px_over_64": 1291,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 5437,
+      "1": 3904,
+      "2": 3578,
+      "3": 79361
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1176,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 4933,
+      "1": 4523,
+      "2": 3924,
+      "3": 78480
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1176,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 4881,
+      "1": 4504,
+      "2": 3924,
+      "3": 78460
+     }
+    }
+   }
+  },
+  {
+   "key": "XB5",
+   "relation": "same story",
+   "expectation": "partial",
+   "why": "bordered frames: glyphs the upstream border crosses keep InDesign's order",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11118,
+     "route_w_damage_px": 4296,
+     "route_x_damage_px": 219,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11118,
+     "route_w_damage_px": 4296,
+     "route_x_damage_px": 219,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11116,
+     "route_w_damage_px": 4292,
+     "route_x_damage_px": 218,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 10988,
+     "route_w_damage_px": 4222,
+     "route_x_damage_px": 206,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11238,
+     "route_w_damage_px": 4470,
+     "route_x_damage_px": 355,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11238,
+     "route_w_damage_px": 4470,
+     "route_x_damage_px": 355,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 223,
+     "px_over_64": 3682,
+     "over_64_beyond_band": 904,
+     "over_16_by_edge_distance_px": {
+      "0": 9664,
+      "1": 2549,
+      "2": 677,
+      "3": 802
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 223,
+     "px_over_64": 4850,
+     "over_64_beyond_band": 907,
+     "over_16_by_edge_distance_px": {
+      "0": 11336,
+      "1": 2585,
+      "2": 682,
+      "3": 802
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 224,
+     "px_over_64": 4834,
+     "over_64_beyond_band": 919,
+     "over_16_by_edge_distance_px": {
+      "0": 9048,
+      "1": 4359,
+      "2": 682,
+      "3": 810
+     }
+    },
+    "png600.png": {
+     "max_diff": 255,
+     "px_over_64": 4139,
+     "over_64_beyond_band": 927,
+     "over_16_by_edge_distance_px": {
+      "0": 10695,
+      "1": 2457,
+      "2": 681,
+      "3": 820
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 4457,
+     "over_64_beyond_band": 1043,
+     "over_16_by_edge_distance_px": {
+      "0": 11139,
+      "1": 1037,
+      "2": 677,
+      "3": 941
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 4454,
+     "over_64_beyond_band": 1043,
+     "over_16_by_edge_distance_px": {
+      "0": 11118,
+      "1": 1063,
+      "2": 677,
+      "3": 941
+     }
+    }
+   }
+  },
+  {
+   "key": "XB6",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "two columns of one frame (two parcels)",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 7287,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 7287,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 7277,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 7195,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 7275,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 7275,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 192,
+     "px_over_64": 517,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1488,
+      "1": 183,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 192,
+     "px_over_64": 517,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1488,
+      "1": 183,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 195,
+     "px_over_64": 527,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1406,
+      "1": 169,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 255,
+     "px_over_64": 624,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 948,
+      "1": 407,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 530,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1129,
+      "1": 316,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 522,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1212,
+      "1": 389,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XB7",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair on two layers",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XD0",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair in a group",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 141,
+     "px_over_64": 380,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1898,
+      "1": 300,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 141,
+     "px_over_64": 380,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1898,
+      "1": 300,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 144,
+     "px_over_64": 382,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1872,
+      "1": 299,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 215,
+     "px_over_64": 1291,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2014,
+      "1": 316,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1181,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1642,
+      "1": 688,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1177,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1592,
+      "1": 663,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XD1",
+   "relation": "same story",
+   "expectation": "unchanged",
+   "why": "translucent upstream frame: its fill is not opaque, so it is not recorded",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 4196,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 4196,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11162,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 4196,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4148,
+     "route_x_damage_px": 4148,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 106,
+     "px_over_64": 13212,
+     "over_64_beyond_band": 8416,
+     "over_16_by_edge_distance_px": {
+      "0": 3057,
+      "1": 4792,
+      "2": 4219,
+      "3": 20126
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 106,
+     "px_over_64": 13212,
+     "over_64_beyond_band": 8416,
+     "over_16_by_edge_distance_px": {
+      "0": 3057,
+      "1": 4792,
+      "2": 4219,
+      "3": 20126
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 107,
+     "px_over_64": 13210,
+     "over_64_beyond_band": 8400,
+     "over_16_by_edge_distance_px": {
+      "0": 3055,
+      "1": 4693,
+      "2": 4202,
+      "3": 20102
+     }
+    },
+    "png600.png": {
+     "max_diff": 106,
+     "px_over_64": 13210,
+     "over_64_beyond_band": 8460,
+     "over_16_by_edge_distance_px": {
+      "0": 3838,
+      "1": 5286,
+      "2": 4247,
+      "3": 20522
+     }
+    },
+    "eps.eps": {
+     "max_diff": 106,
+     "px_over_64": 13342,
+     "over_64_beyond_band": 8534,
+     "over_16_by_edge_distance_px": {
+      "0": 2527,
+      "1": 4675,
+      "2": 4226,
+      "3": 20501
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 106,
+     "px_over_64": 13342,
+     "over_64_beyond_band": 8534,
+     "over_16_by_edge_distance_px": {
+      "0": 2594,
+      "1": 4691,
+      "2": 4226,
+      "3": 20501
+     }
+    }
+   }
+  },
+  {
+   "key": "XD2",
+   "relation": "same story",
+   "expectation": "control",
+   "why": "upstream frame on a hidden layer: nothing drawn beneath the stroke",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 3806,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 3762,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XD3",
+   "relation": "same story",
+   "expectation": "control",
+   "why": "table rows: cell text does not overlap",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 26,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 702,
+      "1": 209,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 26,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 702,
+      "1": 209,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 27,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 666,
+      "1": 186,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 26,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 718,
+      "1": 473,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 29,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 914,
+      "1": 572,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 29,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 928,
+      "1": 550,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XN0",
+   "relation": "single frame",
+   "expectation": "control",
+   "why": "stroked text over a rectangle",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 76,
+     "px_over_64": 3,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 395,
+      "1": 73,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 76,
+     "px_over_64": 3,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 395,
+      "1": 73,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 76,
+     "px_over_64": 3,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 400,
+      "1": 60,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 103,
+     "px_over_64": 334,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 561,
+      "1": 389,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 128,
+     "px_over_64": 86,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 791,
+      "1": 143,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 71,
+     "px_over_64": 11,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 741,
+      "1": 106,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XN1",
+   "relation": "single frame",
+   "expectation": "control",
+   "why": "a rectangle over stroked text",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2751,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2751,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2747,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2703,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2745,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2745,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 53,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 353,
+      "1": 65,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 53,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 353,
+      "1": 65,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 54,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 344,
+      "1": 63,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 83,
+     "px_over_64": 16,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 502,
+      "1": 55,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 64,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 192,
+      "1": 110,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 43,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 148,
+      "1": 96,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XN2",
+   "relation": "same story",
+   "expectation": "center",
+   "why": "Center strokes",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 223,
+     "px_over_64": 66368,
+     "over_64_beyond_band": 43422,
+     "over_16_by_edge_distance_px": {
+      "0": 9880,
+      "1": 8518,
+      "2": 8496,
+      "3": 41998
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 223,
+     "px_over_64": 66368,
+     "over_64_beyond_band": 43422,
+     "over_16_by_edge_distance_px": {
+      "0": 9880,
+      "1": 8518,
+      "2": 8496,
+      "3": 41998
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 224,
+     "px_over_64": 66378,
+     "over_64_beyond_band": 43522,
+     "over_16_by_edge_distance_px": {
+      "0": 9808,
+      "1": 8518,
+      "2": 8496,
+      "3": 42070
+     }
+    },
+    "png600.png": {
+     "max_diff": 255,
+     "px_over_64": 68200,
+     "over_64_beyond_band": 44794,
+     "over_16_by_edge_distance_px": {
+      "0": 7962,
+      "1": 8480,
+      "2": 8512,
+      "3": 43362
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 65536,
+     "over_64_beyond_band": 43522,
+     "over_16_by_edge_distance_px": {
+      "0": 9104,
+      "1": 8472,
+      "2": 8464,
+      "3": 42138
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 65536,
+     "over_64_beyond_band": 43522,
+     "over_16_by_edge_distance_px": {
+      "0": 9104,
+      "1": 8472,
+      "2": 8464,
+      "3": 42138
+     }
+    }
+   }
+  },
+  {
+   "key": "XN3",
+   "relation": "same story",
+   "expectation": "control",
+   "why": "nonprinting upstream frame: absent from exports",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a5701c30db80f0a362890197d46450554cc326f0a0229abfa02598de1e6b0ed",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1b6ba90c5fcbce331c66cc2da98d8b86732634846d2d133c5ab2056127ffdb36",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 3806,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d14e4f3feb9f56deaf984585e84d9517adcdfbef3f2d16d785d8ccd8d44c10fa",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 3762,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "5a2f232a3594f2305534c3f4578369b5c4f56737c5c5846c6cc481e4c6e80ba0",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4fcc966aad7f3858bdf44c4376a67f13c236c5e59e9f560a44fa478b6b652ce9",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b29778c566b0160ba1d08bc4aa6d527dda4c6f977afc6df58e8aba4f498c7afb",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 58,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 779,
+      "1": 183,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 58,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 779,
+      "1": 183,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 61,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 772,
+      "1": 179,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 106,
+     "px_over_64": 394,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 688,
+      "1": 488,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 77,
+     "px_over_64": 4,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 398,
+      "1": 487,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 42,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 421,
+      "1": 474,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  }
+ ],
+ "pdf_structure_vs_route_w": {
+  "hqp.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "gs"
+   ],
+   "only_clip_and_state_changed": true,
+   "text_chars": 192,
+   "images": 0
+  },
+  "x4.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "gs"
+   ],
+   "only_clip_and_state_changed": true,
+   "text_chars": 192,
+   "images": 0
+  },
+  "x1a.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "gs"
+   ],
+   "only_clip_and_state_changed": true,
+   "text_chars": 208,
+   "images": 0
+  }
+ },
+ "editing": {
+  "identities": {
+   "ED4-undone vs ED4-original hqp.pdf": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-undone vs ED4-original png600.png": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-redone vs ED4-live hqp.pdf": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-redone vs ED4-live png600.png": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-reopened vs ED4-live hqp.pdf": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-reopened vs ED4-live png600.png": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-idml vs ED4-live hqp.pdf": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-idml vs ED4-live png600.png": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-original vs X direct export hqp.pdf": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   },
+   "ED4-original vs X direct export png600.png": {
+    "px_differing": 0,
+    "px_over_64": 0,
+    "max_diff": 0,
+    "trimmed_px": 0
+   }
+  },
+  "stages": {
+   "ED4-original": {
+    "undo_history": 0,
+    "undo_steps": null,
+    "redo_steps": null,
+    "log": null,
+    "errors": []
+   },
+   "ED4-live": {
+    "undo_history": 8,
+    "undo_steps": null,
+    "redo_steps": null,
+    "log": "reflow XB0: a new first paragraph pushes a line from f1 into f2 ok; reflow XB1: removing the first paragraph pulls a line from f2 into f1 ok; stacking XB2: the downstream frame sent behind the upstream one ok; move XB7b 5 pt up, across layers ok; thread XA3a into XA3b: two stories become one ok; stroke weight 6 pt on the XB4 story ok; rotate the two-column XB6 frame 5 degrees ok; text edit in XB5b ok",
+    "errors": []
+   },
+   "ED4-undone": {
+    "undo_history": 0,
+    "undo_steps": 8,
+    "redo_steps": null,
+    "log": null,
+    "errors": []
+   },
+   "ED4-redone": {
+    "undo_history": 8,
+    "undo_steps": null,
+    "redo_steps": 8,
+    "log": null,
+    "errors": []
+   },
+   "ED4-reopened": {
+    "undo_history": 0,
+    "undo_steps": null,
+    "redo_steps": null,
+    "log": null,
+    "errors": []
+   },
+   "ED4-idml": {
+    "undo_history": 0,
+    "undo_steps": null,
+    "redo_steps": null,
+    "log": null,
+    "errors": []
+   }
+  }
+ }
+}

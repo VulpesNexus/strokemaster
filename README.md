@@ -41,6 +41,7 @@ The render comparator accepts an independent fill-only mask. Without it, its ero
 | Document | Purpose |
 | --- | --- |
 | [Research revival, 2026-09-25](STROKEMASTER_RESEARCH_REVIVAL_2026-09-25.md) | Current evidence ledger, root-cause map, architecture decision, and next experiment |
+| [Route X on InDesign 21.6, 2026-10-03](docs/ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md) | 21.6 recertification, the extension census, the installed candidate, and the miter-spike model checked against InDesign |
 | [Usage guide](docs/USING_STROKEMASTER.md) | Workflow, supported contexts, installation, and limitations |
 | [Takeover audit](PROJECT_TAKEOVER_AUDIT.md) | Initial A–N audit, claim ledger, and subsequent evidence |
 | [Open questions](OPEN_QUESTIONS.md) | Remaining discriminating tests and release blockers |

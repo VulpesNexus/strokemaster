@@ -1,0 +1,1075 @@
+{
+ "schema": 1,
+ "label": "route X candidate 301fe06b on InDesign 21.6.0.57 (C4), extension census, against same-day native and route W (N4, W4)",
+ "census": "X2",
+ "sessions": {
+  "native": "native control: research build 7b178414 mode=native, InDesign 21.6.0.57, cert-X2 rebuilt",
+  "route_w": "research build 7b178414 mode=routew, InDesign 21.6.0.57, cert-X2 rebuilt",
+  "route_x": "route X candidate 301fe06b (paints-nothing fix), fresh process, InDesign 21.6.0.57",
+  "overlap": null,
+  "reference": "route X candidate 301fe06b (paints-nothing fix), fresh process, InDesign 21.6.0.57"
+ },
+ "corpus_sha256": "84a9eb6f3fe909613b6d4ee3d4f9341c374a6c9442e771dbc80ed610e4324456",
+ "verdict_counts": {
+  "PASS": 8,
+  "UNTESTED": 1
+ },
+ "cases": [
+  {
+   "key": "XE0",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair on the parent page, drawn on the document page",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1691,
+      "1": 299,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1697,
+      "1": 298,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1697,
+      "1": 298,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 250,
+     "px_over_64": 1090,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2041,
+      "1": 332,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 855,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1420,
+      "1": 504,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 855,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1420,
+      "1": 504,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XE1",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "path text threaded into a frame below it",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 8022,
+     "route_w_damage_px": 3754,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 8022,
+     "route_w_damage_px": 3754,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 8022,
+     "route_w_damage_px": 3754,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 7934,
+     "route_w_damage_px": 3750,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 7988,
+     "route_w_damage_px": 3752,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 7988,
+     "route_w_damage_px": 3752,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 0,
+     "px_over_64": 0,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 0,
+      "1": 0,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XE2",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded anchored frames: InDesign 21.6 refuses to thread them by script, so the case is not built",
+   "outputs": {},
+   "verdict": "UNTESTED",
+   "edge_vs_story_reference": {}
+  },
+  {
+   "key": "XE3",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair rotated 30 degrees as a unit",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 13244,
+     "route_w_damage_px": 4535,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 13244,
+     "route_w_damage_px": 4535,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 13244,
+     "route_w_damage_px": 4535,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 13284,
+     "route_w_damage_px": 4551,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 13282,
+     "route_w_damage_px": 4546,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 13282,
+     "route_w_damage_px": 4546,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 146,
+     "px_over_64": 451,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2411,
+      "1": 398,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 147,
+     "px_over_64": 455,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2423,
+      "1": 392,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 147,
+     "px_over_64": 455,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2423,
+      "1": 392,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 241,
+     "px_over_64": 1334,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2853,
+      "1": 485,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1521,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1842,
+      "1": 288,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1521,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1842,
+      "1": 288,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XE4",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "three frames threaded in a chain",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 19662,
+     "route_w_damage_px": 8396,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 19662,
+     "route_w_damage_px": 8396,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 19662,
+     "route_w_damage_px": 8396,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 19442,
+     "route_w_damage_px": 8428,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 19552,
+     "route_w_damage_px": 8392,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 19552,
+     "route_w_damage_px": 8392,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 140,
+     "px_over_64": 766,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3031,
+      "1": 522,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 140,
+     "px_over_64": 766,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3039,
+      "1": 521,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 140,
+     "px_over_64": 766,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3039,
+      "1": 521,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 250,
+     "px_over_64": 2166,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3572,
+      "1": 590,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1710,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2618,
+      "1": 842,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1710,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2618,
+      "1": 842,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XE5",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "downstream frame scaled 125% in its matrix",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 17015,
+     "route_w_damage_px": 6508,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 17015,
+     "route_w_damage_px": 6508,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 17015,
+     "route_w_damage_px": 6508,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 17012,
+     "route_w_damage_px": 6514,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 17019,
+     "route_w_damage_px": 6509,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 17019,
+     "route_w_damage_px": 6509,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 152,
+     "px_over_64": 602,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2493,
+      "1": 933,
+      "2": 1,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 152,
+     "px_over_64": 725,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3079,
+      "1": 476,
+      "2": 1,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 152,
+     "px_over_64": 725,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 3079,
+      "1": 476,
+      "2": 1,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 235,
+     "px_over_64": 1362,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2738,
+      "1": 1329,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 1027,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2074,
+      "1": 594,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 1027,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2074,
+      "1": 594,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XE6",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "an invisible rectangle stacked between the frames draws nothing in between",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 140,
+     "px_over_64": 382,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1691,
+      "1": 299,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1697,
+      "1": 298,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1697,
+      "1": 298,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 250,
+     "px_over_64": 1090,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2043,
+      "1": 328,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 856,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1420,
+      "1": 506,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 856,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1420,
+      "1": 506,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XE7",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair in a group nested in another group",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1691,
+      "1": 299,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1697,
+      "1": 298,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 140,
+     "px_over_64": 383,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1697,
+      "1": 298,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "png600.png": {
+     "max_diff": 250,
+     "px_over_64": 1090,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 2041,
+      "1": 328,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 856,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1420,
+      "1": 506,
+      "2": 0,
+      "3": 0
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 856,
+     "over_64_beyond_band": 0,
+     "over_16_by_edge_distance_px": {
+      "0": 1420,
+      "1": 506,
+      "2": 0,
+      "3": 0
+     }
+    }
+   }
+  },
+  {
+   "key": "XE8",
+   "relation": "same story",
+   "expectation": "partial",
+   "why": "an unfilled rectangle with a 1 pt border stacked between the frames: glyphs under the border keep InDesign's order",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 3322,
+     "route_x_sha256": "b7354ca502a0df6344d49850b14f46db9e0b29e9cafdaccfc86ddf25ba52885f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 3322,
+     "route_x_sha256": "dbca4c8dd143211843188324e07d022a3f94bfaa31a84bced1e19a6ee60ef60e",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 3322,
+     "route_x_sha256": "1e269d99b1b071195dcd7a728a25e5c3a154dda96e73a020c9e764d497489b8f",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 3282,
+     "route_x_sha256": "065a0bb19a70d797b716350ebf57cbb1ac3871b4540ac551f64b67acdf5850c4",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 3320,
+     "route_x_sha256": "7cfa49fbdb7d648504d194259fa03a2a46d105a08135c0d822edd6a069db2eb5",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 3320,
+     "route_x_sha256": "1e2b2874d48400b4314a6ce92b7ce6b83136cb24e6cad0e3a6b7ce3acfaa8b30",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS",
+   "edge_vs_story_reference": {
+    "hqp.pdf": {
+     "max_diff": 223,
+     "px_over_64": 18429,
+     "over_64_beyond_band": 8869,
+     "over_16_by_edge_distance_px": {
+      "0": 4693,
+      "1": 3212,
+      "2": 3020,
+      "3": 8687
+     }
+    },
+    "x4.pdf": {
+     "max_diff": 224,
+     "px_over_64": 18427,
+     "over_64_beyond_band": 8869,
+     "over_16_by_edge_distance_px": {
+      "0": 4698,
+      "1": 3211,
+      "2": 3020,
+      "3": 8687
+     }
+    },
+    "x1a.pdf": {
+     "max_diff": 224,
+     "px_over_64": 18427,
+     "over_64_beyond_band": 8869,
+     "over_16_by_edge_distance_px": {
+      "0": 4698,
+      "1": 3211,
+      "2": 3020,
+      "3": 8687
+     }
+    },
+    "png600.png": {
+     "max_diff": 255,
+     "px_over_64": 18321,
+     "over_64_beyond_band": 8944,
+     "over_16_by_edge_distance_px": {
+      "0": 4688,
+      "1": 3222,
+      "2": 3004,
+      "3": 8776
+     }
+    },
+    "eps.eps": {
+     "max_diff": 223,
+     "px_over_64": 18496,
+     "over_64_beyond_band": 9794,
+     "over_16_by_edge_distance_px": {
+      "0": 3405,
+      "1": 3378,
+      "2": 3004,
+      "3": 9643
+     }
+    },
+    "pshigh.ps": {
+     "max_diff": 223,
+     "px_over_64": 18496,
+     "over_64_beyond_band": 9794,
+     "over_16_by_edge_distance_px": {
+      "0": 3405,
+      "1": 3378,
+      "2": 3004,
+      "3": 9643
+     }
+    }
+   }
+  }
+ ],
+ "pdf_structure_vs_route_w": {
+  "hqp.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "gs"
+   ],
+   "only_clip_and_state_changed": true,
+   "text_chars": 66,
+   "images": 0
+  },
+  "x4.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "gs"
+   ],
+   "only_clip_and_state_changed": true,
+   "text_chars": 66,
+   "images": 0
+  },
+  "x1a.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "gs"
+   ],
+   "only_clip_and_state_changed": true,
+   "text_chars": 66,
+   "images": 0
+  }
+ }
+}
