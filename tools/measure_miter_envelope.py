@@ -50,19 +50,20 @@ def _affine(m, n):
 
 
 def stroke_paths(operations):
-    """Stroked paths with their state: [{'width', 'limit', 'join', 'gray', 'contours'}], each
-    contour (start, [('L', p) | ('C', c1, c2, p)]) in page coordinates."""
+    """Stroked paths with their state: [{'width', 'limit', 'join', 'gray', 'contours', 'open'}],
+    each subpath (start, [('L', p) | ('C', c1, c2, p)]) in page coordinates; 'contours' are the
+    closed subpaths (a glyph outline), 'open' the others (route W's miter stubs)."""
     state = {'ctm': [1, 0, 0, 1, 0, 0], 'w': 1.0, 'M': 10.0, 'j': 0, 'K': None}
-    stack, contours, start, segs, cur, out = [], [], None, [], None, []
+    stack, contours, opened, start, segs, cur, out = [], [], [], None, [], None, []
 
     def P(x, y):
         m = state['ctm']
         return (m[0] * x + m[2] * y + m[4], m[1] * x + m[3] * y + m[5])
 
-    def close():
+    def close(explicit=False):
         nonlocal start, segs
         if start is not None and segs:
-            contours.append((start, segs))
+            (contours if explicit else opened).append((start, segs))
         start, segs = None, []
 
     for op, a in operations:
@@ -91,28 +92,35 @@ def stroke_paths(operations):
             segs.append(('C', p[0], p[1], p[2]))
             cur = p[2]
         elif op == 'h':
-            close()
+            close(True)
         elif op in ('S', 's'):
-            close()
+            close(op == 's')
             out.append({'width': state['w'] * math.sqrt(abs(state['ctm'][0] * state['ctm'][3] - state['ctm'][1] * state['ctm'][2])),
-                        'limit': state['M'], 'join': state['j'], 'gray': state['K'], 'contours': contours})
-            contours = []
+                        'limit': state['M'], 'join': state['j'], 'gray': state['K'], 'contours': contours, 'open': opened})
+            contours, opened = [], []
         elif op in ('f', 'F', 'f*', 'B', 'B*', 'b', 'b*', 'n'):
             close()
-            contours = []
+            contours, opened = [], []
     return out
 
 
-def isolated_stroke(ev, page_size):
-    """A one-page PDF (opened in MuPDF) drawing only this stroke, in page coordinates."""
+def isolated_stroke(events, page_size):
+    """A one-page PDF (opened in MuPDF) drawing only these strokes, each with its own width,
+    limit, and join, in page coordinates."""
     import pymupdf
-    parts = ['0 G %r w %r M %d j 0 J' % (ev['width'], ev['limit'], ev['join'])]
-    for s, segs in ev['contours']:
-        parts.append('%r %r m' % s)
-        for g in segs:
-            parts.append(('%r %r l' % g[1]) if g[0] == 'L' else ('%r %r %r %r %r %r c' % (g[1] + g[2] + g[3])))
-        parts.append('h')
-    parts.append('S')
+    if isinstance(events, dict):
+        events = [events]
+    parts = []
+    for ev in events:
+        parts.append('0 G %r w %r M %d j 0 J' % (ev['width'], ev['limit'], ev['join']))
+        for subpaths, closed in ((ev.get('contours', []), True), (ev.get('open', []), False)):
+            for s, segs in subpaths:
+                parts.append('%r %r m' % s)
+                for g in segs:
+                    parts.append(('%r %r l' % g[1]) if g[0] == 'L' else ('%r %r %r %r %r %r c' % (g[1] + g[2] + g[3])))
+                if closed:
+                    parts.append('h')
+        parts.append('S')
     doc = pymupdf.open()
     page = doc.new_page(width=page_size[0], height=page_size[1])
     xref = doc.get_new_xref()
@@ -192,15 +200,31 @@ def measure(pdf_path, manifest_path, dpi, tolerance):
     page = doc[0]
     scale = dpi / 72.0
     rows = []
+    # A frame's strokes, in drawing order: the line's outline (closed contours), and with route
+    # W's miter correction, a second stroke of exterior-corner stubs (open subpaths).
+    groups, order = {}, []
     for ev in stroke_paths(ops):
-        if not ev['contours'] or ev['join'] != 0:
+        sub = ev['contours'] or ev['open']
+        if not sub:
             continue
-        f = frame_for(ev['contours'], manifest['frames'], page_h)
+        f = frame_for(sub, manifest['frames'], page_h)
         if f is None or not str(f.get('variant', '')).startswith('text'):
             continue
+        if f['name'] not in groups:
+            groups[f['name']] = (f, [])
+            order.append(f['name'])
+        groups[f['name']][1].append(ev)
+    for name in order:
+        f, events = groups[name]
+        outlines = [e for e in events if e['contours']]
+        if not outlines or not any(e['join'] == 0 for e in events):
+            continue   # not mitered
+        ev = outlines[0]
         h = ev['width'] / 2
-        row = {'frame': f['name'], 'variant': f['variant'], 'limit': ev['limit'], 'stroke_width_pt': ev['width'],
-               'outside_weight_pt': h, 'stroke_gray': ev['gray']}
+        limit = max(e['limit'] for e in events if e['join'] == 0)
+        row = {'frame': f['name'], 'variant': f['variant'], 'limit': limit, 'stroke_width_pt': ev['width'],
+               'outside_weight_pt': h, 'stroke_gray': ev['gray'],
+               'strokes': [{'join': e['join'], 'closed_subpaths': len(e['contours']), 'open_subpaths': len(e['open'])} for e in events]}
         try:
             rings = [cr.flatten_contour(s, segs, tolerance) for s, segs in ev['contours']]
             polygons = cr.classify(rings)
@@ -208,7 +232,7 @@ def measure(pdf_path, manifest_path, dpi, tolerance):
             row.update(status='ADAPTER_REFUSED', reason=str(e))
             rows.append(row)
             continue
-        res = core(polygons, h, ev['limit'])
+        res = core(polygons, h, limit)
         if not res.get('ok'):
             row.update(status='CORE_REFUSED', reason=res.get('error'))
             rows.append(row)
@@ -221,7 +245,7 @@ def measure(pdf_path, manifest_path, dpi, tolerance):
                min(page_w, x1 + MARGIN_PT), min(page_h, page_h - y0 + MARGIN_PT))
         # The run's stroke alone: its exact path, width, limit, and join, black on white, so
         # neighboring frames and the text drawn over it do not enter the measurement.
-        alone = isolated_stroke(ev, manifest['page'])
+        alone = isolated_stroke(events, manifest['page'])
         apage = alone[0]
         clip = pymupdf.Rect(box[0], page_h - box[3], box[2], page_h - box[1])
         pix = apage.get_pixmap(matrix=pymupdf.Matrix(scale, scale), clip=clip, colorspace=pymupdf.csGRAY, alpha=False)
