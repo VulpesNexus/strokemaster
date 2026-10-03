@@ -1,0 +1,582 @@
+{
+ "schema": 1,
+ "status": "MEASURED",
+ "pdf": "hqp.pdf",
+ "pdf_sha256": "13db788dfbb2298a8728debbe10ec0585a608e91571e853433890d8aac20c849",
+ "core_sha256": "07acb688e8aec59949aeb986a1be3810082dbd983e73dd5d85e0a5cd1905b676",
+ "tool_sha256": "a2e86a34b6b318d19cfbe27e5bb6536ff878686ccaea55550156ead305cc5ce9",
+ "dpi": 1200,
+ "flatten_tolerance_pt": 0.01,
+ "fringe_px": 2,
+ "frames": [
+  {
+   "frame": "B1 text miter limit 1",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 1",
+   "limit": 1.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.0,
+   "predicted_spike_pt2": 0.0,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.0,
+   "core_symmetric_excess_area": 0.0,
+   "spikes": []
+  },
+  {
+   "frame": "B1 text miter limit 1.5",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 1.5",
+   "limit": 1.5,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.03793411764705881,
+   "predicted_spike_pt2": 0.0,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.03793411764705881,
+   "core_symmetric_excess_area": 0.0,
+   "spikes": [
+    {
+     "area_pt2": 0.0282635294117647,
+     "box_pt": [
+      244.73999999999998,
+      823.8799999999999,
+      244.98,
+      824.3599999999999
+     ],
+     "pixels": 13,
+     "glyph": "z"
+    }
+   ]
+  },
+  {
+   "frame": "B1 text miter limit 2",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 2",
+   "limit": 2.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.04462588235294116,
+   "predicted_spike_pt2": 0.0,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.04462588235294116,
+   "core_symmetric_excess_area": 0.00014074967723516694,
+   "spikes": [
+    {
+     "area_pt2": 0.04355294117647058,
+     "box_pt": [
+      244.73999999999998,
+      773.76,
+      245.04,
+      774.36
+     ],
+     "pixels": 17,
+     "glyph": "z"
+    }
+   ]
+  },
+  {
+   "frame": "B1 text miter limit 3",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 3",
+   "limit": 3.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.038131764705882344,
+   "predicted_spike_pt2": 4.049999999999999,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.038131764705882344,
+   "core_symmetric_excess_area": 4.416990571018787,
+   "spikes": [
+    {
+     "area_pt2": 0.037538823529411756,
+     "box_pt": [
+      244.73999999999998,
+      723.76,
+      245.04,
+      724.36
+     ],
+     "pixels": 16,
+     "glyph": "z"
+    }
+   ]
+  },
+  {
+   "frame": "B1 text miter limit 4",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 4",
+   "limit": 4.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.03793411764705881,
+   "predicted_spike_pt2": 4.049999999999999,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.03793411764705881,
+   "core_symmetric_excess_area": 4.416922498409694,
+   "spikes": [
+    {
+     "area_pt2": 0.0282635294117647,
+     "box_pt": [
+      244.73999999999998,
+      673.88,
+      244.98,
+      674.36
+     ],
+     "pixels": 13,
+     "glyph": "z"
+    }
+   ]
+  },
+  {
+   "frame": "B1 text miter limit 10",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 10",
+   "limit": 10.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.04462588235294116,
+   "predicted_spike_pt2": 4.049999999999999,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.04462588235294116,
+   "core_symmetric_excess_area": 4.416938596145714,
+   "spikes": [
+    {
+     "area_pt2": 0.04355294117647058,
+     "box_pt": [
+      244.73999999999998,
+      623.76,
+      245.04,
+      624.36
+     ],
+     "pixels": 17,
+     "glyph": "z"
+    }
+   ]
+  },
+  {
+   "frame": "B1 text miter limit 100",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 100",
+   "limit": 100.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.038131764705882344,
+   "predicted_spike_pt2": 4.049999999999999,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.038131764705882344,
+   "core_symmetric_excess_area": 4.417148512893164,
+   "spikes": [
+    {
+     "area_pt2": 0.037538823529411756,
+     "box_pt": [
+      244.73999999999998,
+      573.76,
+      245.04,
+      574.36
+     ],
+     "pixels": 16,
+     "glyph": "z"
+    }
+   ]
+  },
+  {
+   "frame": "B1 text miter limit 500",
+   "variant": "text, Outside 4 pt, Miter, miterLimit 500",
+   "limit": 500.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "CORE_REFUSED",
+   "reason": "limit must be finite in [1,100]"
+  },
+  {
+   "frame": "B2 weight 1, limit 4",
+   "variant": "text, Outside 1 pt, Miter, limit 4",
+   "limit": 4.0,
+   "stroke_width_pt": 2.0,
+   "outside_weight_pt": 1.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.0,
+   "predicted_spike_pt2": 0.0,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.0,
+   "core_symmetric_excess_area": 0.0,
+   "spikes": []
+  },
+  {
+   "frame": "B2 weight 2, limit 4",
+   "variant": "text, Outside 2 pt, Miter, limit 4",
+   "limit": 4.0,
+   "stroke_width_pt": 4.0,
+   "outside_weight_pt": 2.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.0,
+   "predicted_spike_pt2": 0.0,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.0,
+   "core_symmetric_excess_area": 0.0,
+   "spikes": []
+  },
+  {
+   "frame": "B2 weight 6, limit 4",
+   "variant": "text, Outside 6 pt, Miter, limit 4",
+   "limit": 4.0,
+   "stroke_width_pt": 12.0,
+   "outside_weight_pt": 6.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.09430588235294116,
+   "predicted_spike_pt2": 28.461599999999994,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.09430588235294116,
+   "core_symmetric_excess_area": 29.615975274124207,
+   "spikes": [
+    {
+     "area_pt2": 0.017138823529411765,
+     "box_pt": [
+      306.6,
+      670.58,
+      307.14,
+      670.64
+     ],
+     "pixels": 9,
+     "glyph": "V"
+    },
+    {
+     "area_pt2": 0.05234823529411765,
+     "box_pt": [
+      534.06,
+      675.74,
+      534.42,
+      676.34
+     ],
+     "pixels": 20,
+     "glyph": "z"
+    }
+   ]
+  },
+  {
+   "frame": "B2 weight 8, limit 4",
+   "variant": "text, Outside 8 pt, Miter, limit 4",
+   "limit": 4.0,
+   "stroke_width_pt": 16.0,
+   "outside_weight_pt": 8.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.14322352941176467,
+   "predicted_spike_pt2": 81.81719999999999,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.14322352941176467,
+   "core_symmetric_excess_area": 83.39653977589973,
+   "spikes": [
+    {
+     "area_pt2": 0.01216941176470588,
+     "box_pt": [
+      304.68,
+      618.78,
+      305.15999999999997,
+      618.84
+     ],
+     "pixels": 8,
+     "glyph": "V"
+    },
+    {
+     "area_pt2": 0.03609882352941176,
+     "box_pt": [
+      485.22,
+      635.4,
+      486.17999999999995,
+      635.52
+     ],
+     "pixels": 17,
+     "glyph": "w"
+    },
+    {
+     "area_pt2": 0.03328941176470587,
+     "box_pt": [
+      505.62,
+      640.32,
+      506.4,
+      640.62
+     ],
+     "pixels": 17,
+     "glyph": "k"
+    }
+   ]
+  },
+  {
+   "frame": "B4 source text, limit 4",
+   "variant": "text source for outlines",
+   "limit": 4.0,
+   "stroke_width_pt": 8.0,
+   "outside_weight_pt": 4.0,
+   "stroke_gray": [
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "strokes": [
+    {
+     "join": 2,
+     "closed_subpaths": 12,
+     "open_subpaths": 0
+    },
+    {
+     "join": 0,
+     "closed_subpaths": 0,
+     "open_subpaths": 148
+    }
+   ],
+   "status": "MEASURED",
+   "backdrop_level": 255.0,
+   "ink_outside_envelope_pt2": 0.037905882352941164,
+   "predicted_spike_pt2": 4.049999999999999,
+   "ink_in_predicted_pt2": 0.0,
+   "ink_outside_both_pt2": 0.037905882352941164,
+   "core_symmetric_excess_area": 4.416922498409524,
+   "spikes": [
+    {
+     "area_pt2": 0.0282635294117647,
+     "box_pt": [
+      244.73999999999998,
+      193.88,
+      244.98,
+      194.36
+     ],
+     "pixels": 13,
+     "glyph": "z"
+    }
+   ]
+  }
+ ],
+ "limitations": [
+  "The envelope and the symmetric stroke use Boost buffer semantics on flattened outlines; above-limit corners are cut flat, not beveled.",
+  "Ink is MuPDF coverage of the PDF route W wrote; InDesign's own raster is not measured here.",
+  "A spike narrower than the fringe band is not counted."
+ ]
+}

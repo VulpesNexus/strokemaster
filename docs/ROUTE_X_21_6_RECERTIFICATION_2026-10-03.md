@@ -1,6 +1,6 @@
 # Route X on InDesign 21.6, 2026-10-03
 
-Route X (`1e7c417e…`) was certified on InDesign 21.5.1.73 ([cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md), [route W certification](../ROUTE_W_CERTIFICATION_2026-09-25.md)). The host is now 21.6.0.57. This pass recertifies route X on 21.6 against same-day controls, adds an extension census for the cases the research left untested, fixes the one route X gap that census found, and validates the miter-spike model against InDesign's output.
+Route X (`1e7c417e…`) was certified on InDesign 21.5.1.73 ([cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md), [route W certification](../ROUTE_W_CERTIFICATION_2026-09-25.md)). The host is now 21.6.0.57. This pass recertifies route X on 21.6 against same-day controls, adds an extension census for the cases the research left untested, fixes the one route X gap that census found, validates the miter-spike model against InDesign's output, and corrects the spikes in route W's stroke pass.
 
 ## Verdict
 
@@ -13,7 +13,7 @@ Route X (`1e7c417e…`) was certified on InDesign 21.5.1.73 ([cross-frame resear
 
 The native control on 21.6 still loses fill-core pixels wherever the census expects it to, so InDesign 21.6 has not fixed the overlap itself.
 
-**ROUTE_X candidate `301fe06b` (the paints-nothing fix): CERTIFIED on 21.6 against same-day controls; installed now.** Session C4 repeats C3 in a fresh process with the candidate (65,536 bytes, `301fe06b6424a07609601811975d5f395fb3c6a620db56e20a8c4f5c6e9e66ba`, hash read from the loaded module), plus the extension census and the five saved suites:
+**ROUTE_X candidate `301fe06b` (the paints-nothing fix): CERTIFIED on 21.6 against same-day controls; superseded by `8c1d42aa`, which adds the miter correction below.** Session C4 repeats C3 in a fresh process with the candidate (65,536 bytes, `301fe06b6424a07609601811975d5f395fb3c6a620db56e20a8c4f5c6e9e66ba`, hash read from the loaded module), plus the extension census and the five saved suites:
 
 - Its 103 measured lines are identical to C3's, and its six PNG outputs are byte-identical to C3's.
 - The cross-frame census passes 22 of 22 against N3 and W3 ([*cross_frame_census_21.6_301fe06b.json*](../tests/audit/results/cross_frame_census_21.6_301fe06b.json)).
@@ -64,8 +64,32 @@ Route X leaves suite B's miter geometry untouched on 21.6: the export has the st
 
 InDesign's spikes are exactly the interior miter tips of its symmetric stroke that escape the outward offset, on the glyphs the September 30 embedded-font experiment named. The ink outside both constructions stays at the fringe level, so the envelope holds every legitimate exterior join: clipping route W's stroke to the envelope would remove the spikes and change nothing else. Limit 500 is outside the core's accepted range (1–100) and is reported as refused.
 
+## Miter correction: route X candidate `8c1d42aa`
+
+**ROUTE_W_MITER: CERTIFIED for suite B on 21.6, foreground and background PDF; installed now.** Route W strokes a mitered run's outline with bevel joins, then restrokes each exterior corner (a two-segment stub along the corner's own tangents, a fifth of a point at 4 pt) with the run's miter join and limit. A corner is exterior when a point just off it, on its join's side, lies outside the run's fill under the nonzero rule (*plugin/source/IseMiterCore.h*; 24 host-free checks in *tests/native-repaint/MiterCoreTests.cpp*: squares both ways, an L, a square with a hole, a thin chevron whose dropped miter tip is shown to leave the fill, overlapping glyphs, the closed two-anchor contour, collinear and degenerate points, curve tangents, smooth junctions). The renderer's own stroker builds every kept miter and applies the limit, so exterior joins match the native stroke; round- and bevel-joined runs are drawn exactly as before, byte for byte.
+
+A/B in one process (research build `5eb40946`, story mode, *miter=0* then *miter=1*, sessions M0 and M1):
+
+| Suite B line | Spike ink, miter=0 | Spike ink, miter=1 | Ink in the predicted spikes, miter=1 |
+| --- | ---: | ---: | ---: |
+| Outside 4 pt, limits 3–100 | 3.78 pt² | 0.04 pt² | 0 |
+| Outside 6 pt, limit 4 | 27.7 pt² | 0.09 pt² | 0 |
+| Outside 8 pt, limit 4 | 78.9 pt² | 0.14 pt² | 0 |
+| Outside 1–2 pt, or limits 1–2 | ≤ 0.03 pt² | ≤ 0.05 pt² | 0 |
+
+Every pixel that changed by more than 32 levels got darker: stroke ink removed where the spikes were (2,348 pixels above 64 levels in the 300 ppi PNG). Pixels that got lighter changed by at most 32 levels, along the stroke edge within a stub's length of a corner, where the stub's anti-aliased edge overlaps the bevel stroke's; route W's certified edge ring is up to 106 levels. The remaining 0.04–0.14 pt² outside the envelope is the same fringe. M0 and M1 measure identical fill-core damage on every output of the victims, cross-frame, and extension censuses and the five saved suites ([*M0.json*](../tests/audit/results/routex/M0.json), [*M1.json*](../tests/audit/results/routex/M1.json); corrected envelope record [*miter_envelope_suite_b_corrected_2026-10-03.json*](../tests/geometry/miter_envelope_suite_b_corrected_2026-10-03.json)).
+
+Session C5 repeats C4 in a fresh process with the candidate (78,848 bytes, `8c1d42aa3354fde38c9410d28006d810a1cefbe6d0498ef8f4bc03df89593681`, hash read from the loaded module):
+
+- Every fill-core damage count of its 110 measured lines equals C4's. The lines that differ are the comparisons against renders made under the previous plugin (saved documents against their origin, placed EPS against its direct export), which change by the miter-joined cases' edge pixels.
+- Its PNGs equal C4's byte for byte except the two holding miter-joined text that has no spike: VC12, "thin benign miter strokes" (152 pixels, at most 19 levels), and E09, an anchored inline frame (35 pixels, at most 32 levels).
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases against same-day native and route W ([*cross_frame_census_21.6_8c1d42aa.json*](../tests/audit/results/cross_frame_census_21.6_8c1d42aa.json), [*cross_frame_extension_census_8c1d42aa.json*](../tests/audit/results/cross_frame_extension_census_8c1d42aa.json)); the 13 documents it saved carry no plugin state ([*C5-state.json*](../tests/audit/results/routex/C5-state.json)).
+- Suite B in its foreground PDF and in a background PDF export (*Document.asynchronousExportFile*, the default *File > Export > Adobe PDF* route) has no ink in any predicted spike.
+
+Not yet measured for the miter correction: EPS, PostScript, and screen drawing of suite B (they draw the same stroke operators), Center strokes (left to InDesign, spikes included), and real documents. Earlier builds are kept: `301fe06b` in *build/Release-RouteX-301fe06b* and the installer backup *20261003T102150Z-backup*, the research builds beside them.
+
 ## Next
 
-1. Miter correction in route W's stroke pass: clip each run's stroke to its envelope (or fill the envelope), with the core linked into the plugin; certify against suite B and every row of this report.
-2. The owner's view of *cert-X.indd* at 400%, and a real multi-page document.
+1. The owner's view of suite B and *cert-X.indd* at 400%, and a real multi-page document.
+2. EPS, PostScript, and screen checks of the miter correction; a font sweep beyond Minion (sans, script, a variable font) at large Outside weights.
 3. XE2 by hand: whether InDesign's interface threads anchored frames at all.
