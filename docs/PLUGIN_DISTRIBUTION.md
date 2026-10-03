@@ -2,6 +2,16 @@
 
 Primary-source audit: September 12, 2026. Adobe’s public documentation and the locally installed Adobe 2026 SDKs support the distinctions below. **High confidence** means the cited source directly establishes the stated fact; **recommendation** identifies project judgment; **unverified** means an account, platform, or release-specific check remains open. Public documentation is evidence of a documented route, not proof of this project’s acceptance in a signed-in portal.
 
+## Requesting an InDesign prefix
+
+**Not sent.** The current build uses the unassigned placeholder `0x5A200`, which is enough for a proof of concept shown to Adobe. If a distributed fallback plugin is ever needed, it needs an Adobe-assigned prefix, because plugins that share a prefix cannot load together.
+
+- **Address:** **wwds@adobe.com**, from the installed *InDesign 2026 SDK* guide, section *Step 1.3: Specify the prefix ID* (reconfirmed October 3, 2026).
+- **Send:** name, company, Adobe ID, and the purpose of the prefix.
+- **Independent of Creative Cloud:** a prefix is an ID allocation, not a Marketplace listing; a plugin built with it can be distributed as a plain file.
+- **Unverified:** Adobe shut its web registration for prefixes down in 2017 ([forum answer](https://community.adobe.com/t5/indesign-discussions/need-new-prefix-id-for-my-plugin/m-p/9379596)); whether this mailbox answers, and how fast, has not been tested.
+- **Before switching:** review every ID derived from `kIsePrefixNumber` in *plugin/source/IseID.h* and confirm that no saved document records the old IDs.
+
 ## Separate identities
 
 | Identity | Purpose and authority | Confidence |
