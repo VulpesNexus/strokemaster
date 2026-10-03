@@ -166,6 +166,87 @@ int main()
         for (const Stub& x : ExteriorCorners({ccw, hole}, With(0.5))) Check(!x.interior, "exterior stubs are unflagged");
     }
 
+    // Shapes: miter ratio, tip direction, the cut plane past the limit, and fill-rule agreement.
+    {
+        for (const Stub& x : ExteriorCorners({ccw}, With(1))) {
+            Check(std::fabs(x.ratio - std::sqrt(2.0)) < 1e-12, "a right angle's miter ratio is sqrt 2");
+            Check(std::fabs(Len(x.outward) - 1) < 1e-12, "tip direction is a unit vector");
+            const std::vector<Ring> rings = Flatten({ccw}, 1e-3, 1e-9);
+            Check(Winding(rings, x.v + x.outward * 0.01) == 0, "the tip points out of the square");
+        }
+        // A 10-degree wedge's apex: ratio 1/sin(5 deg), far past limit 4, cut at 4h.
+        const double half = 5 * 3.14159265358979323846 / 180;
+        const Contour wedge = Poly({{0, 0}, {60 * std::tan(half), -60}, {-60 * std::tan(half), -60}});
+        const std::vector<Stub> sw = ExteriorCorners({wedge}, With(2));
+        bool apex = false;
+        for (const Stub& x : sw) {
+            if (!Near(x.v, {0, 0})) continue;
+            apex = true;
+            Check(std::fabs(x.ratio - 1 / std::sin(half)) < 1e-9, "the apex's ratio is 1/sin(5 deg)");
+            Check(x.outward.y > 0.999, "the apex tip points up");
+            Check(std::fabs(Dot(x.u, x.u) - 1) < 1e-12 && std::fabs(Dot(x.w, x.w) - 1) < 1e-12, "the tangents are unit vectors");
+            const std::vector<Pt> cut = CutMiter(x, 2, 4 * 2);
+            Check(cut.size() == 5, "a miter past the limit is cut: five corners");
+            Ring rc; rc.points = cut;
+            rc.x0 = rc.y0 = -1e9; rc.x1 = rc.y1 = 1e9;
+            Check(Winding({rc}, {0, 7.99}) != 0 && Winding({rc}, {0, 8.01}) == 0, "the cut keeps the tip up to 4h and no further");
+            Check(Winding({rc}, {0, -0.01}) == 0, "the cut miter lies beyond the vertex, outside the wedge");
+            // The cut's edge lies on the stroke's outer edge: the offset of the incoming side.
+            const Pt nIn = Dot(Pt{-x.u.y, x.u.x}, x.outward) > 0 ? Pt{-x.u.y, x.u.x} : Pt{x.u.y, -x.u.x};
+            Check(std::fabs(Dot(cut[2] - x.v, nIn) - 2) < 1e-9, "the cut's corner lies on the stroke's offset edge");
+            const std::vector<Pt> whole = CutMiter(x, 2, 1e6);
+            Check(whole.size() == 4 && Near(whole[2], x.v + x.outward * (x.ratio * 2)), "below the limit the full miter is kept, tip at ratio * h");
+        }
+        Check(apex, "the wedge's apex is an exterior corner");
+        const std::vector<Ring> one = Flatten({ccw}, 1e-3, 1e-9);
+        const std::vector<Ring> holed = Flatten({ccw, hole}, 1e-3, 1e-9);
+        const Contour sameWay = Poly({{2, 2}, {8, 2}, {8, 8}, {2, 8}});   // wound like the outer square
+        const std::vector<Ring> nested = Flatten({ccw, sameWay}, 1e-3, 1e-9);
+        Check(FillRulesAgree(one, 0.01), "a square: both fill rules agree");
+        Check(FillRulesAgree(holed, 0.01), "an oppositely wound hole: both fill rules agree");
+        Check(!FillRulesAgree(nested, 0.01), "a same-direction inner contour: nonzero fills it, even-odd does not");
+    }
+
+    // Reversal, and the outside clip that means the same under either fill rule.
+    {
+        const double area = SignedArea(Flatten({ccw}, 1e-3, 1e-9)[0]);
+        Check(area > 0 && std::fabs(SignedArea(Flatten({Reversed(ccw, 1e-9)}, 1e-3, 1e-9)[0]) + area) < 1e-9, "reversal negates the area");
+        Recorder q;
+        q.MoveTo({0, 0});
+        q.LineTo({10, 0});
+        q.CurveTo({14, 4}, {14, 8}, {10, 10});
+        q.LineTo({0, 10});
+        q.Close();
+        const Contour curved = q.Contours()[0];
+        const Contour back = Reversed(curved, 1e-9);
+        Check(Near(back.start, curved.start) && back.segments.size() == 4, "a reversed contour starts where it did");
+        // Reversed: start, up the closing side to (0, 10), across to (10, 10), down the curve.
+        Check(back.segments[2].curve && Near(back.segments[2].c1, {14, 8}) && Near(back.segments[2].c2, {14, 4}) && Near(back.segments[2].p, {10, 0}), "a reversed curve swaps its controls");
+        const double ac = SignedArea(Flatten({curved}, 1e-4, 1e-9)[0]);
+        Check(std::fabs(SignedArea(Flatten({back}, 1e-4, 1e-9)[0]) + ac) < 1e-6, "a reversed curve negates the area");
+
+        auto excluded = [](const std::vector<Contour>& clip, Pt p) { return Winding(Flatten(clip, 1e-3, 1e-9), p) == 0; };
+        for (const Contour& outer : {ccw, Reversed(ccw, 1e-9)}) {
+            for (const Contour& inner : {hole, Reversed(hole, 1e-9)}) {
+                const Contour in = SignedArea(Flatten({outer}, 1e-3, 1e-9)[0]) * SignedArea(Flatten({inner}, 1e-3, 1e-9)[0]) < 0 ? inner : Contour{};
+                if (in.segments.empty()) continue;   // same-direction holes fail FillRulesAgree first
+                const std::vector<Contour> clip = OutsideClip({outer, in}, 5, 1e-3, 0.01);
+                Check(clip.size() == 3, "a holed square: frame, outer, and hole");
+                Check(excluded(clip, {1, 1}) && !excluded(clip, {5, 5}) && !excluded(clip, {-2, 5}),
+                      "the clip excludes the fill and keeps the hole and the outside, whatever the windings");
+                Check(SignedArea(Flatten({clip[0]}, 1e-3, 1e-9)[0]) > 0 && Closed(clip[0], 1e-9).size() == 8,
+                      "the frame is a counterclockwise octagon");
+            }
+        }
+        // Two separate squares wound oppositely: both filled under either rule; both excluded.
+        const Contour right = Reversed(Poly({{20, 0}, {30, 0}, {30, 10}, {20, 10}}), 1e-9);
+        const std::vector<Contour> pair = OutsideClip({ccw, right}, 5, 1e-3, 0.01);
+        Check(pair.size() == 3 && excluded(pair, {5, 5}) && excluded(pair, {25, 5}) && !excluded(pair, {15, 5}),
+              "opposite windings side by side: both excluded, the gap kept");
+        // A same-direction hole: nonzero fills it, so the clip cannot be built from nesting.
+        Check(OutsideClip({ccw, Poly({{2, 2}, {8, 2}, {8, 8}, {2, 8}})}, 5, 1e-3, 0.01).empty(), "a same-direction hole yields no clip");
+    }
+
     std::printf("miter core: %d checks passed\n", checks);
     return 0;
 }

@@ -176,6 +176,11 @@ inline int Winding(const std::vector<Ring>& rings, Pt q)
 struct Stub {
     Pt a, v, b;
     bool interior = false;
+    // The miter's length over the stroke width (1 / cos(turn / 2)), compared with a miter
+    // limit exactly as the renderer compares it, and the unit direction its tip points in.
+    double ratio = 1;
+    Pt outward;
+    Pt u, w;         // unit tangents arriving at and leaving v: the miter's edges are their offsets
     bool inCurve = false, outCurve = false;
     Pt in1, in2;     // controls of a -> v when inCurve
     Pt out1, out2;   // controls of v -> b when outCurve
@@ -261,6 +266,9 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
             Stub st;
             st.v = v;
             st.interior = interior;
+            st.ratio = 1 / std::cos(turn / 2);
+            st.outward = outward * (1 / lo);
+            st.u = u; st.w = w;
             if (in.curve) {
                 st.inCurve = true;
                 CubicTail(inFrom, in.c1, in.c2, v, 1 - PieceParameter(inFrom, in.c1, in.c2, v, din), &st.a, &st.in1, &st.in2);
@@ -277,6 +285,143 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
         }
     }
     return out;
+}
+
+/** Whether the nonzero and even-odd rules give the same region near every edge of the rings:
+    probe points just off both sides of each edge's midpoint (up to 64 edges per ring). A clip
+    to the outside of a shape can only be built with the even-odd rule, so it is used only when
+    this holds. */
+inline bool FillRulesAgree(const std::vector<Ring>& rings, double probe)
+{
+    for (const Ring& r : rings) {
+        const size_t n = r.points.size();
+        const size_t step = std::max<size_t>(1, n / 64);
+        for (size_t i = 0; i < n; i += step) {
+            const Pt a = r.points[i], b = r.points[(i + 1) % n];
+            const Pt d = b - a;
+            const double l = Len(d);
+            if (l <= 1e-12) continue;
+            const Pt m = (a + b) * 0.5, nrm = {-d.y / l, d.x / l};
+            for (int side = -1; side <= 1; side += 2) {
+                const Pt q = m + nrm * (probe * side);
+                const int w = Winding(rings, q);
+                int crossings = 0;
+                for (const Ring& s : rings) {
+                    if (q.x < s.x0 || q.x > s.x1 || q.y < s.y0 || q.y > s.y1) continue;
+                    const size_t k = s.points.size();
+                    for (size_t j = 0; j < k; ++j) {
+                        const Pt e0 = s.points[j], e1 = s.points[(j + 1) % k];
+                        if ((e0.y > q.y) != (e1.y > q.y) && q.x < e0.x + (q.y - e0.y) * (e1.x - e0.x) / (e1.y - e0.y)) ++crossings;
+                    }
+                }
+                if ((w != 0) != (crossings % 2 == 1)) return false;
+            }
+        }
+    }
+    return true;
+}
+
+inline double SignedArea(const Ring& r)
+{
+    double a = 0;
+    for (size_t i = 0, n = r.points.size(); i < n; ++i) a += Cross(r.points[i], r.points[(i + 1) % n]);
+    return a / 2;
+}
+
+/** The contour traversed the other way, curves included; it starts where it did. */
+inline Contour Reversed(const Contour& c, double eps)
+{
+    const std::vector<Segment> segs = Closed(c, eps);   // the last segment returns to the start
+    Contour r;
+    r.start = c.start;
+    for (size_t k = segs.size(); k-- > 0;) {
+        Segment t;
+        t.curve = segs[k].curve;
+        t.c1 = segs[k].c2; t.c2 = segs[k].c1;
+        t.p = k == 0 ? c.start : segs[k - 1].p;
+        r.segments.push_back(t);
+    }
+    return r;
+}
+
+/** A clip path to the outside of a shape whose meaning does not depend on the fill rule the
+    port applies: a frame `margin` beyond the shape, then each contour wound against the frame
+    at even nesting depth and with it at odd depth. InDesign's PDF port wrote an even-odd clip
+    as a nonzero one and rewrote a rectangular frame as `re`, with its own winding (measured
+    2026-10-03); the frame is therefore an octagon, and the contours are wound explicitly.
+    Probe points just off every edge confirm that the clip's nonzero reading is exactly the
+    outside of the fill (nonzero rule, which FillRulesAgree makes the even-odd one too); where
+    it is not (contours overlapping more deeply than the nesting rule handles), the result is
+    empty and the shape's stroke stays InDesign's. */
+inline std::vector<Contour> OutsideClip(const std::vector<Contour>& contours, double margin, double tol, double probe)
+{
+    const double eps = 1e-9;
+    std::vector<Ring> rings;
+    std::vector<const Contour*> source;
+    for (const Contour& c : contours) {
+        const std::vector<Ring> r = Flatten({c}, tol, eps);
+        if (r.empty()) continue;
+        rings.push_back(r[0]);
+        source.push_back(&c);
+    }
+    std::vector<Contour> out;
+    if (rings.empty() || !(margin > 0)) return out;
+    double x0 = rings[0].x0, y0 = rings[0].y0, x1 = rings[0].x1, y1 = rings[0].y1;
+    for (const Ring& r : rings) {
+        x0 = std::min(x0, r.x0); y0 = std::min(y0, r.y0); x1 = std::max(x1, r.x1); y1 = std::max(y1, r.y1);
+    }
+    x0 -= margin; y0 -= margin; x1 += margin; y1 += margin;
+    const double k = margin / 2;
+    Contour frame;   // counterclockwise: positive area
+    frame.start = {x0 + k, y0};
+    for (const Pt& p : {Pt{x1 - k, y0}, Pt{x1, y0 + k}, Pt{x1, y1 - k}, Pt{x1 - k, y1}, Pt{x0 + k, y1},
+                        Pt{x0, y1 - k}, Pt{x0, y0 + k}}) {
+        Segment s; s.p = p; frame.segments.push_back(s);
+    }
+    out.push_back(frame);
+    for (size_t i = 0; i < rings.size(); ++i) {
+        int depth = 0;
+        for (size_t j = 0; j < rings.size(); ++j)
+            if (j != i && Winding({rings[j]}, rings[i].points[0]) != 0) ++depth;
+        const bool positive = SignedArea(rings[i]) > 0, wantPositive = depth % 2 == 1;
+        out.push_back(positive == wantPositive ? *source[i] : Reversed(*source[i], eps));
+    }
+    const std::vector<Ring> clip = Flatten(out, tol, eps);
+    for (const Ring& r : rings) {
+        const size_t n = r.points.size();
+        const size_t step = std::max<size_t>(1, n / 64);
+        for (size_t i = 0; i < n; i += step) {
+            const Pt a = r.points[i], b = r.points[(i + 1) % n], d = b - a;
+            const double l = Len(d);
+            if (l <= 1e-12) continue;
+            const Pt m = (a + b) * 0.5, nrm = {-d.y / l, d.x / l};
+            for (int side = -1; side <= 1; side += 2) {
+                const Pt q = m + nrm * (probe * side);
+                if ((Winding(clip, q) != 0) != (Winding(rings, q) == 0)) return {};
+            }
+        }
+    }
+    return out;
+}
+
+/** The miter join of an exterior corner of half width h, cut flat at `distance` from its vertex
+    along the tip's direction, as a polygon to fill: the vertex, the two stroke edges' corners
+    (offsets of the tangents), and where the miter's edges cross the cut. A miter past the
+    limit is cut there instead of beveled at the vertex; at the limit itself the cut falls
+    exactly at the tip, so the shape changes continuously as a corner sharpens. The join is
+    defined by the tangents at the vertex alone, so the polygon is exact on curves too. It is
+    filled rather than drawn as a clipped stroke: InDesign's PDF port merges or drops clip
+    paths it judges redundant, and dropped the cut on a Center wedge (measured 2026-10-03). */
+inline std::vector<Pt> CutMiter(const Stub& s, double h, double distance)
+{
+    Pt nIn = {-s.u.y, s.u.x}, nOut = {-s.w.y, s.w.x};
+    if (Dot(nIn, s.outward) < 0) nIn = nIn * -1;
+    if (Dot(nOut, s.outward) < 0) nOut = nOut * -1;
+    const Pt e0 = s.v + nIn * h, e1 = s.v + nOut * h, tip = s.v + s.outward * (s.ratio * h);
+    const double a0 = Dot(e0 - s.v, s.outward), reach = s.ratio * h;
+    if (!(distance < reach) || !(reach - a0 > 1e-12)) return {s.v, e0, tip, e1};
+    const double t = std::max(0.0, (distance - a0) / (reach - a0));
+    return {s.v, e0, Lerp(e0, tip, t), Lerp(e1, tip, t), e1};
 }
 
 /** The exterior corners only: what an Outside stroke restrokes. */

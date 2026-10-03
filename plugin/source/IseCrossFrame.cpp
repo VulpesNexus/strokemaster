@@ -14,7 +14,8 @@
 // both named by environment variables of the InDesign process and absent otherwise:
 //   ISE_XF_CONTROL  lines of key=value: mode=native|routew|story|overlap, trace=0|1,
 //                   suppress_shape=<uid>, suppress_text=<uid>, defer_probe=0|1,
-//                   miter=0|1 (route W's miter correction; on by default)
+//                   miter=0|1 (route W's miter correction; on by default),
+//                   shapes=0|1 (page-item strokes, IsePageItemStroke.cpp; on by default)
 //   ISE_XF_TRACE    the trace file, appended to
 // Without the control file the research build behaves as route W. The production candidate
 // has neither: its mode is Story.
@@ -69,6 +70,7 @@
 // Project includes:
 #include "IseID.h"
 #include "IseCrossFrame.h"
+#include "IsePageItemStroke.h"
 
 #include <cmath>
 #include <cstdarg>
@@ -88,6 +90,7 @@ struct Control {
     std::uint32_t suppressShape = 0, suppressText = 0;
     bool deferProbe = false;
     bool miter = true;   // route W's miter correction (IseMiterCore.h)
+    bool shapes = true;  // page-item strokes (IsePageItemStroke.cpp)
 };
 
 #ifdef ISE_ROUTE_X_RESEARCH
@@ -126,6 +129,8 @@ void ReloadControl()
             c.deferProbe = v == "1";
         } else if (k == "miter") {
             c.miter = v != "0";
+        } else if (k == "shapes") {
+            c.shapes = v != "0";
         }
     }
     std::fclose(f);
@@ -776,6 +781,13 @@ bool16 IseXfDrawEvents::HandleDrawEvent(ClassID eventID, void* eventData)
                       uid, b.x0, b.y0, b.x1, b.y1);
             }
         }
+    }
+    // Page-item strokes: drawn here, in the item's inner coordinates, when this route can draw
+    // them exactly; claiming the event makes InDesign skip its own stroke (CGraphicFrameShape).
+    if (eventID == kBeginFrameStrokeDrawMessage && !handled && RouteWEnabled() && Ctl().shapes &&
+        ise_page_stroke::DrawStroke(ded->gd, ded->changedBy)) {
+        Trace("P page-item stroke item=%u", uid);
+        handled = kTrue;
     }
     if (closes) { t.End(); FlushTrace(); }
     return handled;

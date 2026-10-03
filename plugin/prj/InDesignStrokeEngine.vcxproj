@@ -119,6 +119,7 @@ xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Comma
     <ClCompile Include="$(IseSourceDir)\IseFillRepaintAdornment.cpp" />
     <ClCompile Include="$(IseSourceDir)\IseStrokeBehindAdornment.cpp" Condition="'$(IseRouteW)' == 'true' Or '$(IseRouteX)' == 'true'" />
     <ClCompile Include="$(IseSourceDir)\IseCrossFrame.cpp" Condition="'$(IseRouteX)' == 'true'" />
+    <ClCompile Include="$(IseSourceDir)\IsePageItemStroke.cpp" Condition="'$(IseRouteX)' == 'true'" />
     <ClCompile Include="$(IseSourceDir)\IseNoStrip.cpp" />
     <ClCompile Include="$(IseSourceDir)\TriggerResourceDeps.cpp" />
     <!-- Shared SDK sources, compiled from the SDK rather than copied into this repository. -->
