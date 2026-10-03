@@ -30,7 +30,7 @@ REPO = Path(__file__).resolve().parents[1]
 CORPUS = REPO / 'tests/certification/corpus'
 CERT = REPO / 'build/cert'
 
-SOURCES = {'V': 'victims', 'T': 'cert-T', 'C': 'cert-C', 'E': 'cert-E', 'X': 'cert-X'}
+SOURCES = {'V': 'victims', 'T': 'cert-T', 'C': 'cert-C', 'E': 'cert-E', 'X': 'cert-X', 'X2': 'cert-X2'}
 
 # id: (preset, overrides, preparation). Overrides use enum:<Enumeration>:<KEY> for enumerations.
 PDF_FAMILIES = {
@@ -67,6 +67,8 @@ PLAN = {
     'E': {'pdf': ['hqp', 'x1a', 'x4'], 'png': ['png600'], 'print': ['eps', 'pshigh']},
     # The cross-frame census: live PDF, flattened PDF, raster, EPS, and PostScript.
     'X': {'pdf': ['hqp', 'x1a', 'x4'], 'png': ['png300', 'png600'], 'print': ['eps', 'pshigh']},
+    # The cross-frame extension census (2026-10-03): the same families as the cross-frame census.
+    'X2': {'pdf': ['hqp', 'x1a', 'x4'], 'png': ['png300', 'png600'], 'print': ['eps', 'pshigh']},
 }
 
 
@@ -78,6 +80,7 @@ PLAN_CONTROL = {
     'C': {'pdf': ['hqp', 'press', 'x1a'], 'png': ['png600'], 'print': ['pshigh']},
     'E': {'pdf': ['hqp', 'x1a'], 'png': ['png600'], 'print': ['pshigh']},
     'X': {'pdf': ['hqp', 'x4', 'x1a'], 'png': ['png600'], 'print': ['eps', 'pshigh']},
+    'X2': {'pdf': ['hqp', 'x4', 'x1a'], 'png': ['png600'], 'print': ['eps', 'pshigh']},
 }
 SUITES = ['A-adjacent-line-overlap/minimal/A-minimal.indd', 'B-miter-spikes/minimal/B-miter.indd',
           'C-run-fragmentation/minimal/C-attribute-sweep.indd', 'N-transparency/minimal/N-transparency.indd',
@@ -116,7 +119,7 @@ def source_jobs(session, key, families, users):
     plain = by_prep.pop(None, [])
     plain += [{'kind': 'png', **png[p], 'file': p + '.png'} for p in families['png']]
     plain += [{'kind': PRINT[p][0], **PRINT[p][1], 'file': p + ('.eps' if PRINT[p][0] == 'eps' else '.ps')} for p in families['print']]
-    refs = {'V': ['splitReference'], 'X': ['storyReference']}
+    refs = {'V': ['splitReference'], 'X': ['storyReference'], 'X2': ['storyReference']}
     twins = [('out', []), ('fill', ['fillOnly'])] + ([('ref', refs[key])] if key in refs else [])
     for twin, prep in twins:
         outputs = plain if twin != 'ref' else [o for o in plain if o['kind'] != 'ps' or o['file'] == 'pshigh.ps']
@@ -268,7 +271,8 @@ def plan(session, families, control=False, spec_name='spec.json'):
 
 def manifest_frames(key):
     path = CORPUS / (SOURCES[key] + '.manifest.json')
-    return json.loads(path.read_text(encoding='utf-8'))['frames']
+    # A case the host refused to build has a buildError and no bounds; there is nothing to measure.
+    return [f for f in json.loads(path.read_text(encoding='utf-8'))['frames'] if f.get('bounds')]
 
 
 def file_sha(path):

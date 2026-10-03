@@ -35,13 +35,19 @@ class Verdicts(unittest.TestCase):
         self.assertEqual(x.judge('corrected', 1, None, 0), 'UNTESTED')
         self.assertEqual(x.judge('corrected', 1, 1, None), 'UNTESTED')
 
+    def test_without_sessions_a_corrected_case_is_never_a_plain_pass(self):
+        self.assertEqual(x.judge('corrected', None, None, 0), 'PASS_NO_CONTROL')
+        self.assertEqual(x.judge('corrected', None, None, 3322), 'FAILED', 'cert-X2 XE6 under route X 1e7c417e')
+        self.assertEqual(x.judge('unchanged', None, None, 0), 'UNTESTED', 'only corrected cases can be judged alone')
+
     def test_every_census_case_has_a_known_expectation(self):
-        manifest = json.loads((TOOLS.parent / 'tests/certification/corpus/cert-X.manifest.json').read_text(encoding='utf-8'))
-        keys = {f['key'] for f in manifest['frames']}
-        self.assertEqual(keys, set(x.XCASES), 'the census and the expectations must name the same cases')
-        for relation, expectation, why in x.XCASES.values():
-            self.assertIn(expectation, ('corrected', 'unchanged', 'partial', 'control', 'center'))
-            self.assertTrue(why)
+        for census, name in (('X', 'cert-X'), ('X2', 'cert-X2')):
+            manifest = json.loads((TOOLS.parent / 'tests/certification/corpus' / (name + '.manifest.json')).read_text(encoding='utf-8'))
+            keys = {f['key'] for f in manifest['frames']}
+            self.assertEqual(keys, set(x.CENSUS[census]), 'the census and the expectations must name the same cases')
+            for relation, expectation, why in x.CENSUS[census].values():
+                self.assertIn(expectation, ('corrected', 'unchanged', 'partial', 'control', 'center'))
+                self.assertTrue(why)
 
 
 class Structure(unittest.TestCase):

@@ -18,6 +18,9 @@ each case is expected to do under route X's rule:
 Usage:
   certify_routex.py summarize --native N.json --routew W.json --candidate K.json OUTPUT
       [--overlap O.json] [--reference R.json] [--edit E.json] [--label TEXT]
+  certify_routex.py summarize --census X2 --candidate K.json OUTPUT [--native N.json]
+      [--routew W.json]   the extension census (tests/certification/corpus/cert-X2.indd); a
+      corrected case with no native session is PASS_NO_CONTROL, never PASS
   certify_routex.py state-scan OUTPUT FILE...    documents saved with the plugin: does any
       INDD, or any IDML entry, carry the plugin's name or its ID prefix (0x5A200, either
       byte order)? A model plugin may write document data; this one must not.
@@ -52,6 +55,19 @@ XCASES = {
     'XN2': ('same story', 'center', 'Center strokes'),
     'XN3': ('same story', 'control', 'nonprinting upstream frame: absent from exports'),
 }
+# The cross-frame extension census (tools/jsx/cert-build-xframe2.jsx, 2026-10-03): the cases the
+# cross-frame research left untested, and neighbors of them. Every one is one story.
+XECASES = {
+    'XE0': ('same story', 'corrected', 'threaded pair on the parent page, drawn on the document page'),
+    'XE1': ('same story', 'corrected', 'path text threaded into a frame below it'),
+    'XE2': ('same story', 'corrected', 'threaded anchored frames: InDesign 21.6 refuses to thread them by script, so the case is not built'),
+    'XE3': ('same story', 'corrected', 'threaded pair rotated 30 degrees as a unit'),
+    'XE4': ('same story', 'corrected', 'three frames threaded in a chain'),
+    'XE5': ('same story', 'corrected', 'downstream frame scaled 125% in its matrix'),
+    'XE6': ('same story', 'corrected', 'an invisible rectangle stacked between the frames draws nothing in between'),
+    'XE7': ('same story', 'corrected', 'threaded pair in a group nested in another group'),
+}
+CENSUS = {'X': XCASES, 'X2': XECASES}
 OUTPUTS = ('hqp.pdf', 'x4.pdf', 'x1a.pdf', 'png600.png', 'eps.eps', 'pshigh.ps')
 STRUCTURE_KEYS = ('text_chars', 'text_render_modes', 'images', 'fonts')
 
@@ -60,13 +76,21 @@ def load(path):
     return json.loads(Path(path).read_text(encoding='utf-8')) if path else None
 
 
-def per_case(record, output):
-    o = record['sources']['X']['outputs'].get(output)
+def per_case(record, output, census='X'):
+    if not record or census not in record.get('sources', {}):
+        return None, None
+    o = record['sources'][census]['outputs'].get(output)
     return ({f['key']: f['damage_px'] for f in o['fill_core']['frames']}, o) if o else (None, None)
 
 
 def judge(expectation, native, routew, candidate):
-    if candidate is None or routew is None:
+    if candidate is None:
+        return 'UNTESTED'
+    if expectation == 'corrected' and native is None and routew is None:
+        # A census run without native or route W sessions: zero damage is necessary, but no
+        # native session shows that the case exercises the defect.
+        return 'PASS_NO_CONTROL' if candidate == 0 else 'FAILED'
+    if routew is None:
         return 'UNTESTED'
     if expectation == 'corrected':
         return 'PASS' if candidate == 0 and (native or 0) > 0 else 'FAILED'
@@ -95,25 +119,33 @@ def summarize(args):
     native, routew, cand = load(args.native), load(args.routew), load(args.candidate)
     overlap, reference, edit = load(args.overlap), load(args.reference), load(args.edit)
     rows, verdicts = [], {}
-    for key, (relation, expectation, why) in XCASES.items():
+    census = args.census
+    for key, (relation, expectation, why) in CENSUS[census].items():
         row = {'key': key, 'relation': relation, 'expectation': expectation, 'why': why, 'outputs': {}}
         for output in OUTPUTS:
-            n, _ = per_case(native, output)
-            w, wo = per_case(routew, output)
-            c, co = per_case(cand, output)
-            if c is None:
+            n, _ = per_case(native, output, census)
+            w, wo = per_case(routew, output, census)
+            c, co = per_case(cand, output, census)
+            if c is None or key not in c:
                 continue
             entry = {'native_damage_px': n.get(key) if n else None, 'route_w_damage_px': w.get(key) if w else None,
                      'route_x_damage_px': c.get(key), 'route_x_sha256': co['sha256'], 'renderer': co.get('renderer')}
             if overlap:
-                ov, _ = per_case(overlap, output)
+                ov, _ = per_case(overlap, output, census)
                 entry['overlap_mode_damage_px'] = ov.get(key) if ov else None
             entry['verdict'] = judge(expectation, entry['native_damage_px'], entry['route_w_damage_px'], entry['route_x_damage_px'])
             row['outputs'][output] = entry
         verdicts_here = [e['verdict'] for e in row['outputs'].values()]
-        row['verdict'] = 'FAILED' if 'FAILED' in verdicts_here else ('PASS' if verdicts_here and all(v == 'PASS' for v in verdicts_here) else 'UNTESTED')
+        if 'FAILED' in verdicts_here:
+            row['verdict'] = 'FAILED'
+        elif verdicts_here and all(v == 'PASS' for v in verdicts_here):
+            row['verdict'] = 'PASS'
+        elif verdicts_here and all(v in ('PASS', 'PASS_NO_CONTROL') for v in verdicts_here):
+            row['verdict'] = 'PASS_NO_CONTROL'
+        else:
+            row['verdict'] = 'UNTESTED'
         if reference:
-            ro = reference['sources']['X']['outputs']
+            ro = reference['sources'][census]['outputs']
             edges = {}
             for output in OUTPUTS:
                 e = ro.get(output, {}).get('edge_vs_split_reference')
@@ -126,14 +158,16 @@ def summarize(args):
         rows.append(row)
     structure = {}
     for output in ('hqp.pdf', 'x4.pdf', 'x1a.pdf'):
-        _, wo = per_case(routew, output)
-        _, co = per_case(cand, output)
+        _, wo = per_case(routew, output, census)
+        _, co = per_case(cand, output, census)
         if co:
             structure[output] = structure_check(wo, co)
     doc = {'schema': 1, 'label': args.label,
-           'sessions': {'native': native.get('label'), 'route_w': routew.get('label'), 'route_x': cand.get('label'),
+           'census': census,
+           'sessions': {'native': native.get('label') if native else None, 'route_w': routew.get('label') if routew else None,
+                        'route_x': cand.get('label'),
                         'overlap': overlap.get('label') if overlap else None, 'reference': reference.get('label') if reference else None},
-           'corpus_sha256': cand.get('corpus_sha256', {}).get('cert-X.indd'),
+           'corpus_sha256': cand.get('corpus_sha256', {}).get('cert-%s.indd' % census),
            'verdict_counts': verdicts, 'cases': rows, 'pdf_structure_vs_route_w': structure}
     if edit:
         doc['editing'] = {'identities': {k: v for k, v in edit['editing']['identities'].items() if 'ED4' in k},
@@ -177,8 +211,9 @@ def main(argv=None):
     sub = parser.add_subparsers(dest='cmd', required=True)
     s = sub.add_parser('summarize')
     s.add_argument('output', type=Path)
-    s.add_argument('--native', required=True)
-    s.add_argument('--routew', required=True)
+    s.add_argument('--census', choices=sorted(CENSUS), default='X')
+    s.add_argument('--native')
+    s.add_argument('--routew')
     s.add_argument('--candidate', required=True)
     s.add_argument('--overlap')
     s.add_argument('--reference')
@@ -190,6 +225,8 @@ def main(argv=None):
     args = parser.parse_args(argv)
     if args.cmd == 'state-scan':
         return state_scan(args.output, args.files)
+    if args.census == 'X' and not (args.native and args.routew):
+        parser.error('the cross-frame census needs --native and --routew')
     return summarize(args)
 
 

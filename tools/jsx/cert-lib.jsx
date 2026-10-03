@@ -178,9 +178,13 @@ $.global.ISE_CERT = (function () {
         for (i = 0; i < ids.length; i++) {
             var story = doc.stories.itemByID(ids[i]), frames = story.textContainers;
             if (frames.length < 2) { continue; }
-            var layer = frames[0].itemLayer.name, parent = frames[0].parent, ok = true, j;
+            var ok = true, j;
+            // Path text (a TextPath) has no item layer of its own: such a story is skipped.
+            for (j = 0; j < frames.length; j++) { if (frames[j].constructor.name !== 'TextFrame') { ok = false; } }
+            if (!ok) { skipped.push(story.id + ' (not all text frames)'); continue; }
+            var layer = frames[0].itemLayer.name, parent = frames[0].parent;
             for (j = 0; j < frames.length; j++) {
-                if (frames[j].constructor.name !== 'TextFrame' || frames[j].itemLayer.name !== layer) { ok = false; }
+                if (frames[j].itemLayer.name !== layer) { ok = false; }
                 if (frames[j].parent.constructor.name !== parent.constructor.name) { ok = false; }
             }
             if (!ok) { skipped.push(frames[0].name); continue; }
@@ -188,7 +192,8 @@ $.global.ISE_CERT = (function () {
             if (parent.constructor.name === 'Group') {
                 copy = parent.duplicate();
             } else {
-                group = doc.pages[0].groups.add(frames);
+                // Group on the frames' own page: a parent-page story (cert-X2 XE0) is not on pages[0].
+                group = (frames[0].parentPage || doc.pages[0]).groups.add(frames);
                 copy = group.duplicate();
                 group.ungroup();
             }
