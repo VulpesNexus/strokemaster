@@ -108,9 +108,36 @@ int main()
         const std::vector<Stub> s = ExteriorCorners(r.Contours(), With(0.5));
         bool corner = false;
         for (const Stub& x : s) {
-            if (Near(x.v, {10, 0})) { corner = true; Check(std::fabs(x.b.x - 10) < 1e-12 && x.b.y > 0, "curve start tangent from c2"); }
+            if (Near(x.v, {10, 0})) {
+                corner = true;
+                Check(x.outCurve && !x.inCurve, "the stub's outgoing piece is part of the curve, the incoming one a line");
+                // The piece leaves v along the curve's tangent (from c2, since c1 == v)...
+                const Pt t = x.out2 - x.v;
+                Check(std::fabs(t.x) < 1e-12 && t.y > 0, "curve start tangent from c2");
+                // ...and ends on the curve itself: B(s) for the head parameter s.
+                const Pt p0 = {10, 0}, p1 = {10, 0}, p2 = {10, 10}, p3 = {0, 10};
+                bool onCurve = false;
+                for (int k = 1; k <= 5000 && !onCurve; ++k) {
+                    const double u = k / 10000.0, m = 1 - u;
+                    const Pt q = p0 * (m * m * m) + p1 * (3 * m * m * u) + p2 * (3 * m * u * u) + p3 * (u * u * u);
+                    onCurve = Len(q - x.b) < 1e-3;
+                }
+                Check(onCurve, "the outgoing piece ends on the curve");
+            }
         }
         Check(corner, "corner where a line meets a curve");
+
+        // A split piece is the original curve: its midpoint matches the curve at the mapped parameter.
+        {
+            const Pt p0 = {0, 0}, p1 = {3, 6}, p2 = {7, 6}, p3 = {10, 0};
+            Pt q1, q2, q3;
+            CubicHead(p0, p1, p2, p3, 0.3, &q1, &q2, &q3);
+            auto B = [](Pt a, Pt b, Pt c, Pt d, double u) { const double m = 1 - u; return a * (m * m * m) + b * (3 * m * m * u) + c * (3 * m * u * u) + d * (u * u * u); };
+            Check(Len(B(p0, q1, q2, q3, 0.5) - B(p0, p1, p2, p3, 0.15)) < 1e-12, "head piece reproduces the curve");
+            Pt r0, r1, r2;
+            CubicTail(p0, p1, p2, p3, 0.8, &r0, &r1, &r2);
+            Check(Len(B(r0, r1, r2, p3, 0.5) - B(p0, p1, p2, p3, 0.9)) < 1e-12, "tail piece reproduces the curve");
+        }
         Recorder q;
         q.MoveTo({0, 0});
         q.CurveTo({5, 0}, {10, 5}, {10, 10});
@@ -122,6 +149,22 @@ int main()
     // A degenerate segment does not hide a corner, and an unusable width yields nothing.
     Check(ExteriorCorners({Poly({{0, 0}, {10, 0}, {10, 0}, {10, 10}, {0, 10}})}, With(1)).size() == 4, "zero-length segment skipped");
     Check(ExteriorCorners({ccw}, With(0)).empty() && ExteriorCorners({ccw}, With(NAN)).empty(), "invalid width: no stub");
+
+    // Center strokes: interior corners are reported too, flagged, and exterior ones unflagged.
+    {
+        const std::vector<Stub> all = Corners({ell}, With(1), true);
+        Check(all.size() == 6, "L-shape with interior corners: all six");
+        int interior = 0;
+        for (const Stub& x : all) if (x.interior) { ++interior; Check(Near(x.v, {4, 4}), "the interior stub is the reflex corner"); }
+        Check(interior == 1, "L-shape: exactly one interior corner");
+        const std::vector<Stub> sv2 = Corners({v}, With(1), true);
+        bool notch = false;
+        for (const Stub& x : sv2) if (Near(x.v, {5, 1.5})) { notch = true; Check(x.interior, "chevron notch flagged interior"); }
+        Check(notch, "chevron notch reported for Center strokes");
+        Check(Corners({ccw, hole}, With(0.5), true).size() == 8, "square with a hole: four outer and four interior");
+        Check(ExteriorCorners({ell}, With(1)).size() == Corners({ell}, With(1), false).size(), "ExteriorCorners is Corners without interior");
+        for (const Stub& x : ExteriorCorners({ccw, hole}, With(0.5))) Check(!x.interior, "exterior stubs are unflagged");
+    }
 
     std::printf("miter core: %d checks passed\n", checks);
     return 0;

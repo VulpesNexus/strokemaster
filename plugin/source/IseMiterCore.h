@@ -166,8 +166,46 @@ inline int Winding(const std::vector<Ring>& rings, Pt q)
     return w;
 }
 
-/** A stub to restroke with the miter join: a -> v -> b. */
-struct Stub { Pt a, v, b; };
+/** A stub to restroke with the miter join: a -> v -> b, each piece a short part of the
+    outline's own segment (a line, or a curve with controls), so the stub's band lies exactly
+    on the stroke's and its square ends sit on the stroke's own cross-section. A straight
+    stub along the tangent instead stuck out of the stroke where the outline curves tightly
+    next to a corner (serif brackets; visible on Center strokes, measured 2026-10-03). An
+    interior stub's join points into the fill; it is kept only for Center strokes, clipped to
+    the fill (see Corners). */
+struct Stub {
+    Pt a, v, b;
+    bool interior = false;
+    bool inCurve = false, outCurve = false;
+    Pt in1, in2;     // controls of a -> v when inCurve
+    Pt out1, out2;   // controls of v -> b when outCurve
+};
+
+inline Pt Lerp(Pt a, Pt b, double t) { return a + (b - a) * t; }
+
+/** A cubic's part [t, 1] and part [0, t] (de Casteljau). */
+inline void CubicTail(Pt p0, Pt p1, Pt p2, Pt p3, double t, Pt* q0, Pt* q1, Pt* q2)
+{
+    const Pt p12 = Lerp(p1, p2, t), p23 = Lerp(p2, p3, t);
+    const Pt p123 = Lerp(p12, p23, t);
+    const Pt p012 = Lerp(Lerp(p0, p1, t), p12, t);
+    *q0 = Lerp(p012, p123, t); *q1 = p123; *q2 = p23;
+}
+inline void CubicHead(Pt p0, Pt p1, Pt p2, Pt p3, double t, Pt* q1, Pt* q2, Pt* q3)
+{
+    const Pt p01 = Lerp(p0, p1, t), p12 = Lerp(p1, p2, t);
+    const Pt p012 = Lerp(p01, p12, t);
+    const Pt p123 = Lerp(p12, Lerp(p2, p3, t), t);
+    *q1 = p01; *q2 = p012; *q3 = Lerp(p012, p123, t);
+}
+
+/** The curve parameter that cuts a piece of about `length` off a cubic's end. */
+inline double PieceParameter(Pt p0, Pt p1, Pt p2, Pt p3, double length)
+{
+    const double approx = 0.5 * (Len(p1 - p0) + Len(p2 - p1) + Len(p3 - p2) + Len(p3 - p0));
+    if (!(approx > 0)) return 0.5;
+    return std::min(0.5, std::max(1e-4, length / approx));
+}
 
 struct Options {
     double halfWidth = 1;       // h: half of the drawn stroke width (the Outside weight)
@@ -176,10 +214,15 @@ struct Options {
     double stub = 0;            // stub length along each tangent; 0 means 5% of h
 };
 
-/** The exterior corners of a run's outline, as stubs to stroke with the miter join. An exact
-    or numerically unresolved reversal is skipped: its miter is infinitely long, so the
-    native stroke bevels it, and the bevel stroke already draws that. */
-inline std::vector<Stub> ExteriorCorners(const std::vector<Contour>& contours, const Options& o)
+/** The corners of a run's outline, as stubs to stroke with the miter join: the exterior
+    ones, and with includeInterior the interior ones too, flagged. An exact or numerically
+    unresolved reversal is skipped: its miter is infinitely long, so the native stroke bevels
+    it, and the bevel stroke already draws that.
+
+    Outside strokes use the exterior stubs only. A Center stroke lies over its own fill, so
+    an interior miter is visible there and belongs; only its part outside the fill escapes.
+    Center strokes therefore also restroke the interior stubs, clipped to the fill. */
+inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Options& o, bool includeInterior)
 {
     std::vector<Stub> out;
     if (!(o.halfWidth > 0) || !std::isfinite(o.halfWidth)) return out;
@@ -209,15 +252,37 @@ inline std::vector<Stub> ExteriorCorners(const std::vector<Contour>& contours, c
             const double lo = Len(outward);
             if (lo <= 1e-12 || std::fabs(Cross(u, w)) <= 1e-15) continue;   // reversal
             const Pt q = v + outward * (probe / lo);
-            if (Winding(rings, q) != 0) continue;   // the join points into the fill
+            const bool interior = Winding(rings, q) != 0;   // the join points into the fill
+            if (interior && !includeInterior) continue;
             const double din = std::min(stub, 0.5 * Len(v - inFrom));
             const Pt nextEnd = next.p;
             const double dout = std::min(stub, 0.5 * Len(nextEnd - v));
             if (din <= eps || dout <= eps) continue;
-            out.push_back({v - u * din, v, v + w * dout});
+            Stub st;
+            st.v = v;
+            st.interior = interior;
+            if (in.curve) {
+                st.inCurve = true;
+                CubicTail(inFrom, in.c1, in.c2, v, 1 - PieceParameter(inFrom, in.c1, in.c2, v, din), &st.a, &st.in1, &st.in2);
+            } else {
+                st.a = v - u * din;
+            }
+            if (next.curve) {
+                st.outCurve = true;
+                CubicHead(v, next.c1, next.c2, nextEnd, PieceParameter(v, next.c1, next.c2, nextEnd, dout), &st.out1, &st.out2, &st.b);
+            } else {
+                st.b = v + w * dout;
+            }
+            out.push_back(st);
         }
     }
     return out;
+}
+
+/** The exterior corners only: what an Outside stroke restrokes. */
+inline std::vector<Stub> ExteriorCorners(const std::vector<Contour>& contours, const Options& o)
+{
+    return Corners(contours, o, false);
 }
 
 } // namespace ise_miter

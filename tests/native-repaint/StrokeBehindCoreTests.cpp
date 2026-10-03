@@ -96,6 +96,30 @@ int main()
             Check(!l.Mute(&keys[Ledger::kMaxRecords], &keys[Ledger::kMaxRecords], Print(1, 1, 0), 2) && l.overflow == 1,
                   "the cap refuses, so the caller must not mute");
         }
+        {   // Center strokes: only their join is muted (miter to bevel) and given back.
+            Check(CenterMiterEligible(Alignment::Center, 8, Method::FillStroke), "Center fill+stroke is corrected");
+            Check(CenterMiterEligible(Alignment::Center, 8, Method::StrokeOnly), "Center stroke-only is corrected");
+            Check(!CenterMiterEligible(Alignment::Outside, 8, Method::FillStroke), "Outside takes the stroke pass instead");
+            Check(!CenterMiterEligible(Alignment::Center, 0, Method::FillStroke), "zero-width Center stays native");
+            Check(!CenterMiterEligible(Alignment::Center, 8, Method::FillOnly), "no stroke, no join to mute");
+            const std::uint32_t kMiter = 0, kBevel = 2;
+            Ledger joins;
+            int run = 0, data = 0;
+            std::uint32_t join = kMiter;
+            auto recover = [&](const Fingerprint& p) {
+                return joins.Recover(&run, &data, p, join == kBevel, [&](std::uint32_t j) { join = j; });
+            };
+            Check(joins.Mute(&run, &data, Print(1, 2, 0), join), "join mute recorded");
+            join = kBevel;
+            Check(recover(Print(1, 2, 0)) && join == kMiter && joins.Size() == 0, "the miter join comes back after the Text pass");
+            Check(joins.Mute(&run, &data, Print(1, 2, 0), join), "muted again on the next draw");
+            join = kBevel;
+            Check(!recover(Print(1, 3, 0)) && join == kBevel && joins.staleDropped == 1, "other wax at the same address is not touched");
+            Check(joins.Mute(&run, &data, Print(1, 2, 0), kMiter), "muted again");
+            join = kMiter;   // recomposed with a miter join already: nothing to give back
+            Check(!recover(Print(1, 2, 0)) && join == kMiter && joins.Size() == 0, "a join no longer muted is left alone");
+            Check(&ThreadJoinLedger() != &ThreadLedger(), "joins and paints keep separate ledgers");
+        }
         std::cout << "PASS: " << checks << " stroke-behind core checks; no host execution.\n";
         return 0;
     } catch (const std::exception& e) {

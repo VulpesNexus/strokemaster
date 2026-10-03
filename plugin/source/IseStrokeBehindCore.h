@@ -119,4 +119,20 @@ inline Ledger& ThreadLedger()
     return ledger;
 }
 
+// A Center stroke stays native, but its miter join is muted to bevel for the Text pass and
+// given back after it (route W's miter correction). The same bookkeeping applies: the
+// recorded value is the run's join, and "muted" means the run's join is currently bevel.
+inline bool CenterMiterEligible(Alignment alignment, double width, Method method)
+{
+    if (alignment != Alignment::Center) return false;
+    if (!(width > 0) || width > 10000) return false;
+    return method == Method::FillStroke || method == Method::StrokeOnly;
+}
+
+inline Ledger& ThreadJoinLedger()
+{
+    thread_local Ledger ledger;
+    return ledger;
+}
+
 } // namespace ise_stroke_behind

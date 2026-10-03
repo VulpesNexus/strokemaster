@@ -10,11 +10,15 @@
 //                             run's stroke paint and sets it to [None] in the run's wax.
 //                             A mitered run is stroked with bevel joins, and only its
 //                             exterior corners are restroked with the miter, so no interior
-//                             miter tip can leave a thin glyph (IseMiterCore.h).
+//                             miter tip can leave a thin glyph (IseMiterCore.h). A mitered
+//                             Center run stays native; only its join is muted to bevel.
 //   IseStrokeRestoreAdornment Foreground pass. Restores each recorded run; the stroke
-//                             adornment restores any run left muted before deciding.
+//                             adornment restores any run left muted before deciding. A
+//                             Center run's corners are restroked here first: the exterior
+//                             ones as they are, the interior ones clipped to the run's fill,
+//                             so only an interior miter's part outside the letter is lost.
 // Native text then draws the muted runs as fill only, in the Text pass, above every stroke
-// of the frame. Center strokes and everything else are left to native drawing. The
+// of the frame. Center strokes keep native drawing and order, joins aside. The
 // document's attributes are never changed, so without this plugin the same document draws
 // natively. The stroke is written as paths (the glyph fills stay native text), so exported
 // PDF keeps its searchable text and fonts.
@@ -89,12 +93,12 @@ public:
     virtual void EndPath() {}
     virtual void moveto(const PMReal& x, const PMReal& y)
     {
-        PMReal a = x, b = y; Place(&a, &b); fPort->moveto(a, b);
+        PMReal a = x, b = y; Place(&a, &b); if (fPort) fPort->moveto(a, b);
         if (fRecorder) fRecorder->MoveTo(P(a, b));
     }
     virtual void lineto(const PMReal& x, const PMReal& y)
     {
-        PMReal a = x, b = y; Place(&a, &b); fPort->lineto(a, b);
+        PMReal a = x, b = y; Place(&a, &b); if (fPort) fPort->lineto(a, b);
         if (fRecorder) fRecorder->LineTo(P(a, b));
     }
     virtual void curveto(const PMReal& x1, const PMReal& y1, const PMReal& x2, const PMReal& y2,
@@ -102,10 +106,10 @@ public:
     {
         PMReal ax = x1, ay = y1, bx = x2, by = y2, cx = x3, cy = y3;
         Place(&ax, &ay); Place(&bx, &by); Place(&cx, &cy);
-        fPort->curveto(ax, ay, bx, by, cx, cy);
+        if (fPort) fPort->curveto(ax, ay, bx, by, cx, cy);
         if (fRecorder) fRecorder->CurveTo(P(ax, ay), P(bx, by), P(cx, cy));
     }
-    virtual void closepath() { fPort->closepath(); if (fRecorder) fRecorder->Close(); }
+    virtual void closepath() { if (fPort) fPort->closepath(); if (fRecorder) fRecorder->Close(); }
 private:
     static ise_miter::Pt P(const PMReal& x, const PMReal& y) { return {ToDouble(x), ToDouble(y)}; }
     void Place(PMReal* x, PMReal* y) const { fMatrix.Transform(x, y); *x = *x + fX; *y = *y + fY; }
@@ -114,6 +118,100 @@ private:
     PMMatrix fMatrix;
     PMReal fX, fY;
 };
+
+/** A run's glyph outlines, placed as route W draws them, written to a port, a recorder, or both. */
+void WriteRun(TransformedOutline* writer, const IWaxRun* run, const IWaxGlyphs* glyphs, IFontInstance* instance)
+{
+    const int32 count = glyphs->GetGlyphCount();
+    const Text::GlyphID* ids = glyphs->PeekGlyphArray();
+    if (count <= 0 || ids == nil) return;
+    writer->SetOffset(run->GetXPosition(), run->GetYPosition());
+    const bool16 hasMatrix = glyphs->HasGlyphMatrix();
+    for (int32 i = 0; i < count; ++i) {
+        if (hasMatrix) {
+            PMMatrix m;
+            PMPoint pen(0, 0);
+            if (glyphs->GetGlyphMatrix(i, &m, &pen)) {
+                writer->SetMatrix(m);
+                instance->GetOutlineInfo(writer, ids[i], pen.X(), pen.Y());
+                continue;
+            }
+        }
+        const PMMatrix where = glyphs->GetGlyphDrawPosition(i);
+        writer->SetMatrix(PMMatrix());
+        instance->GetOutlineInfo(writer, ids[i], where.GetXTranslation(), where.GetYTranslation());
+    }
+}
+
+void EmitPath(IGraphicsPort* port, const std::vector<ise_miter::Contour>& contours)
+{
+    for (const ise_miter::Contour& c : contours) {
+        port->moveto(c.start.x, c.start.y);
+        for (const ise_miter::Segment& s : c.segments) {
+            if (s.curve) port->curveto(s.c1.x, s.c1.y, s.c2.x, s.c2.y, s.p.x, s.p.y);
+            else port->lineto(s.p.x, s.p.y);
+        }
+        port->closepath();
+    }
+}
+
+void EmitStubs(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, bool interior)
+{
+    for (const ise_miter::Stub& s : stubs) {
+        if (s.interior != interior) continue;
+        port->moveto(s.a.x, s.a.y);
+        if (s.inCurve) port->curveto(s.in1.x, s.in1.y, s.in2.x, s.in2.y, s.v.x, s.v.y);
+        else port->lineto(s.v.x, s.v.y);
+        if (s.outCurve) port->curveto(s.out1.x, s.out1.y, s.out2.x, s.out2.y, s.b.x, s.b.y);
+        else port->lineto(s.b.x, s.b.y);
+    }
+}
+
+/** After the Text pass, for a Center run whose join was muted to bevel: restroke its corners
+    with the run's own miter, the exterior ones as they are and the interior ones clipped to
+    the run's fill, so only the part of an interior miter outside the letter is not drawn. */
+void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs,
+                     IDataBase* db, int32 join)
+{
+    IGraphicsPort* port = gd ? gd->GetGraphicsPort() : nil;
+    if (port == nil) return;
+    IWaxRenderData* mutableData = const_cast<IWaxRenderData*>(data);
+    InterfacePtr<IPMFont> font(mutableData->QueryFont());
+    InterfacePtr<IFontMgr> fontMgr(GetExecutionContextSession(), UseDefaultIID());
+    if (font == nil || fontMgr == nil) return;
+    InterfacePtr<IFontInstance> instance(fontMgr->QueryFontInstance(font, mutableData->GetFontMatrix()));
+    InterfacePtr<IRenderingObject> stroke(db, mutableData->GetColorUID(kTrue), UseDefaultIID());
+    if (instance == nil || stroke == nil) return;
+    ise_miter::Recorder recorder;
+    TransformedOutline writer(nullptr, &recorder);
+    WriteRun(&writer, run, glyphs, instance);
+    ise_miter::Options options;
+    options.halfWidth = ToDouble(mutableData->GetOutlineWidth()) / 2;
+    const std::vector<ise_miter::Stub> stubs = ise_miter::Corners(recorder.Contours(), options, true);
+    if (stubs.empty()) return;
+    bool anyInterior = false, anyExterior = false;
+    for (const ise_miter::Stub& s : stubs) (s.interior ? anyInterior : anyExterior) = true;
+    AutoGSave save(port);
+    stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
+    port->setlinewidth(mutableData->GetOutlineWidth());
+    port->setlinejoin(join);
+    port->setmiterlimit(mutableData->GetMiterLimit());
+    port->setlinecap(kPMButtCap);
+    if (anyExterior) {
+        port->newpath();
+        EmitStubs(port, stubs, false);
+        port->stroke();
+    }
+    if (anyInterior) {
+        AutoGSave clipScope(port);
+        port->newpath();
+        EmitPath(port, recorder.Contours());
+        port->clip();
+        port->newpath();
+        EmitStubs(port, stubs, true);
+        port->stroke();
+    }
+}
 
 /** Whether route W corrects this run's miter joins (always, outside the research build). */
 bool CorrectMiter(int32 join)
@@ -172,6 +270,19 @@ void Recover(const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* g
                            [&](std::uint32_t paint) { mutableData->SetColorUID(kTrue, UID(paint)); });
 }
 
+// Gives a Center run back its miter join if route W left it muted to bevel. With gd (the
+// pass after Text), its corners are restroked first; without (a later draw's first visit),
+// the join is only given back.
+void RecoverJoin(const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs, IDataBase* db, GraphicsData* gd)
+{
+    IWaxRenderData* mutableData = const_cast<IWaxRenderData*>(data);
+    const bool muted = data->GetOutlineJoin() == kPMBevelJoin;
+    ThreadJoinLedger().Recover(run, data, PrintOf(run, data, glyphs), muted, [&](std::uint32_t join) {
+        if (gd != nil) DrawCenterStubs(gd, run, data, glyphs, db, static_cast<int32>(join));
+        mutableData->SetOutlineJoin(static_cast<int32>(join));
+    });
+}
+
 } // namespace
 
 /** Pass before Text: draws eligible runs' strokes and mutes them for the Text pass.
@@ -224,13 +335,25 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     IDataBase* db = run->GetDataBase();
     if (db == nil) return;
     Recover(run, data, glyphs, db);
+    RecoverJoin(run, data, glyphs, db, nil);
 #ifdef ISE_ROUTE_X
     ise_cross_frame::TraceRun('W', gd, run, data, glyphs, db, "visit");
     // Every fill this parcel is about to paint, stroked or not (route X; a no-op otherwise).
     ise_cross_frame::RecordPendingFill(gd, run, data, glyphs, db);
     if (!ise_cross_frame::RouteWEnabled()) return;
 #endif
-    if (!Eligible(AlignmentOf(data), ToDouble(data->GetOutlineWidth()), MethodOf(data, db))) return;
+    const Alignment alignment = AlignmentOf(data);
+    const double width = ToDouble(data->GetOutlineWidth());
+    if (CenterMiterEligible(alignment, width, MethodOf(data, db))) {
+        // A mitered Center stroke stays native and in InDesign's order; only its join is muted
+        // to bevel for the Text pass, and its corners are restroked after it (RecoverJoin).
+        const int32 join = data->GetOutlineJoin();
+        if (CorrectMiter(join) && ThreadJoinLedger().Mute(run, data, PrintOf(run, data, glyphs), static_cast<std::uint32_t>(join))) {
+            const_cast<IWaxRenderData*>(data)->SetOutlineJoin(kPMBevelJoin);
+        }
+        return;
+    }
+    if (!Eligible(alignment, width, MethodOf(data, db))) return;
     IGraphicsPort* port = gd->GetGraphicsPort();
     const int32 count = glyphs->GetGlyphCount();
     const Text::GlyphID* ids = glyphs->PeekGlyphArray();
@@ -288,16 +411,13 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
             options.halfWidth = ToDouble(mutableData->GetOutlineWidth());
             const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(recorder.Contours(), options);
             if (!stubs.empty()) {
-                // Each stub follows its corner's own tangents, so the renderer's stroker builds
-                // the same miter, and applies the same limit, as it would for the native stroke.
+                // Each stub is a short piece of the outline on either side of its corner, so the
+                // renderer's stroker builds the same miter, and applies the same limit, as it
+                // would for the native stroke, and the stub's band lies on the stroke's.
                 port->setlinejoin(kPMMiterJoin);
                 port->setlinecap(kPMButtCap);
                 port->newpath();
-                for (const ise_miter::Stub& s : stubs) {
-                    port->moveto(s.a.x, s.a.y);
-                    port->lineto(s.v.x, s.v.y);
-                    port->lineto(s.b.x, s.b.y);
-                }
+                EmitStubs(port, stubs, false);
                 port->stroke();
             }
         }
@@ -329,16 +449,14 @@ public:
     virtual void GetInkBounds(PMRect*, const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) {}
     virtual void StartOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
     virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
-#ifdef ISE_ROUTE_X
     virtual void Draw(GraphicsData* gd, int32, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs)
-#else
-    virtual void Draw(GraphicsData*, int32, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs)
-#endif
     {
         if (run == nil || data == nil || glyphs == nil) return;
         IDataBase* db = run->GetDataBase();
         if (db == nil) return;
         Recover(run, data, glyphs, db);
+        // A Center run's corners are restroked here, after the Text pass, then its join returns.
+        RecoverJoin(run, data, glyphs, db, gd);
 #ifdef ISE_ROUTE_X
         // The Text pass has run: this run's fill is painted (route X; a no-op otherwise).
         ise_cross_frame::ConfirmFill(gd, run);
