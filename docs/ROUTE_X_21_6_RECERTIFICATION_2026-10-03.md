@@ -138,7 +138,7 @@ A/B in one process (research build `43a9b310`, *miter=1*, *shapes=0* then *shape
 
 The outlined bottom line (Outside) draws whole: every letter filled, every stroke clean; the outlined line as converted (Center) lost 151 pixels and gained none, at its spikes. P4 and P5 measure identical fill-core damage on every output of the victims, scope, cross-frame, transparency, color, and extension censuses and the saved suites ([*P4.json*](../tests/audit/results/routex/P4.json), [*P5.json*](../tests/audit/results/routex/P5.json)); outside suite B, one pixel of one PNG changed. In suite B, only the wedges past the limit and the two outlined lines changed by more than 32 levels.
 
-**ROUTE_X page-item strokes: CERTIFIED on 21.6; installed now as `48e27348`.** Session C7 repeats C6 in a fresh process with the candidate (103,424 bytes, `48e27348e268609331bfd4dd52db1a76d209aa758c45c670c2f4fe8223702a72`, hash read from the loaded module):
+**ROUTE_X page-item strokes: CERTIFIED on 21.6 as `48e27348`; superseded by `787656a3`, which keeps whole points and fixes the inner miters of Center shapes (below).** Session C7 repeats C6 in a fresh process with the candidate (103,424 bytes, `48e27348e268609331bfd4dd52db1a76d209aa758c45c670c2f4fe8223702a72`, hash read from the loaded module):
 
 - All 110 measured lines equal C6's.
 - Its PNGs equal C6's byte for byte except the two holding bordered rectangles, cert-X and cert-X2: 5 to 11 corner pixels each, at most 29 levels (one pixel at 43), the bevel-and-stub drawing of a right-angle corner against InDesign's own miter.
@@ -147,18 +147,53 @@ The outlined bottom line (Outside) draws whole: every letter filled, every strok
 
 Not yet covered: Inside strokes, open paths and their caps, corner effects, scaled items, dashes and stroke styles, and outlines whose fill rules disagree; EPS, PostScript, and screen drawing of the wedges are unmeasured. Earlier builds stay in the installer's backups (`8dbde64e` in *20261003T160232Z-backup*).
 
+## Whole points: route X candidate `787656a3`
+
+The owner looked at `48e27348`'s suite B and asked for the triangles' points all the way, with no regression elsewhere. A point past the limit is now kept whole unless it would reach farther past its corner than the corner's shorter edge is long; then it is cut where that edge ends, and never closer than the limit distance (*ise_miter::PointReach*; *Stub::edge* is the shorter of the two segments meeting at the corner). A sharp corner between long edges is the shape's own point. One between short edges, such as a decorative font's notches or a near-reversal, would throw a point many times longer than the detail it comes from.
+
+**Why not uncapped.** A first candidate, `d5214983`, kept every point whole up to InDesign's highest limit, 500 half widths. Its session C8 equals C7 on all 110 measured lines and on every PNG, byte for byte, and gives suite B's triangles their whole points: no page item outside suite B has a corner past its limit. The owner then suggested two fonts to test: German Beauty, which is pointy, and Kerberos Fang, which is extreme. Measured on their outlines (*tools/measure_font_corners.py*, 72 pt, Outside 4 pt):
+
+| Font | Exterior corners past limit 4 | Uncapped point, 90% / max | Edge-capped point, max |
+| --- | ---: | ---: | ---: |
+| German Beauty | 0 (sharpest 1.9 half widths) | n/a | n/a |
+| Kerberos Fang 1.000 (the copy InDesign loads) | 2,236 of 29,688 | 56 / 2,000 pt | 16 pt, the limit distance |
+| Kerberos Fang 1.004 | 2,833 of 25,129 | 56 / 2,000 pt | 16 pt, the limit distance |
+
+Every Kerberos Fang corner past the limit sits between edges shorter than its point (median 0.23 pt), so under the edge cap it keeps `48e27348`'s cut; at 300 pt, 2 of them reach past the limit distance, the longer by 27.3 pt. Uncapped, outlined Kerberos Fang would have grown 2,000 points longer than 16 pt.
+
+**A defect found on the way, also in `48e27348`.** The font test adds thorns: a 10° spike on a 40 pt square, its sides 60, 30, or 10 pt long (*tools/jsx/build-B-font-points.jsx*, research builds in one process, *mode=native* then *mode=story miter=1 shapes=1*). On the Center thorns the plugin left black notches at the spike's base, where InDesign's stroke is white. The inner miters at the concave shoulder corners are restroked under a clip to the shape's fill, and *IPathPageItem::Clip* did not survive the PDF port. On the translated thorns, the port dropped the clip and the clipped stubs altogether. On suite B's outlined line, which has no transform, it wrote the clip as `q W n` with no path (C7: one such clip). That clip is now built from the recorded outline, as the Outside clip is; both fill rules agree on it, which eligibility already requires. C9 has no pathless clip, and its suite B renders identically to C7 apart from the triangles.
+
+Thorns, apex height above the tip (pt, MuPDF at 16 px/pt; research build `72897365`, the candidate's logic):
+
+| Thorn sides | Native | Corrected | Expected |
+| --- | ---: | ---: | ---: |
+| 60 pt, Outside 4 pt / Center 8 pt | 2.19 / 0.38 | 45.56 / 45.56 | 45.89, whole |
+| 30 pt, both | 2.19 / 0.38 | 30.00 / 30.00 | 30.00, cut at the edge |
+| 10 pt, both | 2.19 / 0.38 | 16.00 / 16.00 | 16.00, cut at the limit distance |
+
+The thorn bases now match InDesign's drawing. In the same document, Kerberos Fang's outlines and both fonts' outlines set to Outside are refused, because their fill rules disagree, so InDesign keeps drawing them unchanged. German Beauty's outlined Center line differs from native by 33 and 34 edge pixels. Live text in both fonts gets the certified text correction, unchanged here: long spikes through letters removed, the font's own jagged exterior corners kept.
+
+**ROUTE_X whole points: CERTIFIED on 21.6; installed now as `787656a3`.** Session C9 repeats C7 in a fresh process with the candidate (103,424 bytes, `787656a3da6dda9b794b0e10cac3fc7587d066adc6dd9fc534b8c5d8f1333390`, hash read from the loaded module):
+
+- All 110 measured lines equal C7's, and every PNG equals C7's byte for byte ([*C9.json*](../tests/audit/results/routex/C9.json); C8's record is [*C8.json*](../tests/audit/results/routex/C8.json)).
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_787656a3.json*](../tests/audit/results/cross_frame_census_21.6_787656a3.json), [*cross_frame_extension_census_787656a3.json*](../tests/audit/results/cross_frame_extension_census_787656a3.json)); the 13 documents it saved carry no plugin state ([*C9-state.json*](../tests/audit/results/routex/C9-state.json)).
+- Suite B, foreground and background PDF, is identical to C8's (no pixel apart) and differs from C7's only at the triangles: 3,743 pixels gained stroke and 6 lost. Every triangle keeps its whole point: 45.56, 30.44, 22.94, 18.44, and 16.44 pt for 10–28° Outside at 16 px/pt, and 45.90, 30.65, 23.03, 18.48, and 16.53 pt for Center, read from the PDF's geometry because the 10° Center point touches the triangle above it.
+
+Core tests: 80 miter-core checks (the point kept whole, cut at the edge, at the limit distance, and at the longest limit). Retired: `d5214983` and `f756b100` (an earlier build of the edge rule, before the clip fix) with their research builds `a6e363bd` and `cd9ea7d6`. Their sources are this commit's parent states, and the installer's backups (*20261004T055717Z*, *20261004T061919Z*, *20261004T062606Z*, *20261004T062825Z*) hold the binaries they replaced. `48e27348` is in *build/Release-RouteX-48e27348*.
+
 ## Owner verification and decisions
 
 - **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.
 - **The inner half of Center strokes: only behind a switch.** The half of a Center stroke painted over its own letter is sometimes wanted and sometimes not; hiding it would need an explicit switch (Q28).
 - **Separate stories: a switch would be useful.** Captions, callouts, and split headlines are often separate unthreaded frames whose strokes cover a neighbor's letters by accident, but a halo over another frame is deliberate; a per-document switch, off by default, fits both (Q26). Until one is designed, separate stories stay as InDesign stacks them.
 - **Miter suite findings.** The Center line's spikes are now corrected (above). The flat-topped triangles are page items, beveled by InDesign past the miter limit; the outlined bottom line is InDesign's own *Create Outlines* defect. The owner chose to bring page-item strokes under the plugin, with the same interior rule and, past the limit, a point cut at the limit distance instead of a bevel at the vertex (Q29).
-- **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and its PDFs: before (session M0), after the Outside correction (C5), after the Center correction (C6), and *B-miter - after (route X 48e27348, text and page items).pdf* (C7).
+- **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and its PDFs: before (session M0), after the Outside correction (C5), after the Center correction (C6), *B-miter - after (route X 48e27348, text and page items).pdf* (C7), and *B-miter - after (route X 787656a3, whole points).pdf* (C9). *build/look/font-points/* (ignored) holds the font and thorn test: its document and its native and corrected PDFs.
+- **Whole points (2026-10-04).** On `48e27348`'s suite B the owner asked for the triangles' points all the way, without regressions elsewhere, and suggested German Beauty and Kerberos Fang as pointy and extreme tests. Points are now kept whole up to the corner's shorter edge (above).
 - **Center miter correction: confirmed.** The owner looked at the C6 files: the last character spikes are gone. The outlined bottom line was the remaining outlier, which page-item strokes now draw whole.
 
 ## Next
 
-1. The owner's look at the page-item strokes: suite B's triangles and outlined lines, and shapes in their own documents.
-2. Page-item coverage: Inside strokes, open paths and caps, corner effects, scaled items, and outlines whose fill rules disagree.
-3. EPS, PostScript, and screen checks of the miter correction, text and page items; a font sweep beyond Minion (sans, script, a variable font) at large Outside weights.
+1. The owner's look at the whole points: suite B's triangles, the font and thorn test, and shapes in their own documents.
+2. Page-item coverage: Inside strokes, open paths and caps, corner effects, scaled items, and outlines whose fill rules disagree (outlined Kerberos Fang, and both test fonts' outlines set to Outside, are refused for that today).
+3. EPS, PostScript, and screen checks of the miter correction, text and page items; a font sweep beyond Minion, German Beauty, and Kerberos Fang (sans, script, a variable font) at large Outside weights.
 4. XE2 by hand: whether InDesign's interface threads anchored frames at all.
