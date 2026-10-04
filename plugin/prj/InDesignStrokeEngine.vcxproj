@@ -120,6 +120,16 @@ xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Comma
     <ClCompile Include="$(IseSourceDir)\IseStrokeBehindAdornment.cpp" Condition="'$(IseRouteW)' == 'true' Or '$(IseRouteX)' == 'true'" />
     <ClCompile Include="$(IseSourceDir)\IseCrossFrame.cpp" Condition="'$(IseRouteX)' == 'true'" />
     <ClCompile Include="$(IseSourceDir)\IsePageItemStroke.cpp" Condition="'$(IseRouteX)' == 'true'" />
+    <!-- Standard C++ only, with Clipper2 (third_party\clipper2, Boost Software License 1.0);
+         neither includes the SDK, so neither uses its precompiled header. -->
+    <ClCompile Include="$(IseSourceDir)\IseRegionCore.cpp" Condition="'$(IseRouteX)' == 'true'">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(IseSourceDir)\..\third_party\clipper2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="$(IseSourceDir)\IseClipper2.cpp" Condition="'$(IseRouteX)' == 'true'">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+      <AdditionalIncludeDirectories>$(IseSourceDir)\..\third_party\clipper2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ClCompile Include="$(IseSourceDir)\IseNoStrip.cpp" />
     <ClCompile Include="$(IseSourceDir)\TriggerResourceDeps.cpp" />
     <!-- Shared SDK sources, compiled from the SDK rather than copied into this repository. -->

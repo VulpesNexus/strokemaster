@@ -1,5 +1,7 @@
-// Pure tests for plugin/source/IseMiterCore.h: which corners keep their miter. No Adobe host.
+// Pure tests for plugin/source/IseMiterCore.h (which corners keep their miter) and
+// IseRegionCore.h (the region an overlapping outline fills). No Adobe host.
 #include "../../plugin/source/IseMiterCore.h"
+#include "../../plugin/source/IseRegionCore.h"
 
 #include <cmath>
 #include <cstdio>
@@ -256,6 +258,123 @@ int main()
               "opposite windings side by side: both excluded, the gap kept");
         // A same-direction hole: nonzero fills it, so the clip cannot be built from nesting.
         Check(OutsideClip({ccw, Poly({{2, 2}, {8, 2}, {8, 8}, {2, 8}})}, 5, 1e-3, 0.01).empty(), "a same-direction hole yields no clip");
+    }
+
+    {
+        // A corner's miter join as a filled polygon (MiterJoin): at a square's corner, the unit
+        // square the miter adds beyond the vertex, whichever way the square is wound.
+        for (const Contour& sq : {Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}}), Reversed(Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}}), 1e-9)}) {
+            bool corner = false;
+            for (const Stub& x : ExteriorCorners({sq}, With(1))) {
+                if (!Near(x.v, {10, 0})) continue;
+                corner = true;
+                const std::vector<Pt> join = Counterclockwise(MiterJoin(x, 1));
+                Ring r; r.points = join; r.x0 = r.y0 = -1e9; r.x1 = r.y1 = 1e9;
+                Check(join.size() == 4 && std::fabs(SignedArea(r) - 1) < 1e-9, "a square corner's join: the unit square beyond it, wound counterclockwise");
+                Check(Winding({r}, {10.5, -0.5}) == 1 && Winding({r}, {10.5, 0.5}) == 0, "the join lies outside the square, at its corner");
+                Check(Near(join[0], x.v) || Near(join[1], x.v) || Near(join[2], x.v) || Near(join[3], x.v), "the join includes the vertex");
+            }
+            Check(corner, "the square's corner at (10, 0)");
+        }
+        {
+            // With the outer half of the stroke along both stub pieces (JoinPolygon): at a square's
+            // corner, with stubs one half width long, the join and a unit band on either side.
+            Options o = With(1); o.stub = 1;
+            for (const Stub& x : ExteriorCorners({Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}})}, o)) {
+                if (!Near(x.v, {10, 0})) continue;
+                Ring r; r.points = Counterclockwise(JoinPolygon(x, 1, x.ratio)); r.x0 = r.y0 = -1e9; r.x1 = r.y1 = 1e9;
+                Check(std::fabs(SignedArea(r) - 3) < 1e-9, "a square corner's join with its bands: three unit squares");
+                Check(Winding({r}, {9.5, -0.5}) == 1 && Winding({r}, {10.5, 0.5}) == 1 && Winding({r}, {10.5, -0.5}) == 1,
+                      "the bands lie along both edges, outside the square");
+                Check(Winding({r}, {9.5, 0.5}) == 0 && Winding({r}, {8.5, -0.5}) == 0, "nothing inside the square, nothing past the stub");
+            }
+            // A curve bending toward the join with a radius under h: its band stops before the
+            // offset folds back, and the polygon stays simple.
+            Recorder q;
+            q.MoveTo({0, 0});
+            q.LineTo({10, 0});
+            q.CurveTo({10, 0.2}, {9.8, 0.4}, {9.6, 0.4});
+            q.LineTo({0, 10});
+            q.Close();
+            for (const Stub& x : Corners(q.Contours(), With(2), true)) {
+                const std::vector<Pt> poly = JoinPolygon(x, 2, x.ratio * 2);
+                bool finite = true;
+                for (const Pt& pt : poly) finite = finite && std::isfinite(pt.x) && std::isfinite(pt.y);
+                Check(finite && poly.size() >= 4, "a band beside a tight curve stays finite");
+            }
+        }
+        const std::vector<Pt> clockwise = Counterclockwise({{0, 0}, {0, 1}, {1, 1}, {1, 0}});
+        Check(Near(clockwise[0], {1, 0}) && Near(clockwise[3], {0, 0}), "a clockwise polygon is reversed");
+    }
+    {
+        // The region an overlapping outline fills (ise_region::NonzeroRegion).
+        using ise_region::NonzeroRegion;
+        auto area = [](const Contour& c) { return SignedArea(Flatten({c}, 1e-4, 1e-9)[0]); };
+        auto excluded = [](const std::vector<Contour>& clip, Pt p) { return Winding(Flatten(clip, 1e-3, 1e-9), p) == 0; };
+        const Contour sqA = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        const Contour sqB = Poly({{5, 5}, {15, 5}, {15, 15}, {5, 15}});
+        Check(!FillRulesAgree(Flatten({sqA, sqB}, 1e-3, 1e-9), 0.01), "overlapping squares wound alike: the fill rules disagree");
+        const std::vector<Contour> ab = NonzeroRegion({sqA, sqB}, 1e-3);
+        Check(ab.size() == 1 && std::fabs(area(ab[0]) - 175) < 1e-6, "overlapping squares: one counterclockwise contour around their union");
+        Check(Closed(ab[0], 1e-9).size() == 8, "overlapping squares: the union's eight edges");
+        Check(FillRulesAgree(Flatten(ab, 1e-3, 1e-9), 0.01), "the region: both fill rules agree");
+        Check(OutsideClip({sqA, sqB}, 5, 1e-3, 0.01).empty(), "overlapping squares: no clip from the contours themselves");
+        const std::vector<Contour> abClip = OutsideClip(ab, 5, 1e-3, 0.01, true);
+        Check(abClip.size() == 2 && excluded(abClip, {2, 2}) && excluded(abClip, {7, 7}) && excluded(abClip, {12, 12}) &&
+              !excluded(abClip, {12, 2}) && !excluded(abClip, {-2, 5}), "the region's clip excludes the whole union, overlap included");
+        const std::vector<Contour> cwRegion = NonzeroRegion({Reversed(sqA, 1e-9)}, 1e-3);
+        Check(cwRegion.size() == 1 && std::fabs(area(cwRegion[0]) - 100) < 1e-6, "a clockwise square: wound counterclockwise in the region");
+        const Contour inner = Poly({{2, 2}, {8, 2}, {8, 8}, {2, 8}});
+        const std::vector<Contour> sameHole = NonzeroRegion({sqA, inner}, 1e-3);
+        Check(sameHole.size() == 1 && std::fabs(area(sameHole[0]) - 100) < 1e-6, "a same-direction inner contour: filled, no hole");
+        const std::vector<Contour> holed = NonzeroRegion({sqA, Reversed(inner, 1e-9)}, 1e-3);
+        double outerArea = 0, holeArea = 0;
+        for (const Contour& c : holed) (area(c) > 0 ? outerArea : holeArea) += area(c);
+        Check(holed.size() == 2 && std::fabs(outerArea - 100) < 1e-6 && std::fabs(holeArea + 36) < 1e-6, "an opposite hole: outer counterclockwise, hole clockwise");
+        const std::vector<Contour> holedClip = OutsideClip(holed, 5, 1e-3, 0.01, true);
+        Check(!holedClip.empty() && excluded(holedClip, {1, 1}) && !excluded(holedClip, {5, 5}), "the holed region's clip keeps the hole");
+        Check(NonzeroRegion({Poly({{0, 0}, {5, 0}, {10, 0}})}, 1e-3).empty(), "a collinear contour fills nothing");
+
+        // Overlapping circles: the boundary is rebuilt from the circles' own curves, cut where
+        // they cross, not from the flattening.
+        auto circle = [](Pt c, double r, bool clockwise) {
+            const double k = 0.5522847498 * r, s = clockwise ? -1 : 1;
+            Recorder rec;
+            rec.MoveTo({c.x + r, c.y});
+            rec.CurveTo({c.x + r, c.y + s * k}, {c.x + k, c.y + s * r}, {c.x, c.y + s * r});
+            rec.CurveTo({c.x - k, c.y + s * r}, {c.x - r, c.y + s * k}, {c.x - r, c.y});
+            rec.CurveTo({c.x - r, c.y - s * k}, {c.x - k, c.y - s * r}, {c.x, c.y - s * r});
+            rec.CurveTo({c.x + k, c.y - s * r}, {c.x + r, c.y - s * k}, {c.x + r, c.y});
+            rec.Close();
+            return rec.Contours()[0];
+        };
+        for (bool opposite : {false, true}) {
+            const std::vector<Contour> disks = NonzeroRegion({circle({0, 0}, 10, false), circle({12, 0}, 10, opposite)}, 1e-3);
+            // Opposite windings cancel where the circles overlap: two crescents, no lens.
+            Check(disks.size() == (opposite ? 2u : 1u), opposite ? "circles wound oppositely: two crescents" : "circles wound alike: one contour");
+            size_t curves = 0, segments = 0;
+            bool onCircles = true;
+            for (const Contour& c : disks) {
+                Check(area(c) > 0, "every contour of the disks' region winds counterclockwise");
+                Pt cur = c.start;
+                for (const Segment& s : Closed(c, 1e-9)) {
+                    ++segments;
+                    if (s.curve) {
+                        ++curves;
+                        const Pt mid = cur * 0.125 + s.c1 * 0.375 + s.c2 * 0.375 + s.p * 0.125;
+                        onCircles = onCircles && std::min(std::fabs(Len(mid) - 10), std::fabs(Len(mid - Pt{12, 0}) - 10)) < 0.01;
+                    }
+                    cur = s.p;
+                }
+            }
+            Check(curves >= 6 && segments <= curves + 4 * disks.size(), "the boundary is the circles' own curves, joined by at most a hair");
+            Check(onCircles, "every rebuilt curve lies on its circle, in the boundary's direction");
+            const double d = 12, r = 10, pi = 3.14159265358979323846;
+            const double lensArea = 2 * r * r * std::acos(d / (2 * r)) - d / 2 * std::sqrt(4 * r * r - d * d);
+            double total = 0;
+            for (const Contour& c : disks) total += area(c);
+            Check(std::fabs(total - (opposite ? 2 * pi * r * r - 2 * lensArea : 2 * pi * r * r - lensArea)) < 0.5, "the region's area");
+        }
     }
 
     std::printf("miter core: %d checks passed\n", checks);

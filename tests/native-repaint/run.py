@@ -45,10 +45,10 @@ def main():
         '/Febuild\\native-refusal\\CrossFrameCoreTests.exe '
         '/Fobuild\\native-refusal\\CrossFrameCoreTests.obj && '
         'build\\native-refusal\\CrossFrameCoreTests.exe && '
-        'cl /nologo /EHsc /std:c++17 /W4 /WX '
-        'tests\\native-repaint\\MiterCoreTests.cpp '
-        '/Febuild\\native-refusal\\MiterCoreTests.exe '
-        '/Fobuild\\native-refusal\\MiterCoreTests.obj && '
+        'cl /nologo /EHsc /std:c++17 /W4 /WX /Iplugin\\third_party\\clipper2\\include '
+        'tests\\native-repaint\\MiterCoreTests.cpp plugin\\source\\IseRegionCore.cpp '
+        'plugin\\source\\IseClipper2.cpp '
+        '/Febuild\\native-refusal\\MiterCoreTests.exe /Fobuild\\native-refusal\\ && '
         'build\\native-refusal\\MiterCoreTests.exe'
     )
     result = subprocess.run(

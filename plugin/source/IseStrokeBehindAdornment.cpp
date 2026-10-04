@@ -9,12 +9,12 @@
 //                             rendering object, join, and miter limit, then records the
 //                             run's stroke paint and sets it to [None] in the run's wax.
 //                             A mitered run is stroked with bevel joins, and only its
-//                             exterior corners are restroked with the miter, so no interior
-//                             miter tip can leave a thin glyph (IseMiterCore.h). A mitered
+//                             exterior corners get their miter joins back, filled, so no
+//                             interior miter tip can leave a thin glyph (IseMiterCore.h). A mitered
 //                             Center run stays native; only its join is muted to bevel.
 //   IseStrokeRestoreAdornment Foreground pass. Restores each recorded run; the stroke
 //                             adornment restores any run left muted before deciding. A
-//                             Center run's corners are restroked here first: the exterior
+//                             Center run's miter joins are filled here first: the exterior
 //                             ones as they are, the interior ones clipped to the run's fill,
 //                             so only an interior miter's part outside the letter is lost.
 // Native text then draws the muted runs as fill only, in the Text pass, above every stroke
@@ -155,21 +155,31 @@ void EmitPath(IGraphicsPort* port, const std::vector<ise_miter::Contour>& contou
     }
 }
 
-void EmitStubs(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, bool interior)
+/** Fills the miter joins (ise_miter::MiterJoin) of the exterior or interior corners within the
+    run's miter limit, for half width h; a corner past it stays beveled, as the native stroke
+    draws it. Filled rather than restroked along the corner: InDesign's PDF port rounds
+    coordinates to a thousandth of a point, which bent short restrokes beside tiny segments
+    enough for renderers to disagree on the join (2026-10-04). Returns whether any was. */
+bool FillJoins(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, bool interior, double h, double limit)
 {
+    bool any = false;
+    port->newpath();
     for (const ise_miter::Stub& s : stubs) {
-        if (s.interior != interior) continue;
-        port->moveto(s.a.x, s.a.y);
-        if (s.inCurve) port->curveto(s.in1.x, s.in1.y, s.in2.x, s.in2.y, s.v.x, s.v.y);
-        else port->lineto(s.v.x, s.v.y);
-        if (s.outCurve) port->curveto(s.out1.x, s.out1.y, s.out2.x, s.out2.y, s.b.x, s.b.y);
-        else port->lineto(s.b.x, s.b.y);
+        if (s.interior != interior || s.ratio > limit) continue;
+        const std::vector<ise_miter::Pt> pts = ise_miter::Counterclockwise(ise_miter::JoinPolygon(s, h, s.ratio * h));
+        port->moveto(pts[0].x, pts[0].y);
+        for (size_t i = 1; i < pts.size(); ++i) port->lineto(pts[i].x, pts[i].y);
+        port->closepath();
+        any = true;
     }
+    if (any) port->fill(); else port->newpath();
+    return any;
 }
 
-/** After the Text pass, for a Center run whose join was muted to bevel: restroke its corners
-    with the run's own miter, the exterior ones as they are and the interior ones clipped to
-    the run's fill, so only the part of an interior miter outside the letter is not drawn. */
+/** After the Text pass, for a Center run whose join was muted to bevel: give its corners their
+    miter joins back, the exterior ones as they are and the interior ones clipped to the run's
+    fill, so only the part of an interior miter outside the letter is not drawn. Joins are
+    fills in the stroke's paint and overprint. */
 void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs,
                      IDataBase* db, int32 join)
 {
@@ -191,25 +201,18 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     if (stubs.empty()) return;
     bool anyInterior = false, anyExterior = false;
     for (const ise_miter::Stub& s : stubs) (s.interior ? anyInterior : anyExterior) = true;
+    if (join != kPMMiterJoin) return;
     AutoGSave save(port);
     stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
-    port->setlinewidth(mutableData->GetOutlineWidth());
-    port->setlinejoin(join);
-    port->setmiterlimit(mutableData->GetMiterLimit());
-    port->setlinecap(kPMButtCap);
-    if (anyExterior) {
-        port->newpath();
-        EmitStubs(port, stubs, false);
-        port->stroke();
-    }
+    if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
+    const double limit = ToDouble(mutableData->GetMiterLimit());
+    if (anyExterior) FillJoins(port, stubs, false, options.halfWidth, limit);
     if (anyInterior) {
         AutoGSave clipScope(port);
         port->newpath();
         EmitPath(port, recorder.Contours());
         port->clip();
-        port->newpath();
-        EmitStubs(port, stubs, true);
-        port->stroke();
+        FillJoins(port, stubs, true, options.halfWidth, limit);
     }
 }
 
@@ -271,7 +274,7 @@ void Recover(const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* g
 }
 
 // Gives a Center run back its miter join if route W left it muted to bevel. With gd (the
-// pass after Text), its corners are restroked first; without (a later draw's first visit),
+// pass after Text), its miter joins are filled first; without (a later draw's first visit),
 // the join is only given back.
 void RecoverJoin(const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs, IDataBase* db, GraphicsData* gd)
 {
@@ -346,7 +349,7 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     const double width = ToDouble(data->GetOutlineWidth());
     if (CenterMiterEligible(alignment, width, MethodOf(data, db))) {
         // A mitered Center stroke stays native and in InDesign's order; only its join is muted
-        // to bevel for the Text pass, and its corners are restroked after it (RecoverJoin).
+        // to bevel for the Text pass, and its miter joins are filled after it (RecoverJoin).
         const int32 join = data->GetOutlineJoin();
         if (CorrectMiter(join) && ThreadJoinLedger().Mute(run, data, PrintOf(run, data, glyphs), static_cast<std::uint32_t>(join))) {
             const_cast<IWaxRenderData*>(data)->SetOutlineJoin(kPMBevelJoin);
@@ -377,6 +380,9 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
         ise_cross_frame::ClipWithheld(gd, port, run, data, glyphs, db);
 #endif
         stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
+        // Install does not carry the run's stroke overprint, and the PDF port wrote this stroke
+        // without it (measured 2026-10-04): it is set explicitly, for the stroke and its joins.
+        if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
         // Outside alignment is drawn by InDesign as a centered stroke of twice the weight
         // beneath the fill; reproduce that geometry explicitly. A mitered run is stroked with
         // bevel joins first, and its exterior corners get their miters back below (see
@@ -411,14 +417,9 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
             options.halfWidth = ToDouble(mutableData->GetOutlineWidth());
             const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(recorder.Contours(), options);
             if (!stubs.empty()) {
-                // Each stub is a short piece of the outline on either side of its corner, so the
-                // renderer's stroker builds the same miter, and applies the same limit, as it
-                // would for the native stroke, and the stub's band lies on the stroke's.
-                port->setlinejoin(kPMMiterJoin);
-                port->setlinecap(kPMButtCap);
-                port->newpath();
-                EmitStubs(port, stubs, false);
-                port->stroke();
+                // The exterior corners' miter joins, within the run's limit as the native stroke
+                // draws them, filled in the stroke's paint and overprint.
+                FillJoins(port, stubs, false, options.halfWidth, ToDouble(mutableData->GetMiterLimit()));
             }
         }
     }
@@ -455,7 +456,7 @@ public:
         IDataBase* db = run->GetDataBase();
         if (db == nil) return;
         Recover(run, data, glyphs, db);
-        // A Center run's corners are restroked here, after the Text pass, then its join returns.
+        // A Center run's miter joins are filled here, after the Text pass, then its join returns.
         RecoverJoin(run, data, glyphs, db, gd);
 #ifdef ISE_ROUTE_X
         // The Text pass has run: this run's fill is painted (route X; a no-op otherwise).

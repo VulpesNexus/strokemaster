@@ -12,9 +12,11 @@
 // fill is otherwise only anti-aliasing fringe.
 //
 // So a mitered run is drawn as: the whole outline stroked with bevel joins, then, for every
-// exterior corner, a two-segment stub (a -> v -> b along the corner's own tangents) stroked
-// with the run's miter join and limit. The renderer's own stroker builds each kept miter and
-// applies the limit exactly as it does for the native stroke.
+// exterior corner within the miter limit, its miter join filled (MiterJoin): the polygon the
+// renderer's stroker adds at a miter join, built from the corner's own tangents. The plugin
+// first restroked a two-segment stub along the corner (a -> v -> b) and left the join to the
+// renderer; the PDF port's rounding bent stubs beside tiny segments until renderers disagreed
+// on the join (2026-10-04).
 //
 // A corner is exterior when a point just off it, on the join's side (the outward bisector
 // u - w of the incoming direction u and the outgoing direction w), lies outside the run's
@@ -122,7 +124,36 @@ inline void FlattenCubic(Pt p0, Pt p1, Pt p2, Pt p3, double tol, int depth, std:
 struct Ring {
     std::vector<Pt> points;   // closed implicitly
     double x0 = 0, y0 = 0, x1 = 0, y1 = 0;
+    // The edges (edge i runs from point i to the next) by horizontal band of the box, so that
+    // a winding query scans only the edges level with it; empty for a short ring, whose edges
+    // are all scanned. A large glyph contour flattens to thousands of points.
+    std::vector<std::vector<unsigned>> bands;
+    size_t Band(double y) const
+    {
+        const size_t k = bands.size();
+        if (!(y1 > y0)) return 0;
+        return std::min(k - 1, static_cast<size_t>(std::max(0.0, (y - y0) / (y1 - y0) * static_cast<double>(k))));
+    }
 };
+
+/** Fills in a ring's box and edge bands from its points. */
+inline void Index(Ring* r)
+{
+    r->x0 = r->x1 = r->points[0].x; r->y0 = r->y1 = r->points[0].y;
+    for (const Pt& p : r->points) {
+        r->x0 = std::min(r->x0, p.x); r->x1 = std::max(r->x1, p.x);
+        r->y0 = std::min(r->y0, p.y); r->y1 = std::max(r->y1, p.y);
+    }
+    const size_t n = r->points.size();
+    r->bands.clear();
+    if (n < 32 || !(r->y1 > r->y0)) return;
+    r->bands.resize(std::min<size_t>(256, n / 8));
+    for (size_t i = 0; i < n; ++i) {
+        const Pt a = r->points[i], b = r->points[(i + 1) % n];
+        for (size_t k = r->Band(std::min(a.y, b.y)), last = r->Band(std::max(a.y, b.y)); k <= last; ++k)
+            r->bands[k].push_back(static_cast<unsigned>(i));
+    }
+}
 
 inline std::vector<Ring> Flatten(const std::vector<Contour>& contours, double tol, double eps)
 {
@@ -137,42 +168,94 @@ inline std::vector<Ring> Flatten(const std::vector<Contour>& contours, double to
             cur = s.p;
         }
         if (r.points.size() < 3) continue;
-        r.x0 = r.x1 = r.points[0].x; r.y0 = r.y1 = r.points[0].y;
-        for (const Pt& p : r.points) {
-            r.x0 = std::min(r.x0, p.x); r.x1 = std::max(r.x1, p.x);
-            r.y0 = std::min(r.y0, p.y); r.y1 = std::max(r.y1, p.y);
-        }
+        Index(&r);
         rings.push_back(r);
     }
     return rings;
+}
+
+/** Nonzero winding number of q against one ring; 0 when its box excludes q. */
+inline int RingWinding(const Ring& r, Pt q)
+{
+    if (q.x < r.x0 || q.x > r.x1 || q.y < r.y0 || q.y > r.y1) return 0;
+    int w = 0;
+    const size_t n = r.points.size();
+    auto edge = [&](size_t i) {
+        const Pt a = r.points[i], b = r.points[(i + 1) % n];
+        if (a.y <= q.y) {
+            if (b.y > q.y && Cross(b - a, q - a) > 0) ++w;
+        } else if (b.y <= q.y && Cross(b - a, q - a) < 0) {
+            --w;
+        }
+    };
+    // Every edge that crosses q's level lies in q's band.
+    if (!r.bands.empty()) for (unsigned i : r.bands[r.Band(q.y)]) edge(i);
+    else for (size_t i = 0; i < n; ++i) edge(i);
+    return w;
 }
 
 /** Nonzero winding number of q against the rings, skipping rings whose box excludes it. */
 inline int Winding(const std::vector<Ring>& rings, Pt q)
 {
     int w = 0;
-    for (const Ring& r : rings) {
-        if (q.x < r.x0 || q.x > r.x1 || q.y < r.y0 || q.y > r.y1) continue;
-        const size_t n = r.points.size();
-        for (size_t i = 0; i < n; ++i) {
-            const Pt a = r.points[i], b = r.points[(i + 1) % n];
-            if (a.y <= q.y) {
-                if (b.y > q.y && Cross(b - a, q - a) > 0) ++w;
-            } else if (b.y <= q.y && Cross(b - a, q - a) < 0) {
-                --w;
-            }
-        }
-    }
+    for (const Ring& r : rings) w += RingWinding(r, q);
     return w;
 }
 
-/** A stub to restroke with the miter join: a -> v -> b, each piece a short part of the
-    outline's own segment (a line, or a curve with controls), so the stub's band lies exactly
-    on the stroke's and its square ends sit on the stroke's own cross-section. A straight
-    stub along the tangent instead stuck out of the stroke where the outline curves tightly
-    next to a corner (serif brackets; visible on Center strokes, measured 2026-10-03). An
-    interior stub's join points into the fill; it is kept only for Center strokes, clipped to
-    the fill (see Corners). */
+/** The rings by cell of a grid laid over their boxes, so that a query about a point visits only
+    the rings whose box can contain it: an outlined line of a decorative font has thousands of
+    contours (5,725 for one line of Kerberos Fang at 48 pt). Answers are exactly Winding's. The
+    rings must outlive the grid. */
+class RingGrid {
+public:
+    explicit RingGrid(const std::vector<Ring>& rings) : fRings(rings)
+    {
+        if (rings.empty()) return;
+        fX0 = rings[0].x0; fY0 = rings[0].y0; fX1 = rings[0].x1; fY1 = rings[0].y1;
+        for (const Ring& r : rings) {
+            fX0 = std::min(fX0, r.x0); fY0 = std::min(fY0, r.y0);
+            fX1 = std::max(fX1, r.x1); fY1 = std::max(fY1, r.y1);
+        }
+        fN = std::min<size_t>(64, static_cast<size_t>(std::sqrt(static_cast<double>(rings.size()))) + 1);
+        fCells.resize(fN * fN);
+        for (size_t i = 0; i < rings.size(); ++i) {
+            const size_t cx0 = Cell(rings[i].x0, fX0, fX1), cx1 = Cell(rings[i].x1, fX0, fX1);
+            const size_t cy0 = Cell(rings[i].y0, fY0, fY1), cy1 = Cell(rings[i].y1, fY0, fY1);
+            for (size_t cy = cy0; cy <= cy1; ++cy)
+                for (size_t cx = cx0; cx <= cx1; ++cx) fCells[cy * fN + cx].push_back(i);
+        }
+    }
+    /** The indices of the rings whose box may contain q. */
+    const std::vector<size_t>& Near(Pt q) const
+    {
+        static const std::vector<size_t> none;
+        if (fCells.empty() || !(q.x >= fX0 && q.x <= fX1 && q.y >= fY0 && q.y <= fY1)) return none;
+        return fCells[Cell(q.y, fY0, fY1) * fN + Cell(q.x, fX0, fX1)];
+    }
+    int Winding(Pt q) const
+    {
+        int w = 0;
+        for (size_t i : Near(q)) w += RingWinding(fRings[i], q);
+        return w;
+    }
+private:
+    size_t Cell(double v, double lo, double hi) const
+    {
+        if (!(hi > lo)) return 0;
+        return std::min(fN - 1, static_cast<size_t>(std::max(0.0, (v - lo) / (hi - lo) * static_cast<double>(fN))));
+    }
+    const std::vector<Ring>& fRings;
+    double fX0 = 0, fY0 = 0, fX1 = 0, fY1 = 0;
+    size_t fN = 1;
+    std::vector<std::vector<size_t>> fCells;
+};
+
+/** A corner whose miter join is drawn (MiterJoin, CutMiter): its vertex, tangents, and miter
+    ratio. It also carries a stub a -> v -> b, each piece a short part of the outline's own
+    segment (a line, or a curve with controls), so that a restroke along it lies exactly on the
+    stroke; joins are filled now, and the stub is kept for tests and research. An interior
+    corner's join points into the fill; it is kept only for Center strokes, clipped to the fill
+    (see Corners). */
 struct Stub {
     Pt a, v, b;
     bool interior = false;
@@ -229,17 +312,17 @@ struct Options {
     double halfWidth = 1;       // h: half of the drawn stroke width (the Outside weight)
     double minTurn = 0.5 * 3.14159265358979323846 / 180;   // radians; smaller turns join invisibly
     double probe = 0;           // distance of the exterior test point; 0 means 1% of h
-    double stub = 0;            // stub length along each tangent; 0 means 5% of h
+    double stub = 0;            // stub length along each tangent; 0 means h (JoinPolygon's band)
 };
 
-/** The corners of a run's outline, as stubs to stroke with the miter join: the exterior
-    ones, and with includeInterior the interior ones too, flagged. An exact or numerically
+/** The corners of a run's outline whose miter joins are drawn: the exterior ones, and with
+    includeInterior the interior ones too, flagged. An exact or numerically
     unresolved reversal is skipped: its miter is infinitely long, so the native stroke bevels
     it, and the bevel stroke already draws that.
 
     Outside strokes use the exterior stubs only. A Center stroke lies over its own fill, so
     an interior miter is visible there and belongs; only its part outside the fill escapes.
-    Center strokes therefore also restroke the interior stubs, clipped to the fill. */
+    Center strokes therefore also fill the interior joins, clipped to the fill. */
 inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Options& o, bool includeInterior)
 {
     std::vector<Stub> out;
@@ -247,8 +330,9 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
     const double h = o.halfWidth;
     const double eps = 1e-9 * std::max(1.0, h);
     const double probe = o.probe > 0 ? o.probe : 0.01 * h;
-    const double stub = o.stub > 0 ? o.stub : 0.05 * h;
+    const double stub = o.stub > 0 ? o.stub : h;
     const std::vector<Ring> rings = Flatten(contours, probe * 0.1, eps);
+    const RingGrid grid(rings);
     for (const Contour& c : contours) {
         const std::vector<Segment> segs = Closed(c, eps);
         const size_t n = segs.size();
@@ -270,7 +354,7 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
             const double lo = Len(outward);
             if (lo <= 1e-12 || std::fabs(Cross(u, w)) <= 1e-15) continue;   // reversal
             const Pt q = v + outward * (probe / lo);
-            const bool interior = Winding(rings, q) != 0;   // the join points into the fill
+            const bool interior = grid.Winding(q) != 0;   // the join points into the fill
             if (interior && !includeInterior) continue;
             const double din = std::min(stub, 0.5 * Len(v - inFrom));
             const Pt nextEnd = next.p;
@@ -307,6 +391,7 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
     this holds. */
 inline bool FillRulesAgree(const std::vector<Ring>& rings, double probe)
 {
+    const RingGrid grid(rings);
     for (const Ring& r : rings) {
         const size_t n = r.points.size();
         const size_t step = std::max<size_t>(1, n / 64);
@@ -318,9 +403,10 @@ inline bool FillRulesAgree(const std::vector<Ring>& rings, double probe)
             const Pt m = (a + b) * 0.5, nrm = {-d.y / l, d.x / l};
             for (int side = -1; side <= 1; side += 2) {
                 const Pt q = m + nrm * (probe * side);
-                const int w = Winding(rings, q);
+                const int w = grid.Winding(q);
                 int crossings = 0;
-                for (const Ring& s : rings) {
+                for (size_t index : grid.Near(q)) {
+                    const Ring& s = rings[index];
                     if (q.x < s.x0 || q.x > s.x1 || q.y < s.y0 || q.y > s.y1) continue;
                     const size_t k = s.points.size();
                     for (size_t j = 0; j < k; ++j) {
@@ -366,8 +452,11 @@ inline Contour Reversed(const Contour& c, double eps)
     Probe points just off every edge confirm that the clip's nonzero reading is exactly the
     outside of the fill (nonzero rule, which FillRulesAgree makes the even-odd one too); where
     it is not (contours overlapping more deeply than the nesting rule handles), the result is
-    empty and the shape's stroke stays InDesign's. */
-inline std::vector<Contour> OutsideClip(const std::vector<Contour>& contours, double margin, double tol, double probe)
+    empty and the shape's stroke stays InDesign's. With `oriented`, the contours are a resolved
+    region (ise_region::NonzeroRegion): wound counterclockwise around filled parts and clockwise
+    around holes, so each is simply wound against the frame, whatever touches what. */
+inline std::vector<Contour> OutsideClip(const std::vector<Contour>& contours, double margin, double tol, double probe,
+                                        bool oriented = false)
 {
     const double eps = 1e-9;
     std::vector<Ring> rings;
@@ -395,12 +484,13 @@ inline std::vector<Contour> OutsideClip(const std::vector<Contour>& contours, do
     out.push_back(frame);
     for (size_t i = 0; i < rings.size(); ++i) {
         int depth = 0;
-        for (size_t j = 0; j < rings.size(); ++j)
-            if (j != i && Winding({rings[j]}, rings[i].points[0]) != 0) ++depth;
-        const bool positive = SignedArea(rings[i]) > 0, wantPositive = depth % 2 == 1;
+        for (size_t j = 0; !oriented && j < rings.size(); ++j)
+            if (j != i && RingWinding(rings[j], rings[i].points[0]) != 0) ++depth;
+        const bool positive = SignedArea(rings[i]) > 0, wantPositive = oriented ? !positive : depth % 2 == 1;
         out.push_back(positive == wantPositive ? *source[i] : Reversed(*source[i], eps));
     }
     const std::vector<Ring> clip = Flatten(out, tol, eps);
+    const RingGrid clipGrid(clip), fillGrid(rings);
     for (const Ring& r : rings) {
         const size_t n = r.points.size();
         const size_t step = std::max<size_t>(1, n / 64);
@@ -411,7 +501,7 @@ inline std::vector<Contour> OutsideClip(const std::vector<Contour>& contours, do
             const Pt m = (a + b) * 0.5, nrm = {-d.y / l, d.x / l};
             for (int side = -1; side <= 1; side += 2) {
                 const Pt q = m + nrm * (probe * side);
-                if ((Winding(clip, q) != 0) != (Winding(rings, q) == 0)) return {};
+                if ((clipGrid.Winding(q) != 0) != (fillGrid.Winding(q) == 0)) return {};
             }
         }
     }
@@ -438,6 +528,94 @@ inline std::vector<Pt> CutMiter(const Stub& s, double h, double distance)
     return {s.v, e0, Lerp(e0, tip, t), Lerp(e1, tip, t), e1};
 }
 
+/** A corner's whole miter join for half width h, as a polygon: the vertex, the two stroke
+    edges' corners, and the tip. */
+inline std::vector<Pt> MiterJoin(const Stub& s, double h)
+{
+    return CutMiter(s, h, s.ratio * h);
+}
+
+/** The point of a stub piece at t, and its unit direction of travel from `from` to `to`. */
+inline void PieceAt(Pt p0, Pt p1, Pt p2, Pt p3, bool curve, double t, Pt* at, Pt* dir)
+{
+    if (!curve) {
+        *at = Lerp(p0, p3, t);
+        const Pt d = p3 - p0;
+        *dir = d * (1 / std::max(Len(d), 1e-300));
+        return;
+    }
+    const double r = 1 - t;
+    *at = p0 * (r * r * r) + p1 * (3 * r * r * t) + p2 * (3 * r * t * t) + p3 * (t * t * t);
+    Pt d = (p1 - p0) * (3 * r * r) + (p2 - p1) * (6 * r * t) + (p3 - p2) * (3 * t * t);
+    if (Len(d) <= 1e-12) d = p3 - p0;
+    *dir = d * (1 / std::max(Len(d), 1e-300));
+}
+
+/** The miter join to fill at a corner, cut at `distance` along its tip (CutMiter), together
+    with the outer half of the stroke along the corner's two stub pieces: from each piece's far
+    end out to its offset by h on the join's side, along the offsets to the join, and back
+    along the outline through the vertex. One polygon, to fill in the stroke's paint over a
+    stroke drawn with bevel joins.
+
+    The join alone, from the corner's exact tangents, met renderers' strokes unevenly: PDFium
+    approximates a curve that bends hard just past a corner, and stops short of the exact offset
+    there, leaving a notch beside the join; and a restroke of the corner, the plugin's first
+    way, bent under the PDF port's rounding to a thousandth of a point when its piece lay along
+    a tiny segment, so that Ghostscript beveled the corner (German Beauty and Kerberos Fang,
+    2026-10-04). The band fills the exact stroke for up to h beside the corner, whatever the
+    renderer draws there, and its points lie half a width apart, where rounding is negligible.
+    A band stops where its offset would fold back (the outline curving toward the join with a
+    radius under h). */
+inline std::vector<Pt> JoinPolygon(const Stub& s, double h, double distance)
+{
+    const std::vector<Pt> join = CutMiter(s, h, distance);   // v, e0, ..., e1
+    Pt nIn = {-s.u.y, s.u.x}, nOut = {-s.w.y, s.w.x};
+    if (Dot(nIn, s.outward) < 0) nIn = nIn * -1;
+    if (Dot(nOut, s.outward) < 0) nOut = nOut * -1;
+    // The normal's turn from the direction of travel, the same all along a piece.
+    const bool inLeft = Cross(s.u, nIn) > 0, outLeft = Cross(s.w, nOut) > 0;
+    auto offset = [h](Pt at, Pt dir, bool left) { return at + (left ? Pt{-dir.y, dir.x} : Pt{dir.y, -dir.x}) * h; };
+    // Samples from the vertex outward: outline points and their offsets.
+    auto band = [&](bool incoming, std::vector<Pt>* line, std::vector<Pt>* off) {
+        const bool curve = incoming ? s.inCurve : s.outCurve;
+        const int n = curve ? 8 : 1;
+        Pt prevAt = s.v, prevOff = incoming ? join[1] : join.back();
+        for (int k = 1; k <= n; ++k) {
+            const double f = static_cast<double>(k) / n;
+            Pt at, dir;
+            if (incoming) PieceAt(s.a, s.in1, s.in2, s.v, curve, 1 - f, &at, &dir);
+            else PieceAt(s.v, s.out1, s.out2, s.b, curve, f, &at, &dir);
+            const Pt o = offset(at, dir, incoming ? inLeft : outLeft);
+            if (Dot(o - prevOff, at - prevAt) <= 0) break;   // the offset folds back
+            line->push_back(at);
+            off->push_back(o);
+            prevAt = at;
+            prevOff = o;
+        }
+    };
+    std::vector<Pt> inLine, inOff, outLine, outOff;
+    band(true, &inLine, &inOff);
+    band(false, &outLine, &outOff);
+    std::vector<Pt> poly;
+    poly.push_back(s.v);
+    for (const Pt& p : inLine) poly.push_back(p);                            // out along the incoming piece
+    if (!inLine.empty()) for (size_t k = inOff.size(); k-- > 0;) poly.push_back(inOff[k]);   // back along its offset
+    for (size_t k = 1; k < join.size(); ++k) poly.push_back(join[k]);        // e0, tip, e1
+    for (const Pt& p : outOff) poly.push_back(p);                            // out along the outgoing offset
+    for (size_t k = outLine.size(); k-- > 0;) poly.push_back(outLine[k]);    // back along the piece to v
+    return poly;
+}
+
+/** The polygon wound counterclockwise (positive area), so overlapping joins filled together
+    under the nonzero rule add up instead of cancelling. */
+inline std::vector<Pt> Counterclockwise(std::vector<Pt> pts)
+{
+    double a = 0;
+    for (size_t i = 0, n = pts.size(); i < n; ++i) a += Cross(pts[i], pts[(i + 1) % n]);
+    if (a < 0) std::reverse(pts.begin(), pts.end());
+    return pts;
+}
+
 /** How far past its vertex an exterior miter beyond the miter limit keeps its point, for half
     width h: the whole miter (ratio * h) when that is no longer than the shorter of the corner's
     two edges, otherwise as far as that edge reaches; never less than the limit distance, nor
@@ -451,7 +629,7 @@ inline double PointReach(const Stub& s, double h, double limit, double longest)
     return std::min(longest * h, std::max(limit * h, std::min(s.ratio * h, s.edge)));
 }
 
-/** The exterior corners only: what an Outside stroke restrokes. */
+/** The exterior corners only: the joins an Outside stroke draws. */
 inline std::vector<Stub> ExteriorCorners(const std::vector<Contour>& contours, const Options& o)
 {
     return Corners(contours, o, false);
