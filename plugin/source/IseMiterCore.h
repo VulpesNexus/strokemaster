@@ -49,12 +49,18 @@ struct Segment {
 struct Contour {
     Pt start;
     std::vector<Segment> segments;
+    // An open path's contour (a page item's open path): stroked without its closing line, its
+    // ends capped, no corner at either end. Its fill is still the contour closed.
+    bool closed = true;
 };
 
-/** Collects an outline as IOutlineInfo emits it; coordinates are already placed. */
+/** Collects an outline as IOutlineInfo emits it; coordinates are already placed. With
+    trackOpen, a contour that ends without closepath is marked open; otherwise every contour is
+    closed, as glyph outlines are. */
 class Recorder {
 public:
-    void MoveTo(Pt p) { Finish(); fOpen = true; fCurrent = Contour(); fCurrent.start = p; }
+    explicit Recorder(bool trackOpen = false) : fTrackOpen(trackOpen) {}
+    void MoveTo(Pt p) { Finish(); fOpen = true; fCurrent = Contour(); fCurrent.start = p; fCurrent.closed = !fTrackOpen; }
     void LineTo(Pt p) { if (!fOpen) MoveTo(p); Segment s; s.p = p; fCurrent.segments.push_back(s); }
     void CurveTo(Pt c1, Pt c2, Pt p)
     {
@@ -62,7 +68,7 @@ public:
         Segment s; s.curve = true; s.c1 = c1; s.c2 = c2; s.p = p;
         fCurrent.segments.push_back(s);
     }
-    void Close() { Finish(); }
+    void Close() { fCurrent.closed = true; Finish(); }
     const std::vector<Contour>& Contours() { Finish(); return fContours; }
 private:
     void Finish()
@@ -73,6 +79,7 @@ private:
     std::vector<Contour> fContours;
     Contour fCurrent;
     bool fOpen = false;
+    bool fTrackOpen = false;
 };
 
 /** A contour's segments with zero-length ones dropped and the implicit closing line made
@@ -87,6 +94,21 @@ inline std::vector<Segment> Closed(const Contour& c, double eps)
         cur = s.p;
     }
     if (Len(cur - c.start) > eps) { Segment s; s.p = c.start; out.push_back(s); }
+    return out;
+}
+
+/** The segments a stroke follows: Closed for a closed contour; for an open one, its segments
+    with zero-length ones dropped and no closing line. */
+inline std::vector<Segment> Stroked(const Contour& c, double eps)
+{
+    if (c.closed) return Closed(c, eps);
+    std::vector<Segment> out;
+    Pt cur = c.start;
+    for (const Segment& s : c.segments) {
+        const bool degenerate = Len(s.p - cur) <= eps && (!s.curve || (Len(s.c1 - cur) <= eps && Len(s.c2 - cur) <= eps));
+        if (!degenerate) out.push_back(s);
+        cur = s.p;
+    }
     return out;
 }
 
@@ -334,11 +356,12 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
     const std::vector<Ring> rings = Flatten(contours, probe * 0.1, eps);
     const RingGrid grid(rings);
     for (const Contour& c : contours) {
-        const std::vector<Segment> segs = Closed(c, eps);
+        const std::vector<Segment> segs = Stroked(c, eps);
         const size_t n = segs.size();
         if (n < 2) continue;
-        // Vertex i is the end of segment i and the start of segment i + 1 (wrapping).
-        for (size_t i = 0; i < n; ++i) {
+        // Vertex i is the end of segment i and the start of segment i + 1 (wrapping on a closed
+        // contour; an open one's ends are capped, not joined).
+        for (size_t i = 0; i < (c.closed ? n : n - 1); ++i) {
             const Segment& in = segs[i];
             const Segment& next = segs[(i + 1) % n];
             const Pt inFrom = i == 0 ? c.start : segs[i - 1].p;
@@ -386,9 +409,12 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
 }
 
 /** Whether the nonzero and even-odd rules give the same region near every edge of the rings:
-    probe points just off both sides of each edge's midpoint (up to 64 edges per ring). A clip
-    to the outside of a shape can only be built with the even-odd rule, so it is used only when
-    this holds. */
+    probe points just off both sides of each edge at three places along it (up to 64 edges per
+    ring). A quick test: points can miss an overlap, and the plugin decides with the exact
+    ise_region::FillRulesAgree. Probing only the midpoints missed two overlapping
+    parallelograms, whose every midpoint lay on the other's edge (coverage census, 2026-10-04);
+    the other two places are irrational fractions of the edge, so a symmetric figure does not
+    put them on an edge too. */
 inline bool FillRulesAgree(const std::vector<Ring>& rings, double probe)
 {
     const RingGrid grid(rings);
@@ -400,8 +426,10 @@ inline bool FillRulesAgree(const std::vector<Ring>& rings, double probe)
             const Pt d = b - a;
             const double l = Len(d);
             if (l <= 1e-12) continue;
-            const Pt m = (a + b) * 0.5, nrm = {-d.y / l, d.x / l};
+            const Pt nrm = {-d.y / l, d.x / l};
+            for (double f : {0.5, 0.31830988618379067, 0.70710678118654752})
             for (int side = -1; side <= 1; side += 2) {
+                const Pt m = a + d * f;
                 const Pt q = m + nrm * (probe * side);
                 const int w = grid.Winding(q);
                 int crossings = 0;
@@ -454,9 +482,11 @@ inline Contour Reversed(const Contour& c, double eps)
     it is not (contours overlapping more deeply than the nesting rule handles), the result is
     empty and the shape's stroke stays InDesign's. With `oriented`, the contours are a resolved
     region (ise_region::NonzeroRegion): wound counterclockwise around filled parts and clockwise
-    around holes, so each is simply wound against the frame, whatever touches what. */
+    around holes, so each is simply wound against the frame, whatever touches what. Without
+    `verify` the probes are skipped: the caller checks the clip exactly (ise_region::ClipsOutside),
+    and a probe that lands on an edge where two contours touch would refuse a clip that is right. */
 inline std::vector<Contour> OutsideClip(const std::vector<Contour>& contours, double margin, double tol, double probe,
-                                        bool oriented = false)
+                                        bool oriented = false, bool verify = true)
 {
     const double eps = 1e-9;
     std::vector<Ring> rings;
@@ -489,6 +519,7 @@ inline std::vector<Contour> OutsideClip(const std::vector<Contour>& contours, do
         const bool positive = SignedArea(rings[i]) > 0, wantPositive = oriented ? !positive : depth % 2 == 1;
         out.push_back(positive == wantPositive ? *source[i] : Reversed(*source[i], eps));
     }
+    if (!verify) return out;
     const std::vector<Ring> clip = Flatten(out, tol, eps);
     const RingGrid clipGrid(clip), fillGrid(rings);
     for (const Ring& r : rings) {
@@ -616,6 +647,28 @@ inline std::vector<Pt> Counterclockwise(std::vector<Pt> pts)
     return pts;
 }
 
+/** Which of a resolved region's corners (`stubs`, from Corners on the region's boundary) the
+    outline itself does not have: one flag per stub, set where no corner of `outline` lies within
+    `within` of the vertex as sharp as the stub, up to `limit`. Where contours cross, or a
+    contour's loop pinches off, the boundary turns at a point the outline passes straight
+    through, or turns less; a point drawn there is the resolution's, not the shape's. */
+inline std::vector<char> CornersNotOnOutline(const std::vector<Stub>& stubs, const std::vector<Contour>& outline,
+                                             const Options& o, double limit, double within = 1e-3)
+{
+    std::vector<Stub> own = Corners(outline, o, true);
+    std::sort(own.begin(), own.end(), [](const Stub& a, const Stub& b) { return a.v.x < b.v.x; });
+    std::vector<char> out(stubs.size(), 1);
+    for (size_t i = 0; i < stubs.size(); ++i) {
+        const Stub& s = stubs[i];
+        const double need = std::min(s.ratio, limit) - 1e-6;
+        auto it = std::lower_bound(own.begin(), own.end(), s.v.x - within, [](const Stub& a, double x) { return a.v.x < x; });
+        for (; it != own.end() && it->v.x <= s.v.x + within; ++it) {
+            if (std::fabs(it->v.y - s.v.y) <= within && it->ratio >= need) { out[i] = 0; break; }
+        }
+    }
+    return out;
+}
+
 /** How far past its vertex an exterior miter beyond the miter limit keeps its point, for half
     width h: the whole miter (ratio * h) when that is no longer than the shorter of the corner's
     two edges, otherwise as far as that edge reaches; never less than the limit distance, nor
@@ -627,6 +680,44 @@ inline std::vector<Pt> Counterclockwise(std::vector<Pt> pts)
 inline double PointReach(const Stub& s, double h, double limit, double longest)
 {
     return std::min(longest * h, std::max(limit * h, std::min(s.ratio * h, s.edge)));
+}
+
+/** Where InDesign strokes an offset of the outline (an Outside stroke strokes it offset outward
+    by half the weight w, an Inside stroke offset inward), the offset's corner on the stroke's
+    side (an exterior corner for Outside, an interior one for Inside) follows the join: extended
+    to a point for a miter within the limit, an arc for a round join, and otherwise beveled
+    straight from c1 = v + n1 w / 2 to c2 = v + n2 w / 2 (measured on InDesign 21.6's PDF,
+    2026-10-04). The offset is then stroked with the same join, at half width w / 2. A miter
+    within the limit reaches exactly the outline's own miter at width 2w (JoinPolygon), and a
+    round join exactly the round stroke of the outline; a beveled offset does neither. This is
+    the beveled offset's stroke beyond the outline's own bevel: the polygon v, v + n1 w, the
+    stroke's corners around c1 and c2, v + n2 w. Those corners are beveled, or with `mitered` (a
+    Miter join past its limit) mitered where their own ratio (they turn half as far) is within
+    `limit`. */
+inline std::vector<Pt> OffsetBevel(const Stub& s, double w, double limit, bool mitered)
+{
+    Pt nIn = {-s.u.y, s.u.x}, nOut = {-s.w.y, s.w.x};
+    if (Dot(nIn, s.outward) < 0) nIn = nIn * -1;
+    if (Dot(nOut, s.outward) < 0) nOut = nOut * -1;
+    const Pt c1 = s.v + nIn * (w / 2), c2 = s.v + nOut * (w / 2);
+    const Pt b1 = c1 + s.outward * (w / 2), b2 = c2 + s.outward * (w / 2);   // the bevel's stroke edge
+    const Pt e0 = s.v + nIn * w, e1 = s.v + nOut * w;
+    std::vector<Pt> poly{s.v, e0};
+    // The bevel turns half as far as the corner: cos(turn / 4) = sqrt((1 + cos(turn / 2)) / 2).
+    const double half = std::sqrt(std::max(0.0, (1 + Dot(nIn, s.outward)) / 2));
+    const bool tips = mitered && half > 0 && 1 / half <= limit;
+    const Pt d = b2 - b1;
+    auto meet = [&](Pt p, Pt dir, Pt& out) {   // where the line p + t dir meets the bevel's edge
+        const double den = Cross(dir, d);
+        if (std::fabs(den) <= 1e-12 * std::max(1.0, Len(d))) return false;
+        out = p + dir * (Cross(b1 - p, d) / den);
+        return true;
+    };
+    Pt t1, t2;
+    if (tips && meet(e0, s.u, t1) && meet(e1, s.w * -1, t2)) { poly.push_back(t1); poly.push_back(t2); }
+    else { poly.push_back(b1); poly.push_back(b2); }
+    poly.push_back(e1);
+    return poly;
 }
 
 /** The exterior corners only: the joins an Outside stroke draws. */

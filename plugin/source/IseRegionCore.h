@@ -29,4 +29,31 @@ namespace ise_region {
     `tol` is the flattening tolerance; empty when the outline fills nothing or the union fails. */
 std::vector<ise_miter::Contour> NonzeroRegion(const std::vector<ise_miter::Contour>& contours, double tol);
 
+/** Whether the contours fill the same region under the nonzero and even-odd rules: their
+    flattened regions (tolerance `tol`) differ by no more than slivers 4 tol thick. Exact where
+    ise_miter::FillRulesAgree probes: probe points missed two overlapping parallelograms, whose
+    every edge midpoint lay on the other's edge (coverage census, 2026-10-04). */
+bool FillRulesAgree(const std::vector<ise_miter::Contour>& contours, double tol);
+
+/** Whether `clip` (ise_miter::OutsideClip: a frame, then contours) reads, under the nonzero and
+    the even-odd rule alike, as the frame less the contours' nonzero fill, up to slivers 12 tol
+    thick (flattening, and a resolved region's joins at crossings): the check OutsideClip's
+    probes approximate. */
+bool ClipsOutside(const std::vector<ise_miter::Contour>& clip, const std::vector<ise_miter::Contour>& contours, double tol);
+
+/** What StrokeClip does with the fill: adds it (a Center stroke lies over its fill), takes it
+    away (an Outside stroke lies outside it), or keeps only what lies within it (Inside). */
+enum class FillMode { Add, Remove, Within };
+
+/** Where a stroke of half width h along `stroked` may paint, as polygons that read the same under
+    either fill rule, for clipping a stroke InDesign draws itself (dashes, stripes): every point
+    within h + margin of the boundary of the nonzero fill of `fill` on the side `mode` says (the
+    fill itself added for Add, taken away for Remove; for Within, the band inside the fill only),
+    the polygons `extra` (joins that reach past that band; for Within, their part in the fill),
+    and around an open contour of `stroked`, every point within h + margin of its line. Empty
+    when there is neither a fill nor an open contour, or Clipper2 fails. */
+std::vector<ise_miter::Contour> StrokeClip(const std::vector<ise_miter::Contour>& stroked, double h, double margin,
+                                           const std::vector<std::vector<ise_miter::Pt>>& extra,
+                                           const std::vector<ise_miter::Contour>& fill, FillMode mode, double tol);
+
 } // namespace ise_region

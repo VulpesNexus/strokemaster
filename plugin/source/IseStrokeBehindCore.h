@@ -26,6 +26,7 @@
 // This header runs under the pure test shim.
 //========================================================================================
 #pragma once
+#include <cmath>
 #include <cstdint>
 #include <vector>
 
@@ -133,6 +134,32 @@ inline Ledger& ThreadJoinLedger()
 {
     thread_local Ledger ledger;
     return ledger;
+}
+
+// Whether a run whose line maps to the pasteboard through the linear part [a b; c d] (x' = a x
+// + c y, y' = b x + d y) is stroked in page space: when the map is not a similarity (it shears,
+// or scales unevenly), since InDesign strokes such text in page space, at an even width. Sets
+// the factor the stroke width is scaled by there: the square root of the map's area factor, 1
+// for a shear, and the scale itself as the map nears a similarity, where the run is stroked in
+// its own coordinates as before. False for a similarity or a singular map.
+inline bool PageSpaceStroke(double a, double b, double c, double d, double* widthScale)
+{
+    const double det = a * d - b * c, x = a * a + b * b, y = c * c + d * d;
+    if (!std::isfinite(det) || !std::isfinite(x) || !std::isfinite(y) || std::fabs(det) <= 1e-9) return false;
+    const double scale = x > y ? x : y;
+    if (std::fabs(x - y) <= 1e-6 * scale && std::fabs(a * c + b * d) <= 1e-6 * scale) return false;
+    *widthScale = std::sqrt(std::fabs(det));
+    return true;
+}
+
+// Whether a line's own transform within its frame, with linear part [a b; c d], only moves it:
+// the lines of horizontal text. Page-space stroking (PageSpaceStroke) is limited to those, the
+// lines the census measured; a line turned within its frame (vertical text) keeps the stroke in
+// its own coordinates, as before.
+inline bool OnlyMoves(double a, double b, double c, double d)
+{
+    const double e = 1e-9;
+    return std::fabs(a - 1) <= e && std::fabs(b) <= e && std::fabs(c) <= e && std::fabs(d - 1) <= e;
 }
 
 } // namespace ise_stroke_behind

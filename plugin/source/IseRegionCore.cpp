@@ -5,7 +5,9 @@
 #define USINGZ
 #include "IseRegionCore.h"
 #include "clipper2/clipper.engine.h"
+#include "clipper2/clipper.h"   // InflatePaths (clipper.offset.cpp)
 
+#include <algorithm>
 #include <cmath>
 #include <cstdint>
 #include <map>
@@ -266,7 +268,171 @@ Contour Rebuild(const Outline& o, const Clipper2Lib::PathD& ring)
     return c;
 }
 
+/** Contours flattened (ise_miter::Flatten: curves within tol) as Clipper2 paths; a ring is
+    closed, as a fill or clip reads it. */
+Clipper2Lib::PathsD Paths(const std::vector<Contour>& contours, double tol)
+{
+    Clipper2Lib::PathsD out;
+    for (const ise_miter::Ring& r : ise_miter::Flatten(contours, tol, 1e-9)) {
+        Clipper2Lib::PathD path;
+        for (const Pt& p : r.points) path.push_back(Clipper2Lib::PointD(p.x, p.y));
+        out.push_back(path);
+    }
+    return out;
+}
+
+/** A contour flattened as a line: closed, or for an open contour without its closing line. */
+Clipper2Lib::PathD Line(const Contour& c, double tol)
+{
+    Clipper2Lib::PathD path;
+    path.push_back(Clipper2Lib::PointD(c.start.x, c.start.y));
+    std::vector<Pt> pts;
+    std::vector<double> ts;
+    Pt cur = c.start;
+    for (const Segment& s : ise_miter::Stroked(c, 1e-9)) {
+        pts.clear(); ts.clear();
+        if (s.curve) Flatten(cur, s.c1, s.c2, s.p, 0, 1, tol, 0, &pts, &ts);
+        else pts.push_back(s.p);
+        for (const Pt& p : pts) path.push_back(Clipper2Lib::PointD(p.x, p.y));
+        cur = s.p;
+    }
+    return path;
+}
+
+/** The region of `paths` under a fill rule, as polygons that do not overlap. */
+Clipper2Lib::PathsD Union(const Clipper2Lib::PathsD& paths, Clipper2Lib::FillRule rule, bool* ok, int precision = 5)
+{
+    Clipper2Lib::ClipperD clipper(precision);
+    clipper.AddSubject(paths);
+    Clipper2Lib::PathsD out;
+    *ok = clipper.Execute(Clipper2Lib::ClipType::Union, rule, out) && *ok;
+    return out;
+}
+
+/** Whether two regions (polygons that do not overlap) differ by more than slivers: their
+    symmetric difference, shrunk by `slack`, still covers something. Two flattenings of one curve
+    differ by slivers up to their tolerances thick; a fixed area threshold would reject them on
+    a long outline and accept a real difference on a short one. */
+bool Differ(const Clipper2Lib::PathsD& a, const Clipper2Lib::PathsD& b, double slack, bool* ok)
+{
+    Clipper2Lib::ClipperD clipper(5);
+    clipper.AddSubject(a);
+    clipper.AddClip(b);
+    Clipper2Lib::PathsD out;
+    *ok = clipper.Execute(Clipper2Lib::ClipType::Xor, Clipper2Lib::FillRule::NonZero, out) && *ok;
+    if (out.empty()) return false;
+    const Clipper2Lib::PathsD core = Clipper2Lib::InflatePaths(out, -slack, Clipper2Lib::JoinType::Miter,
+                                                               Clipper2Lib::EndType::Polygon, 2.0, 5);
+    return std::fabs(Clipper2Lib::Area(core)) > 0;
+}
+
+std::vector<Contour> Polygons(const Clipper2Lib::PathsD& paths)
+{
+    std::vector<Contour> out;
+    for (const Clipper2Lib::PathD& path : paths) {
+        if (path.size() < 3) continue;
+        Contour c;
+        c.start = {path[0].x, path[0].y};
+        for (size_t i = 1; i < path.size(); ++i) { Segment s; s.p = {path[i].x, path[i].y}; c.segments.push_back(s); }
+        out.push_back(c);
+    }
+    return out;
+}
+
 } // namespace
+
+bool FillRulesAgree(const std::vector<Contour>& contours, double tol)
+{
+    if (!(tol > 0)) return false;
+    const Clipper2Lib::PathsD paths = Paths(contours, tol);
+    if (paths.empty()) return true;
+    bool ok = true;
+    const Clipper2Lib::PathsD nonzero = Union(paths, Clipper2Lib::FillRule::NonZero, &ok);
+    const Clipper2Lib::PathsD evenOdd = Union(paths, Clipper2Lib::FillRule::EvenOdd, &ok);
+    const bool differ = Differ(nonzero, evenOdd, 2 * tol, &ok);
+    return ok && !differ;
+}
+
+bool ClipsOutside(const std::vector<Contour>& clip, const std::vector<Contour>& contours, double tol)
+{
+    if (!(tol > 0) || clip.empty()) return false;
+    const Clipper2Lib::PathsD frame = Paths({clip[0]}, tol), clipPaths = Paths(clip, tol), fill = Paths(contours, tol);
+    if (frame.empty()) return false;
+    bool ok = true;
+    Clipper2Lib::ClipperD difference(5);
+    difference.AddSubject(frame);
+    difference.AddClip(Union(fill, Clipper2Lib::FillRule::NonZero, &ok));
+    Clipper2Lib::PathsD outside;
+    ok = difference.Execute(Clipper2Lib::ClipType::Difference, Clipper2Lib::FillRule::NonZero, outside) && ok;
+    // A resolved region's contours are rebuilt from the outline's segments, joined at crossings
+    // within four flattening tolerances (NonzeroRegion), and flattened again here.
+    const bool nonzero = Differ(Union(clipPaths, Clipper2Lib::FillRule::NonZero, &ok), outside, 6 * tol, &ok);
+    const bool evenOdd = Differ(Union(clipPaths, Clipper2Lib::FillRule::EvenOdd, &ok), outside, 6 * tol, &ok);
+    return ok && !nonzero && !evenOdd;
+}
+
+std::vector<Contour> StrokeClip(const std::vector<Contour>& stroked, double h, double margin,
+                                const std::vector<std::vector<Pt>>& extra, const std::vector<Contour>& fill,
+                                FillMode mode, double tol)
+{
+    std::vector<Contour> out;
+    if (!(tol > 0) || !(h > 0) || !(margin >= 0)) return out;
+    const double delta = h + margin, arc = std::max(tol, margin / 4);
+    // Three decimal places: the band lies a margin past the stroke's reach, flattened within
+    // tol; Clipper2's offset of thousands of small contours took 8 s at five, 1.4 s at two.
+    const int precision = 3;
+    bool ok = true;
+    // The band is built from the fill's region, not from each contour: a stroke along a contour
+    // inside the fill paints outside it only within its reach of the region's boundary, and
+    // offsetting thousands of overlapping contours as lines took minutes on outlined Kerberos
+    // Fang. Grown by the reach, the region holds the fill and every point within the reach
+    // outside it; shrunk, it leaves the band inside.
+    const Clipper2Lib::PathsD fillRegion = fill.empty() ? Clipper2Lib::PathsD()
+                                                        : Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, &ok, precision);
+    // Mitered (limit 2), which holds every point within delta, as round joins would, and adds
+    // two points per corner where round joins add an arc.
+    Clipper2Lib::PathsD reach = fillRegion.empty() ? Clipper2Lib::PathsD()
+        : Clipper2Lib::InflatePaths(fillRegion, mode == FillMode::Within ? -delta : delta, Clipper2Lib::JoinType::Miter,
+                                    Clipper2Lib::EndType::Polygon, 2.0, precision, arc);
+    // An open contour's stroke reaches past the fill around its own line, with round ends.
+    Clipper2Lib::PathsD openLines;
+    for (const Contour& c : stroked) {
+        if (c.closed) continue;
+        const Clipper2Lib::PathD line = Line(c, tol);
+        if (line.size() >= 2) openLines.push_back(line);
+    }
+    Clipper2Lib::PathsD lineBand;
+    if (!openLines.empty())
+        lineBand = Clipper2Lib::InflatePaths(openLines, delta, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Round, 2.0, precision, arc);
+    if (fillRegion.empty() && lineBand.empty()) return out;
+    Clipper2Lib::PathsD joins;
+    for (const std::vector<Pt>& poly : extra) {
+        if (poly.size() < 3) continue;
+        Clipper2Lib::PathD path;
+        for (const Pt& p : poly) path.push_back(Clipper2Lib::PointD(p.x, p.y));
+        joins.push_back(path);
+    }
+    joins = Union(joins, Clipper2Lib::FillRule::NonZero, &ok, precision);
+    auto run = [&ok, precision](Clipper2Lib::ClipType op, const Clipper2Lib::PathsD& a, const Clipper2Lib::PathsD& b) {
+        Clipper2Lib::ClipperD clipper(precision);
+        clipper.AddSubject(a);
+        if (!b.empty()) clipper.AddClip(b);
+        Clipper2Lib::PathsD r;
+        ok = clipper.Execute(op, Clipper2Lib::FillRule::NonZero, r) && ok;
+        return r;
+    };
+    Clipper2Lib::PathsD region;
+    if (mode == FillMode::Within) {
+        // The fill less its core, with the joins that lie in it.
+        region = run(Clipper2Lib::ClipType::Union, run(Clipper2Lib::ClipType::Difference, fillRegion, reach),
+                     run(Clipper2Lib::ClipType::Intersection, joins, fillRegion));
+    } else {
+        region = run(Clipper2Lib::ClipType::Union, run(Clipper2Lib::ClipType::Union, reach, joins), lineBand);
+        if (mode == FillMode::Remove && !fillRegion.empty()) region = run(Clipper2Lib::ClipType::Difference, region, fillRegion);
+    }
+    if (!ok) return out;
+    return Polygons(region);
+}
 
 std::vector<Contour> NonzeroRegion(const std::vector<Contour>& contours, double tol)
 {

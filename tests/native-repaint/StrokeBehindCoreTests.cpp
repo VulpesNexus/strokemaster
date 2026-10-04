@@ -1,6 +1,7 @@
 // Pure tests of plugin/source/IseStrokeBehindCore.h: eligibility and the muted-run
 // ledger. No Adobe types, host, rendering, or ABI are involved.
 #include "../../plugin/source/IseStrokeBehindCore.h"
+#include <cmath>
 #include <cstdint>
 #include <iostream>
 #include <limits>
@@ -119,6 +120,21 @@ int main()
             join = kMiter;   // recomposed with a miter join already: nothing to give back
             Check(!recover(Print(1, 2, 0)) && join == kMiter && joins.Size() == 0, "a join no longer muted is left alone");
             Check(&ThreadJoinLedger() != &ThreadLedger(), "joins and paints keep separate ledgers");
+        }
+        // Sheared and unevenly scaled frames are stroked in page space (PageSpaceStroke).
+        {
+            const double pi = 3.14159265358979323846, t = std::tan(20 * pi / 180);
+            double k = 0;
+            Check(!PageSpaceStroke(1, 0, 0, 1, &k), "identity: the run's own coordinates");
+            Check(!PageSpaceStroke(2, 0, 0, 2, &k) && !PageSpaceStroke(1, 0, 0, -1, &k), "even scale, flip: own coordinates");
+            Check(!PageSpaceStroke(std::cos(0.3) * 2, std::sin(0.3) * 2, -std::sin(0.3) * 2, std::cos(0.3) * 2, &k), "rotation and even scale: own coordinates");
+            Check(PageSpaceStroke(1, 0, t, 1, &k) && std::fabs(k - 1) < 1e-12, "a 20-degree shear: page space, width unchanged");
+            Check(PageSpaceStroke(1.5, 0, 0, 1, &k) && std::fabs(k - std::sqrt(1.5)) < 1e-12, "150% x 100%: page space, width by sqrt 1.5");
+            Check(!PageSpaceStroke(1, 0, 0, 0, &k) && !PageSpaceStroke(1, 0, std::numeric_limits<double>::quiet_NaN(), 1, &k), "singular or invalid: own coordinates");
+            Check(!PageSpaceStroke(2, 0, 0, 2 * (1 + 1e-9), &k), "rounding off a similarity: own coordinates");
+            Check(OnlyMoves(1, 0, 0, 1), "a horizontal line only moves within its frame");
+            Check(!OnlyMoves(0, 1, -1, 0) && !OnlyMoves(0, -1, 1, 0), "a vertical line is turned: own coordinates");
+            Check(!OnlyMoves(1, 0, 0, -1) && !OnlyMoves(1.2, 0, 0, 1), "a flipped or scaled line: own coordinates");
         }
         std::cout << "PASS: " << checks << " stroke-behind core checks; no host execution.\n";
         return 0;

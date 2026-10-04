@@ -377,6 +377,149 @@ int main()
         }
     }
 
+    {
+        // Two overlapping parallelograms (the coverage census's sheared squares, untransformed):
+        // every edge midpoint of one lies on an edge of the other.
+        const double k = std::tan(20 * 3.14159265358979323846 / 180);
+        auto para = [k](double x, double y, double a) {
+            return Poly({{x + k * y, y}, {x + a + k * y, y}, {x + a + k * (y + a), y + a}, {x + k * (y + a), y + a}});
+        };
+        const Contour pa = para(0, 0, 40), pb = para(20, 20, 40);
+        Check(!FillRulesAgree(Flatten({pa, pb}, 1e-3, 1e-9), 0.04), "parallelograms: the probes see the overlap off the midpoints");
+        Check(!ise_region::FillRulesAgree({pa, pb}, 1e-3), "parallelograms: the exact test sees the overlap");
+        const Contour sq = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        const Contour opposite = Reversed(Poly({{2, 2}, {8, 2}, {8, 8}, {2, 8}}), 1e-9);
+        const Contour same = Poly({{2, 2}, {8, 2}, {8, 8}, {2, 8}});
+        Check(ise_region::FillRulesAgree({sq}, 1e-3), "exact: a square, both rules agree");
+        Check(ise_region::FillRulesAgree({sq, opposite}, 1e-3), "exact: an opposite hole, both rules agree");
+        Check(!ise_region::FillRulesAgree({sq, same}, 1e-3), "exact: a same-direction inner contour, the rules disagree");
+        Check(ise_region::FillRulesAgree({sq, Poly({{10, 0}, {20, 0}, {20, 10}, {10, 10}})}, 1e-3), "exact: squares sharing an edge, both rules agree");
+        Check(!ise_region::FillRulesAgree({sq, Poly({{9.9, 0}, {20, 0}, {20, 10}, {9.9, 10}})}, 1e-3), "exact: a 0.1-wide overlap, the rules disagree");
+
+        // The outside clip, checked exactly.
+        const std::vector<Contour> holedClip = OutsideClip({sq, opposite}, 5, 1e-3, 0.01);
+        Check(ise_region::ClipsOutside(holedClip, {sq, opposite}, 1e-3), "exact: a holed square's clip is its outside");
+        const std::vector<Contour> unchecked = OutsideClip({pa, pb}, 5, 1e-3, 0.01, false, false);
+        Check(unchecked.size() == 3 && !ise_region::ClipsOutside(unchecked, {pa, pb}, 1e-3), "exact: a clip from overlapping contours is refused");
+        const std::vector<Contour> region = ise_region::NonzeroRegion({pa, pb}, 1e-3);
+        const std::vector<Contour> regionClip = OutsideClip(region, 5, 1e-3, 0.01, true, false);
+        Check(region.size() == 1 && ise_region::ClipsOutside(regionClip, {pa, pb}, 1e-3), "exact: the parallelograms' region clip is their outside");
+        std::vector<Contour> wrong = holedClip;
+        wrong[1] = Reversed(wrong[1], 1e-9);   // the outline wound with the frame: its fill reads 2, not 0
+        Check(!ise_region::ClipsOutside(wrong, {sq, opposite}, 1e-3), "exact: an outline wound with the frame is refused");
+    }
+    {
+        // The region's corners the outline does not have (CornersNotOnOutline).
+        const std::vector<Contour> squares = {Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}}), Poly({{5, 5}, {15, 5}, {15, 15}, {5, 15}})};
+        const std::vector<Contour> union_ = ise_region::NonzeroRegion(squares, 1e-3);
+        const std::vector<Stub> us = Corners(union_, With(1), true);
+        const std::vector<char> ux = CornersNotOnOutline(us, squares, With(1), 4);
+        Check(us.size() == 8 && ux.size() == 8, "two overlapping squares: eight region corners");
+        for (size_t i = 0; i < us.size(); ++i) {
+            const bool crossing = Near(us[i].v, {10, 5}) || Near(us[i].v, {5, 10});
+            Check(ux[i] == (crossing ? 1 : 0), crossing ? "where the squares cross: not the outline's corner"
+                                                       : "a square's own corner: the outline's");
+            if (crossing) Check(us[i].interior, "where the squares cross, the region's corner is interior");
+        }
+        // A bowtie: the region pinches where the contour crosses itself, sharper than the limit.
+        const std::vector<Contour> bowtie = {Poly({{0, -1}, {0, 1}, {10, -1}, {10, 1}})};
+        const std::vector<Contour> pinched = ise_region::NonzeroRegion(bowtie, 1e-3);
+        const std::vector<Stub> bs = Corners(pinched, With(1), true);
+        const std::vector<char> bx = CornersNotOnOutline(bs, bowtie, With(1), 4);
+        size_t pinches = 0;
+        for (size_t i = 0; i < bs.size(); ++i) {
+            if (Len(bs[i].v - Pt{5, 0}) < 1e-6) {
+                ++pinches;
+                // Either side of the pinch: its probe lands in the other lobe, so it reads interior.
+                Check(bx[i] == 1 && bs[i].ratio > 4, "the bowtie's pinch: a corner past the limit the outline lacks");
+            } else {
+                Check(bx[i] == 0, "the bowtie's own corners: the outline's");
+            }
+        }
+        Check(pinches >= 1, "the bowtie's region has a corner at its pinch");
+        Check(CornersNotOnOutline({}, bowtie, With(1), 4).empty(), "no region corners: no flags");
+    }
+    {
+        // Open contours: no closing line, no corner at either end.
+        Recorder open(true);
+        open.MoveTo({0, 0}); open.LineTo({10, 0}); open.LineTo({10, 10}); open.LineTo({0, 10});
+        Recorder shut(true);
+        shut.MoveTo({0, 0}); shut.LineTo({10, 0}); shut.LineTo({10, 10}); shut.LineTo({0, 10}); shut.Close();
+        Recorder glyph;   // without trackOpen every contour is closed, as before
+        glyph.MoveTo({0, 0}); glyph.LineTo({10, 0}); glyph.LineTo({10, 10});
+        const Contour o = open.Contours()[0], c = shut.Contours()[0];
+        Check(!o.closed && c.closed && glyph.Contours()[0].closed, "trackOpen marks a contour without closepath open");
+        Check(Stroked(o, 1e-9).size() == 3 && Stroked(c, 1e-9).size() == 4 && Closed(o, 1e-9).size() == 4, "an open contour is stroked without its closing line");
+        const std::vector<Stub> oc = Corners({o}, With(1), true), cc = Corners({c}, With(1), true);
+        Check(oc.size() == 2 && HasCornerAt(oc, {10, 0}) && HasCornerAt(oc, {10, 10}), "an open contour: corners only between its segments");
+        Check(cc.size() == 4, "the same contour closed: four corners");
+        Check(Winding(Flatten({o}, 1e-3, 1e-9), {5, 5}) != 0, "an open contour still fills as if closed");
+    }
+    {
+        // OffsetBevel: the stroke of an offset beveled at a square's corner.
+        const Contour sq = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        for (const Stub& x : ExteriorCorners({sq}, With(4))) {
+            if (!Near(x.v, {10, 0})) continue;
+            const double w = 4, r2 = std::sqrt(2.0);
+            const std::vector<Pt> bevel = OffsetBevel(x, w, 4, false);
+            // v, v + n1 w, c1 + o w / 2, c2 + o w / 2, v + n2 w; o = (1, -1) / sqrt 2.
+            Check(bevel.size() == 5 && Near(bevel[0], {10, 0}) && Near(bevel[1], {10, -4}) && Near(bevel[4], {14, 0}),
+                  "offset bevel: the vertex and the stroke edge's corners at w");
+            Check(Near(bevel[2], {10 + w / 2 / r2, -w / 2 - w / 2 / r2}) && Near(bevel[3], {10 + w / 2 + w / 2 / r2, -w / 2 / r2}),
+                  "offset bevel: the bevel's own stroke edge, w / 2 beyond c1 and c2");
+            // The bevel's edge lies 3.41 from the vertex, past the outline's bevel at 2.83.
+            Check(std::fabs(Dot(bevel[2] - x.v, x.outward) - (w / 2 / r2 + w / 2)) < 1e-9, "offset bevel: reaches w / 2 (1 + cos 45 deg)");
+            const std::vector<Pt> mitered = OffsetBevel(x, w, 4, true);
+            // Each of the bevel's corners turns 45 degrees: mitered, their tips 0.207 w past e0, e1.
+            Check(mitered.size() == 5 && Near(mitered[2], {10 + w * (1 / r2 - 0.5), -4}) && Near(mitered[3], {14, -w * (1 / r2 - 0.5)}),
+                  "offset bevel, mitered: tips where the edges meet the bevel's edge");
+            const std::vector<Pt> limited = OffsetBevel(x, w, 1.05, true);
+            Check(Near(limited[2], bevel[2]) && Near(limited[3], bevel[3]), "offset bevel past its own limit: beveled");
+            const std::vector<Pt> r = Counterclockwise(bevel);
+            std::vector<Ring> rr = Flatten({Poly(r)}, 1e-3, 1e-9);
+            Check(Winding(rr, {10.5, -3.5}) != 0 && Winding(rr, {13.5, -0.5}) != 0 && Winding(rr, {10.5, -3.9}) == 0 && Winding(rr, {10.5, 0.5}) == 0, "offset bevel: outside the square, at its corner");
+        }
+    }
+    {
+        // StrokeClip: where a stroke InDesign draws itself may paint.
+        const Contour sq = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        auto inside = [](const std::vector<Contour>& clip, Pt p) {
+            const std::vector<Ring> r = Flatten(clip, 1e-4, 1e-9);
+            int evenOdd = 0;
+            for (const Ring& ring : r) evenOdd += RingWinding(ring, p) != 0 ? 1 : 0;
+            Check((Winding(r, p) != 0) == (evenOdd % 2 == 1), "a stroke clip reads the same under both rules");
+            return Winding(r, p) != 0;
+        };
+        const std::vector<Contour> outsideBand = ise_region::StrokeClip({sq}, 1, 0.1, {}, {sq}, ise_region::FillMode::Remove, 1e-3);
+        Check(!outsideBand.empty() && inside(outsideBand, {10.5, 5}) && inside(outsideBand, {11.05, 5}) && !inside(outsideBand, {11.2, 5}),
+              "outside band: out to h + margin");
+        Check(!inside(outsideBand, {9.5, 5}) && !inside(outsideBand, {5, 5}), "outside band: the fill taken away");
+        // Mitered at limit 2: the corner reaches (h + margin) sqrt 2 along its diagonal.
+        Check(inside(outsideBand, {11.0, -1.0}) && !inside(outsideBand, {11.3, -1.3}), "outside band: mitered at the corner, within (h + margin) sqrt 2");
+        const std::vector<Contour> centerBand = ise_region::StrokeClip({sq}, 1, 0.1, {}, {sq}, ise_region::FillMode::Add, 1e-3);
+        Check(inside(centerBand, {5, 5}) && inside(centerBand, {10.5, 5}) && !inside(centerBand, {11.2, 5}), "center band: the fill added");
+        const std::vector<Contour> insideBand = ise_region::StrokeClip({sq}, 1, 0.1, {}, {sq}, ise_region::FillMode::Within, 1e-3);
+        Check(inside(insideBand, {9.5, 5}) && inside(insideBand, {8.95, 5}) && !inside(insideBand, {8.8, 5}) && !inside(insideBand, {10.5, 5}),
+              "inside band: within the fill, out to h + margin from its edge");
+        const std::vector<Pt> join = {{10, 0}, {10, -1.1}, {11.5, -1.5}, {11.1, 0}};
+        const std::vector<Contour> joined = ise_region::StrokeClip({sq}, 1, 0.1, {join}, {sq}, ise_region::FillMode::Remove, 1e-3);
+        Check(inside(joined, {11.3, -1.3}) && !inside(outsideBand, {11.3, -1.3}), "a join past the band is added");
+        Recorder line(true);
+        line.MoveTo({0, 0}); line.LineTo({10, 0});
+        const std::vector<Contour> lineBand = ise_region::StrokeClip(line.Contours(), 1, 0.1, {}, {}, ise_region::FillMode::Add, 1e-3);
+        Check(inside(lineBand, {5, 1}) && inside(lineBand, {-1, 0}) && !inside(lineBand, {-1.2, 0}) && !inside(lineBand, {5, 1.2}),
+              "an open line's band: round ends, h + margin either side");
+        Check(ise_region::StrokeClip({sq}, 1, 0.1, {}, {}, ise_region::FillMode::Remove, 1e-3).empty(), "no fill and no open line: no clip");
+        // An inner contour of an overlapping outline: its stroke lies inside the fill, so the
+        // band follows the region's boundary only.
+        const Contour inner = Poly({{4, 4}, {6, 4}, {6, 6}, {4, 6}});
+        const std::vector<Contour> overlapBand = ise_region::StrokeClip({sq, inner}, 1, 0.1, {}, {sq, inner}, ise_region::FillMode::Remove, 1e-3);
+        Check(!inside(overlapBand, {5, 5}) && !inside(overlapBand, {6.5, 5}) && inside(overlapBand, {10.5, 5}), "overlapping contours: the band around the region only");
+        const std::vector<Pt> deep = {{9, 4}, {9.9, 4}, {9.9, 6}, {9, 6}};
+        const std::vector<Contour> insideJoined = ise_region::StrokeClip({sq}, 1, 0.1, {deep, join}, {sq}, ise_region::FillMode::Within, 1e-3);
+        Check(inside(insideJoined, {9.5, 5}) && !inside(insideJoined, {10.5, -0.5}), "inside band: a join's part in the fill only");
+    }
+
     std::printf("miter core: %d checks passed\n", checks);
     return 0;
 }

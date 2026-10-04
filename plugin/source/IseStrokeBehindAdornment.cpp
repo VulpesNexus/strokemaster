@@ -18,7 +18,17 @@
 //                             ones as they are, the interior ones clipped to the run's fill,
 //                             so only an interior miter's part outside the letter is lost.
 // Native text then draws the muted runs as fill only, in the Text pass, above every stroke
-// of the frame. Center strokes keep native drawing and order, joins aside. The
+// of the frame. Center strokes keep native drawing and order, joins aside.
+//
+// In a frame whose transform is not a similarity (sheared, or scaled unevenly as a kept
+// percentage), InDesign strokes text in page space, at an even width: its PDF writes the
+// frame's transform into the text matrix and the line width in page units (measured
+// 2026-10-04). A path stroked in the run's own coordinates would follow the frame's shear and
+// vary in width with direction (up to about 6% at 20 degrees). Such runs are drawn in page
+// space instead (PageSpace): the outline placed through the frame's transform, the port's
+// transform undone by as much, the width scaled by the transform's area factor (1 for a
+// shear), and the corners found on the placed outline. Only lines the frame itself does not
+// turn (horizontal text) are; vertical text keeps the stroke in its own coordinates. The
 // document's attributes are never changed, so without this plugin the same document draws
 // natively. The stroke is written as paths (the glyph fills stay native text), so exported
 // PDF keeps its searchable text and fonts.
@@ -44,6 +54,7 @@
 #include "ISwatchUtils.h"
 #include "ITextOptions.h"
 #include "IWaxGlyphs.h"
+#include "IWaxLine.h"
 #include "IWaxRenderData.h"
 #include "IWaxRun.h"
 
@@ -65,6 +76,7 @@
 #include "IseCrossFrame.h"
 #endif
 
+#include <algorithm>
 #include <cmath>
 
 namespace {
@@ -143,6 +155,43 @@ void WriteRun(TransformedOutline* writer, const IWaxRun* run, const IWaxGlyphs* 
     }
 }
 
+/** The linear part of a run's line-to-pasteboard transform when it is not a similarity (it
+    shears, or scales unevenly), and the factor a stroke width is scaled by there: the square
+    root of its area factor, which is 1 for a shear and, as the transform nears a similarity,
+    its scale. False for a similarity (rotation, flip, even scale), whose runs are drawn as
+    before, in their own coordinates, for a singular transform, and for a line its frame turns
+    or scales (OnlyMoves: vertical text, not measured). */
+bool PageSpace(const IWaxRun* run, PMMatrix* linear, double* widthScale)
+{
+    const IWaxLine* line = run ? run->GetWaxLine() : nil;
+    if (line == nil) return false;
+    const PMMatrix own = line->GetTransform();
+    if (!OnlyMoves(ToDouble(own[0]), ToDouble(own[1]), ToDouble(own[2]), ToDouble(own[3]))) return false;
+    const PMMatrix m = line->GetToPasteboardMatrix();
+    if (!PageSpaceStroke(ToDouble(m[0]), ToDouble(m[1]), ToDouble(m[2]), ToDouble(m[3]), widthScale)) return false;
+    *linear = PMMatrix(m[0], m[1], m[2], m[3], 0, 0);
+    return true;
+}
+
+/** Contours placed through a linear transform. */
+std::vector<ise_miter::Contour> Placed(const std::vector<ise_miter::Contour>& contours, const PMMatrix& linear)
+{
+    auto at = [&linear](ise_miter::Pt p) {
+        PMReal x = p.x, y = p.y;
+        linear.Transform(&x, &y);
+        return ise_miter::Pt{ToDouble(x), ToDouble(y)};
+    };
+    std::vector<ise_miter::Contour> out = contours;
+    for (ise_miter::Contour& c : out) {
+        c.start = at(c.start);
+        for (ise_miter::Segment& s : c.segments) {
+            s.p = at(s.p);
+            if (s.curve) { s.c1 = at(s.c1); s.c2 = at(s.c2); }
+        }
+    }
+    return out;
+}
+
 void EmitPath(IGraphicsPort* port, const std::vector<ise_miter::Contour>& contours)
 {
     for (const ise_miter::Contour& c : contours) {
@@ -195,14 +244,21 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     ise_miter::Recorder recorder;
     TransformedOutline writer(nullptr, &recorder);
     WriteRun(&writer, run, glyphs, instance);
+    // In a sheared frame, the corners are found and filled in page space, where InDesign's
+    // native Center stroke is even (PageSpace).
+    PMMatrix linear;
+    double widthScale = 1;
+    const bool pageSpace = PageSpace(run, &linear, &widthScale);
+    const std::vector<ise_miter::Contour> contours = pageSpace ? Placed(recorder.Contours(), linear) : recorder.Contours();
     ise_miter::Options options;
-    options.halfWidth = ToDouble(mutableData->GetOutlineWidth()) / 2;
-    const std::vector<ise_miter::Stub> stubs = ise_miter::Corners(recorder.Contours(), options, true);
+    options.halfWidth = ToDouble(mutableData->GetOutlineWidth()) / 2 * widthScale;
+    const std::vector<ise_miter::Stub> stubs = ise_miter::Corners(contours, options, true);
     if (stubs.empty()) return;
     bool anyInterior = false, anyExterior = false;
     for (const ise_miter::Stub& s : stubs) (s.interior ? anyInterior : anyExterior) = true;
     if (join != kPMMiterJoin) return;
     AutoGSave save(port);
+    if (pageSpace) port->concat(linear.Inverse());
     stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
     if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
     const double limit = ToDouble(mutableData->GetMiterLimit());
@@ -210,7 +266,7 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     if (anyInterior) {
         AutoGSave clipScope(port);
         port->newpath();
-        EmitPath(port, recorder.Contours());
+        EmitPath(port, contours);
         port->clip();
         FillJoins(port, stubs, true, options.halfWidth, limit);
     }
@@ -389,37 +445,62 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
         // IseMiterCore.h): the interior miters, whose tips can leave a thin glyph, are not drawn.
         const int32 join = mutableData->GetOutlineJoin();
         const bool correctMiter = CorrectMiter(join);
-        port->setlinewidth(mutableData->GetOutlineWidth() * 2);
-        port->setlinejoin(correctMiter ? kPMBevelJoin : join);
-        port->setmiterlimit(mutableData->GetMiterLimit());
-        ise_miter::Recorder recorder;
-        TransformedOutline writer(port, correctMiter ? &recorder : nullptr);
-        writer.SetOffset(run->GetXPosition(), run->GetYPosition());
-        const bool16 hasMatrix = glyphs->HasGlyphMatrix();
-        port->newpath();
-        for (int32 i = 0; i < count; ++i) {
-            if (hasMatrix) {
-                PMMatrix m;
-                PMPoint pen(0, 0);
-                if (glyphs->GetGlyphMatrix(i, &m, &pen)) {
-                    writer.SetMatrix(m);
-                    instance->GetOutlineInfo(&writer, ids[i], pen.X(), pen.Y());
-                    continue;
-                }
+        PMMatrix linear;
+        double widthScale = 1;
+        if (PageSpace(run, &linear, &widthScale)) {
+            // A sheared frame: the run's outline placed in page space and stroked there, at an
+            // even width, as InDesign strokes it (PageSpace).
+            ise_miter::Recorder recorder;
+            TransformedOutline writer(nullptr, &recorder);
+            WriteRun(&writer, run, glyphs, instance);
+            const std::vector<ise_miter::Contour> contours = Placed(recorder.Contours(), linear);
+            const double h = ToDouble(mutableData->GetOutlineWidth()) * widthScale;
+            port->concat(linear.Inverse());
+            port->setlinewidth(2 * h);
+            port->setlinejoin(correctMiter ? kPMBevelJoin : join);
+            port->setmiterlimit(mutableData->GetMiterLimit());
+            port->newpath();
+            EmitPath(port, contours);
+            port->stroke();
+            if (correctMiter) {
+                ise_miter::Options options;
+                options.halfWidth = h;
+                const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(contours, options);
+                if (!stubs.empty()) FillJoins(port, stubs, false, h, ToDouble(mutableData->GetMiterLimit()));
             }
-            const PMMatrix where = glyphs->GetGlyphDrawPosition(i);
-            writer.SetMatrix(PMMatrix());
-            instance->GetOutlineInfo(&writer, ids[i], where.GetXTranslation(), where.GetYTranslation());
-        }
-        port->stroke();
-        if (correctMiter) {
-            ise_miter::Options options;
-            options.halfWidth = ToDouble(mutableData->GetOutlineWidth());
-            const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(recorder.Contours(), options);
-            if (!stubs.empty()) {
-                // The exterior corners' miter joins, within the run's limit as the native stroke
-                // draws them, filled in the stroke's paint and overprint.
-                FillJoins(port, stubs, false, options.halfWidth, ToDouble(mutableData->GetMiterLimit()));
+        } else {
+            port->setlinewidth(mutableData->GetOutlineWidth() * 2);
+            port->setlinejoin(correctMiter ? kPMBevelJoin : join);
+            port->setmiterlimit(mutableData->GetMiterLimit());
+            ise_miter::Recorder recorder;
+            TransformedOutline writer(port, correctMiter ? &recorder : nullptr);
+            writer.SetOffset(run->GetXPosition(), run->GetYPosition());
+            const bool16 hasMatrix = glyphs->HasGlyphMatrix();
+            port->newpath();
+            for (int32 i = 0; i < count; ++i) {
+                if (hasMatrix) {
+                    PMMatrix m;
+                    PMPoint pen(0, 0);
+                    if (glyphs->GetGlyphMatrix(i, &m, &pen)) {
+                        writer.SetMatrix(m);
+                        instance->GetOutlineInfo(&writer, ids[i], pen.X(), pen.Y());
+                        continue;
+                    }
+                }
+                const PMMatrix where = glyphs->GetGlyphDrawPosition(i);
+                writer.SetMatrix(PMMatrix());
+                instance->GetOutlineInfo(&writer, ids[i], where.GetXTranslation(), where.GetYTranslation());
+            }
+            port->stroke();
+            if (correctMiter) {
+                ise_miter::Options options;
+                options.halfWidth = ToDouble(mutableData->GetOutlineWidth());
+                const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(recorder.Contours(), options);
+                if (!stubs.empty()) {
+                    // The exterior corners' miter joins, within the run's limit as the native stroke
+                    // draws them, filled in the stroke's paint and overprint.
+                    FillJoins(port, stubs, false, options.halfWidth, ToDouble(mutableData->GetMiterLimit()));
+                }
             }
         }
     }
