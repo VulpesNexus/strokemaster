@@ -11,20 +11,22 @@
 //   transparency on the item; an unscaled item (rotation and translation only); a Miter join;
 //   Center or Outside alignment; wherever a clip is needed (Outside, or Center with interior
 //   corners), an outline whose nonzero and even-odd regions agree, since InDesign's PDF port
-//   does not keep the rule a clip asks for; no stroke overprint when a corner needs a cut.
+//   does not keep the rule a clip asks for; no stroke overprint when a corner is past the limit.
 //
 // What it draws (IseMiterCore.h):
 //   Center   the outline stroked at the weight with bevel joins; each exterior corner restroked
 //            with the miter; each interior corner restroked with the miter, clipped to the
-//            item's fill, so only an interior miter's part outside escapes.
+//            item's fill, so an interior miter's part outside the fill is not drawn.
 //   Outside  the outline filled again (InDesign fills an offset of it, which breaks on some
 //            outlines), then stroked at twice the weight with bevel joins, clipped to outside
 //            the fill (ise_miter::OutsideClip); each exterior corner restroked with the miter.
 //            Interior miters are dropped.
 //   Past the miter limit, an exterior corner is not beveled at its vertex as InDesign does:
-//   its miter is cut at the limit distance along its tip and filled (ise_miter::CutMiter), so
-//   a point is kept up to the limit and the shape changes continuously as a corner sharpens
-//   (owner decision, 2026-10-03).
+//   its miter is filled whole when its point reaches no farther than the corner's shorter edge
+//   is long, so a shape's sharp corners keep their points (owner decision, 2026-10-04; a first
+//   version cut every point at the limit distance). Otherwise the miter is cut where that edge
+//   ends, but never closer than the limit distance (ise_miter::PointReach, CutMiter).
+//   Interior miters keep the limit.
 //========================================================================================
 #include "VCPlugInHeaders.h"
 
@@ -56,6 +58,7 @@
 #include "IsePageItemStroke.h"
 #include "IseMiterCore.h"
 
+#include <algorithm>
 #include <cmath>
 #include <vector>
 
@@ -117,10 +120,13 @@ bool Unscaled(IPMUnknown* item)
     return std::fabs(a * a + b * b - 1) < 1e-6 && std::fabs(c * c + d * d - 1) < 1e-6 && std::fabs(a * c + b * d) < 1e-6;
 }
 
+/** InDesign's highest miter limit: the longest point kept, in half widths. */
+const double kLongestMiter = 500;
+
 bool PastLimit(const ise_miter::Stub& s, double limit) { return !s.interior && s.ratio > limit; }
 
 /** Restrokes stubs with the miter join; exterior miters past the limit are instead filled,
-    cut at the limit distance (ise_miter::CutMiter). */
+    whole or cut (ise_miter::PointReach). */
 void StrokeStubs(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, bool interior, double h, double limit)
 {
     port->setlinejoin(kPMMiterJoin);
@@ -138,7 +144,7 @@ void StrokeStubs(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs,
     any = false;
     for (const ise_miter::Stub& s : stubs) {
         if (!PastLimit(s, limit)) continue;
-        EmitPolygon(port, ise_miter::CutMiter(s, h, limit * h));
+        EmitPolygon(port, ise_miter::CutMiter(s, h, ise_miter::PointReach(s, h, limit, kLongestMiter)));
         any = true;
     }
     if (any) port->fill(); else port->newpath();
@@ -201,16 +207,21 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item)
     // the same under both fill rules: the PDF port does not keep the rule a clip asks for.
     if ((outside || anyInterior) &&
         !ise_miter::FillRulesAgree(ise_miter::Flatten(contours, 0.001 * h, 1e-9), 0.01 * h)) return false;
-    // A cut miter is filled in the stroke's paint; PDF keeps a separate overprint for fills,
-    // so an overprinting stroke stays InDesign's when any corner needs a cut.
-    bool cuts = false;
-    for (const ise_miter::Stub& s : stubs) cuts = cuts || PastLimit(s, limit);
+    // A miter past the limit is filled in the stroke's paint; PDF keeps a separate overprint
+    // for fills, so an overprinting stroke stays InDesign's when any corner is past the limit.
+    bool fills = false;
+    double reach = limit;   // the longest miter drawn, in half widths
+    for (const ise_miter::Stub& s : stubs) {
+        if (!PastLimit(s, limit)) continue;
+        fills = true;
+        reach = std::max(reach, ise_miter::PointReach(s, h, limit, kLongestMiter) / h);
+    }
     bool16 overprint = kFalse;
-    if (cuts && (attrs->GetOverprintStroke(overprint, style) != kSuccess || overprint)) return false;
+    if (fills && (attrs->GetOverprintStroke(overprint, style) != kSuccess || overprint)) return false;
     std::vector<ise_miter::Contour> outsideClip;
     if (outside) {
-        // The frame lies past the longest miter the stroke can draw: limit * h, cut there.
-        outsideClip = ise_miter::OutsideClip(contours, (limit + 2) * h + 10, 0.001 * h, 0.01 * h);
+        // The frame lies past the longest miter drawn.
+        outsideClip = ise_miter::OutsideClip(contours, (reach + 2) * h + 10, 0.001 * h, 0.01 * h);
         if (outsideClip.empty()) return false;
     }
 
@@ -254,9 +265,14 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item)
     port->stroke();
     StrokeStubs(port, stubs, false, h, limit);
     if (!outside && anyInterior) {
+        // Clipped to the recorded outline, not with IPathPageItem::Clip: InDesign's PDF port
+        // wrote that clip without its path (`W n`), and on a translated item dropped the
+        // clipped stubs altogether, leaving notches at concave corners (measured 2026-10-04).
+        // Both fill rules agree on this outline (checked above), so nonzero is exact.
         AutoGSave clipScope(port);
         port->newpath();
-        pathItem->Clip(port);   // the item's own fill
+        EmitContours(port, contours);
+        port->clip();
         port->newpath();
         StrokeStubs(port, stubs, true, h, limit);
     }

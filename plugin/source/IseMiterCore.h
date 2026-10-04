@@ -181,6 +181,7 @@ struct Stub {
     double ratio = 1;
     Pt outward;
     Pt u, w;         // unit tangents arriving at and leaving v: the miter's edges are their offsets
+    double edge = 0; // length of the shorter of the two segments meeting at v
     bool inCurve = false, outCurve = false;
     Pt in1, in2;     // controls of a -> v when inCurve
     Pt out1, out2;   // controls of v -> b when outCurve
@@ -204,10 +205,22 @@ inline void CubicHead(Pt p0, Pt p1, Pt p2, Pt p3, double t, Pt* q1, Pt* q2, Pt* 
     *q1 = p01; *q2 = p012; *q3 = Lerp(p012, p123, t);
 }
 
+/** A cubic's length, about: the mean of its chord and its control polygon. */
+inline double ApproxLength(Pt p0, Pt p1, Pt p2, Pt p3)
+{
+    return 0.5 * (Len(p1 - p0) + Len(p2 - p1) + Len(p3 - p2) + Len(p3 - p0));
+}
+
+/** A segment's length (about, for a curve), starting at `from`. */
+inline double SegmentLength(Pt from, const Segment& s)
+{
+    return s.curve ? ApproxLength(from, s.c1, s.c2, s.p) : Len(s.p - from);
+}
+
 /** The curve parameter that cuts a piece of about `length` off a cubic's end. */
 inline double PieceParameter(Pt p0, Pt p1, Pt p2, Pt p3, double length)
 {
-    const double approx = 0.5 * (Len(p1 - p0) + Len(p2 - p1) + Len(p3 - p2) + Len(p3 - p0));
+    const double approx = ApproxLength(p0, p1, p2, p3);
     if (!(approx > 0)) return 0.5;
     return std::min(0.5, std::max(1e-4, length / approx));
 }
@@ -269,6 +282,7 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
             st.ratio = 1 / std::cos(turn / 2);
             st.outward = outward * (1 / lo);
             st.u = u; st.w = w;
+            st.edge = std::min(SegmentLength(inFrom, in), SegmentLength(v, next));
             if (in.curve) {
                 st.inCurve = true;
                 CubicTail(inFrom, in.c1, in.c2, v, 1 - PieceParameter(inFrom, in.c1, in.c2, v, din), &st.a, &st.in1, &st.in2);
@@ -422,6 +436,19 @@ inline std::vector<Pt> CutMiter(const Stub& s, double h, double distance)
     if (!(distance < reach) || !(reach - a0 > 1e-12)) return {s.v, e0, tip, e1};
     const double t = std::max(0.0, (distance - a0) / (reach - a0));
     return {s.v, e0, Lerp(e0, tip, t), Lerp(e1, tip, t), e1};
+}
+
+/** How far past its vertex an exterior miter beyond the miter limit keeps its point, for half
+    width h: the whole miter (ratio * h) when that is no longer than the shorter of the corner's
+    two edges, otherwise as far as that edge reaches; never less than the limit distance, nor
+    more than `longest` half widths. A sharp corner between long edges is the shape's own
+    point, and its stroke keeps it whole; one between short edges (the notches and thorns of
+    decorative fonts, a near-reversal) would throw a point many times longer than the detail
+    it comes from, and is cut. Measured on Kerberos Fang (2026-10-04): every corner past limit
+    4 has edges under 16 pt at 72 pt, so its cut stays at the limit distance. */
+inline double PointReach(const Stub& s, double h, double limit, double longest)
+{
+    return std::min(longest * h, std::max(limit * h, std::min(s.ratio * h, s.edge)));
 }
 
 /** The exterior corners only: what an Outside stroke restrokes. */

@@ -196,6 +196,17 @@ int main()
             Check(std::fabs(Dot(cut[2] - x.v, nIn) - 2) < 1e-9, "the cut's corner lies on the stroke's offset edge");
             const std::vector<Pt> whole = CutMiter(x, 2, 1e6);
             Check(whole.size() == 4 && Near(whole[2], x.v + x.outward * (x.ratio * 2)), "below the limit the full miter is kept, tip at ratio * h");
+            // Its edges are 60.23 long and its whole miter reaches 22.94: kept whole.
+            Check(std::fabs(x.edge - 60 / std::cos(half)) < 1e-9, "the apex's shorter edge is a side of the wedge");
+            Check(std::fabs(PointReach(x, 2, 4, 500) - x.ratio * 2) < 1e-12, "a point no longer than its edges is kept whole");
+            Stub shortEdges = x;
+            shortEdges.edge = 12;
+            Check(std::fabs(PointReach(shortEdges, 2, 4, 500) - 12) < 1e-12, "a point longer than its edges is cut where the shorter edge ends");
+            shortEdges.edge = 0.3;
+            Check(std::fabs(PointReach(shortEdges, 2, 4, 500) - 8) < 1e-12, "but never closer than the limit distance");
+            Stub needle = x;
+            needle.ratio = 1e6; needle.edge = 1e9;
+            Check(std::fabs(PointReach(needle, 2, 4, 500) - 1000) < 1e-9, "nor farther than the longest limit");
         }
         Check(apex, "the wedge's apex is an exterior corner");
         const std::vector<Ring> one = Flatten({ccw}, 1e-3, 1e-9);
