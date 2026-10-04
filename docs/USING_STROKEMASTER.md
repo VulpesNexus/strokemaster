@@ -1,6 +1,6 @@
 # Using StrokeMaster
 
-Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. The source now covers more page-item strokes (2026-10-05: built as `410689fd`, not yet certified or installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
@@ -20,13 +20,18 @@ Which correction to use depends on one question: **does the file have to look ri
 
 - **Separate stories are left as InDesign stacks them.** One story's stroke over another story's text looks the same as a deliberate halo, so it is not changed. A correction there would need a switch, and none exists yet.
 - **Center strokes keep InDesign's drawing and order**; only their escaping miter tips are removed. Hiding the half of a Center stroke that lies over its letter would need a switch, and none exists yet.
-- **Shape strokes are taken over only when they are plain:** a closed path; a solid stroke type; a Miter join; Center or Outside alignment; no corner effects; no transparency on the item; no shear and no scale kept as a percentage (rotation, flipping, and scaling applied to the content, InDesign's default, are fine). Overlapping contours and overprint are covered. Everything else stays InDesign's own, and InDesign's drawing of it keeps its defects ([census](COVERAGE_CENSUS_2026-10-04.md)):
-  - an Inside stroke spills outside parts of the shape thinner than the stroke, and such parts can vanish;
-  - an Outside stroke with any other join, a dash or stripe, a corner effect, transparency, or a kept transform keeps InDesign's broken offset fill (stroke color showing through letters; with corner effects, over much of each letter);
-  - mitered corners past the limit are beveled at their tip, and with corner effects, transparency, or shear a Center miter can poke out of a thin part;
-  - Center strokes with round or bevel joins have nothing to correct.
-- **A gradient fill under an Outside stroke is not refilled**, so where InDesign's offset fill breaks, the backdrop shows through the letter.
-- **Text in a sheared frame** gets a stroke whose width varies slightly with direction (up to about 6%), where InDesign's is even.
+- **Shape strokes** (closed paths) are taken over as follows:
+  - Center with a Miter join.
+  - Outside with any join, including dashes, dots, and stripes. Those keep InDesign's own pattern, drawn under a clip that removes the stroke showing through letters.
+  - Inside on outlines made of straight segments, without corner effects, in an item without content.
+  - Also covered: gradient fills, corner effects (Outside), overlapping contours, overprint, object-level opacity and effects, scale kept as a percentage, and shear.
+
+  These stay InDesign's own, and InDesign's drawing keeps its defects ([census](COVERAGE_CENSUS_2026-10-04.md)):
+  - **Opacity, a blend mode, or an effect set on the stroke or the fill itself** (not on the object). InDesign applies these around its own stroke and fill.
+  - **Inside on curved outlines, with corner effects, or on a frame with content.** InDesign's inward offset fill spills past such outlines, and a corrected stroke would no longer cover the spill. These keep InDesign's Inside stroke, which spills outside thin parts and can drop them.
+  - **Open paths**, and Center strokes with round or bevel joins (nothing to correct).
+- **Corner effects on outlined text** add thin loops to the path. The stroke follows them, as InDesign's own stroke of that path does.
+- **Vertical text in a sheared frame** keeps a stroke whose width varies slightly with direction, where InDesign's is even. Horizontal text is stroked evenly, as InDesign strokes it.
 - **Outlined decorative fonts make large PDFs.** Every corner's miter is a small filled shape in the PDF, and the outside of an overlapping outline is a clip as detailed as the outline itself. One line of outlined Kerberos Fang at 48 pt, stroked both ways, took the test page from 4.3 MB to 12.4 MB.
 - **Content drawn between two frames of a story** (an unrelated filled or stroked object stacked between them) keeps InDesign's order where it covers a letter; invisible objects, such as empty frames, do not.
 - **A translucent upstream frame** is not corrected, and exporting a single page item draws the per-frame correction only.

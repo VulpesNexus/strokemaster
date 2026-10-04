@@ -1,5 +1,6 @@
-"""Pure tests for tools/measure_coverage_census.py: escaping ink, stray stroke, holes, and beveled
-points, on synthetic renders of a square and a thorn. No Adobe, no PDF."""
+"""Pure tests for tools/measure_coverage_census.py: escaping ink, stray stroke, holes, beveled
+points, spilled fill, and paint at the wrong level, on synthetic renders of a square and a thorn.
+No Adobe, no PDF."""
 import sys
 import unittest
 from pathlib import Path
@@ -89,6 +90,18 @@ class Census(unittest.TestCase):
         self.assertEqual(self.measure(n, n, 'inside')['all']['native']['escaping'], 0)
         n[(~fill) & (ndimage.distance_transform_edt(~fill) <= 1 * Z)] = m.STROKE   # 1 pt spilled outside
         self.assertGreater(self.measure(n, n, 'inside')['all']['native']['escaping'], 50)
+
+    def test_fill_outside_the_outline_is_spill(self):
+        n = self.exact.copy()
+        self.assertEqual(self.measure(n)['all']['native']['spill'], 0)
+        n[20 * Z:22 * Z, 33 * Z:38 * Z] = m.FILL   # 10 pt2 of fill beyond the stroke
+        self.assertAlmostEqual(self.measure(n)['all']['native']['spill'], 10, delta=0.5)
+
+    def test_a_stroke_at_the_wrong_level_is_off(self):
+        n = self.exact.copy()
+        self.assertEqual(self.measure(n)['all']['native']['off'], 0)
+        n[n == m.STROKE] = (m.STROKE + m.BACKDROP) // 2   # drawn at half opacity where opaque is expected
+        self.assertGreater(self.measure(n)['all']['native']['off'], 50)
 
     def test_a_beveled_point_is_missing_and_a_whole_one_is_not(self):
         # A 10-degree thorn: its exterior tip is past limit 4, and its whole point (1 / sin 5 deg

@@ -83,3 +83,49 @@ The text route covers more than the page-item route. In every text case except o
 - **Inside strokes:** always broken where the shape is thinner than the stroke; a new alignment for the route (fill, then the stroke at twice the weight clipped to the fill).
 - **Center page items:** only the points and the escaping tips at corner effects, transparency, and shear.
 - **Leave to InDesign:** Center strokes with round or bevel joins, and Outside on open paths.
+
+## Follow-up: extended coverage (2026-10-04 to 10-05)
+
+The owner asked for every fix the census pointed to, with essentially no regressions. Research build `9b924925` covered all of them. *build-coverage-census.jsx* grew to 103 rows: Inside joins and limits, dashes and stripes, corner effects, stroke-level and fill-level transparency, shear and uneven kept scale, and filled text frames with frame strokes. It was exported five ways: native, corrected, *xp=0*, *probe=native*, and geometry.
+
+*measure_coverage_census.py* gained two counts:
+
+- **Spill:** fill-colored pixels outside the outline.
+- **Off:** pixels far from every expected gray, such as a stroke drawn opaque that should be 50%.
+
+The certified build's census was measured again with the same tool, so that every row could be compared with what `3298f50c` drew. *tools/compare_census_runs.py* compares two exports row by row. The record is [*coverage_census_2_21.6.json*](../tests/audit/results/coverage_census_2_21.6.json). An independent review of the code found the same problems.
+
+**What the census build fixed** (all counts in pt², native → corrected):
+
+- **Outside, every join and dash:**
+  - Round, bevel, dashed, dotted, gap color, thick-thin, and limit 2 lose all stray stroke through the letters and all holes, on Minion and German Beauty. For example, round 468 → 0 and dashed 388 → 0.
+  - The pattern stays InDesign's: dashes are InDesign's own stroke, drawn under a clip.
+- **Outside with object-level opacity or a drop shadow, a kept scale, or shear:** the same gains, with whole points.
+- **Outside with corner effects on squares and the thorn:** the offset fill is whole again. On fancy corners, stray goes 2,478 → 0 and holes 357 → 0.
+- **Gradient fills are refilled:** the hole InDesign's offset left in the A is gone. Inside the letters, the gradient matches InDesign's to within 0.17 levels.
+- **Inside strokes:** escaping 614 → 0 and holes 215 → 18 on Inside 4 miter; the same for round, bevel, and limit 2. The thorn's spike is drawn again.
+- **Text:**
+  - In a frame scaled 150% × 100% (kept), escaping goes 677 → 0.9.
+  - In a sheared frame it goes 7.4 → 0.3, with the stroke now even in page space as InDesign draws it.
+  - A 200% kept scale and German Beauty sheared are fixed as well.
+- **Covered rows are unchanged from `3298f50c`** on every count, beyond anti-aliasing.
+
+**What the census build broke, and what the source now does instead** (production `410689fd`, research `ebd06435`; built, not yet run on the host):
+
+| Census build's defect | Measured | Now |
+| --- | --- | --- |
+| A stroke with its own opacity drew opaque | Off 67 → 4,333 (Outside), 18 → 5,946 (Center) | Stroke-level and fill-level transparency and effects are left to InDesign. Object-level ones stay covered. |
+| A stroke's own drop shadow was lost | Shadow 1,607 → 0 | The same refusal |
+| A fill's own 50% opacity was refilled opaque | Off 272 → 5,530 | The same refusal |
+| Inside on curved outlines showed InDesign's inward offset fill spilling past the letters | Spill 60 → 754 (Inside 8), 55 → 1,736 (fancy corners) | Inside is taken over only for straight-segment outlines without corner effects or content (squares, the thorn, frames without content). Elsewhere it stays InDesign's. |
+| Corner effects on outlined text threw 16 pt blocks and spikes from loop pinches | Escaping 4.6 → 352 (inset), 20 → 330 (fancy) | Corners of the resolved region that the outline lacks keep the stroke's bevel past the limit. |
+| Inside on a filled text frame painted one device pixel past the frame | Spill +46 | Inside needs an item without content. |
+
+How the crossing-corner rule was checked: an offline simulation reproduces the plugin's Outside drawing from its own core code. Over every Outside page-item outline of the census, it changes only the 15 pinch corners on the fancy and inset letters, and nothing on German Beauty or any other row. Beveling pinches within the limit too would have changed 6 to 10 of German Beauty's certified corners, so the rule stops at the limit.
+
+What is left:
+
+- **Rounded and bevel corner effects on outlined text:** escaping goes 0.1 → 26 and 0.9 → 6. These are thin loops the corner effect adds to the path; InDesign's own stroke of the same path draws them too.
+- **Open paths:** never reached in the census, and interior miters would be cut by the closing line, so they stay InDesign's.
+- **Text in a frame both sheared and rotated:** 94 → 88. Both drawings escape alike, so the cause is not found yet.
+- **Not tested:** vertical text, which now stays in its own coordinates; type on a path in a sheared frame; radial gradients.

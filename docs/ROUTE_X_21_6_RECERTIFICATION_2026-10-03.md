@@ -215,6 +215,23 @@ The cost is file size: every corner's join and the region's clip go into the PDF
 
 Core tests: 118 checks (the region of overlapping squares, holes both ways, and overlapping circles rebuilt as curves; join polygons and their bands). Retired: five intermediate research builds of this work, `764d8779`, `07a85e7a`, `e1ee659a`, `e661d8ff`, and `3a07f283` (uncommitted states between the fixes above), with their installer backups. `787656a3` stays in the installer's backup *20261004T073206Z*.
 
+## Extended coverage: candidate `410689fd`, not yet certified
+
+The owner asked for every fix the coverage census pointed to (2026-10-04). They are:
+
+- Exact fill-rule and outside-clip checks.
+- Text in sheared and unevenly scaled frames stroked evenly in page space.
+- Gradient refills, and no refill over a frame's content.
+- Outside with every join and dash.
+- Inside strokes.
+- Object-level transparency, kept transforms, and corner effects.
+
+Research build `9b924925` ran the extended census on 21.6, and an independent review read the code. Both found regressions: stroke-level and fill-level transparency lost, Inside spilling InDesign's offset fill on curves, and corner-effect pinches throwing blocks. Candidate `410689fd` (research twin `ebd06435`) leaves those cases to InDesign or bevels them; the [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05) has the measurements.
+
+Core tests: 194 miter-core checks and 65,585 stroke-behind checks. The crossing-corner rule was checked by an offline simulation over every Outside outline of the census.
+
+The candidate is built but not installed. Installing needs an elevated prompt, which was not available in this session, so it has had no host run. Session C11 (the full plan, edits, async, and the suite, against C10) and a census run on it are next. Until then the installed plugin is research build `9b924925`, without a control file in route W mode, or `3298f50c` once restored.
+
 ## Owner verification and decisions
 
 - **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.
@@ -229,6 +246,6 @@ Core tests: 118 checks (the region of overlapping squares, holes both ways, and 
 ## Next
 
 1. The owner's look at overlapping outlines: the font, thorn, and shape test (outlined Kerberos Fang and German Beauty, filled and not; overlapping shapes), and shapes in their own documents.
-2. Page-item coverage: Inside strokes, open paths and caps, corner effects, scaled items, dashes and stroke styles.
+2. Certify candidate `410689fd` (session C11 against C10, and the extended census); then open paths and caps, and Inside on curved outlines (it needs InDesign's own fill replaced, *kBeginFrameFillDrawMessage*).
 3. EPS, PostScript, and screen checks of the miter correction, text and page items; a font sweep beyond Minion, German Beauty, and Kerberos Fang (sans, script, a variable font) at large Outside weights.
 4. XE2 by hand: whether InDesign's interface threads anchored frames at all.

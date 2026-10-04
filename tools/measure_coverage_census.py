@@ -18,7 +18,11 @@ is nearest. With h the stroke's reach from the outline
   holes     backdrop-colored pixels inside the fill, more than f in: fill that is not drawn
             (InDesign's offset fills break on some outlines);
   points    exterior corners past the miter limit (interior corners for Inside), and the part
-            of their points, out to ise_miter::PointReach, that is not drawn: beveled points.
+            of their points, out to ise_miter::PointReach, that is not drawn: beveled points;
+  spill     fill-colored pixels outside the fill, more than f out: fill drawn past the outline
+            (InDesign's inward offset for Inside strokes breaks on some outlines and spills);
+  off       pixels more than OFF levels from every expected gray: paint at the wrong level,
+            such as a stroke drawn opaque that should be 50% (stroke opacity lost).
 
 Areas are in square points. Pixels are classified by the nearest of the row's three expected
 gray levels (backdrop, fill, stroke). Also reported: the area where native and corrected
@@ -26,7 +30,8 @@ renders differ by more than 64 levels (zero means the research build left the ro
 InDesign), and for a transformed item, the same between its native drawing and its untransformed
 twin's (one row down).
 
-usage: measure_coverage_census.py <census folder> [--out JSON] [--zoom 8]
+usage: measure_coverage_census.py <census folder> [--out JSON] [--zoom 8] [--native NAME]
+       [--corrected NAME]   (the exports compared: coverage-census-<NAME>.pdf)
 """
 import argparse
 import json
@@ -39,6 +44,7 @@ from scipy import ndimage
 
 BACKDROP, FILL, STROKE = 147, 34, 255
 FRINGE = 0.3
+OFF = 24
 LIMIT = 4.0
 LONGEST = 20.0
 
@@ -215,6 +221,8 @@ def measure(native, corrected, geo, cs, cell, zoom, align, w, levels, parts):
                 'stray': round(float((sel & stroke & fill & ~allowed).sum() * a), 2),
                 'holes': round(float((sel & (k == 0) & fill & (din > f)).sum() * a), 2),
                 'points_missing': round(float((sel & pts & ~stroke).sum() * a), 2),
+                'spill': round(float((sel & (k == 1) & ~fill & (dout > f)).sum() * a), 2),
+                'off': round(float((sel & (np.abs(img[..., None] - lv[None, None, :]).min(axis=2) > OFF)).sum() * a), 2),
             }
         r['points_area'] = round(float((sel & pts).sum() * a), 2)
         r['native_vs_corrected'] = round(float((sel & diff).sum() * a), 2)
@@ -250,11 +258,13 @@ def main():
     ap.add_argument('folder')
     ap.add_argument('--out')
     ap.add_argument('--zoom', type=float, default=8)
+    ap.add_argument('--native', default='native')
+    ap.add_argument('--corrected', default='corrected')
     a = ap.parse_args()
     d = a.folder.rstrip('/\\') + '/'
     m = json.load(open(d + 'coverage-census.manifest.json', encoding='utf-8'))
-    nat = pymupdf.open(d + 'coverage-census-native.pdf')
-    cor = pymupdf.open(d + 'coverage-census-corrected.pdf')
+    nat = pymupdf.open(d + 'coverage-census-' + a.native + '.pdf')
+    cor = pymupdf.open(d + 'coverage-census-' + a.corrected + '.pdf')
     geo = pymupdf.open(d + 'coverage-census-geometry.pdf')
     rows = []
     by_label = {r['label']: r for r in m['items']}
@@ -262,7 +272,11 @@ def main():
         lab = r['label']
         align = 'center' if 'center' in lab else ('inside' if 'inside' in lab else 'outside')
         levels = [BACKDROP, FILL, STROKE]
-        if 'opacity 50' in lab:
+        if 'stroke opacity 50' in lab:
+            levels = [BACKDROP, FILL, (STROKE + BACKDROP) // 2]
+        elif 'fill opacity 50' in lab:
+            levels = [BACKDROP, (FILL + BACKDROP) // 2, STROKE]
+        elif 'opacity 50' in lab:
             levels = [BACKDROP, (FILL + BACKDROP) // 2, (STROKE + BACKDROP) // 2]
         if 'gradient fill' in lab:
             levels[1] = 65
@@ -284,6 +298,7 @@ def main():
             print(f"{r['row']:2d} {lab[:52]:52s} {part:7s} esc {q['native']['escaping']:7.2f}/{q['corrected']['escaping']:7.2f}"
                   f"  stray {q['native']['stray']:7.2f}/{q['corrected']['stray']:7.2f}  holes {q['native']['holes']:7.2f}/{q['corrected']['holes']:7.2f}"
                   f"  ptmiss {q['native']['points_missing']:6.2f}/{q['corrected']['points_missing']:6.2f}"
+                  f"  spill {q['native']['spill']:6.2f}/{q['corrected']['spill']:6.2f}  off {q['native']['off']:6.2f}/{q['corrected']['off']:6.2f}"
                   f"  diff {q['native_vs_corrected']:7.2f}" + (f"  twin {rec['native_vs_twin']:.2f}" if twin and part == 'all' else ''))
     if a.out:
         out = {'app': m.get('app'), 'zoom': a.zoom, 'fringe_pt': FRINGE, 'limit': LIMIT, 'rows': rows}

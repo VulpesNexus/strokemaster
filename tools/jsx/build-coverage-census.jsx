@@ -12,7 +12,9 @@
 // the stroke follows, exported alone for tools/measure_coverage_census.py.
 // A transformed item that keeps its transform (shear, a scale kept as a percentage) gets a twin
 // one row down: the same outline drawn untransformed at the weight the case should show.
-// Arguments: ISE_ARGS.out (folder for the document and PDFs), ISE_ARGS.control (that file).
+// Arguments: ISE_ARGS.out (folder for the document and PDFs), ISE_ARGS.control (that file),
+// optionally ISE_ARGS.modes: the exports, as [name, control file text, geometry layer only],
+// written to coverage-census-<name>.pdf (default: native, corrected, geometry).
 (function () {
     var lib = $.global.ISE_LIB;
     return lib.run(function () {
@@ -25,6 +27,19 @@
         function T(name, align, w, extra, font) { cases.push({ kind: 'text', name: name, align: align, w: w, extra: extra || {}, font: font || MINION }); }
         function dashed(it, d) { it.strokeType = d.strokeStyles.itemByName('Dashed'); it.strokeDashAndGap = [12, 4]; }
         function opacity(it) { it.transparencySettings.blendingSettings.opacity = 50; }
+        function styled(name) { return function (it, d) { it.strokeType = d.strokeStyles.itemByName(name); }; }
+        function limit2(it) { it.miterLimit = 2; }
+        function both(f, g) { return function (it, d) { f(it, d); g(it, d); }; }
+        // Two overlapping parallelograms: the squares sheared into their path (not a transform).
+        function shearSquares(it) {
+            if (it.paths.length !== 2 || it.paths[0].pathPoints.length !== 4 || it.paths[1].pathPoints.length !== 4) { return; }
+            var k = Math.tan(20 * Math.PI / 180), y0 = it.geometricBounds[0];
+            for (var q = 0; q < 2; q++) {
+                var pts = it.paths[q].entirePath;
+                for (var r = 0; r < pts.length; r++) { pts[r] = [pts[r][0] + k * (pts[r][1] - y0), pts[r][1]]; }
+                it.paths[q].entirePath = pts;
+            }
+        }
 
         P('center 8 miter (covered)', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN);
         P('outside 4 miter (covered)', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN);
@@ -71,6 +86,36 @@
         P('GB outside 4 miter opacity 50', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, opacity, null, GB);
         P('GB center 8 miter opacity 50', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, opacity, null, GB);
         P('GB outside 4 miter sheared 20', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, null, { scale: 1, shear: 20, twinWeight: 4 }, GB);
+        // Rows added with the full coverage (2026-10-04): every remaining variant of each alignment.
+        P('inside 4 round', A.INSIDE_ALIGNMENT, 4, J.ROUND_END_JOIN);
+        P('inside 4 bevel', A.INSIDE_ALIGNMENT, 4, J.BEVEL_END_JOIN);
+        P('inside 4 miter limit 2', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, limit2);
+        P('outside 4 bevel limit 2', A.OUTSIDE_ALIGNMENT, 4, J.BEVEL_END_JOIN, limit2);
+        P('inside 4 miter dashed 12/4', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, dashed);
+        P('inside 4 miter thick-thin', A.INSIDE_ALIGNMENT, 8, J.MITER_END_JOIN, styled('Thick - Thin'));
+        P('outside 4 miter dotted', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, styled('Dotted'));
+        P('outside 4 miter dashed 12/4, gap color', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it, d) { dashed(it, d); it.gapColor = d.colors.itemByName('ISE black 20'); });
+        P('outside 4 round dashed 12/4', A.OUTSIDE_ALIGNMENT, 4, J.ROUND_END_JOIN, dashed);
+        P('center 8 miter wavy', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, styled('Wavy'));
+        P('center 8 miter inset corners 4', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, function (it) { corner(it, CornerOptions.INSET_CORNER); });
+        P('inside 4 miter fancy corners 4', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { corner(it, CornerOptions.FANCY_CORNER); });
+        P('outside 4 round rounded corners 4', A.OUTSIDE_ALIGNMENT, 4, J.ROUND_END_JOIN, function (it) { corner(it, CornerOptions.ROUNDED_CORNER); });
+        P('outside 4 miter bevel corners 4', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { corner(it, CornerOptions.BEVEL_CORNER); });
+        P('outside 4 miter inverse rounded corners 4', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { corner(it, CornerOptions.INVERSE_ROUNDED_CORNER); });
+        P('outside 4 miter stroke opacity 50', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { it.strokeTransparencySettings.blendingSettings.opacity = 50; });
+        P('outside 4 miter fill opacity 50', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { it.fillTransparencySettings.blendingSettings.opacity = 50; });
+        P('center 8 miter stroke opacity 50', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, function (it) { it.strokeTransparencySettings.blendingSettings.opacity = 50; });
+        P('inside 4 miter opacity 50', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, opacity);
+        P('outside 4 miter stroke drop shadow', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { shadow(it.strokeTransparencySettings.dropShadowSettings); });
+        P('inside 4 miter gradient fill', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it, d) { it.fillColor = d.gradients.itemByName('ISE dark gradient'); });
+        P('outside 4 miter squares sheared into the path', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, shearSquares);
+        P('center 8 miter squares sheared into the path', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, shearSquares);
+        P('outside 4 miter scaled 150% x 100%, kept as a percentage', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, null, { scale: 1, h: 150, v: 100, keep: true });
+        P('inside 4 miter sheared 20', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, null, { scale: 1, shear: 20, twinWeight: 4 });
+        P('outside 4 bevel sheared 20', A.OUTSIDE_ALIGNMENT, 4, J.BEVEL_END_JOIN, null, { scale: 1, shear: 20, twinWeight: 4 });
+        P('center 8 miter open, round caps', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, function (it) { open(it); it.endCap = EndCap.ROUND_END_CAP; });
+        P('GB inside 4 round', A.INSIDE_ALIGNMENT, 4, J.ROUND_END_JOIN, null, null, GB);
+        P('GB outside 4 miter stroke opacity 50', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { it.strokeTransparencySettings.blendingSettings.opacity = 50; }, null, GB);
 
         // Live text as suite B sets it (Minion 36 pt, Outside 4 pt), where InDesign's miters spike.
         function frameOpacity(f) { f.transparencySettings.blendingSettings.opacity = 50; }
@@ -93,6 +138,27 @@
         T('text GB center 8 miter, frame opacity 50', TA.CENTER_ALIGNMENT, 8, { frame: frameOpacity }, GB);
         T('text GB outside 4 miter, frame drop shadow', TA.OUTSIDE_ALIGNMENT, 4, { frame: function (f) { shadow(f.transparencySettings.dropShadowSettings); } }, GB);
         T('text GB outside 4 miter, type on a path', TA.OUTSIDE_ALIGNMENT, 4, { path: true }, GB);
+        // Transforms kept on the frame, set by matrix (setting horizontalScale on a text frame
+        // resized the frame and left the text unscaled, 2026-10-04).
+        T('text outside 4 miter, frame scaled 200% by matrix, kept', TA.OUTSIDE_ALIGNMENT, 2, { size: 18, transform: { matrix: { horizontalScaleFactor: 2, verticalScaleFactor: 2 }, keep: true, factor: 2 } });
+        T('text outside 4 miter, frame scaled 150% x 100% by matrix, kept', TA.OUTSIDE_ALIGNMENT, 4, { size: 24, transform: { matrix: { horizontalScaleFactor: 1.5 }, keep: true, factor: Math.sqrt(1.5) } });
+        T('text center 8 miter, frame sheared 20', TA.CENTER_ALIGNMENT, 8, { transform: { shear: 20 } });
+        T('text outside 4 miter, frame sheared 20 and rotated 10', TA.OUTSIDE_ALIGNMENT, 4, { transform: { shear: 20, rotate: 10 } });
+        T('text GB outside 4 miter, frame sheared 20', TA.OUTSIDE_ALIGNMENT, 4, { transform: { shear: 20 } }, GB);
+        // Frames with content: InDesign strokes a frame after its text, so nothing drawn at the
+        // frame's stroke may paint the frame's fill again over the text.
+        function frameStroke(align, kind) {
+            return function (f) {
+                f.fillColor = doc.colors.itemByName('ISE black 20');
+                f.strokeColor = doc.swatches.itemByName('Black');
+                f.strokeWeight = 4;
+                f.strokeAlignment = align;
+                if (kind) { f.strokeType = doc.strokeStyles.itemByName(kind); }
+            };
+        }
+        T('text frame filled, outside 4 frame stroke', TA.OUTSIDE_ALIGNMENT, 4, { frame: frameStroke(StrokeAlignment.OUTSIDE_ALIGNMENT) });
+        T('text frame filled, inside 4 frame stroke', TA.OUTSIDE_ALIGNMENT, 4, { frame: frameStroke(StrokeAlignment.INSIDE_ALIGNMENT) });
+        T('text frame filled, outside 4 dashed frame stroke', TA.OUTSIDE_ALIGNMENT, 4, { frame: frameStroke(StrokeAlignment.OUTSIDE_ALIGNMENT, 'Dashed') });
 
         var twins = 0;
         for (var c0 = 0; c0 < cases.length; c0++) { if (cases[c0].transform && cases[c0].transform.twinWeight) { twins++; } }
@@ -187,6 +253,7 @@
                     if (tr.shear) { it.shearAngle = tr.shear; }
                     if (tr.rotate) { it.rotationAngle = tr.rotate; }
                     if (tr.flip) { it.flipItem(Flip.HORIZONTAL); }
+                    if (tr.matrix) { it.transform(CoordinateSpaces.PASTEBOARD_COORDINATES, AnchorPoint.TOP_LEFT_ANCHOR, app.transformationMatrices.add(tr.matrix)); }
                 } finally {
                     app.transformPreferences.whenScaling = whenScaling;
                 }
@@ -264,7 +331,7 @@
                 host.strokeColor = none;
                 story = host.textPaths.add({ contents: TEXT }).parentStory;
             } else {
-                var fw = x.size ? 180 : (x.transform && x.transform.rotate ? 300 : W - 32);
+                var fw = x.size ? 180 : (x.transform && x.transform.rotate ? 280 : W - 32);
                 host = page.textFrames.add({ geometricBounds: [y0() + 25, 16, y0() + 75, 16 + fw] });
                 host.textFramePreferences.insetSpacing = [0, 0, 0, 0];
                 host.contents = TEXT;
@@ -296,7 +363,7 @@
                 strip(hd);
                 outl = lib.tryDo('outline ' + c.name, function () { return flat(hd.createOutlines(true)); });
             }
-            rec = { row: row, kind: c.kind, label: c.name, font: c.font.split('\t')[0], weight: c.w * (x.transform && x.transform.h ? x.transform.h / 100 : 1), cell: [y0(), 0, y0() + ROW, W], items: [] };
+            rec = { row: row, kind: c.kind, label: c.name, font: c.font.split('\t')[0], weight: c.w * (x.transform && x.transform.h ? x.transform.h / 100 : (x.transform && x.transform.factor ? x.transform.factor : 1)), cell: [y0(), 0, y0() + ROW, W], items: [] };
             for (k = 0; outl && k < outl.length; k++) {
                 outl[k].fillColor = black;
                 outl[k].strokeColor = none;
@@ -317,7 +384,7 @@
         function show(geometryOnly) {
             for (var q = 0; q < others.length; q++) { others[q].visible = geometryOnly ? others[q] === geoLayer : others[q] !== geoLayer; }
         }
-        var modes = [['native', 'mode=native\nmiter=0\nshapes=0\n', false], ['corrected', 'mode=story\nmiter=1\nshapes=1\n', false], ['geometry', 'mode=native\nmiter=0\nshapes=0\n', true]];
+        var modes = lib.args.modes || [['native', 'mode=native\nmiter=0\nshapes=0\n', false], ['corrected', 'mode=story\nmiter=1\nshapes=1\n', false], ['geometry', 'mode=native\nmiter=0\nshapes=0\n', true]];
         for (var m = 0; m < modes.length; m++) {
             var ctl = new File(lib.args.control);
             ctl.encoding = 'UTF-8';
