@@ -1,0 +1,2255 @@
+{
+ "schema": 1,
+ "build": "e367f134 (production, installed 2026-10-05)",
+ "document": "coverage census 8 (build/look/coverage-census-8), geometry layer hidden (cert-lib prep hideLayer)",
+ "outputs": {
+  "hqp": "PDF [High Quality Print]",
+  "x4": "PDF [PDF/X-4:2008]",
+  "x1a": "PDF [PDF/X-1a:2001], flattened",
+  "eps": "EPS, converted to PDF by Ghostscript 9.23 pdfwrite (-dEPSCrop)",
+  "ps": "PostScript [High Resolution] flattener, converted to PDF by Ghostscript 9.23 pdfwrite"
+ },
+ "note": "Per output, the census metrics (tools/measure_coverage_census.py) that differ from the High Quality Print export by more than 1 pt2 (off-level pixels: 8 pt2). hqp itself equals the research census (coverage_census_6_21.6.json) on every metric. The 0-byte census PNG (the 400 x 11,570 pt page at 300 ppi) is not measured.",
+ "differences": {
+  "x4": [
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 459.11,
+    "output": 443.41
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1253.42,
+    "output": 1192.09
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1728.62,
+    "output": 1716.14
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "thorn",
+    "metric": "spill",
+    "hqp": 297.17,
+    "output": 292.66
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 872.2,
+    "output": 840.44
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 747.14,
+    "output": 727.97
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 287.23,
+    "output": 273.67
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 364.8,
+    "output": 357.3
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1031.8,
+    "output": 983.38
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1682.62,
+    "output": 1708.14
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "spill",
+    "hqp": 210.67,
+    "output": 215.48
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 399.42,
+    "output": 409.06
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 603.5,
+    "output": 581.25
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1197.95,
+    "output": 1161.95
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1636.31,
+    "output": 1626.75
+   },
+   {
+    "row": 89,
+    "case": "text outside 4 miter, gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1005.36,
+    "output": 970.05
+   },
+   {
+    "row": 95,
+    "case": "text GB outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1081.3,
+    "output": 1038.81
+   }
+  ],
+  "x1a": [
+   {
+    "row": 7,
+    "case": "center 8 bevel",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 21.0,
+    "output": 12.0
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 37.62,
+    "output": 33.27
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "text",
+    "metric": "off",
+    "hqp": 303.39,
+    "output": 287.02
+   },
+   {
+    "row": 13,
+    "case": "center 8 miter fancy corners 4",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 19.41,
+    "output": 28.95
+   },
+   {
+    "row": 16,
+    "case": "outside 4 miter opacity 50",
+    "part": "text",
+    "metric": "off",
+    "hqp": 93.86,
+    "output": 77.78
+   },
+   {
+    "row": 16,
+    "case": "outside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 55.39,
+    "output": 2.33
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 55.02,
+    "output": 64.5
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 6.52,
+    "output": 5.48
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 67.31,
+    "output": 2.88
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 459.11,
+    "output": 445.64
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1253.42,
+    "output": 1206.73
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 446.2,
+    "output": 457.58
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 61.47,
+    "output": 29.62
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 872.2,
+    "output": 847.33
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 58.02,
+    "output": 45.94
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 747.14,
+    "output": 723.94
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 211.52,
+    "output": 151.5
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 256.72,
+    "output": 193.17
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 108.41,
+    "output": 80.69
+   },
+   {
+    "row": 21,
+    "case": "outside 4 miter scaled 50%, applied to content (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 144.5,
+    "output": 152.53
+   },
+   {
+    "row": 28,
+    "case": "center 8 miter sheared 20",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 10.28,
+    "output": 9.2
+   },
+   {
+    "row": 28,
+    "case": "center 8 miter sheared 20",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.98,
+    "output": 2.75
+   },
+   {
+    "row": 29,
+    "case": "center 8 miter sheared 20 - twin, untransformed",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 4.02,
+    "output": 2.72
+   },
+   {
+    "row": 36,
+    "case": "GB center 8 miter (covered)",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 9.5,
+    "output": 0.5
+   },
+   {
+    "row": 36,
+    "case": "GB center 8 miter (covered)",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.75,
+    "output": 0.02
+   },
+   {
+    "row": 40,
+    "case": "GB outside 4 miter dashed 12/4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 123.17,
+    "output": 114.36
+   },
+   {
+    "row": 41,
+    "case": "GB outside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 55.36,
+    "output": 2.34
+   },
+   {
+    "row": 42,
+    "case": "GB center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 63.98,
+    "output": 55.0
+   },
+   {
+    "row": 42,
+    "case": "GB center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 67.31,
+    "output": 2.88
+   },
+   {
+    "row": 51,
+    "case": "outside 4 miter dotted",
+    "part": "text",
+    "metric": "off",
+    "hqp": 147.61,
+    "output": 125.89
+   },
+   {
+    "row": 52,
+    "case": "outside 4 miter dashed 12/4, gap color",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 243.91,
+    "output": 231.84
+   },
+   {
+    "row": 52,
+    "case": "outside 4 miter dashed 12/4, gap color",
+    "part": "text",
+    "metric": "off",
+    "hqp": 710.69,
+    "output": 692.42
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 25.06,
+    "output": 22.05
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 32.72,
+    "output": 29.23
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "text",
+    "metric": "off",
+    "hqp": 165.19,
+    "output": 151.3
+   },
+   {
+    "row": 55,
+    "case": "center 8 miter inset corners 4",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 16.61,
+    "output": 25.5
+   },
+   {
+    "row": 55,
+    "case": "center 8 miter inset corners 4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 11.3,
+    "output": 9.34
+   },
+   {
+    "row": 56,
+    "case": "inside 4 miter fancy corners 4",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 7.16,
+    "output": 1.84
+   },
+   {
+    "row": 56,
+    "case": "inside 4 miter fancy corners 4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.84,
+    "output": 1.55
+   },
+   {
+    "row": 60,
+    "case": "outside 4 miter stroke opacity 50",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 145.38,
+    "output": 144.23
+   },
+   {
+    "row": 61,
+    "case": "outside 4 miter fill opacity 50",
+    "part": "squares",
+    "metric": "escaping",
+    "hqp": 5045.58,
+    "output": 5047.14
+   },
+   {
+    "row": 63,
+    "case": "inside 4 miter opacity 50",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 12.48,
+    "output": 6.5
+   },
+   {
+    "row": 63,
+    "case": "inside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 12.33,
+    "output": 2.75
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 364.8,
+    "output": 368.5
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1031.8,
+    "output": 1014.34
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1682.62,
+    "output": 1729.31
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "spill",
+    "hqp": 210.67,
+    "output": 218.39
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 399.42,
+    "output": 410.66
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 42.5,
+    "output": 14.5
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 603.5,
+    "output": 581.25
+   },
+   {
+    "row": 75,
+    "case": "GB outside 4 miter stroke opacity 50",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 405.08,
+    "output": 403.69
+   },
+   {
+    "row": 76,
+    "case": "center 8 miter open, arrowheads",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 10.17,
+    "output": 7.33
+   },
+   {
+    "row": 78,
+    "case": "text outside 4 miter (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.12,
+    "output": 158.14
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1197.95,
+    "output": 1196.48
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1636.31,
+    "output": 1655.0
+   },
+   {
+    "row": 83,
+    "case": "text outside 4 miter, frame scaled 200%, applied to content",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.17,
+    "output": 158.33
+   },
+   {
+    "row": 84,
+    "case": "text outside 4 miter, frame scaled 200%, kept as a percentage",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.36,
+    "output": 158.5
+   },
+   {
+    "row": 85,
+    "case": "text outside 4 miter, frame sheared 20 (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 169.72,
+    "output": 159.22
+   },
+   {
+    "row": 87,
+    "case": "text outside 4 miter, skew 20, horizontal scale 120% (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 190.11,
+    "output": 177.77
+   },
+   {
+    "row": 89,
+    "case": "text outside 4 miter, gradient fill (covered)",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 111.17,
+    "output": 92.19
+   },
+   {
+    "row": 89,
+    "case": "text outside 4 miter, gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1005.36,
+    "output": 961.39
+   },
+   {
+    "row": 90,
+    "case": "text outside 4 miter, gradient stroke (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 556.27,
+    "output": 404.75
+   },
+   {
+    "row": 95,
+    "case": "text GB outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1081.3,
+    "output": 1063.52
+   },
+   {
+    "row": 95,
+    "case": "text GB outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1475.48,
+    "output": 1498.36
+   },
+   {
+    "row": 97,
+    "case": "text outside 4 miter, frame scaled 200% by matrix, kept",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.58,
+    "output": 158.66
+   },
+   {
+    "row": 98,
+    "case": "text outside 4 miter, frame scaled 150% x 100% by matrix, kept",
+    "part": "text",
+    "metric": "off",
+    "hqp": 141.42,
+    "output": 127.89
+   },
+   {
+    "row": 102,
+    "case": "text frame filled, outside 4 frame stroke",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 11601.89,
+    "output": 11549.66
+   },
+   {
+    "row": 104,
+    "case": "text frame filled, outside 4 dashed frame stroke",
+    "part": "text",
+    "metric": "off",
+    "hqp": 11857.97,
+    "output": 11849.73
+   }
+  ],
+  "eps": [
+   {
+    "row": 0,
+    "case": "center 8 miter (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 50.89,
+    "output": 59.78
+   },
+   {
+    "row": 0,
+    "case": "center 8 miter (covered)",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 6.48,
+    "output": 10.95
+   },
+   {
+    "row": 5,
+    "case": "outside 4 bevel",
+    "part": "text",
+    "metric": "off",
+    "hqp": 142.23,
+    "output": 129.27
+   },
+   {
+    "row": 6,
+    "case": "center 8 round",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 5.3,
+    "output": 0.19
+   },
+   {
+    "row": 7,
+    "case": "center 8 bevel",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 21.0,
+    "output": 12.0
+   },
+   {
+    "row": 7,
+    "case": "center 8 bevel",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 0.3,
+    "output": 5.3
+   },
+   {
+    "row": 8,
+    "case": "outside 4 miter dashed 12/4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 130.09,
+    "output": 138.36
+   },
+   {
+    "row": 9,
+    "case": "center 8 miter dashed 12/4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 79.66,
+    "output": 92.28
+   },
+   {
+    "row": 9,
+    "case": "center 8 miter dashed 12/4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 5.7,
+    "output": 9.75
+   },
+   {
+    "row": 10,
+    "case": "outside 8 miter thick-thin",
+    "part": "text",
+    "metric": "off",
+    "hqp": 223.98,
+    "output": 262.62
+   },
+   {
+    "row": 10,
+    "case": "outside 8 miter thick-thin",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 45.48,
+    "output": 55.78
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 37.62,
+    "output": 34.59
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "text",
+    "metric": "off",
+    "hqp": 303.39,
+    "output": 316.94
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 11.66,
+    "output": 17.11
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 50.42,
+    "output": 68.11
+   },
+   {
+    "row": 13,
+    "case": "center 8 miter fancy corners 4",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 0.47,
+    "output": 4.66
+   },
+   {
+    "row": 13,
+    "case": "center 8 miter fancy corners 4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 67.3,
+    "output": 58.97
+   },
+   {
+    "row": 13,
+    "case": "center 8 miter fancy corners 4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 6.16,
+    "output": 9.73
+   },
+   {
+    "row": 16,
+    "case": "outside 4 miter opacity 50",
+    "part": "text",
+    "metric": "off",
+    "hqp": 93.86,
+    "output": 79.66
+   },
+   {
+    "row": 16,
+    "case": "outside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 55.39,
+    "output": 2.33
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "stray",
+    "hqp": 476.09,
+    "output": 479.06
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 18.5,
+    "output": 9.5
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 55.02,
+    "output": 64.5
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 6.52,
+    "output": 2.75
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 67.31,
+    "output": 2.88
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 459.11,
+    "output": 451.88
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 573.72,
+    "output": 588.72
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1253.42,
+    "output": 1212.75
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1728.62,
+    "output": 1771.61
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "thorn",
+    "metric": "spill",
+    "hqp": 297.17,
+    "output": 329.41
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 446.2,
+    "output": 492.44
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 61.47,
+    "output": 29.62
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 872.2,
+    "output": 846.17
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 58.02,
+    "output": 46.56
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 747.14,
+    "output": 724.84
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 211.52,
+    "output": 154.5
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 256.72,
+    "output": 173.23
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 108.41,
+    "output": 84.8
+   },
+   {
+    "row": 28,
+    "case": "center 8 miter sheared 20",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 10.28,
+    "output": 9.27
+   },
+   {
+    "row": 28,
+    "case": "center 8 miter sheared 20",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.98,
+    "output": 2.78
+   },
+   {
+    "row": 29,
+    "case": "center 8 miter sheared 20 - twin, untransformed",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 4.02,
+    "output": 2.69
+   },
+   {
+    "row": 36,
+    "case": "GB center 8 miter (covered)",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 9.5,
+    "output": 0.5
+   },
+   {
+    "row": 36,
+    "case": "GB center 8 miter (covered)",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.75,
+    "output": 0.02
+   },
+   {
+    "row": 40,
+    "case": "GB outside 4 miter dashed 12/4",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 37.5,
+    "output": 21.28
+   },
+   {
+    "row": 41,
+    "case": "GB outside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 55.36,
+    "output": 2.33
+   },
+   {
+    "row": 42,
+    "case": "GB center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 63.98,
+    "output": 55.0
+   },
+   {
+    "row": 42,
+    "case": "GB center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 67.31,
+    "output": 2.86
+   },
+   {
+    "row": 43,
+    "case": "GB outside 4 miter sheared 20",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 34.92,
+    "output": 37.55
+   },
+   {
+    "row": 51,
+    "case": "outside 4 miter dotted",
+    "part": "text",
+    "metric": "off",
+    "hqp": 147.61,
+    "output": 126.31
+   },
+   {
+    "row": 52,
+    "case": "outside 4 miter dashed 12/4, gap color",
+    "part": "text",
+    "metric": "off",
+    "hqp": 710.69,
+    "output": 693.81
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 25.06,
+    "output": 21.84
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 32.72,
+    "output": 29.52
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "text",
+    "metric": "off",
+    "hqp": 165.19,
+    "output": 152.2
+   },
+   {
+    "row": 55,
+    "case": "center 8 miter inset corners 4",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 0.89,
+    "output": 18.97
+   },
+   {
+    "row": 56,
+    "case": "inside 4 miter fancy corners 4",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 7.16,
+    "output": 1.83
+   },
+   {
+    "row": 56,
+    "case": "inside 4 miter fancy corners 4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.84,
+    "output": 1.58
+   },
+   {
+    "row": 58,
+    "case": "outside 4 miter bevel corners 4",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 0.14,
+    "output": 1.55
+   },
+   {
+    "row": 59,
+    "case": "outside 4 miter inverse rounded corners 4",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 0.58,
+    "output": 12.59
+   },
+   {
+    "row": 59,
+    "case": "outside 4 miter inverse rounded corners 4",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 56.11,
+    "output": 55.0
+   },
+   {
+    "row": 59,
+    "case": "outside 4 miter inverse rounded corners 4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 139.19,
+    "output": 128.59
+   },
+   {
+    "row": 60,
+    "case": "outside 4 miter stroke opacity 50",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 145.38,
+    "output": 144.22
+   },
+   {
+    "row": 61,
+    "case": "outside 4 miter fill opacity 50",
+    "part": "squares",
+    "metric": "escaping",
+    "hqp": 5045.58,
+    "output": 5046.69
+   },
+   {
+    "row": 61,
+    "case": "outside 4 miter fill opacity 50",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 4882.62,
+    "output": 4884.98
+   },
+   {
+    "row": 61,
+    "case": "outside 4 miter fill opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 271.89,
+    "output": 260.72
+   },
+   {
+    "row": 63,
+    "case": "inside 4 miter opacity 50",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 12.48,
+    "output": 6.5
+   },
+   {
+    "row": 63,
+    "case": "inside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 12.33,
+    "output": 2.75
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 364.8,
+    "output": 372.56
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1031.8,
+    "output": 986.77
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1682.62,
+    "output": 1748.39
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "spill",
+    "hqp": 210.67,
+    "output": 206.58
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 399.42,
+    "output": 412.66
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 42.5,
+    "output": 14.5
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 603.5,
+    "output": 588.75
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "text",
+    "metric": "off",
+    "hqp": 117.7,
+    "output": 142.25
+   },
+   {
+    "row": 75,
+    "case": "GB outside 4 miter stroke opacity 50",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 405.08,
+    "output": 403.64
+   },
+   {
+    "row": 78,
+    "case": "text outside 4 miter (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.12,
+    "output": 157.27
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1197.95,
+    "output": 1230.69
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1636.31,
+    "output": 1660.3
+   },
+   {
+    "row": 83,
+    "case": "text outside 4 miter, frame scaled 200%, applied to content",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.17,
+    "output": 157.09
+   },
+   {
+    "row": 84,
+    "case": "text outside 4 miter, frame scaled 200%, kept as a percentage",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.36,
+    "output": 157.28
+   },
+   {
+    "row": 85,
+    "case": "text outside 4 miter, frame sheared 20 (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 169.72,
+    "output": 159.33
+   },
+   {
+    "row": 87,
+    "case": "text outside 4 miter, skew 20, horizontal scale 120% (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 190.11,
+    "output": 178.42
+   },
+   {
+    "row": 89,
+    "case": "text outside 4 miter, gradient fill (covered)",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 111.17,
+    "output": 92.19
+   },
+   {
+    "row": 89,
+    "case": "text outside 4 miter, gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1005.36,
+    "output": 926.97
+   },
+   {
+    "row": 90,
+    "case": "text outside 4 miter, gradient stroke (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 556.27,
+    "output": 386.03
+   },
+   {
+    "row": 91,
+    "case": "text GB outside 4 miter (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 154.09,
+    "output": 138.03
+   },
+   {
+    "row": 95,
+    "case": "text GB outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1081.3,
+    "output": 1082.91
+   },
+   {
+    "row": 95,
+    "case": "text GB outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1475.48,
+    "output": 1509.12
+   },
+   {
+    "row": 97,
+    "case": "text outside 4 miter, frame scaled 200% by matrix, kept",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.58,
+    "output": 153.8
+   },
+   {
+    "row": 98,
+    "case": "text outside 4 miter, frame scaled 150% x 100% by matrix, kept",
+    "part": "text",
+    "metric": "off",
+    "hqp": 141.42,
+    "output": 114.33
+   },
+   {
+    "row": 99,
+    "case": "text center 8 miter, frame sheared 20",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 0.28,
+    "output": 22.3
+   },
+   {
+    "row": 100,
+    "case": "text outside 4 miter, frame sheared 20 and rotated 10",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 87.89,
+    "output": 93.77
+   },
+   {
+    "row": 101,
+    "case": "text GB outside 4 miter, frame sheared 20",
+    "part": "text",
+    "metric": "off",
+    "hqp": 151.41,
+    "output": 141.34
+   },
+   {
+    "row": 102,
+    "case": "text frame filled, outside 4 frame stroke",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 11601.89,
+    "output": 11595.66
+   },
+   {
+    "row": 102,
+    "case": "text frame filled, outside 4 frame stroke",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 3518.0,
+    "output": 3427.0
+   },
+   {
+    "row": 102,
+    "case": "text frame filled, outside 4 frame stroke",
+    "part": "text",
+    "metric": "off",
+    "hqp": 11839.19,
+    "output": 11891.44
+   },
+   {
+    "row": 103,
+    "case": "text frame filled, inside 4 frame stroke",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 13182.0,
+    "output": 13157.42
+   },
+   {
+    "row": 103,
+    "case": "text frame filled, inside 4 frame stroke",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 3442.27,
+    "output": 3436.0
+   },
+   {
+    "row": 103,
+    "case": "text frame filled, inside 4 frame stroke",
+    "part": "text",
+    "metric": "off",
+    "hqp": 8559.16,
+    "output": 8610.41
+   },
+   {
+    "row": 104,
+    "case": "text frame filled, outside 4 dashed frame stroke",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 2012.72,
+    "output": 2037.36
+   },
+   {
+    "row": 104,
+    "case": "text frame filled, outside 4 dashed frame stroke",
+    "part": "text",
+    "metric": "off",
+    "hqp": 11857.97,
+    "output": 11885.44
+   }
+  ],
+  "ps": [
+   {
+    "row": 0,
+    "case": "center 8 miter (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 50.89,
+    "output": 60.03
+   },
+   {
+    "row": 0,
+    "case": "center 8 miter (covered)",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 6.48,
+    "output": 10.95
+   },
+   {
+    "row": 5,
+    "case": "outside 4 bevel",
+    "part": "text",
+    "metric": "off",
+    "hqp": 142.23,
+    "output": 129.47
+   },
+   {
+    "row": 6,
+    "case": "center 8 round",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 5.3,
+    "output": 0.2
+   },
+   {
+    "row": 7,
+    "case": "center 8 bevel",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 21.0,
+    "output": 12.0
+   },
+   {
+    "row": 7,
+    "case": "center 8 bevel",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 0.3,
+    "output": 5.25
+   },
+   {
+    "row": 8,
+    "case": "outside 4 miter dashed 12/4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 130.09,
+    "output": 140.22
+   },
+   {
+    "row": 9,
+    "case": "center 8 miter dashed 12/4",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 0.12,
+    "output": 1.55
+   },
+   {
+    "row": 9,
+    "case": "center 8 miter dashed 12/4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 79.66,
+    "output": 92.41
+   },
+   {
+    "row": 9,
+    "case": "center 8 miter dashed 12/4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 5.7,
+    "output": 9.53
+   },
+   {
+    "row": 10,
+    "case": "outside 8 miter thick-thin",
+    "part": "text",
+    "metric": "off",
+    "hqp": 223.98,
+    "output": 267.28
+   },
+   {
+    "row": 10,
+    "case": "outside 8 miter thick-thin",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 45.48,
+    "output": 62.59
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "squares",
+    "metric": "stray",
+    "hqp": 146.53,
+    "output": 150.19
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 53.7,
+    "output": 42.27
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 111.23,
+    "output": 102.38
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 37.62,
+    "output": 32.02
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 11.66,
+    "output": 14.72
+   },
+   {
+    "row": 11,
+    "case": "center 8 miter thin-thin",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 50.42,
+    "output": 58.61
+   },
+   {
+    "row": 13,
+    "case": "center 8 miter fancy corners 4",
+    "part": "text",
+    "metric": "off",
+    "hqp": 67.3,
+    "output": 59.16
+   },
+   {
+    "row": 13,
+    "case": "center 8 miter fancy corners 4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 6.16,
+    "output": 9.73
+   },
+   {
+    "row": 16,
+    "case": "outside 4 miter opacity 50",
+    "part": "text",
+    "metric": "off",
+    "hqp": 93.86,
+    "output": 79.66
+   },
+   {
+    "row": 16,
+    "case": "outside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 55.39,
+    "output": 2.33
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "stray",
+    "hqp": 476.09,
+    "output": 479.06
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 18.5,
+    "output": 9.5
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 55.02,
+    "output": 64.5
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 6.52,
+    "output": 2.75
+   },
+   {
+    "row": 17,
+    "case": "center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 67.31,
+    "output": 2.88
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 459.11,
+    "output": 449.59
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 573.72,
+    "output": 586.02
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1253.42,
+    "output": 1218.55
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1728.62,
+    "output": 1743.28
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "thorn",
+    "metric": "spill",
+    "hqp": 297.17,
+    "output": 316.39
+   },
+   {
+    "row": 18,
+    "case": "outside 4 miter drop shadow",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 446.2,
+    "output": 488.14
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 61.47,
+    "output": 29.62
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 872.2,
+    "output": 846.17
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 58.02,
+    "output": 46.56
+   },
+   {
+    "row": 19,
+    "case": "outside 4 miter gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 747.14,
+    "output": 724.86
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 211.52,
+    "output": 153.5
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 256.72,
+    "output": 191.81
+   },
+   {
+    "row": 20,
+    "case": "outside 4 miter gradient stroke (covered)",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 108.41,
+    "output": 83.41
+   },
+   {
+    "row": 28,
+    "case": "center 8 miter sheared 20",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 10.28,
+    "output": 9.27
+   },
+   {
+    "row": 29,
+    "case": "center 8 miter sheared 20 - twin, untransformed",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 4.02,
+    "output": 2.75
+   },
+   {
+    "row": 36,
+    "case": "GB center 8 miter (covered)",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 9.5,
+    "output": 0.5
+   },
+   {
+    "row": 36,
+    "case": "GB center 8 miter (covered)",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.75,
+    "output": 0.02
+   },
+   {
+    "row": 40,
+    "case": "GB outside 4 miter dashed 12/4",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 37.5,
+    "output": 21.33
+   },
+   {
+    "row": 41,
+    "case": "GB outside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 55.36,
+    "output": 2.33
+   },
+   {
+    "row": 42,
+    "case": "GB center 8 miter opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 63.98,
+    "output": 55.0
+   },
+   {
+    "row": 42,
+    "case": "GB center 8 miter opacity 50",
+    "part": "thorn",
+    "metric": "points_missing",
+    "hqp": 67.31,
+    "output": 2.86
+   },
+   {
+    "row": 51,
+    "case": "outside 4 miter dotted",
+    "part": "text",
+    "metric": "off",
+    "hqp": 147.61,
+    "output": 128.23
+   },
+   {
+    "row": 52,
+    "case": "outside 4 miter dashed 12/4, gap color",
+    "part": "text",
+    "metric": "off",
+    "hqp": 710.69,
+    "output": 693.72
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 25.06,
+    "output": 22.66
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 32.72,
+    "output": 29.64
+   },
+   {
+    "row": 54,
+    "case": "center 8 miter wavy",
+    "part": "text",
+    "metric": "off",
+    "hqp": 165.19,
+    "output": 152.41
+   },
+   {
+    "row": 56,
+    "case": "inside 4 miter fancy corners 4",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 7.16,
+    "output": 1.83
+   },
+   {
+    "row": 56,
+    "case": "inside 4 miter fancy corners 4",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 3.84,
+    "output": 1.58
+   },
+   {
+    "row": 60,
+    "case": "outside 4 miter stroke opacity 50",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 145.38,
+    "output": 144.22
+   },
+   {
+    "row": 61,
+    "case": "outside 4 miter fill opacity 50",
+    "part": "squares",
+    "metric": "escaping",
+    "hqp": 5045.58,
+    "output": 5049.72
+   },
+   {
+    "row": 61,
+    "case": "outside 4 miter fill opacity 50",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 271.89,
+    "output": 260.75
+   },
+   {
+    "row": 63,
+    "case": "inside 4 miter opacity 50",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 12.48,
+    "output": 6.5
+   },
+   {
+    "row": 63,
+    "case": "inside 4 miter opacity 50",
+    "part": "thorn",
+    "metric": "holes",
+    "hqp": 12.33,
+    "output": 2.75
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "squares",
+    "metric": "spill",
+    "hqp": 364.8,
+    "output": 371.53
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 582.77,
+    "output": 594.95
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1031.8,
+    "output": 1022.77
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1682.62,
+    "output": 1751.73
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "spill",
+    "hqp": 210.67,
+    "output": 226.52
+   },
+   {
+    "row": 64,
+    "case": "outside 4 miter stroke drop shadow",
+    "part": "thorn",
+    "metric": "off",
+    "hqp": 399.42,
+    "output": 414.06
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "squares",
+    "metric": "holes",
+    "hqp": 42.5,
+    "output": 14.5
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "squares",
+    "metric": "off",
+    "hqp": 603.5,
+    "output": 588.75
+   },
+   {
+    "row": 65,
+    "case": "inside 4 miter gradient fill",
+    "part": "text",
+    "metric": "off",
+    "hqp": 117.7,
+    "output": 142.25
+   },
+   {
+    "row": 75,
+    "case": "GB outside 4 miter stroke opacity 50",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 405.08,
+    "output": 403.64
+   },
+   {
+    "row": 78,
+    "case": "text outside 4 miter (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.12,
+    "output": 157.3
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1197.95,
+    "output": 1203.81
+   },
+   {
+    "row": 82,
+    "case": "text outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1636.31,
+    "output": 1667.25
+   },
+   {
+    "row": 83,
+    "case": "text outside 4 miter, frame scaled 200%, applied to content",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.17,
+    "output": 157.14
+   },
+   {
+    "row": 84,
+    "case": "text outside 4 miter, frame scaled 200%, kept as a percentage",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.36,
+    "output": 157.33
+   },
+   {
+    "row": 85,
+    "case": "text outside 4 miter, frame sheared 20 (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 169.72,
+    "output": 159.5
+   },
+   {
+    "row": 87,
+    "case": "text outside 4 miter, skew 20, horizontal scale 120% (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 190.11,
+    "output": 178.3
+   },
+   {
+    "row": 89,
+    "case": "text outside 4 miter, gradient fill (covered)",
+    "part": "text",
+    "metric": "holes",
+    "hqp": 111.17,
+    "output": 92.19
+   },
+   {
+    "row": 89,
+    "case": "text outside 4 miter, gradient fill (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1005.36,
+    "output": 926.25
+   },
+   {
+    "row": 90,
+    "case": "text outside 4 miter, gradient stroke (covered)",
+    "part": "text",
+    "metric": "off",
+    "hqp": 556.27,
+    "output": 396.44
+   },
+   {
+    "row": 95,
+    "case": "text GB outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 1081.3,
+    "output": 1097.39
+   },
+   {
+    "row": 95,
+    "case": "text GB outside 4 miter, frame drop shadow",
+    "part": "text",
+    "metric": "off",
+    "hqp": 1475.48,
+    "output": 1537.56
+   },
+   {
+    "row": 97,
+    "case": "text outside 4 miter, frame scaled 200% by matrix, kept",
+    "part": "text",
+    "metric": "off",
+    "hqp": 168.58,
+    "output": 153.75
+   },
+   {
+    "row": 98,
+    "case": "text outside 4 miter, frame scaled 150% x 100% by matrix, kept",
+    "part": "text",
+    "metric": "off",
+    "hqp": 141.42,
+    "output": 114.17
+   },
+   {
+    "row": 99,
+    "case": "text center 8 miter, frame sheared 20",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 0.28,
+    "output": 22.3
+   },
+   {
+    "row": 100,
+    "case": "text outside 4 miter, frame sheared 20 and rotated 10",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 87.89,
+    "output": 91.91
+   },
+   {
+    "row": 101,
+    "case": "text GB outside 4 miter, frame sheared 20",
+    "part": "text",
+    "metric": "off",
+    "hqp": 151.41,
+    "output": 142.98
+   },
+   {
+    "row": 102,
+    "case": "text frame filled, outside 4 frame stroke",
+    "part": "text",
+    "metric": "escaping",
+    "hqp": 11601.89,
+    "output": 11595.66
+   },
+   {
+    "row": 102,
+    "case": "text frame filled, outside 4 frame stroke",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 3518.0,
+    "output": 3472.0
+   },
+   {
+    "row": 102,
+    "case": "text frame filled, outside 4 frame stroke",
+    "part": "text",
+    "metric": "off",
+    "hqp": 11839.19,
+    "output": 11891.8
+   },
+   {
+    "row": 103,
+    "case": "text frame filled, inside 4 frame stroke",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 3442.27,
+    "output": 3436.0
+   },
+   {
+    "row": 104,
+    "case": "text frame filled, outside 4 dashed frame stroke",
+    "part": "text",
+    "metric": "spill",
+    "hqp": 2012.72,
+    "output": 1989.55
+   },
+   {
+    "row": 104,
+    "case": "text frame filled, outside 4 dashed frame stroke",
+    "part": "text",
+    "metric": "off",
+    "hqp": 11857.97,
+    "output": 11886.38
+   }
+  ]
+ }
+}

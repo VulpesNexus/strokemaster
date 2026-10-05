@@ -317,13 +317,30 @@ Measured and left as they are:
 - The Inside-stroked filled text frame (row 103) spills 52 pt² more than native: one device pixel along the frame's top edge. The PDF port writes the stroke's clip as `16 145.001 368 50.001 re`, 0.002 pt past the frame, and MuPDF and Ghostscript rasterize clips without anti-aliasing, so that sliver claims a whole pixel. InDesign's own Inside stroke has no clip.
 - Inside with fancy corners bevels the thorn's effect corners past the limit (points missing 6.0 against native's 0.5), by the corner-effect rule above.
 
-**ROUTE_X Inside on curves and open paths: CERTIFIED on 21.6; installed now as `e367f134`.** Session C14 repeats C13 in a fresh process with the candidate (272,896 bytes, `e367f134fe34340e7b51073be554562decd8a18b227ddf23c7c119f07c02813e`, hash read from the loaded module):
+**ROUTE_X Inside on curves and open paths: CERTIFIED on 21.6; superseded by `8b924675` (whole points on straight edges, Outside fills) below.** Session C14 repeats C13 in a fresh process with the candidate (272,896 bytes, `e367f134fe34340e7b51073be554562decd8a18b227ddf23c7c119f07c02813e`, hash read from the loaded module):
 
 - All 110 measured lines are identical to C13's, and all seven PNGs are byte-identical ([*C14.json*](../tests/audit/results/routex/C14.json)). The corpus has no Inside-stroked or open page items.
 - Suite B and the four other saved suites render pixel-identical to C13 in foreground and background PDF.
 - The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_e367f134.json*](../tests/audit/results/cross_frame_census_21.6_e367f134.json), [*cross_frame_extension_census_e367f134.json*](../tests/audit/results/cross_frame_extension_census_e367f134.json)); the 13 documents it saved carry no plugin state ([*C14-state.json*](../tests/audit/results/routex/C14-state.json)).
 
 Core tests: 216 miter-core checks (*SmallHoles*). Installer backups: `bc1b850d` in *build/indesign-install/20261005T114246Z-backup*, the first research build `53b91b17` (census 7, without the small-hole rule) in *20261005T115505Z-backup*, and `03d0bd9a` in *20261005T123315Z-backup*.
+
+## Whole points on straight edges, Outside fill: route X candidate `8b924675`
+
+The owner's on-screen look at the census and the font sweep ([release-candidate checks](RELEASE_CANDIDATE_CHECKS_2026-10-05.md#on-screen)) found long spikes on Segoe Script and Great Vibes outlined text, regretted the thorn's point cut flat, and found a black gap in Great Vibes' A. Both causes are fixed:
+
+- **Points past the limit.** A point is kept whole only at a corner between two straight edges, the shorter at least the stroke's reach long, and the point at most five times that edge (*ise_miter::WholePoint*), all the way up to 500 half widths. Every other corner past the limit is beveled as InDesign bevels it: Center by the stroke's bevel join, Outside by the beveled offset (*OffsetBevel*). This replaces the cut at the shorter edge, never below the limit distance (*PointReach*, `787656a3`), whose 16 pt minimum drew the spikes on script glyphs. The owner chose the rule; a survey of the fonts' outlines set its bounds (no straight-edged corner past the limit in the script fonts; none of Kerberos Fang's qualifies at 72 pt).
+- **Outside fills.** The fill of an Outside-stroked item is drawn at the fill event, as for Inside, in place of InDesign's outward offset, which flooded the opening of Great Vibes' A. The refill at the stroke is gone, so an Outside-stroked frame with content is filled the same way.
+
+**Census on the research twin** `651f5615` (*build/look/coverage-census-9*, record [*coverage_census_7_21.6.json*](../tests/audit/results/coverage_census_7_21.6.json), measured with the new rule; font sweep [*font_sweep_21.6.json*](../tests/audit/results/font_sweep_21.6.json)): the thorn's points are whole (missing point area 31 to 3.6 pt²; 15 in the sheared rows); spill falls to its baseline on the thick-thin row (275 to 55 pt²), the corner-effect rows, Great Vibes (167 to 55), and Yu Mincho (61 to 55); the script spikes are gone. Every other change is the layout's: the thorn's whole point at Outside 8, 92 pt, reaches into the row above, where it counts as escaping or stray ink (25 to 73 pt²).
+
+**ROUTE_X whole points and Outside fills: CERTIFIED on 21.6; installed now as `8b924675`.** Session C15 repeats C14 in a fresh process with the candidate (272,896 bytes, `8b9246753171f6e659478546f5a29f9ae2ebe7984bc2c99380eee6b8e530c0fc`, hash read from the loaded module):
+
+- All 110 measured lines are identical to C14's, and all seven PNGs are byte-identical ([*C15.json*](../tests/audit/results/routex/C15.json)).
+- Suite B changes as intended: its sharpest triangles keep their points all the way, identically in foreground and background PDF (13,308 pixels at 300 dpi each); the four other saved suites render pixel-identical to C14.
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_8b924675.json*](../tests/audit/results/cross_frame_census_21.6_8b924675.json), [*cross_frame_extension_census_8b924675.json*](../tests/audit/results/cross_frame_extension_census_8b924675.json)); the 13 documents it saved carry no plugin state ([*C15-state.json*](../tests/audit/results/routex/C15-state.json)).
+
+Core tests: 219 miter-core checks (*WholePoint*). Installer backups: `e367f134` in *build/indesign-install/20261005T135540Z-backup*, and the research build `651f5615` in *20261005T142235Z-backup*.
 
 ## Owner verification and decisions
 
@@ -334,6 +351,7 @@ Core tests: 216 miter-core checks (*SmallHoles*). Installer backups: `bc1b850d` 
 - **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and its PDFs: before (session M0), after the Outside correction (C5), after the Center correction (C6), *B-miter - after (route X 48e27348, text and page items).pdf* (C7), *B-miter - after (route X 787656a3, whole points).pdf* (C9), and *B-miter - after (route X 3298f50c, overlapping outlines).pdf* (C10). *build/look/font-points/* (ignored) holds the font, thorn, and shape test: its document and its native and corrected PDFs (research build `d8ee50f2`).
 - **Whole points (2026-10-04).** On `48e27348`'s suite B the owner asked for the triangles' points all the way, without regressions elsewhere, and suggested German Beauty and Kerberos Fang as pointy and extreme tests. Points are now kept whole up to the corner's shorter edge (above).
 - **Whole points: confirmed; full coverage (2026-10-04).** The owner confirmed `787656a3` and asked for outlined Kerberos Fang to be covered, so that nothing surprises the user. Outlines with overlapping contours are now covered (above). An Outside stroke on them goes around the filled shape only, where InDesign also strokes the contour edges inside the letters. **Confirmed by the owner on 2026-10-05**, after a comparison of overlapping squares, circles, and outlined Kerberos Fang: keep the stroke around the filled shape only.
+- **Points and fills from the screen check (2026-10-05).** On screen the owner found spikes on script text, a black gap in Great Vibes' A, and regretted the thorn's flat-cut point; they chose the whole-point rule above.
 - **Corner-effect points: removed (2026-10-05).** The owner asked for the long points on corner-effect text to be narrowed down and removed, then for the shorter zigzag points InDesign also draws to be trimmed (above).
 - **Center miter correction: confirmed.** The owner looked at the C6 files: the last character spikes are gone. The outlined bottom line was the remaining outlier, which page-item strokes now draw whole.
 
