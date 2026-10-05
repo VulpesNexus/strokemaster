@@ -173,6 +173,15 @@
             }
             open(it); it.fillColor = d.swatches.itemByName('None');
         });
+        // One outline per word (2026-10-05): a stripe's gap color, and patterned strokes on script
+        // letters that join, whose contours' bands crossed.
+        P('outside 8 miter thick-thin, gap color', A.OUTSIDE_ALIGNMENT, 8, J.MITER_END_JOIN, function (it, d) {
+            it.strokeType = d.strokeStyles.itemByName('Thick - Thin'); it.gapColor = d.colors.itemByName('ISE black 20');
+        });
+        P('script outside 4 miter dashed 12/4', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, dashed, null, 'Segoe Script\tRegular');
+        cases[cases.length - 1].text = 'Ribbons';
+        P('script outside 8 miter thick-thin', A.OUTSIDE_ALIGNMENT, 8, J.MITER_END_JOIN, styled('Thick - Thin'), null, 'Segoe Script\tRegular');
+        cases[cases.length - 1].text = 'Ribbons';
 
         // Font sweep (ISE_ARGS.sweep, a list of "family<TAB>style[<TAB>sample text]"): the core rows for each
         // font instead of the census, labeled "sweep <n> ..." with the font in the manifest; for
