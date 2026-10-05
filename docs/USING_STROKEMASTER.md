@@ -1,6 +1,6 @@
 # Using StrokeMaster
 
-Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`0255296c`, certified and installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`3885af7b`, certified and installed with the StrokeMaster panel; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
@@ -35,18 +35,43 @@ Which correction to use depends on one question: **does the file have to look ri
 - **Content drawn between two frames of a story** (an unrelated filled or stroked object stacked between them) keeps InDesign's order where it covers a letter; invisible objects, such as empty frames, do not.
 - **A translucent upstream frame** is not corrected, and exporting a single page item draws the per-frame correction only.
 
+**The StrokeMaster panel.** *Window > StrokeMaster* opens a panel with one checkbox per correction; a click redraws every open document at once, so a correction can be compared on and off in place. The switches apply to every document, to the screen and to every export, and are kept between sessions (in *%APPDATA%\StrokeMaster\settings.txt*). *Restore Defaults* (the button, or the panel menu) puts them all back. A switch whose parent is off is shown grayed out, its own state kept.
+
+| Switch | On (default unless noted) | Off |
+| --- | --- | --- |
+| *StrokeMaster on* | Every correction below | InDesign draws everything itself |
+| *Strokes behind other letters' fills* | Text strokes drawn beneath the fills of their frame | InDesign's order |
+| *Across a story's threaded frames* | Also across the frames and columns of one story | Within each frame only |
+| *Across separate stories (experimental)* | Also across separate stories that overlap; off by default, because it also removes a deliberate halo over another frame | Separate stories keep InDesign's stacking |
+| *No miter spikes* | Text miter tips that escape the letter removed | InDesign's miters |
+| *Draw their strokes* | The plugin draws the strokes of shapes, frames, and outlined text | InDesign does, with all the defects below |
+| *Whole points past the miter limit* | A shape's own sharp points kept whole | Beveled, as InDesign bevels them |
+| *Also on dashed and striped strokes* | A solid whole point beyond InDesign's patterned bevel | The patterned bevel |
+| *Trim glyph tips* | Miters of sharp glyph tips within the limit trimmed | Whole miters, spikes included |
+| *Trim corner-effect corners* | Corners a corner effect adds beveled past the limit and trimmed within it | Treated like the outline's own corners |
+| *One outline per word (dashes, stripes)* | Outside dashes, dots, and built-in stripes follow one outline around touching letters | InDesign's pattern on each contour, clipped outside the fill |
+| *Overlapping contours: one outline* | Outside and Inside strokes go around the filled shape | Such outlines are left to InDesign |
+| *Inside strokes*, *Open paths* | Drawn by the plugin | Left to InDesign |
+| *Objects with opacity or effects* | Object-level opacity and effects covered | Such objects are left to InDesign |
+
+A showcase of what each correction changes, and of the forms handled with the least certainty, is built by *tools/jsx/build-showcase.jsx* and set side by side by *tools/compose_showcase.py*.
+
 **Measured hosts:** InDesign 21.5.1.73 and 21.6.0.57 on Windows. A plugin must be rebuilt for each major InDesign version.
 
 **Installing.** Building needs the InDesign 2026 SDK and Visual Studio's MSVC 14.42 or 14.39 toolset:
 
 ```powershell
 powershell -NoProfile -File plugin\build-plugin.ps1 -SdkPath "<InDesign 2026 SDK folder>" -RouteX
+powershell -NoProfile -File plugin\build-plugin.ps1 -SdkPath "<InDesign 2026 SDK folder>" -UI
 ```
+
+The first builds the engine; the second the StrokeMaster panel, a separate plugin, since the engine is a model plugin (so that background PDF export runs it) and a model plugin carries no interface.
 
 Then, with InDesign closed, from an elevated PowerShell (the *Plug-Ins* folder is writable by administrators only):
 
 ```powershell
 powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-RouteX
+powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-UI -Name StrokeMasterUI
 ```
 
 It backs up the installed plugin first, verifies the copy by hash, and prints the backup folder; `-Restore <that folder>` puts the previous plugin back, and `-ValidateOnly` with either form shows the plan without writing anything. Start InDesign to load the new plugin. The ID prefix is a development placeholder, so this build is for your own machine, not for distribution ([distribution notes](PLUGIN_DISTRIBUTION.md)).

@@ -12,7 +12,7 @@ Experimental stroke scripts, native Adobe integration, and topology research. Th
 | Editable split pairs | Explicit resync carries text and formatting while preserving a uniform Outside stroke. Contents-only watching is optional. Uniform and varied pairs preserve their rendered appearance through the tested INDD/IDML round-trip; resync still requires a uniform bottom stroke. |
 | Illustrator integration | The diagnostic plugins load in Illustrator 30.7.0 and run three experimental effects: a straight-line stroke replacement, a topology region correction on a marked fixture, and a stroke-behind correction on live text. Documents keep drawing the corrected result without the plugin, but text edited there draws stale. Nothing here is a release. |
 
-The measured hosts are InDesign 21.5.1.73 and 21.6.0.57, and Illustrator 30.7.0, build 114R, on Windows. These observations are not cross-version certification. To install and use the InDesign plugin, read [the usage guide](docs/USING_STROKEMASTER.md#the-plugin).
+The measured hosts are InDesign 21.5.1.73 and 21.6.0.57, and Illustrator 30.7.0, build 114R, on Windows. These observations are not cross-version certification. To install and use the InDesign plugin and its StrokeMaster panel (one switch per correction), read [the usage guide](docs/USING_STROKEMASTER.md#the-plugin).
 
 ## Use the scripts
 
