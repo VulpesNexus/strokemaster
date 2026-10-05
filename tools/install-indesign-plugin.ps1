@@ -4,6 +4,10 @@
 #   powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-RouteW
 #   powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Restore <backup folder>
 #   powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-RouteW -ValidateOnly
+#   powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-UI -Name StrokeMasterUI
+#
+# -Name picks the plugin: InDesignStrokeEngine (the default), or StrokeMasterUI, the
+# StrokeMaster panel; each lives in a folder of its own under Plug-Ins.
 #
 # The Plug-Ins folder is writable by administrators only, so installing needs an elevated
 # PowerShell; -ValidateOnly needs no elevation and writes nothing. InDesign must not be
@@ -15,12 +19,13 @@ param(
     [string]$Variant = '',
     [string]$Restore = '',
     [string]$InDesign = 'C:\Program Files\Adobe\Adobe InDesign 2026',
+    [ValidateSet('InDesignStrokeEngine', 'StrokeMasterUI')][string]$Name = 'InDesignStrokeEngine',
     [switch]$ValidateOnly
 )
 $ErrorActionPreference = 'Stop'
 if ([bool]$Variant -eq [bool]$Restore) { throw 'Give exactly one of -Variant or -Restore.' }
 $repo = Split-Path -Parent $PSScriptRoot
-$name = 'InDesignStrokeEngine'
+$name = $Name
 $target = Join-Path $InDesign ('Plug-Ins\' + $name)
 $resourcesName = '(' + $name + ' Resources)'
 if (-not (Test-Path -LiteralPath (Join-Path $InDesign 'InDesign.exe'))) { throw "InDesign.exe not found under $InDesign" }
@@ -64,7 +69,8 @@ if ($running.Count) { throw 'InDesign is running. Quit it first; this script nev
 if (-not $elevated) { throw 'The Plug-Ins folder needs an elevated PowerShell (Run as administrator).' }
 
 $stamp = [DateTime]::UtcNow.ToString('yyyyMMddTHHmmssZ')
-$backup = Join-Path $repo ('build\indesign-install\' + $stamp + '-backup')
+$suffix = if ($name -ne 'InDesignStrokeEngine') { '-' + $name } else { '' }
+$backup = Join-Path $repo ('build\indesign-install\' + $stamp + $suffix + '-backup')
 New-Item -ItemType Directory -Force -Path $backup | Out-Null
 if (Test-Path -LiteralPath $target) {
     Copy-Item -LiteralPath (Join-Path $target ($name + '.pln')) -Destination $backup -ErrorAction SilentlyContinue

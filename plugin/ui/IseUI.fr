@@ -1,0 +1,231 @@
+//========================================================================================
+//
+//  Resources for the StrokeMaster panel (StrokeMasterUI.pln): a UI plugin with one panel,
+//  Window > StrokeMaster, whose checkboxes set the engine's switches (IseSettings.h).
+//
+//========================================================================================
+
+#include "MenuDef.fh"
+#include "ActionDef.fh"
+#include "ActionDefs.h"
+#include "AdobeMenuPositions.h"
+#include "LocaleIndex.h"
+#include "PMLocaleIds.h"
+#include "StringTable.fh"
+#include "objectmodeltypes.fh"
+#include "ShuksanID.h"
+#include "ActionID.h"
+#include "CommandID.h"
+#include "WorkspaceID.h"
+#include "widgetid.h"
+#include "BuildNumber.h"
+#include "PanelList.fh"
+#include "Widgets.fh"
+#include "InterfaceColorDefines.h"
+#include "IControlViewDefs.h"
+#include "SysControlIds.h"
+#include "PlugInModel_UIAttributes.h"
+
+#include "IseUIID.h"
+
+#ifdef __ODFRC__
+
+resource PluginVersion (kSDKDefPluginVersionResourceID)
+{
+    kTargetVersion,
+    kIseUIPluginID,
+    kSDKDefPlugInMajorVersionNumber, kSDKDefPlugInMinorVersionNumber,
+    kSDKDefHostMajorVersionNumber, kSDKDefHostMinorVersionNumber,
+    kIseUIMajorFormat, kIseUIMinorFormat,
+    { kInDesignProduct, kInCopyProduct },
+    { kWildFS },
+    kUIPlugIn,
+    kIseUIVersion
+};
+
+resource ExtraPluginInfo(1)
+{
+    kIseUICompanyValue,
+    kSDKDefPartnersStandardValue_enUS,
+    kSDKDefMissingPluginAlertValue,
+};
+
+resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
+{{{
+    /** The panel: keeps its checkboxes and the switches' file in step. */
+    Class
+    {
+        kIseUIPanelWidgetBoss,
+        kPalettePanelWidgetBoss,
+        {
+            IID_IPANELMENUDATA, kCPanelMenuDataImpl,
+            IID_IOBSERVER, kIseUIPanelObserverImpl,
+        }
+    },
+    /** The panel menu's Restore Defaults. */
+    Class
+    {
+        kIseUIActionComponentBoss,
+        kBaseActionComponentBoss,
+        {
+            IID_IACTIONCOMPONENT, kIseUIActionComponentImpl,
+        }
+    },
+}}};
+
+resource FactoryList (kSDKDefFactoryListResourceID)
+{
+    kImplementationIDSpace,
+    {
+#include "IseUIFactoryList.h"
+    }
+};
+
+resource MenuDef (kSDKDefMenuResourceID)
+{
+    {
+        kIseUIRestoreActionID,
+        kIseUIInternalMenuNameKey,
+        kIseUIRestoreMenuItemPosition,
+        kSDKDefIsNotDynamicMenuFlag,
+    }
+};
+
+resource ActionDef (kSDKDefActionResourceID)
+{
+    {
+        kIseUIActionComponentBoss,
+        kIseUIRestoreActionID,
+        kIseUIRestoreMenuKey,
+        kOtherActionArea,
+        kNormalAction,
+        kDisableIfLowMem,
+        kInvalidInterfaceID,
+        kSDKDefInvisibleInKBSCEditorFlag,
+    }
+};
+
+resource LocaleIndex (kSDKDefStringsResourceID)
+{
+    kStringTableRsrcType,
+    {
+        kWildFS, k_enUS, kSDKDefStringsResourceID + index_enUS
+        kWildFS, k_Wild, kSDKDefStringsResourceID + index_enUS
+    }
+};
+
+resource LocaleIndex (kSDKDefStringsNoTransResourceID)
+{
+    kStringTableRsrcType,
+    {
+        kWildFS, k_Wild, kSDKDefStringsNoTransResourceID + index_enUS
+    }
+};
+
+resource StringTable (kSDKDefStringsNoTransResourceID + index_enUS)
+{
+    k_enUS,
+    kEuropeanMacToWinEncodingConverter,
+    {
+        kIseUIInternalMenuNameKey, kIseUIInternalMenuNameKey,
+    }
+};
+
+resource StringTable (kSDKDefStringsResourceID + index_enUS)
+{
+    k_enUS,
+    kEuropeanMacToWinEncodingConverter,
+    {
+        kIseUICompanyKey,        kIseUICompanyValue,
+        kIseUIPanelTitleKey,     "StrokeMaster",
+        kIseUIRestoreMenuKey,    "Restore Defaults",
+        kIseUIEnabledKey,        "StrokeMaster on",
+        kIseUITextHeadKey,       "Live text",
+        kIseUITextBehindKey,     "Strokes behind other letters' fills",
+        kIseUITextStoryKey,      "Across a story's threaded frames",
+        kIseUITextStoriesKey,    "Across separate stories (experimental)",
+        kIseUITextMiterKey,      "No miter spikes",
+        kIseUIShapesHeadKey,     "Shapes, frames, and outlined text",
+        kIseUIShapesKey,         "Draw their strokes",
+        kIseUIWholePointsKey,    "Whole points past the miter limit",
+        kIseUIPatternPointsKey,  "Also on dashed and striped strokes",
+        kIseUIGlyphTipsKey,      "Trim glyph tips",
+        kIseUIEffectCornersKey,  "Trim corner-effect corners",
+        kIseUIWordOutlineKey,    "One outline per word (dashes, stripes)",
+        kIseUIOverlapsKey,       "Overlapping contours: one outline",
+        kIseUIInsideKey,         "Inside strokes",
+        kIseUIOpenPathsKey,      "Open paths",
+        kIseUITransparencyKey,   "Objects with opacity or effects",
+        kIseUIRestoreKey,        "Restore Defaults",
+        kIseUINoteKey,           "Applies to every document.",
+    }
+};
+
+resource LocaleIndex (kSDKDefPanelResourceID)
+{
+    kViewRsrcType,
+    {
+        kWildFS, k_Wild, kSDKDefPanelResourceID + index_enUS
+    }
+};
+
+type IseUIPanelWidget(kViewRsrcType) : PalettePanelWidget(ClassID = kIseUIPanelWidgetBoss)
+{
+    CPanelMenuData;
+};
+
+resource PanelList (kSDKDefPanelResourceID)
+{
+    {
+        kSDKDefPanelResourceID,
+        kIseUIPluginID,
+        kNotResizable,
+        kIseUIPanelWidgetActionID,
+        kIseUIPanelTitleKey,
+        "",
+        0.0,
+        0, 0,
+        c_Panel
+    }
+};
+
+resource IseUIPanelWidget(kSDKDefPanelResourceID + index_enUS)
+{
+    __FILE__, __LINE__,
+    kIseUIPanelWidgetID,
+    kPMRsrcID_None,
+    kBindNone,
+    Frame(0, 0, 270, 372),
+    kTrue, kTrue,
+    kFalse,
+    kInterfacePaletteFill,
+    kFalse,
+    kIseUIPanelTitleKey,
+    {
+        CheckBoxWidget(kIseUIEnabledWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(8, 8, 262, 26) kTrue, kTrue, kAlignLeft, kIseUIEnabledKey),
+
+        StaticTextWidget(kIseUITextHeadWidgetID, kSysStaticTextPMRsrcId, kBindNone, Frame(8, 34, 262, 50) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUITextHeadKey, 0),
+        CheckBoxWidget(kIseUITextBehindWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(16, 52, 262, 70) kTrue, kTrue, kAlignLeft, kIseUITextBehindKey),
+        CheckBoxWidget(kIseUITextStoryWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 72, 262, 90) kTrue, kTrue, kAlignLeft, kIseUITextStoryKey),
+        CheckBoxWidget(kIseUITextStoriesWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(48, 92, 262, 110) kTrue, kTrue, kAlignLeft, kIseUITextStoriesKey),
+        CheckBoxWidget(kIseUITextMiterWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 112, 262, 130) kTrue, kTrue, kAlignLeft, kIseUITextMiterKey),
+
+        StaticTextWidget(kIseUIShapesHeadWidgetID, kSysStaticTextPMRsrcId, kBindNone, Frame(8, 138, 262, 154) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUIShapesHeadKey, 0),
+        CheckBoxWidget(kIseUIShapesWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(16, 156, 262, 174) kTrue, kTrue, kAlignLeft, kIseUIShapesKey),
+        CheckBoxWidget(kIseUIWholePointsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 176, 262, 194) kTrue, kTrue, kAlignLeft, kIseUIWholePointsKey),
+        CheckBoxWidget(kIseUIPatternPointsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(48, 196, 262, 214) kTrue, kTrue, kAlignLeft, kIseUIPatternPointsKey),
+        CheckBoxWidget(kIseUIGlyphTipsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 216, 262, 234) kTrue, kTrue, kAlignLeft, kIseUIGlyphTipsKey),
+        CheckBoxWidget(kIseUIEffectCornersWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 236, 262, 254) kTrue, kTrue, kAlignLeft, kIseUIEffectCornersKey),
+        CheckBoxWidget(kIseUIWordOutlineWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 256, 262, 274) kTrue, kTrue, kAlignLeft, kIseUIWordOutlineKey),
+        CheckBoxWidget(kIseUIOverlapsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 276, 262, 294) kTrue, kTrue, kAlignLeft, kIseUIOverlapsKey),
+        CheckBoxWidget(kIseUIInsideWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 296, 150, 314) kTrue, kTrue, kAlignLeft, kIseUIInsideKey),
+        CheckBoxWidget(kIseUIOpenPathsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(150, 296, 262, 314) kTrue, kTrue, kAlignLeft, kIseUIOpenPathsKey),
+        CheckBoxWidget(kIseUITransparencyWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 316, 262, 334) kTrue, kTrue, kAlignLeft, kIseUITransparencyKey),
+
+        ButtonWidget(kIseUIRestoreWidgetID, kSysButtonPMRsrcId, kBindNone, Frame(8, 342, 128, 364) kTrue, kTrue, kIseUIRestoreKey),
+        StaticTextWidget(kIseUINoteWidgetID, kSysStaticTextPMRsrcId, kBindNone, Frame(136, 345, 266, 361) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUINoteKey, 0),
+    }
+    kIseUIInternalMenuNameKey
+};
+
+#endif // __ODFRC__

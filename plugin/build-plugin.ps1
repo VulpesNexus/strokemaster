@@ -3,6 +3,7 @@
 # Usage:
 #   powershell -NoProfile -File plugin\build-plugin.ps1 -SdkPath "<path to Adobe InDesign 2026 SDK>"
 #   powershell -NoProfile -File plugin\build-plugin.ps1 -SdkPath "..." -Configuration Debug
+#   powershell -NoProfile -File plugin\build-plugin.ps1 -SdkPath "..." -UI   (the StrokeMaster panel)
 #
 # What this handles, all of it learned the hard way and recorded in
 # docs/INDESIGN_STROKE_SDK_MAP.md under "Building against this SDK":
@@ -25,7 +26,10 @@ param(
     # Built into build\<Configuration>-RouteX, or build\<Configuration>-RouteXResearch with
     # -Research (control file, trace, and probes; see IseCrossFrame.cpp).
     [switch]$RouteX,
-    [switch]$Research
+    [switch]$Research,
+    # The StrokeMaster panel (plugin\ui, StrokeMasterUI.pln), the UI plugin that sets the
+    # engine's switches. Built into build\<Configuration>-UI.
+    [switch]$UI
 )
 $ErrorActionPreference = 'Stop'
 
@@ -66,7 +70,7 @@ if (-not (Test-Path -LiteralPath $msbuild)) { throw "MSBuild not found at $msbui
 
 $repo = Split-Path -Parent $PSScriptRoot
 if ($Research -and -not $RouteX) { throw '-Research applies to -RouteX only.' }
-$variant = if ($RouteX) { $Configuration + '-RouteX' + $(if ($Research) { 'Research' } else { '' }) } elseif ($RouteW) { $Configuration + '-RouteW' } else { $Configuration }
+$variant = if ($UI) { $Configuration + '-UI' } elseif ($RouteX) { $Configuration + '-RouteX' + $(if ($Research) { 'Research' } else { '' }) } elseif ($RouteW) { $Configuration + '-RouteW' } else { $Configuration }
 New-Item -ItemType Directory -Force -Path (Join-Path $repo ('build\' + $variant)), (Join-Path $repo ('build\obj\' + $variant)) | Out-Null
 
 # Creates a junction whose name is derived from its target, so the same target always gets the
@@ -96,7 +100,7 @@ $junction = New-StableJunction -Prefix 'ise-sdk-' -Target $sdkFull
 # repository's path contains both. Reach the project, and write the output, through a second
 # junction whose path has neither, so every argument survives intact.
 $repoLink = New-StableJunction -Prefix 'ise-repo-' -Target $repo
-$project = Join-Path $repoLink 'plugin\prj\InDesignStrokeEngine.vcxproj'
+$project = Join-Path $repoLink $(if ($UI) { 'plugin\prj\StrokeMasterUI.vcxproj' } else { 'plugin\prj\InDesignStrokeEngine.vcxproj' })
 $outDir = Join-Path $repoLink ('build\' + $variant + '\')
 $intDir = Join-Path $repoLink ('build\obj\' + $variant + '\')
 try {
@@ -122,7 +126,7 @@ try {
     # A repository that has moved, or output from a build that predates stable junction names,
     # leaves a path that cannot match, so clear its state instead of failing.
     $frRecord = Join-Path $intDir 'frFilePath'
-    $frWanted = Join-Path $repoLink 'plugin\source\Ise.fr'
+    $frWanted = Join-Path $repoLink $(if ($UI) { 'plugin\ui\IseUI.fr' } else { 'plugin\source\Ise.fr' })
     if (Test-Path -LiteralPath $frRecord) {
         $frSeen = (Get-Content -LiteralPath $frRecord -Raw).Trim()
         if ($frSeen -and $frSeen -ine $frWanted) {

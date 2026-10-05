@@ -1,0 +1,91 @@
+//========================================================================================
+//
+//  IDs for the StrokeMaster panel, the UI plugin beside the engine (InDesignStrokeEngine).
+//
+//  The engine is a model plugin, so that background PDF export runs it; a model plugin may
+//  not carry UI, so the panel is a plugin of its own. The two share nothing but the switches'
+//  file (IseSettings.h). The IDs use the engine's development prefix (IseID.h), from offset
+//  0x40 on, clear of the engine's own.
+//
+//========================================================================================
+#ifndef __IseUIID_h__
+#define __IseUIID_h__
+
+#include "SDKDef.h"
+
+#define kIseUICompanyKey      "StrokeMaster"
+#define kIseUICompanyValue    "StrokeMaster"
+#define kIseUIPluginName      "StrokeMasterUI"
+#define kIseUIPrefixNumber    0x5A200          // The engine's development placeholder; not assigned by Adobe.
+#define kIseUIVersion         kSDKDefPluginVersionString
+#define kIseUIPrefix          RezLong(kIseUIPrefixNumber)
+#define kIseUIStringPrefix    SDK_DEF_STRINGIZE(kIseUIPrefixNumber)
+
+// PluginID:
+DECLARE_PMID(kPlugInIDSpace, kIseUIPluginID, kIseUIPrefix + 0x40)
+
+// ClassIDs:
+DECLARE_PMID(kClassIDSpace, kIseUIPanelWidgetBoss, kIseUIPrefix + 0x40)
+DECLARE_PMID(kClassIDSpace, kIseUIActionComponentBoss, kIseUIPrefix + 0x41)
+
+// ImplementationIDs:
+DECLARE_PMID(kImplementationIDSpace, kIseUIPanelObserverImpl, kIseUIPrefix + 0x40)
+DECLARE_PMID(kImplementationIDSpace, kIseUIActionComponentImpl, kIseUIPrefix + 0x41)
+
+// ActionIDs:
+DECLARE_PMID(kActionIDSpace, kIseUIPanelWidgetActionID, kIseUIPrefix + 0x40)
+DECLARE_PMID(kActionIDSpace, kIseUIRestoreActionID, kIseUIPrefix + 0x41)
+
+// WidgetIDs: the panel, its switches (one per IseSettings.h field), and the button.
+DECLARE_PMID(kWidgetIDSpace, kIseUIPanelWidgetID, kIseUIPrefix + 0x40)
+DECLARE_PMID(kWidgetIDSpace, kIseUIEnabledWidgetID, kIseUIPrefix + 0x41)
+DECLARE_PMID(kWidgetIDSpace, kIseUITextBehindWidgetID, kIseUIPrefix + 0x42)
+DECLARE_PMID(kWidgetIDSpace, kIseUITextStoryWidgetID, kIseUIPrefix + 0x43)
+DECLARE_PMID(kWidgetIDSpace, kIseUITextStoriesWidgetID, kIseUIPrefix + 0x44)
+DECLARE_PMID(kWidgetIDSpace, kIseUITextMiterWidgetID, kIseUIPrefix + 0x45)
+DECLARE_PMID(kWidgetIDSpace, kIseUIShapesWidgetID, kIseUIPrefix + 0x46)
+DECLARE_PMID(kWidgetIDSpace, kIseUIWholePointsWidgetID, kIseUIPrefix + 0x47)
+DECLARE_PMID(kWidgetIDSpace, kIseUIPatternPointsWidgetID, kIseUIPrefix + 0x48)
+DECLARE_PMID(kWidgetIDSpace, kIseUIGlyphTipsWidgetID, kIseUIPrefix + 0x49)
+DECLARE_PMID(kWidgetIDSpace, kIseUIEffectCornersWidgetID, kIseUIPrefix + 0x4A)
+DECLARE_PMID(kWidgetIDSpace, kIseUIWordOutlineWidgetID, kIseUIPrefix + 0x4B)
+DECLARE_PMID(kWidgetIDSpace, kIseUIOverlapsWidgetID, kIseUIPrefix + 0x4C)
+DECLARE_PMID(kWidgetIDSpace, kIseUIInsideWidgetID, kIseUIPrefix + 0x4D)
+DECLARE_PMID(kWidgetIDSpace, kIseUIOpenPathsWidgetID, kIseUIPrefix + 0x4E)
+DECLARE_PMID(kWidgetIDSpace, kIseUITransparencyWidgetID, kIseUIPrefix + 0x4F)
+DECLARE_PMID(kWidgetIDSpace, kIseUIRestoreWidgetID, kIseUIPrefix + 0x50)
+DECLARE_PMID(kWidgetIDSpace, kIseUITextHeadWidgetID, kIseUIPrefix + 0x51)
+DECLARE_PMID(kWidgetIDSpace, kIseUIShapesHeadWidgetID, kIseUIPrefix + 0x52)
+DECLARE_PMID(kWidgetIDSpace, kIseUINoteWidgetID, kIseUIPrefix + 0x53)
+
+// Strings (StringTable in IseUI.fr):
+#define kIseUIPanelTitleKey          kIseUIStringPrefix "kIseUIPanelTitleKey"
+#define kIseUIInternalMenuNameKey    kIseUIStringPrefix "kIseUIInternalMenuNameKey"
+#define kIseUIRestoreMenuKey         kIseUIStringPrefix "kIseUIRestoreMenuKey"
+#define kIseUIEnabledKey             kIseUIStringPrefix "kIseUIEnabledKey"
+#define kIseUITextHeadKey            kIseUIStringPrefix "kIseUITextHeadKey"
+#define kIseUITextBehindKey          kIseUIStringPrefix "kIseUITextBehindKey"
+#define kIseUITextStoryKey           kIseUIStringPrefix "kIseUITextStoryKey"
+#define kIseUITextStoriesKey         kIseUIStringPrefix "kIseUITextStoriesKey"
+#define kIseUITextMiterKey           kIseUIStringPrefix "kIseUITextMiterKey"
+#define kIseUIShapesHeadKey          kIseUIStringPrefix "kIseUIShapesHeadKey"
+#define kIseUIShapesKey              kIseUIStringPrefix "kIseUIShapesKey"
+#define kIseUIWholePointsKey         kIseUIStringPrefix "kIseUIWholePointsKey"
+#define kIseUIPatternPointsKey       kIseUIStringPrefix "kIseUIPatternPointsKey"
+#define kIseUIGlyphTipsKey           kIseUIStringPrefix "kIseUIGlyphTipsKey"
+#define kIseUIEffectCornersKey       kIseUIStringPrefix "kIseUIEffectCornersKey"
+#define kIseUIWordOutlineKey         kIseUIStringPrefix "kIseUIWordOutlineKey"
+#define kIseUIOverlapsKey            kIseUIStringPrefix "kIseUIOverlapsKey"
+#define kIseUIInsideKey              kIseUIStringPrefix "kIseUIInsideKey"
+#define kIseUIOpenPathsKey           kIseUIStringPrefix "kIseUIOpenPathsKey"
+#define kIseUITransparencyKey        kIseUIStringPrefix "kIseUITransparencyKey"
+#define kIseUIRestoreKey             kIseUIStringPrefix "kIseUIRestoreKey"
+#define kIseUINoteKey                kIseUIStringPrefix "kIseUINoteKey"
+
+#define kIseUIRestoreMenuItemPosition  1.0
+
+// Format IDs for the PluginVersion resource:
+#define kIseUIMajorFormat  kSDKDef_30_PersistMajorVersionNumber
+#define kIseUIMinorFormat  kSDKDef_30_PersistMinorVersionNumber
+
+#endif // __IseUIID_h__

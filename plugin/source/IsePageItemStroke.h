@@ -9,12 +9,19 @@ class IPMUnknown;
 
 namespace ise_page_stroke {
 
-// What the route may take over; the production build uses the defaults. The research build
-// reads them from its control file (IseCrossFrame.cpp), for interleaved comparisons.
+// What the route may take over, and how: the StrokeMaster switches (IseSettings.h), or in the
+// research build its control file (IseCrossFrame.cpp), for interleaved comparisons.
 struct Coverage {
     bool transparency = true;    // items with object-level transparency (stroke or fill level: never)
     bool probeNative = false;    // research: InDesign's own stroke drawn from the event, unclipped
     bool wordOutline = true;     // Outside dashes and built-in stripes along one outline per word
+    bool wholePoints = true;     // past the limit, a shape's own points kept whole (else beveled as InDesign)
+    bool glyphTips = true;       // within the limit, glyph tips trimmed
+    bool effectCorners = true;   // corner-effect corners told apart (beveled past the limit, trimmed within)
+    bool patternPoints = true;   // whole points added to dashed, dotted, and striped strokes
+    bool overlaps = true;        // Outside and Inside on overlapping contours (else left to InDesign)
+    bool inside = true;          // Inside strokes (else left to InDesign)
+    bool openPaths = true;       // open paths (else left to InDesign)
     void (*trace)(const char* fmt, ...) = nullptr;   // research: one line per transparency attribute read
 };
 

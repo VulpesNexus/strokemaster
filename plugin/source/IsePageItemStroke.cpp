@@ -334,9 +334,10 @@ enum class Align { Center, Outside, Inside };
     the drawn shape does not have (the resolved region's, or a corner effect's), which keep the
     stroke's bevel past the limit. `effect` (empty, or one flag per stub) marks the corners a
     corner effect adds, whose miters within the limit are trimmed (EffectMiterReach), as are
-    those of glyph tips (TrimmedTip). */
+    those of glyph tips (TrimmedTip). The switches turn whole points and the glyph-tip trim off. */
 std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, const std::vector<char>& crossing,
-                                             const std::vector<char>& effect, Align align, int32 join, double h, double limit)
+                                             const std::vector<char>& effect, Align align, int32 join, double h, double limit,
+                                             const Coverage& coverage)
 {
     std::vector<std::vector<Pt>> out;
     const bool wantInterior = align == Align::Inside;
@@ -346,9 +347,9 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
         if (join == kPMRoundJoin) continue;   // the round stroke's own join is the offset's
         if (i < crossing.size() && crossing[i] && PastLimit(s, limit)) continue;   // the stroke's bevel
         if (join == kPMMiterJoin && !PastLimit(s, limit)) {
-            const bool trimmed = (i < effect.size() && effect[i]) || ise_miter::TrimmedTip(s, h);
+            const bool trimmed = (i < effect.size() && effect[i]) || (coverage.glyphTips && ise_miter::TrimmedTip(s, h));
             out.push_back(ise_miter::JoinPolygon(s, h, trimmed ? ise_miter::EffectMiterReach(s, h) : s.ratio * h));
-        } else if (join == kPMMiterJoin && align != Align::Inside && ise_miter::WholePoint(s, h)) {
+        } else if (join == kPMMiterJoin && align != Align::Inside && coverage.wholePoints && ise_miter::WholePoint(s, h)) {
             // Past the limit, a shape's own point: kept whole (the owner's whole points).
             out.push_back(ise_miter::JoinPolygon(s, h, ise_miter::WholePointReach(s, h, kLongestMiter)));
         } else if (join == kPMMiterJoin && align == Align::Center) {
@@ -367,10 +368,10 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
     the bevel InDesign's own stroke draws there (ise_miter::PointBeyondBevel); the corners as in
     StrokeSideJoins. */
 std::vector<std::vector<Pt>> PatternPoints(const std::vector<Stub>& stubs, const std::vector<char>& crossing, Align align,
-                                           int32 join, double h, double limit)
+                                           int32 join, double h, double limit, const Coverage& coverage)
 {
     std::vector<std::vector<Pt>> out;
-    if (join != kPMMiterJoin || align == Align::Inside) return out;
+    if (join != kPMMiterJoin || align == Align::Inside || !coverage.wholePoints || !coverage.patternPoints) return out;
     for (size_t i = 0; i < stubs.size(); ++i) {
         const Stub& s = stubs[i];
         if (s.interior || !PastLimit(s, limit) || !ise_miter::WholePoint(s, h)) continue;
@@ -522,7 +523,7 @@ bool StrokeNatively(IGraphicsPort* port, IPathPageItem* pathItem, IGraphicStyleD
 
 /** Works out what the stroke draws from (Prepared): see the file comment. */
 void Prepare(const std::vector<Contour>& contours, const std::vector<Pt>* anchors, Align align, int32 join, bool solid, double h,
-             double limit, Prepared* out)
+             double limit, const Coverage& coverage, Prepared* out)
 {
     const bool center = align == Align::Center, outside = align == Align::Outside, inside = align == Align::Inside;
     // The region is rebuilt within 0.0005 pt; the rules and the clips are compared on coarser
@@ -536,6 +537,7 @@ void Prepare(const std::vector<Contour>& contours, const std::vector<Pt>* anchor
     // corner (each corner's probe landed in the other contour's fill, so both read as interior;
     // German Beauty, 2026-10-04).
     if (!center && !ise_region::FillRulesAgree(contours, checkTol)) {
+        if (!coverage.overlaps) return;   // switched off: InDesign strokes every contour
         out->stroked = ise_region::NonzeroRegion(contours, regionTol);
         if (out->stroked.empty()) return;
         out->resolved = true;
@@ -597,7 +599,7 @@ void Prepare(const std::vector<Contour>& contours, const std::vector<Pt>* anchor
     if (outside) {
         double reach = std::max(limit, 2.0);   // the longest join drawn, in half widths
         for (const Stub& s : out->stubs)
-            if (!s.interior && PastLimit(s, limit) && ise_miter::WholePoint(s, h)) reach = std::max(reach, ise_miter::WholePointReach(s, h, kLongestMiter) / h);
+            if (!s.interior && PastLimit(s, limit) && coverage.wholePoints && ise_miter::WholePoint(s, h)) reach = std::max(reach, ise_miter::WholePointReach(s, h, kLongestMiter) / h);
         // The frame lies past the longest join drawn.
         out->outsideClip = ise_miter::OutsideClip(path, (reach + 3) * h + 10, 0.001 * h, 0.01 * h, out->resolved, false);
         if (out->outsideClip.empty() || !ise_region::ClipsOutside(out->outsideClip, contours, checkTol)) return;
@@ -819,7 +821,8 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     // Which strokes this route draws.
     if (align == Align::Center && join != kPMMiterJoin) return false;      // nothing to correct
     // Open paths: Center, Miter, solid, without arrowheads (see the file comment).
-    if (anyOpen && (align != Align::Center || !solid || Arrowheads(attrs, style))) return false;
+    if (anyOpen && (!coverage.openPaths || align != Align::Center || !solid || Arrowheads(attrs, style))) return false;
+    if (align == Align::Inside && !coverage.inside) return false;
 
     ise_miter::Recorder recorder(anyOpen);
     Recording writer(&recorder);
@@ -831,7 +834,7 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     // With corner effects, the anchors of the path the user drew (inner coordinates, as the
     // outline): corners off them are the effect's.
     std::vector<Pt> anchors;
-    const bool effects = CornerEffects(attrs, style);
+    const bool effects = coverage.effectCorners && CornerEffects(attrs, style);
     if (effects)
         for (int32 i = 0; i < paths; ++i)
             for (int32 j = 0, n = geometry->GetNumPoints(i); j < n; ++j) {
@@ -856,11 +859,12 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     key.Add(static_cast<int32>(effects));
     for (const Pt& a : anchors) key.Add(a);
     key.Add(static_cast<int32>(dashes));
+    key.Add(static_cast<int32>(coverage.wholePoints) | static_cast<int32>(coverage.overlaps) << 1);
     for (const auto& st : plan->stripes) { key.Add(st.first); key.Add(st.second); }
     std::shared_ptr<const Prepared> prepared = Cache().Find(key.Value());
     if (!prepared) {
         std::shared_ptr<Prepared> made = std::make_shared<Prepared>();
-        Prepare(contours, effects ? &anchors : nullptr, align, join, solid, h, limit, made.get());
+        Prepare(contours, effects ? &anchors : nullptr, align, join, solid, h, limit, coverage, made.get());
         if (made->ok && (dashes || !plan->stripes.empty()))
             PrepareWord(made->resolved ? made->stroked : contours, dashes, plan->stripes, weight, join, limit, made.get());
         size_t words = Segments(made->word);
@@ -974,14 +978,14 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     // InDesign's offset fill.
 
     if (!plan.solid && outside && !prepared.word.empty())
-        return DrawWord(port, plan, prepared, PatternPoints(stubs, prepared.crossing, align, join, h, limit));
+        return DrawWord(port, plan, prepared, PatternPoints(stubs, prepared.crossing, align, join, h, limit, coverage));
     if (!plan.solid) {
         // InDesign's own stroke, clipped to where a stroke of this reach can paint: escaping
         // tips and stroke inside the letters are cut away, the pattern is InDesign's. Then the
         // whole points past the limit, solid, beyond InDesign's bevel.
         if (!StrokeNatively(port, plan.pathItem.get(), style, paint, prepared.strokeClip, weight, join, limit, cap, plan.overprint))
             return false;
-        const std::vector<std::vector<Pt>> points = PatternPoints(stubs, prepared.crossing, align, join, h, limit);
+        const std::vector<std::vector<Pt>> points = PatternPoints(stubs, prepared.crossing, align, join, h, limit, coverage);
         if (!points.empty()) {
             AutoGSave save(port);
             paint->Install(port, style, IRenderingObject::kInstallStroke);
@@ -1009,7 +1013,7 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     port->newpath();
     EmitContours(port, path);
     port->stroke();
-    FillPolygons(port, StrokeSideJoins(stubs, prepared.crossing, prepared.effect, align, join, h, limit));
+    FillPolygons(port, StrokeSideJoins(stubs, prepared.crossing, prepared.effect, align, join, h, limit, coverage));
     if (center) {
         // Each interior corner's miter, within the limit, clipped to the fill: clipped to the
         // recorded outline, not with IPathPageItem::Clip, which InDesign's PDF port wrote

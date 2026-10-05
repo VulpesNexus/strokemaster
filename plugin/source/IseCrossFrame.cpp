@@ -22,8 +22,10 @@
 //                   word=0|1 (Outside dashes and built-in stripes along one outline per word,
 //                   IsePageItemStroke.cpp's PrepareWord; on by default)
 //   ISE_XF_TRACE    the trace file, appended to
-// Without the control file the research build behaves as route W. The production candidate
-// has neither: its mode is Story.
+// Without the control file, the research build follows the StrokeMaster switches as the
+// production build does: the file the StrokeMaster panel writes (IseSettings.h), read again at
+// the start of each spread drawn when it has changed. With every switch at its default, the
+// mode is Story.
 //========================================================================================
 #include "VCPlugInHeaders.h"
 
@@ -76,6 +78,7 @@
 #include "IseID.h"
 #include "IseCrossFrame.h"
 #include "IsePageItemStroke.h"
+#include "IseSettings.h"
 
 #include <cmath>
 #include <cstdarg>
@@ -96,8 +99,42 @@ struct Control {
     bool deferProbe = false;
     bool miter = true;   // route W's miter correction (IseMiterCore.h)
     bool shapes = true;  // page-item strokes (IsePageItemStroke.cpp)
+    bool shapesAlone = false;   // page-item strokes also when text is left to InDesign (the switches)
     ise_page_stroke::Coverage coverage;   // what page-item strokes may take over
 };
+
+/** The control the StrokeMaster switches ask for (IseSettings.h). */
+Control FromSettings(const ise_settings::Settings& s)
+{
+    Control c;
+    c.mode = !s.enabled || !s.textBehind ? Mode::Native : !s.textStory ? Mode::RouteW : s.textStories ? Mode::Overlap : Mode::Story;
+    c.miter = s.enabled && s.textBehind && s.textMiter;
+    c.shapes = s.enabled && s.shapes;
+    c.shapesAlone = true;
+    c.coverage.transparency = s.transparency;
+    c.coverage.wordOutline = s.wordOutline;
+    c.coverage.wholePoints = s.wholePoints;
+    c.coverage.glyphTips = s.glyphTips;
+    c.coverage.effectCorners = s.effectCorners;
+    c.coverage.patternPoints = s.patternPoints;
+    c.coverage.overlaps = s.overlaps;
+    c.coverage.inside = s.inside;
+    c.coverage.openPaths = s.openPaths;
+    return c;
+}
+
+/** Reads the switches into `c` when their file has changed since `stamp` (or has gone). */
+void ReloadSettings(Control& c, FILETIME& stamp, bool& seen)
+{
+    FILETIME now = {0, 0};
+    const bool exists = ise_settings::Stamp(&now);
+    if (seen && (exists ? CompareFileTime(&now, &stamp) == 0 : stamp.dwLowDateTime == 0 && stamp.dwHighDateTime == 0)) return;
+    ise_settings::Settings s;
+    ise_settings::Load(&s);
+    c = FromSettings(s);
+    stamp = exists ? now : FILETIME{0, 0};
+    seen = true;
+}
 
 #ifdef ISE_ROUTE_X_RESEARCH
 // Each drawing thread reads the control file for itself; the trace file is shared, guarded.
@@ -108,10 +145,13 @@ thread_local bool gControlSeen = false;
 FILE* gTrace = nullptr;
 std::mutex gTraceLock;
 
+thread_local FILETIME gSettingsStamp = {0, 0};
+thread_local bool gSettingsSeen = false;
+
 void ReloadControl()
 {
     const wchar_t* path = _wgetenv(L"ISE_XF_CONTROL");
-    if (path == nullptr || *path == 0) return;
+    if (path == nullptr || *path == 0) { ReloadSettings(Ctl(), gSettingsStamp, gSettingsSeen); return; }
     WIN32_FILE_ATTRIBUTE_DATA attrs;
     if (!GetFileAttributesExW(path, GetFileExInfoStandard, &attrs)) return;
     if (gControlSeen && CompareFileTime(&attrs.ftLastWriteTime, &gControlStamp) == 0) return;
@@ -191,8 +231,12 @@ const char* PortKind(GraphicsData* gd)
     return "screen";
 }
 #else
-Control& Ctl() { static Control c = [] { Control x; x.mode = Mode::Story; return x; }(); return c; }
-void ReloadControl() {}
+// Each drawing thread keeps its own copy of the switches and reads them again when their file
+// changes, at the start of each spread it draws.
+Control& Ctl() { thread_local Control c = FromSettings(ise_settings::Settings()); return c; }
+thread_local FILETIME gSettingsStamp = {0, 0};
+thread_local bool gSettingsSeen = false;
+void ReloadControl() { ReloadSettings(Ctl(), gSettingsStamp, gSettingsSeen); }
 bool Tracing() { return false; }
 void Trace(const char*, ...) {}
 void FlushTrace() {}
@@ -803,12 +847,12 @@ bool16 IseXfDrawEvents::HandleDrawEvent(ClassID eventID, void* eventData)
     }
     // Page-item strokes: drawn here, in the item's inner coordinates, when this route can draw
     // them exactly; claiming the event makes InDesign skip its own stroke (CGraphicFrameShape).
-    if (eventID == kBeginFrameFillDrawMessage && !handled && RouteWEnabled() && Ctl().shapes &&
+    if (eventID == kBeginFrameFillDrawMessage && !handled && (RouteWEnabled() || Ctl().shapesAlone) && Ctl().shapes &&
         ise_page_stroke::DrawFill(ded->gd, ded->changedBy, PageStrokeCoverage())) {
         Trace("P page-item fill item=%u", uid);
         handled = kTrue;
     }
-    if (eventID == kBeginFrameStrokeDrawMessage && !handled && RouteWEnabled() && Ctl().shapes &&
+    if (eventID == kBeginFrameStrokeDrawMessage && !handled && (RouteWEnabled() || Ctl().shapesAlone) && Ctl().shapes &&
         ise_page_stroke::DrawStroke(ded->gd, ded->changedBy, PageStrokeCoverage())) {
         Trace("P page-item stroke item=%u", uid);
         handled = kTrue;
