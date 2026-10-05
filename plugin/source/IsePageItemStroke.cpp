@@ -34,22 +34,32 @@
 //                         exterior corners filled as for Center; a round join's are the round
 //                         stroke's own; a bevel join's exterior corners get the beveled offset's
 //                         stroke (OffsetBevel). Interior miters are dropped.
-//     Inside, any join    the outline filled again, then stroked at twice the weight, clipped
-//                         to the fill; the interior corners get the inward offset's join: a
-//                         miter within the limit filled whole, past it or for a bevel join the
-//                         beveled offset's stroke, a round join the round stroke's own. Only
-//                         for outlines of straight segments without corner effects, in an item
-//                         without content: on curves and corner effects InDesign's own inward
-//                         offset fill spills past the outline (up to 1,700 pt2 on a line of
-//                         outlined text in the census), which a stroke clipped to the fill
-//                         no longer covers, and which the plugin cannot take back.
-//   Open paths stay InDesign's.
+//     Inside, any join    the outline filled at the fill event instead of InDesign's inward
+//                         offset (DrawFill: InDesign skips its own fill, kBeginFrameFillDrawMessage),
+//                         in the fill's place, beneath any content; then the stroke at twice
+//                         the weight, clipped to the fill; the interior corners get the inward
+//                         offset's join: a miter within the limit filled whole, past it or for a
+//                         bevel join the beveled offset's stroke, a round join the round stroke's
+//                         own. InDesign's inward offset fill spilled past curved outlines and
+//                         corner effects (up to 1,700 pt2 on a line of outlined text in the
+//                         census), which a stroke clipped to the fill could not cover; it is
+//                         never drawn now, so curves, corner effects, and frames with content
+//                         are covered (2026-10-05). With corner effects, the tiny holes their
+//                         loops leave in an overlapping outline's region are not stroked.
+//   Solid strokes, open paths:
+//     Center, Miter       the path stroked at the weight with its caps and bevel joins, each
+//                         corner's miter filled as InDesign draws it within the limit, and past
+//                         it kept whole as on closed shapes; the corners are not told apart by
+//                         the fill the path closes. Without arrowheads (a claimed stroke draws
+//                         none). Outside and Inside on an open path stay InDesign's: it offsets
+//                         the path to one side by its direction, which on outlined text puts
+//                         the stroke inside many letters.
 //   Other stroke types (dashes, dots, stripes, any stroke style): InDesign's own stroke
 //     (IPathPageItem::Stroke) drawn from here under a clip (ise_region::StrokeClip): within a
 //     little more than the stroke's reach of the outline, plus each corner's join, and for
 //     Outside outside the fill, for Inside within it. That removes escaping tips and the
-//     stroke shown through the letters while keeping InDesign's pattern; Outside and Inside
-//     are refilled first. Points past the limit stay as InDesign draws them.
+//     stroke shown through the letters while keeping InDesign's pattern; Outside is refilled
+//     first, Inside filled at the fill event. Points past the limit stay as InDesign draws them.
 //
 // Where an Outside or Inside outline's fill rules disagree (overlapping contours, holes wound
 // the fill's way), the boundary of the region it fills is stroked instead of its contours
@@ -60,10 +70,10 @@
 // outside of the fill is built from the outline when both rules agree on it, and otherwise
 // from the resolved region; both are checked exactly (ise_region::ClipsOutside).
 //
-// A frame with content (text, a placed graphic, pasted items: any child) is not refilled:
-// InDesign strokes a frame after drawing its content, so a refill at the stroke would paint
-// the frame's fill over its text or image. A frame's own outline is a plain shape, whose
-// offset fill does not break.
+// An Outside-stroked frame with content (text, a placed graphic, pasted items: any child) is
+// not refilled: InDesign strokes a frame after drawing its content, so a refill at the stroke
+// would paint the frame's fill over its text or image. A frame's own outline is a plain shape,
+// whose offset fill does not break.
 //
 // Where an Outside or Inside stroke follows the resolved region, the region's boundary has
 // corners the outline does not: where contours cross, and where a contour's loop (corner
@@ -477,11 +487,25 @@ void Prepare(const std::vector<Contour>& contours, const std::vector<Pt>* anchor
         out->stroked = ise_region::NonzeroRegion(contours, regionTol);
         if (out->stroked.empty()) return;
         out->resolved = true;
+        if (inside && anchors != nullptr) {
+            // Corner effects: the tiny holes their loops leave inside the fill are not stroked
+            // (ise_miter::SmallHoles); the fill keeps them as InDesign's does.
+            const std::vector<char> tiny = ise_miter::SmallHoles(out->stroked, h, regionTol);
+            std::vector<Contour> kept;
+            for (size_t i = 0; i < out->stroked.size(); ++i)
+                if (!tiny[i]) kept.push_back(out->stroked[i]);
+            out->stroked.swap(kept);
+        }
     }
     const std::vector<Contour>& path = out->resolved ? out->stroked : contours;
     ise_miter::Options options;
     options.halfWidth = h;
     out->stubs = ise_miter::Corners(path, options, !outside);
+    // An open path (Center only): every corner's miter is drawn as InDesign draws it, whether
+    // it points into the fill the path closes or not (see the file comment).
+    bool open = false;
+    for (const Contour& c : contours) open = open || !c.closed;
+    if (open) for (Stub& s : out->stubs) s.interior = false;
     if (out->resolved) out->crossing = ise_miter::CornersNotOnOutline(out->stubs, contours, options, limit);
     if (anchors != nullptr) {   // corner effects: the corners they add (see the file comment)
         const std::vector<char> made = ise_miter::CornersNotAtAnchors(out->stubs, *anchors);
@@ -530,18 +554,46 @@ void Prepare(const std::vector<Contour>& contours, const std::vector<Pt>* anchor
     out->ok = true;
 }
 
-} // namespace
+/** Everything the route decides for an item from its attributes and outline (Analyze); the
+    fill and the stroke events analyze the same item alike, so they always agree on whether the
+    route takes it. */
+struct Plan {
+    InterfacePtr<IPathPageItem> pathItem;
+    InterfacePtr<IGraphicStyleDescriptor> style;
+    InterfacePtr<IRenderingObject> paint;
+    IDataBase* db = nil;
+    UID none = kInvalidUID;
+    double weight = 0, limit = 0, h = 0;
+    int32 join = 0, cap = 0;
+    Align align = Align::Center;
+    bool solid = false, refill = false, hasFill = false;
+    bool16 overprint = kFalse, overprintFill = kFalse;
+    std::vector<Contour> contours;
+    std::shared_ptr<const Prepared> prepared;
+};
 
-bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
+/** Whether the item draws an arrowhead at either end. True also when the attribute cannot be
+    read. */
+bool Arrowheads(IGraphicAttributeUtils* attrs, IGraphicStyleDescriptor* style)
 {
-    IGraphicsPort* port = gd ? gd->GetGraphicsPort() : nil;
-    if (port == nil || item == nil || tInsideStroke) return false;
-    InterfacePtr<IPathPageItem> pathItem(item, UseDefaultIID());
+    ClassID start = kInvalidClass, end = kInvalidClass;
+    if (attrs->GetLineEndStartImplementation(start, style) != kSuccess ||
+        attrs->GetLineEndEndImplementation(end, style) != kSuccess) return true;
+    return start != kInvalidClass || end != kInvalidClass;
+}
+
+/** Fills `plan` and returns true when this route draws the item's stroke; see the file comment
+    for what it takes over. With `probeNative`, the caller only needs the stroke's attributes. */
+bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
+{
+    plan->pathItem = InterfacePtr<IPathPageItem>(item, UseDefaultIID());
     InterfacePtr<IPathGeometry> geometry(item, UseDefaultIID());
-    InterfacePtr<IGraphicStyleDescriptor> style(item, UseDefaultIID());
+    plan->style = InterfacePtr<IGraphicStyleDescriptor>(item, UseDefaultIID());
     InterfacePtr<IShape> shape(item, UseDefaultIID());
     IDataBase* db = ::GetDataBase(item);
-    if (pathItem == nil || geometry == nil || style == nil || shape == nil || db == nil) return false;
+    IGraphicStyleDescriptor* style = plan->style.get();
+    if (plan->pathItem == nil || geometry == nil || style == nil || shape == nil || db == nil) return false;
+    plan->db = db;
 
     // The stroke's attributes.
     const int32 paths = geometry->GetNumPaths();
@@ -549,29 +601,34 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     bool anyOpen = false;
     for (int32 i = 0; i < paths; ++i) anyOpen = anyOpen || !geometry->IsPathClosed(i);
     Utils<IGraphicAttributeUtils> attrs;
-    const UID none = Utils<ISwatchUtils>()->GetNoneSwatchUID(db);
-    UID strokePaint = kInvalidUID;
+    plan->none = Utils<ISwatchUtils>()->GetNoneSwatchUID(db);
+    UID strokePaint = kInvalidUID, fillPaint = kInvalidUID;
     if (attrs->GetStrokeRenderingUID(strokePaint, style) != kSuccess || strokePaint == kInvalidUID ||
-        strokePaint == none) return false;
+        strokePaint == plan->none) return false;
+    plan->hasFill = attrs->GetFillRenderingUID(fillPaint, style) == kSuccess && fillPaint != kInvalidUID && fillPaint != plan->none;
     PMReal weightValue = 0, limitValue = 0;
-    int32 join = 0, alignment = 0, cap = 0;
-    if (attrs->GetStrokeWeight(weightValue, style) != kSuccess || attrs->GetJoinType(join, style) != kSuccess ||
+    int32 alignment = 0;
+    if (attrs->GetStrokeWeight(weightValue, style) != kSuccess || attrs->GetJoinType(plan->join, style) != kSuccess ||
         attrs->GetStrokeAlignment(alignment, style) != kSuccess || attrs->GetMiterLimit(limitValue, style) != kSuccess ||
-        attrs->GetLineCap(cap, style) != kSuccess) return false;
-    const double weight = ToDouble(weightValue), limit = ToDouble(limitValue);
+        attrs->GetLineCap(plan->cap, style) != kSuccess) return false;
+    plan->weight = ToDouble(weightValue);
+    plan->limit = ToDouble(limitValue);
+    const double weight = plan->weight, limit = plan->limit;
+    const int32 join = plan->join;
     if (!(weight > 0) || weight > 10000 || !(limit >= 1)) return false;
     if (join != kPMMiterJoin && join != kPMRoundJoin && join != kPMBevelJoin) return false;
-    Align align;
     switch (alignment) {
-    case kStrokeAlignCenter: align = Align::Center; break;
-    case kStrokeAlignOutside: align = Align::Outside; break;
-    case kStrokeAlignInside: align = Align::Inside; break;
+    case kStrokeAlignCenter: plan->align = Align::Center; break;
+    case kStrokeAlignOutside: plan->align = Align::Outside; break;
+    case kStrokeAlignInside: plan->align = Align::Inside; break;
     default: return false;
     }
+    const Align align = plan->align;
     ClassID stroker = kInvalidClass;
     UID strokerUID = kInvalidUID;
     if (attrs->GetLineImplementation(stroker, strokerUID, style) != kSuccess) return false;
-    const bool solid = stroker == kSolidPathStrokerBoss;
+    plan->solid = stroker == kSolidPathStrokerBoss;
+    const bool solid = plan->solid;
     bool16 evenOdd = kFalse;
     if (attrs->GetEvenOdd(evenOdd, style) == kSuccess && evenOdd) return false;   // filled even-odd
     InterfacePtr<IXPManager> xp(Utils<IXPUtils>()->QueryXPManager(db));
@@ -579,28 +636,27 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     if (xp->ItemHasTransparency(shape) != 0 && (!coverage.transparency || StrokeOrFillTransparency(style, coverage, ::GetUID(item)))) return false;
     if (!Invertible(item)) return false;
     InterfacePtr<IHierarchy> hierarchy(item, UseDefaultIID());
-    const bool refill = hierarchy == nil || hierarchy->GetChildCount() == 0;   // no content drawn yet beneath the stroke
-    InterfacePtr<IRenderingObject> paint(db, strokePaint, UseDefaultIID());
-    if (paint == nil) return false;
+    plan->refill = hierarchy == nil || hierarchy->GetChildCount() == 0;   // no content drawn yet beneath the stroke
+    plan->paint = InterfacePtr<IRenderingObject>(db, strokePaint, UseDefaultIID());
+    if (plan->paint == nil) return false;
     // Overprint is set explicitly: IRenderingObject::Install does not carry it, and the PDF
     // port wrote the plugin's strokes and fills without it (measured 2026-10-04).
-    bool16 overprint = kFalse, overprintFill = kFalse;
-    if (attrs->GetOverprintStroke(overprint, style) != kSuccess ||
-        attrs->GetOverprintFill(overprintFill, style) != kSuccess) return false;
-
-    if (coverage.probeNative) return StrokeNatively(port, pathItem, style, paint, {}, weight, join, limit, cap, overprint);
+    if (attrs->GetOverprintStroke(plan->overprint, style) != kSuccess ||
+        attrs->GetOverprintFill(plan->overprintFill, style) != kSuccess) return false;
+    if (coverage.probeNative) return true;
 
     // Which strokes this route draws.
-    if (anyOpen) return false;
     if (align == Align::Center && join != kPMMiterJoin) return false;      // nothing to correct
-    if (align == Align::Inside && (!refill || CornerEffects(attrs, style))) return false;
+    // Open paths: Center, Miter, solid, without arrowheads (see the file comment).
+    if (anyOpen && (align != Align::Center || !solid || Arrowheads(attrs, style))) return false;
 
-    ise_miter::Recorder recorder;
+    ise_miter::Recorder recorder(anyOpen);
     Recording writer(&recorder);
-    pathItem->GetOutlineInfo(&writer);
-    std::vector<Contour> contours = recorder.Contours();
+    plan->pathItem->GetOutlineInfo(&writer);
+    plan->contours = recorder.Contours();
+    std::vector<Contour>& contours = plan->contours;
     if (contours.empty()) return false;
-    for (Contour& c : contours) c.closed = true;
+    if (!anyOpen) for (Contour& c : contours) c.closed = true;
     // With corner effects, the anchors of the path the user drew (inner coordinates, as the
     // outline): corners off them are the effect's.
     std::vector<Pt> anchors;
@@ -611,14 +667,9 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
                 const PMPoint& a = geometry->GetNthPoint(i, j).GetAnchorPoint();
                 anchors.push_back({ToDouble(a.X()), ToDouble(a.Y())});
             }
-    if (align == Align::Inside) {
-        for (const Contour& c : contours)
-            for (const ise_miter::Segment& sg : c.segments)
-                if (sg.curve) return false;   // straight segments only (see the file comment)
-    }
 
-    const bool center = align == Align::Center, outside = align == Align::Outside, inside = align == Align::Inside;
-    const double h = center ? weight / 2 : weight;   // half the drawn width
+    plan->h = align == Align::Center ? weight / 2 : weight;   // half the drawn width
+    const double h = plan->h;
     Hash key;
     for (const Contour& c : contours) {
         key.Add(c.start);
@@ -641,24 +692,61 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
                                         Segments(made->strokeClip) + made->stubs.size());
         prepared = made;
     }
-    if (!prepared->ok) return false;
-    const std::vector<Contour>& path = prepared->resolved ? prepared->stroked : contours;
-    const std::vector<Stub>& stubs = prepared->stubs;
+    plan->prepared = prepared;
+    return prepared->ok;
+}
 
-    if (!solid) {
+} // namespace
+
+bool DrawFill(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
+{
+    IGraphicsPort* port = gd ? gd->GetGraphicsPort() : nil;
+    if (port == nil || item == nil || tInsideStroke || coverage.probeNative) return false;
+    Plan plan;
+    if (!Analyze(item, coverage, &plan) || plan.align != Align::Inside || !plan.hasFill) return false;
+    // InDesign fills an Inside-stroked item's inward offset, which spills past curved outlines
+    // and corner effects; the outline itself is filled instead, in the fill's place in the
+    // drawing order, beneath any content (see the file comment).
+    Refill(port, plan.db, plan.style.get(), plan.none, plan.contours, plan.overprintFill);
+    return true;
+}
+
+bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
+{
+    IGraphicsPort* port = gd ? gd->GetGraphicsPort() : nil;
+    if (port == nil || item == nil || tInsideStroke) return false;
+    Plan plan;
+    const bool taken = Analyze(item, coverage, &plan);
+    if (coverage.probeNative)
+        return taken && StrokeNatively(port, plan.pathItem.get(), plan.style.get(), plan.paint.get(), {}, plan.weight, plan.join,
+                                       plan.limit, plan.cap, plan.overprint);
+    if (!taken) return false;
+    IGraphicStyleDescriptor* style = plan.style.get();
+    IRenderingObject* paint = plan.paint.get();
+    const Align align = plan.align;
+    const int32 join = plan.join, cap = plan.cap;
+    const double weight = plan.weight, limit = plan.limit, h = plan.h;
+    const std::vector<Contour>& contours = plan.contours;
+    const Prepared& prepared = *plan.prepared;
+    const bool center = align == Align::Center, outside = align == Align::Outside, inside = align == Align::Inside;
+    const std::vector<Contour>& path = prepared.resolved ? prepared.stroked : contours;
+    const std::vector<Stub>& stubs = prepared.stubs;
+    // Outside: InDesign fills the offset path, not the outline (see the file comment), so the
+    // outline is filled again first; the stroke covers the offset fill's band. Inside: the
+    // outline was filled at the fill event (DrawFill), in InDesign's place.
+    const bool refill = outside && plan.refill;
+
+    if (!plan.solid) {
         // InDesign's own stroke, clipped to where a stroke of this reach can paint: escaping
         // tips and stroke inside the letters are cut away, the pattern is InDesign's.
-        if (!center && refill) Refill(port, db, style, none, contours, overprintFill);
-        return StrokeNatively(port, pathItem, style, paint, prepared->strokeClip, weight, join, limit, cap, overprint);
+        if (refill) Refill(port, plan.db, style, plan.none, contours, plan.overprintFill);
+        return StrokeNatively(port, plan.pathItem.get(), style, paint, prepared.strokeClip, weight, join, limit, cap, plan.overprint);
     }
-
-    // Outside and Inside: InDesign fills the offset path, not the outline (see the file comment),
-    // so the outline is filled again first; the stroke covers the offset fill's band.
-    if (!center && refill) Refill(port, db, style, none, contours, overprintFill);
+    if (refill) Refill(port, plan.db, style, plan.none, contours, plan.overprintFill);
 
     AutoGSave save(port);
     paint->Install(port, style, IRenderingObject::kInstallStroke);
-    if (overprint) port->setoverprint(kTrue);   // the stroke and its joins
+    if (plan.overprint) port->setoverprint(kTrue);   // the stroke and its joins
     port->setlinewidth(2 * h);
     port->setlinecap(cap);
     port->setmiterlimit(limit);
@@ -667,14 +755,14 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
         // nonzero clip of the outline, which reads it exactly also where contours overlap.
         // Not IPathPageItem::Clip: InDesign's PDF port wrote that clip without its path (`W n`).
         port->newpath();
-        EmitContours(port, outside ? prepared->outsideClip : contours);
+        EmitContours(port, outside ? prepared.outsideClip : contours);
         port->clip();
     }
     port->setlinejoin(join == kPMRoundJoin ? kPMRoundJoin : kPMBevelJoin);
     port->newpath();
     EmitContours(port, path);
     port->stroke();
-    FillPolygons(port, StrokeSideJoins(stubs, prepared->crossing, prepared->effect, align, join, h, limit));
+    FillPolygons(port, StrokeSideJoins(stubs, prepared.crossing, prepared.effect, align, join, h, limit));
     if (center) {
         // Each interior corner's miter, within the limit, clipped to the fill: clipped to the
         // recorded outline, not with IPathPageItem::Clip, which InDesign's PDF port wrote

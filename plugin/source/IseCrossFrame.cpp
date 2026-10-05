@@ -799,6 +799,11 @@ bool16 IseXfDrawEvents::HandleDrawEvent(ClassID eventID, void* eventData)
     }
     // Page-item strokes: drawn here, in the item's inner coordinates, when this route can draw
     // them exactly; claiming the event makes InDesign skip its own stroke (CGraphicFrameShape).
+    if (eventID == kBeginFrameFillDrawMessage && !handled && RouteWEnabled() && Ctl().shapes &&
+        ise_page_stroke::DrawFill(ded->gd, ded->changedBy, PageStrokeCoverage())) {
+        Trace("P page-item fill item=%u", uid);
+        handled = kTrue;
+    }
     if (eventID == kBeginFrameStrokeDrawMessage && !handled && RouteWEnabled() && Ctl().shapes &&
         ise_page_stroke::DrawStroke(ded->gd, ded->changedBy, PageStrokeCoverage())) {
         Trace("P page-item stroke item=%u", uid);

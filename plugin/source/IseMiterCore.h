@@ -689,6 +689,38 @@ inline std::vector<char> CornersNotAtAnchors(const std::vector<Stub>& stubs, std
     return out;
 }
 
+/** Which contours of a resolved region (one flag each) are holes no larger than `size` across
+    in either direction: wound against the region's largest contour. Corner effects on
+    overlapping contours leave such holes where a corner's loop falls inside another contour's
+    fill (1.3 pt across on the census's overlapping squares, 2026-10-05); an Inside stroke
+    around one paints a block the stroke's width wider on every side than the hole. */
+inline std::vector<char> SmallHoles(const std::vector<Contour>& region, double size, double tol)
+{
+    const size_t n = region.size();
+    std::vector<double> area(n, 0), wide(n, 0), tall(n, 0);
+    size_t largest = 0;
+    for (size_t i = 0; i < n; ++i) {
+        const std::vector<Ring> rings = Flatten({region[i]}, tol, 1e-9);
+        if (rings.empty()) continue;
+        const std::vector<Pt>& p = rings[0].points;
+        double x0 = p[0].x, x1 = p[0].x, y0 = p[0].y, y1 = p[0].y;
+        for (size_t k = 0; k < p.size(); ++k) {
+            area[i] += Cross(p[k], p[(k + 1) % p.size()]) / 2;
+            x0 = std::min(x0, p[k].x); x1 = std::max(x1, p[k].x);
+            y0 = std::min(y0, p[k].y); y1 = std::max(y1, p[k].y);
+        }
+        wide[i] = x1 - x0;
+        tall[i] = y1 - y0;
+        if (std::fabs(area[i]) > std::fabs(area[largest])) largest = i;
+    }
+    std::vector<char> out(n, 0);
+    if (n == 0) return out;
+    const double outer = area[largest] >= 0 ? 1 : -1;
+    for (size_t i = 0; i < n; ++i)
+        out[i] = i != largest && area[i] * outer < 0 && wide[i] <= size && tall[i] <= size;
+    return out;
+}
+
 /** How far past its vertex the miter of a corner a corner effect adds reaches, within the miter
     limit, for half width h: the whole miter, but no farther past the stroke's edge (h) than the
     corner's shorter edge. The fancy and inset effects cut a glyph's corner into a zigzag of

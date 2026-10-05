@@ -468,6 +468,17 @@ int main()
                       "a zigzag corner of 0.1 pt edges: the miter no farther past the stroke than its edge");
             }
         }
+        // Small holes of a region (SmallHoles): a 1 pt hole is small at size 4, a 6 pt hole and
+        // a 1 pt island are not, whichever way the region is wound.
+        for (int flip = 0; flip < 2; ++flip) {
+            std::vector<Contour> region = {Poly({{0, 0}, {40, 0}, {40, 40}, {0, 40}}), Poly({{5, 5}, {5, 6}, {6, 6}, {6, 5}}),
+                                           Poly({{20, 20}, {20, 26}, {26, 26}, {26, 20}}), Poly({{50, 0}, {51, 0}, {51, 1}, {50, 1}})};
+            if (flip) for (Contour& c : region) c = Reversed(c, 1e-9);
+            const std::vector<char> tiny = SmallHoles(region, 4, 1e-3);
+            Check(tiny.size() == 4 && !tiny[0] && tiny[1] && !tiny[2] && !tiny[3],
+                  "small holes: the 1 pt hole only, not the 6 pt hole, the island, or the outline");
+        }
+        Check(SmallHoles({}, 4, 1e-3).empty(), "no contours: no flags");
         // Within the tolerance only: an anchor 0.002 off is not the corner's, 0.0005 off is.
         const std::vector<char> off = CornersNotAtAnchors(cs, {{0.002, 0}, {10, 0}, {0, 10}});
         const std::vector<char> inTol = CornersNotAtAnchors(cs, {{0.0005, 0}, {10, 0}, {0, 10}});

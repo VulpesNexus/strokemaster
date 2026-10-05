@@ -22,4 +22,9 @@ struct Coverage {
 // own stroke for the item. Otherwise draws nothing and returns false.
 bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage = Coverage());
 
+// At kBeginFrameFillDrawMessage: for an item whose Inside stroke DrawStroke will draw, fills the
+// item's outline instead of InDesign's inward offset and returns true, and the caller reports
+// the event handled so InDesign skips its own fill. Otherwise draws nothing and returns false.
+bool DrawFill(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage = Coverage());
+
 } // namespace ise_page_stroke
