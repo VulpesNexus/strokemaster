@@ -669,6 +669,37 @@ inline std::vector<char> CornersNotOnOutline(const std::vector<Stub>& stubs, con
     return out;
 }
 
+/** Which corners (`stubs`) lie at none of `anchors`, the anchor points of the path the user
+    drew: one flag per stub, set where no anchor lies within `within` of the vertex. A corner
+    effect replaces each corner of that path with its own small shape, whose corners lie off
+    the anchors; on an acute corner of a glyph that shape turns sharper than the miter limit,
+    and a point drawn there is the effect's, not the shape's (the M's apexes of outlined Minion
+    with fancy, inset, or inverse rounded corners threw 16 pt points, 2026-10-05). */
+inline std::vector<char> CornersNotAtAnchors(const std::vector<Stub>& stubs, std::vector<Pt> anchors, double within = 1e-3)
+{
+    std::sort(anchors.begin(), anchors.end(), [](const Pt& a, const Pt& b) { return a.x < b.x; });
+    std::vector<char> out(stubs.size(), 1);
+    for (size_t i = 0; i < stubs.size(); ++i) {
+        const Pt v = stubs[i].v;
+        auto it = std::lower_bound(anchors.begin(), anchors.end(), v.x - within, [](const Pt& a, double x) { return a.x < x; });
+        for (; it != anchors.end() && it->x <= v.x + within; ++it) {
+            if (std::fabs(it->y - v.y) <= within) { out[i] = 0; break; }
+        }
+    }
+    return out;
+}
+
+/** How far past its vertex the miter of a corner a corner effect adds reaches, within the miter
+    limit, for half width h: the whole miter, but no farther past the stroke's edge (h) than the
+    corner's shorter edge. The fancy and inset effects cut a glyph's corner into a zigzag of
+    segments 0.06 to 0.5 pt long, whose miters within the limit threw points 7 to 10 pt from
+    the vertex (InDesign draws them too, 2026-10-05); an effect's own corners between edges
+    as long as the stroke is wide (an inset notch on a square) keep their whole miter. */
+inline double EffectMiterReach(const Stub& s, double h)
+{
+    return std::min(s.ratio * h, h + s.edge);
+}
+
 /** How far past its vertex an exterior miter beyond the miter limit keeps its point, for half
     width h: the whole miter (ratio * h) when that is no longer than the shorter of the corner's
     two edges, otherwise as far as that edge reaches; never less than the limit distance, nor

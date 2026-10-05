@@ -70,7 +70,15 @@
 // effects on small details make many) pinches off. Past the miter limit, such a corner keeps
 // the stroke's bevel, as InDesign's stroke of the crossing contours shows no point there; only
 // corners of the outline itself keep whole points (inset corners on outlined text threw 16 pt
-// blocks from loop pinches, 2026-10-04).
+// blocks from loop pinches, 2026-10-04). Likewise the corners a corner effect adds: the outline
+// with corner effects replaces each corner of the drawn path with the effect's shape, whose
+// corners lie off the path's anchors; past the limit they keep the stroke's bevel, as InDesign
+// draws them, and only corners at the path's own anchors keep whole points (fancy, inset, and
+// inverse rounded corners threw 16 pt points from the acute corners of outlined text,
+// 2026-10-05). Within the limit, such a corner's miter reaches past the stroke's edge no
+// farther than the corner's shorter edge (ise_miter::EffectMiterReach): the fancy and inset
+// effects cut corners into zigzags of segments under half a point, whose whole miters stuck out
+// 7 to 10 pt (InDesign's own stroke draws them; the owner asked for them trimmed, 2026-10-05).
 //
 // Transparency: object-level opacity, blending, and effects are kept (InDesign draws the whole
 // item, the plugin's stroke included, inside them). Stroke-level and fill-level transparency
@@ -284,10 +292,12 @@ enum class Align { Center, Outside, Inside };
 /** The joins filled at the corners on the stroke's side, beyond a stroke of half width h along
     the outline with bevel joins: see the file comment. Center and Outside strokes take the
     exterior corners, Inside strokes the interior ones; Center's interior corners are filled by
-    the caller, clipped to the fill. `crossing` (empty, or one flag per stub) marks the resolved
-    region's corners the outline does not have, which keep the stroke's bevel past the limit. */
-std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, const std::vector<char>& crossing, Align align,
-                                             int32 join, double h, double limit)
+    the caller, clipped to the fill. `crossing` (empty, or one flag per stub) marks the corners
+    the drawn shape does not have (the resolved region's, or a corner effect's), which keep the
+    stroke's bevel past the limit. `effect` (empty, or one flag per stub) marks the corners a
+    corner effect adds, whose miters within the limit are trimmed (EffectMiterReach). */
+std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, const std::vector<char>& crossing,
+                                             const std::vector<char>& effect, Align align, int32 join, double h, double limit)
 {
     std::vector<std::vector<Pt>> out;
     const bool wantInterior = align == Align::Inside;
@@ -297,7 +307,8 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
         if (join == kPMRoundJoin) continue;   // the round stroke's own join is the offset's
         if (i < crossing.size() && crossing[i] && PastLimit(s, limit)) continue;   // the stroke's bevel
         if (join == kPMMiterJoin && !PastLimit(s, limit)) {
-            out.push_back(ise_miter::JoinPolygon(s, h, s.ratio * h));
+            const bool trimmed = i < effect.size() && effect[i];
+            out.push_back(ise_miter::JoinPolygon(s, h, trimmed ? ise_miter::EffectMiterReach(s, h) : s.ratio * h));
         } else if (join == kPMMiterJoin && align != Align::Inside) {
             // Past the limit: the point kept whole or cut (the owner's whole points).
             out.push_back(ise_miter::JoinPolygon(s, h, ise_miter::PointReach(s, h, limit, kLongestMiter)));
@@ -338,7 +349,8 @@ struct Prepared {
     bool resolved = false;
     std::vector<Contour> stroked;       // the resolved region's boundary, when resolved
     std::vector<Stub> stubs;
-    std::vector<char> crossing;         // per stub, when resolved: a corner the outline lacks
+    std::vector<char> crossing;         // per stub: a corner the drawn shape lacks (resolution, corner effect)
+    std::vector<char> effect;           // per stub, with corner effects: a corner the effect adds
     std::vector<Contour> outsideClip;   // Outside, solid
     std::vector<Contour> strokeClip;    // other stroke types
 };
@@ -447,7 +459,8 @@ bool StrokeNatively(IGraphicsPort* port, IPathPageItem* pathItem, IGraphicStyleD
 }
 
 /** Works out what the stroke draws from (Prepared): see the file comment. */
-void Prepare(const std::vector<Contour>& contours, Align align, int32 join, bool solid, double h, double limit, Prepared* out)
+void Prepare(const std::vector<Contour>& contours, const std::vector<Pt>* anchors, Align align, int32 join, bool solid, double h,
+             double limit, Prepared* out)
 {
     const bool center = align == Align::Center, outside = align == Align::Outside, inside = align == Align::Inside;
     // The region is rebuilt within 0.0005 pt; the rules and the clips are compared on coarser
@@ -470,6 +483,12 @@ void Prepare(const std::vector<Contour>& contours, Align align, int32 join, bool
     options.halfWidth = h;
     out->stubs = ise_miter::Corners(path, options, !outside);
     if (out->resolved) out->crossing = ise_miter::CornersNotOnOutline(out->stubs, contours, options, limit);
+    if (anchors != nullptr) {   // corner effects: the corners they add (see the file comment)
+        const std::vector<char> made = ise_miter::CornersNotAtAnchors(out->stubs, *anchors);
+        out->effect = made;
+        if (out->crossing.empty()) out->crossing = made;
+        else for (size_t i = 0; i < made.size(); ++i) out->crossing[i] = out->crossing[i] || made[i];
+    }
     // The clip for InDesign's own stroke (other stroke types): its reach of the outline
     // (StrokeClip), when the outline is small enough for that to take well under a second;
     // Clipper2's offset of the 5,725 contours of a line of outlined Kerberos Fang took 8 s.
@@ -582,6 +601,16 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     std::vector<Contour> contours = recorder.Contours();
     if (contours.empty()) return false;
     for (Contour& c : contours) c.closed = true;
+    // With corner effects, the anchors of the path the user drew (inner coordinates, as the
+    // outline): corners off them are the effect's.
+    std::vector<Pt> anchors;
+    const bool effects = CornerEffects(attrs, style);
+    if (effects)
+        for (int32 i = 0; i < paths; ++i)
+            for (int32 j = 0, n = geometry->GetNumPoints(i); j < n; ++j) {
+                const PMPoint& a = geometry->GetNthPoint(i, j).GetAnchorPoint();
+                anchors.push_back({ToDouble(a.X()), ToDouble(a.Y())});
+            }
     if (align == Align::Inside) {
         for (const Contour& c : contours)
             for (const ise_miter::Segment& sg : c.segments)
@@ -602,10 +631,12 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
         key.Add(static_cast<int32>(-1));
     }
     key.Add(h); key.Add(limit); key.Add(static_cast<int32>(align)); key.Add(join); key.Add(static_cast<int32>(solid));
+    key.Add(static_cast<int32>(effects));
+    for (const Pt& a : anchors) key.Add(a);
     std::shared_ptr<const Prepared> prepared = Cache().Find(key.Value());
     if (!prepared) {
         std::shared_ptr<Prepared> made = std::make_shared<Prepared>();
-        Prepare(contours, align, join, solid, h, limit, made.get());
+        Prepare(contours, effects ? &anchors : nullptr, align, join, solid, h, limit, made.get());
         Cache().Keep(key.Value(), made, Segments(contours) + Segments(made->stroked) + Segments(made->outsideClip) +
                                         Segments(made->strokeClip) + made->stubs.size());
         prepared = made;
@@ -643,7 +674,7 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     port->newpath();
     EmitContours(port, path);
     port->stroke();
-    FillPolygons(port, StrokeSideJoins(stubs, prepared->crossing, align, join, h, limit));
+    FillPolygons(port, StrokeSideJoins(stubs, prepared->crossing, prepared->effect, align, join, h, limit));
     if (center) {
         // Each interior corner's miter, within the limit, clipped to the fill: clipped to the
         // recorded outline, not with IPathPageItem::Clip, which InDesign's PDF port wrote

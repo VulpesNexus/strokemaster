@@ -440,6 +440,44 @@ int main()
         Check(CornersNotOnOutline({}, bowtie, With(1), 4).empty(), "no region corners: no flags");
     }
     {
+        // Corners a corner effect adds (CornersNotAtAnchors): an inset corner cut into the
+        // right-angle corner at (10, 10) of a square, as the effect's outline draws it.
+        const std::vector<Pt> anchors = {{0, 0}, {10, 0}, {10, 10}, {0, 10}};
+        const Contour inset = Poly({{0, 0}, {10, 0}, {10, 8}, {8, 8}, {8, 10}, {0, 10}});
+        const std::vector<Stub> cs = Corners({inset}, With(1), true);
+        const std::vector<char> made = CornersNotAtAnchors(cs, anchors);
+        Check(cs.size() == 6 && made.size() == 6, "an inset corner: six corners");
+        for (size_t i = 0; i < cs.size(); ++i) {
+            const bool own = Near(cs[i].v, {0, 0}) || Near(cs[i].v, {10, 0}) || Near(cs[i].v, {0, 10});
+            Check(made[i] == (own ? 0 : 1), own ? "a corner at an anchor: the path's own" : "a corner the effect cut: not at an anchor");
+        }
+        Check(CornersNotAtAnchors(cs, {}).size() == 6, "no anchors: every corner flagged");
+        Check(CornersNotAtAnchors({}, anchors).empty(), "no corners: no flags");
+        // The effect's miters within the limit (EffectMiterReach): the notch's right angles keep
+        // their whole miter when their edges are as long as the stroke is wide.
+        for (const Stub& s : cs) {
+            if (s.interior) continue;
+            Check(std::fabs(EffectMiterReach(s, 1) - s.ratio) < 1e-9, "a corner between edges longer than h: the whole miter");
+        }
+        {
+            // A zigzag corner: 60 degrees between edges of 0.1 at h = 4 (ratio 2): reach 4.1, not 8.
+            const Contour zig = Poly({{0, 0}, {0.1, 0}, {0.05, 0.0866}});
+            for (const Stub& s : Corners({zig}, With(4), true)) {
+                if (s.interior) continue;
+                Check(std::fabs(EffectMiterReach(s, 4) - std::min(s.ratio * 4, 4 + s.edge)) < 1e-9 && EffectMiterReach(s, 4) < 4.2,
+                      "a zigzag corner of 0.1 pt edges: the miter no farther past the stroke than its edge");
+            }
+        }
+        // Within the tolerance only: an anchor 0.002 off is not the corner's, 0.0005 off is.
+        const std::vector<char> off = CornersNotAtAnchors(cs, {{0.002, 0}, {10, 0}, {0, 10}});
+        const std::vector<char> inTol = CornersNotAtAnchors(cs, {{0.0005, 0}, {10, 0}, {0, 10}});
+        for (size_t i = 0; i < cs.size(); ++i) {
+            if (!Near(cs[i].v, {0, 0})) continue;
+            Check(off[i] == 1, "an anchor beyond the tolerance does not claim the corner");
+            Check(inTol[i] == 0, "an anchor within the tolerance claims the corner");
+        }
+    }
+    {
         // Open contours: no closing line, no corner at either end.
         Recorder open(true);
         open.MoveTo({0, 0}); open.LineTo({10, 0}); open.LineTo({10, 10}); open.LineTo({0, 10});
