@@ -754,6 +754,19 @@ inline double WholePointReach(const Stub& s, double h, double longest)
     return std::min(s.ratio, longest) * h;
 }
 
+/** Whether a miter within the limit is trimmed as an effect's corner is (EffectMiterReach), for
+    half width h: a corner sharper than 60 degrees (ratio 2 or more) with a curve on either side
+    or an edge shorter than h, such as the tapered tip of a script glyph, a curve meeting a
+    0.02 pt segment, whose whole miter stuck out as a spike within the limit (Segoe Script's W
+    at ratio 3.67, the owner's screen check, 2026-10-05). Blunter corners keep their whole
+    miter, as InDesign draws it: the square corners of serif feet (ratio 1.41, edges about 1 pt)
+    were chamfered when they were trimmed too. So does a corner between straight edges at
+    least h long. */
+inline bool TrimmedTip(const Stub& s, double h)
+{
+    return s.ratio >= 2 && (s.inCurve || s.outCurve || s.edge < h);
+}
+
 /** Where InDesign strokes an offset of the outline (an Outside stroke strokes it offset outward
     by half the weight w, an Inside stroke offset inward), the offset's corner on the stroke's
     side (an exterior corner for Outside, an interior one for Inside) follows the join: extended
@@ -789,6 +802,23 @@ inline std::vector<Pt> OffsetBevel(const Stub& s, double w, double limit, bool m
     if (tips && meet(e0, s.u, t1) && meet(e1, s.w * -1, t2)) { poly.push_back(t1); poly.push_back(t2); }
     else { poly.push_back(b1); poly.push_back(b2); }
     poly.push_back(e1);
+    return poly;
+}
+
+/** A whole point past the limit beyond the bevel a patterned stroke (dashes, dots, stripes)
+    draws there, as a polygon to fill solid in the stroke's paint: the miter cut at `distance`
+    from the vertex (CutMiter), less what the stroke itself paints at the corner. For a Center
+    stroke of half width h, the stroke's bevel from e0 to e1; for an Outside stroke of weight h
+    (`offset`), the beveled offset's stroke (OffsetBevel, mitered within `limit`). The point
+    does not carry the pattern (the owner's choice, 2026-10-05). */
+inline std::vector<Pt> PointBeyondBevel(const Stub& s, double h, double distance, bool offset, double limit)
+{
+    const std::vector<Pt> cut = CutMiter(s, h, distance);   // v, e0, tip or its cut, e1
+    std::vector<Pt> poly(cut.begin() + 1, cut.end());
+    if (offset) {
+        const std::vector<Pt> bevel = OffsetBevel(s, h, limit, true);   // v, e0, two edge points, e1
+        for (size_t k = bevel.size() - 2; k >= 2; --k) poly.push_back(bevel[k]);
+    }
     return poly;
 }
 

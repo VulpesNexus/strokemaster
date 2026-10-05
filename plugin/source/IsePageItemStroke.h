@@ -14,6 +14,7 @@ namespace ise_page_stroke {
 struct Coverage {
     bool transparency = true;    // items with object-level transparency (stroke or fill level: never)
     bool probeNative = false;    // research: InDesign's own stroke drawn from the event, unclipped
+    bool wordOutline = true;     // Outside dashes and built-in stripes along one outline per word
     void (*trace)(const char* fmt, ...) = nullptr;   // research: one line per transparency attribute read
 };
 

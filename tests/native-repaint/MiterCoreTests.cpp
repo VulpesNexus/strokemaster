@@ -217,6 +217,28 @@ int main()
             Stub needle = x;
             needle.ratio = 1e6; needle.edge = 1e9;
             Check(std::fabs(WholePointReach(needle, 2, 500) - 1000) < 1e-9, "a whole point reaches no farther than the longest limit");
+            // TrimmedTip: within the limit, a glyph tip's miter is trimmed as an effect's corner's.
+            Check(!TrimmedTip(x, 2), "straight edges at least h long: the whole miter");
+            Check(TrimmedTip(tiny, 4) && TrimmedTip(curved, 2), "a short edge or a curve: trimmed");
+            Stub foot = tiny;
+            foot.ratio = std::sqrt(2.0);   // a serif foot's square corner beside a 1 pt edge
+            Check(!TrimmedTip(foot, 4), "a square corner beside a short edge keeps its miter");
+            // PointBeyondBevel: the whole point a patterned stroke gets beyond its own bevel.
+            auto within = [](const std::vector<Pt>& poly, Pt p) {
+                Ring r; r.points = poly; r.x0 = r.y0 = -1e9; r.x1 = r.y1 = 1e9;
+                return Winding({r}, p) != 0;
+            };
+            const double reach = x.ratio * 2, bevel = 2 * std::sin(half);
+            const std::vector<Pt> center = PointBeyondBevel(x, 2, reach, false, 4);
+            Check(center.size() == 3 && Near(center[1], x.v + x.outward * reach), "Center: the bevel's ends and the tip");
+            Check(within(center, x.v + x.outward * (bevel + 0.01)) && !within(center, x.v + x.outward * (bevel - 0.01)) &&
+                  within(center, x.v + x.outward * (reach - 0.01)) && !within(center, x.v + x.outward * (reach + 0.01)),
+                  "Center: from the stroke's bevel line to the tip");
+            const std::vector<Pt> outside = PointBeyondBevel(x, 2, reach, true, 4);
+            const double offsetEdge = 1 * std::sin(half) + 1;   // the beveled offset's stroke edge, w / 2 (1 + cos)
+            Check(outside.size() == 5 && within(outside, x.v + x.outward * (offsetEdge + 0.01)) &&
+                  !within(outside, x.v + x.outward * (offsetEdge - 0.01)) && within(outside, x.v + x.outward * (reach - 0.01)),
+                  "Outside: from the beveled offset's stroke edge to the tip");
         }
         Check(apex, "the wedge's apex is an exterior corner");
         const std::vector<Ring> one = Flatten({ccw}, 1e-3, 1e-9);

@@ -18,7 +18,9 @@
 //                   shapes=0|1 (page-item strokes, IsePageItemStroke.cpp; on by default),
 //                   xp=0|1 (page-item strokes on items with object-level transparency; on by default),
 //                   probe=native (research: claim each stroked page item's event and draw
-//                   InDesign's own stroke from it, unclipped; off by default)
+//                   InDesign's own stroke from it, unclipped; off by default),
+//                   word=0|1 (Outside dashes and built-in stripes along one outline per word,
+//                   IsePageItemStroke.cpp's PrepareWord; on by default)
 //   ISE_XF_TRACE    the trace file, appended to
 // Without the control file the research build behaves as route W. The production candidate
 // has neither: its mode is Story.
@@ -139,6 +141,8 @@ void ReloadControl()
             c.coverage.transparency = v != "0";
         } else if (k == "probe") {
             c.coverage.probeNative = v == "native";
+        } else if (k == "word") {
+            c.coverage.wordOutline = v != "0";
         }
     }
     std::fclose(f);
