@@ -200,10 +200,34 @@ bool Invertible(IPMUnknown* item)
     return std::isfinite(a) && std::isfinite(b) && std::isfinite(c) && std::isfinite(d) && std::fabs(det) > 1e-6;
 }
 
+/** Reads one transparency attribute of the item. An item carries a stroke or fill attribute
+    only once it is set: an item with object-level opacity alone has none of them, and reading
+    them through the descriptor fails (measured 2026-10-05), so an absent attribute takes its
+    hard-coded default, which is opaque, Normal, and no effect. False when a present attribute
+    cannot be read. */
+bool ReadXP(IXPAttributeUtils* xp, IGraphicStyleDescriptor* style, IXPAttributeSuite::AttributeType t,
+            IXPAttributeSuite::AttributeValue& v, const Coverage& coverage, UID uid)
+{
+    const ClassID cls = xp->GetAttributeClassID(t);
+    InterfacePtr<IPMUnknown> attr(cls == kInvalidClass ? nil : style->QueryAttribute(cls));
+    const ErrorCode rc = cls == kInvalidClass ? kFailure
+                         : attr != nil         ? xp->GetAttributeValue(t, v, attr.get())
+                                               : xp->GetAttributeDefaultValue(t, v);
+    if (coverage.trace) {
+        IXPAttributeSuite::AttributeValue d;
+        const ErrorCode rcDesc = xp->GetAttributeValue(t, d, style);
+        coverage.trace("X item=%u attr=%d class=0x%x present=%d rc=%d desc_rc=%d type=%d int=%d real=%.3f bool=%d",
+                       uid.Get(), static_cast<int>(t), cls.Get(), attr != nil ? 1 : 0, static_cast<int>(rc),
+                       static_cast<int>(rcDesc), static_cast<int>(v.GetDataType()), v.GetInt32Data(),
+                       ToDouble(v.GetRealData()), v.GetBooleanData() ? 1 : 0);
+    }
+    return rc == kSuccess;
+}
+
 /** Whether the stroke or the fill has transparency or effects of its own (not the object's):
     opacity, a blend mode, a drop shadow, a feather, a glow, an inner shadow, bevel and emboss,
     satin, a directional or gradient feather. True also when an attribute cannot be read. */
-bool StrokeOrFillTransparency(IGraphicStyleDescriptor* style)
+bool StrokeOrFillTransparency(IGraphicStyleDescriptor* style, const Coverage& coverage, UID uid)
 {
     Utils<IXPAttributeUtils> xp;
     if (!xp) return true;
@@ -219,18 +243,18 @@ bool StrokeOrFillTransparency(IGraphicStyleDescriptor* style)
         S::kFillSatinApply, S::kFillDirectionalFeatherApply, S::kFillGradientFeatherApply};
     S::AttributeValue v;
     for (S::AttributeType t : opacity)
-        if (xp->GetAttributeValue(t, v, style) != kSuccess || v.GetDataType() != S::kDataTypeReal || v.GetReal() < 100) return true;
+        if (!ReadXP(xp, style, t, v, coverage, uid) || v.GetDataType() != S::kDataTypeReal || v.GetReal() < 100) return true;
     for (S::AttributeType t : blend)
-        if (xp->GetAttributeValue(t, v, style) != kSuccess || v.GetDataType() != S::kDataTypePMBlendingMode ||
+        if (!ReadXP(xp, style, t, v, coverage, uid) || v.GetDataType() != S::kDataTypePMBlendingMode ||
             v.GetPMBlendingMode() != kPMBlendNormal) return true;
     for (S::AttributeType t : shadow)
-        if (xp->GetAttributeValue(t, v, style) != kSuccess || v.GetDataType() != S::kDataTypePMDropShadowMode ||
+        if (!ReadXP(xp, style, t, v, coverage, uid) || v.GetDataType() != S::kDataTypePMDropShadowMode ||
             v.GetPMDropShadowMode() != kDSMNone) return true;
     for (S::AttributeType t : feather)
-        if (xp->GetAttributeValue(t, v, style) != kSuccess || v.GetDataType() != S::kDataTypePMVignetteMode ||
+        if (!ReadXP(xp, style, t, v, coverage, uid) || v.GetDataType() != S::kDataTypePMVignetteMode ||
             v.GetPMVignetteMode() != kVTMNone) return true;
     for (S::AttributeType t : applied)
-        if (xp->GetAttributeValue(t, v, style) != kSuccess || v.GetDataType() != S::kDataTypeBoolean || v.GetBoolean()) return true;
+        if (!ReadXP(xp, style, t, v, coverage, uid) || v.GetDataType() != S::kDataTypeBoolean || v.GetBoolean()) return true;
     return false;
 }
 
@@ -533,7 +557,7 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     if (attrs->GetEvenOdd(evenOdd, style) == kSuccess && evenOdd) return false;   // filled even-odd
     InterfacePtr<IXPManager> xp(Utils<IXPUtils>()->QueryXPManager(db));
     if (xp == nil) return false;
-    if (xp->ItemHasTransparency(shape) != 0 && (!coverage.transparency || StrokeOrFillTransparency(style))) return false;
+    if (xp->ItemHasTransparency(shape) != 0 && (!coverage.transparency || StrokeOrFillTransparency(style, coverage, ::GetUID(item)))) return false;
     if (!Invertible(item)) return false;
     InterfacePtr<IHierarchy> hierarchy(item, UseDefaultIID());
     const bool refill = hierarchy == nil || hierarchy->GetChildCount() == 0;   // no content drawn yet beneath the stroke

@@ -14,6 +14,7 @@ namespace ise_page_stroke {
 struct Coverage {
     bool transparency = true;    // items with object-level transparency (stroke or fill level: never)
     bool probeNative = false;    // research: InDesign's own stroke drawn from the event, unclipped
+    void (*trace)(const char* fmt, ...) = nullptr;   // research: one line per transparency attribute read
 };
 
 // At kBeginFrameStrokeDrawMessage: if the item's stroke is one this route can draw exactly,
