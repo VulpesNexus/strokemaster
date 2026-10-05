@@ -1,6 +1,6 @@
 # Using StrokeMaster
 
-Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`8b924675`, certified and installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`0255296c`, certified and installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
@@ -22,7 +22,7 @@ Which correction to use depends on one question: **does the file have to look ri
 - **Center strokes keep InDesign's drawing and order**; only their escaping miter tips are removed. Hiding the half of a Center stroke that lies over its letter would need a switch, and none exists yet.
 - **Shape strokes** (closed paths) are taken over as follows:
   - Center with a Miter join.
-  - Outside with any join, including dashes, dots, and stripes. Those keep InDesign's own pattern, drawn under a clip that removes the stroke showing through letters.
+  - Outside with any join, including dashes, dots, and stripes. Dashes, dots, and the built-in stripe styles follow one outline around each word, so letters that touch share their pattern instead of crossing it; dashes keep InDesign's own pattern and gap color. Custom stripes, stripes with a gap color, and other styles keep InDesign's own pattern for each letter, drawn under a clip that removes the stroke showing through letters. Past the miter limit, a pattern's corner gets a solid whole point, without the pattern.
   - Inside, any join, on any outline, corner effects and frames with content included. The plugin fills the outline itself in place of InDesign's inward offset fill, which spills past curves.
   - Also covered: gradient fills, corner effects (Outside), overlapping contours (an Outside or Inside stroke goes around the filled shape only; InDesign also strokes the contour edges inside it), overprint, object-level opacity and effects, scale kept as a percentage, and shear.
 

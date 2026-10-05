@@ -1,6 +1,6 @@
 # Release-candidate checks, InDesign plugin (2026-10-05)
 
-The owner asked for the release-candidate checks after route X `e367f134` was certified. This records what was checked, what it found, and what changed because of it. The plugin certified at the end of these checks is `8b924675` ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md#whole-points-on-straight-edges-outside-fill-route-x-candidate-8b924675)).
+The owner asked for the release-candidate checks after route X `e367f134` was certified. This records what was checked, what it found, and what changed because of it. The plugin certified at the end of these checks is `0255296c` ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md#one-outline-per-word-route-x-candidate-0255296c)).
 
 ## Output paths
 
@@ -23,6 +23,16 @@ The owner looked at the census and the font sweep in InDesign with the plugin lo
 
 - **Spikes on script text.** Segoe Script and Great Vibes outlined text showed long spikes: corners past the miter limit where a curve meets a straight piece 0.02 to 0.12 pt long, or two curves meet, kept as points at the limit distance (16 pt at Outside 4). At the same time the owner was sorry to see the thorn's point cut flat, at its 20 pt side. The new rule, chosen by the owner: a corner past the limit keeps its whole point when both edges are straight, the shorter is at least the stroke's reach, and the point is at most five times that edge; every other corner is beveled as InDesign bevels it (*ise_miter::WholePoint*). A survey of the fonts (glyph outlines read with *fontTools*) set the bounds: script fonts have no straight-edged corner past the limit; Kerberos Fang's straight corners have points 13 to 111 times their edges, so none qualifies at 72 pt and 2 or 3 of about 3,000 at 300 pt; the thorn's point is 2.3 times its sides at Outside 4 and 4.6 times at Outside 8.
 - **A black gap in Great Vibes' A.** InDesign fills an Outside-stroked item's outline offset outward, and on the A's loop the offset broke and flooded the letter's opening; the plugin's refill could not take that fill back. The fill is now drawn at the fill event for Outside as for Inside, and InDesign's offset is never drawn: spill falls to the anti-aliasing baseline on the row (167 to 55 pt²), on the thick-thin row (275 to 55), and on the corner-effect rows.
+
+## Second look on screen
+
+The owner looked again with `8b924675` installed. Three findings, all changed:
+
+- **A spike under Segoe Script's W**, a miter within the limit at a curve meeting a 0.02 pt segment: such glyph tips are now trimmed (`af7e6414`). Another spike the owner saw below V and W was most likely the same, on the font sweep's Segoe Script rows; none is left there.
+- **Beveled points on dashed, dotted, and striped strokes:** whole points are now added beyond InDesign's bevel, solid (`af7e6414`).
+- **Dashes and stripes overlapping between letters:** Outside dashes, dots, and built-in stripes now follow one outline per word (`0255296c`).
+
+Two items the owner flagged were census rows left to InDesign by design: a drop shadow set on the stroke itself, and a 50% stroke opacity on German Beauty (rows 64 and 75). InDesign applies those around its own stroke, so the plugin does not take it over, and InDesign's drawing keeps its defects there.
 
 ## Explained, not changed
 
