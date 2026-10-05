@@ -24,16 +24,20 @@
 // What is taken over, and how:
 //   Solid strokes, closed paths:
 //     Center, Miter       the outline stroked at the weight with bevel joins; each exterior
-//                         corner's miter join filled (a point past the limit kept whole up to
-//                         the corner's shorter edge, ise_miter::PointReach); each interior
-//                         corner's miter filled, clipped to the fill. Center round and bevel
-//                         joins have nothing to correct and stay InDesign's.
-//     Outside, any join   the outline filled again (the item's fill, gradients included), then
-//                         stroked at twice the weight, clipped to outside the fill
+//                         corner's miter join filled (past the limit, a shape's own point kept
+//                         whole, ise_miter::WholePoint, and any other corner beveled as
+//                         InDesign bevels it); each interior corner's miter filled, clipped to
+//                         the fill. Center round and bevel joins have nothing to correct and
+//                         stay InDesign's.
+//     Outside, any join   the outline filled at the fill event instead of InDesign's outward
+//                         offset (DrawFill, as for Inside below; the offset flooded a script
+//                         letter's opening, 2026-10-05), then stroked at twice the weight,
+//                         clipped to outside the fill
 //                         (ise_miter::OutsideClip), with the join's corners: a miter's
-//                         exterior corners filled as for Center; a round join's are the round
-//                         stroke's own; a bevel join's exterior corners get the beveled offset's
-//                         stroke (OffsetBevel). Interior miters are dropped.
+//                         exterior corners filled as for Center, past the limit beveled as
+//                         InDesign's offset bevels them (OffsetBevel); a round join's are the
+//                         round stroke's own; a bevel join's exterior corners get the beveled
+//                         offset's stroke (OffsetBevel). Interior miters are dropped.
 //     Inside, any join    the outline filled at the fill event instead of InDesign's inward
 //                         offset (DrawFill: InDesign skips its own fill, kBeginFrameFillDrawMessage),
 //                         in the fill's place, beneath any content; then the stroke at twice
@@ -58,8 +62,8 @@
 //     (IPathPageItem::Stroke) drawn from here under a clip (ise_region::StrokeClip): within a
 //     little more than the stroke's reach of the outline, plus each corner's join, and for
 //     Outside outside the fill, for Inside within it. That removes escaping tips and the
-//     stroke shown through the letters while keeping InDesign's pattern; Outside is refilled
-//     first, Inside filled at the fill event. Points past the limit stay as InDesign draws them.
+//     stroke shown through the letters while keeping InDesign's pattern; Outside and Inside
+//     are filled at the fill event. Points past the limit stay as InDesign draws them.
 //
 // Where an Outside or Inside outline's fill rules disagree (overlapping contours, holes wound
 // the fill's way), the boundary of the region it fills is stroked instead of its contours
@@ -70,10 +74,16 @@
 // outside of the fill is built from the outline when both rules agree on it, and otherwise
 // from the resolved region; both are checked exactly (ise_region::ClipsOutside).
 //
-// An Outside-stroked frame with content (text, a placed graphic, pasted items: any child) is
-// not refilled: InDesign strokes a frame after drawing its content, so a refill at the stroke
-// would paint the frame's fill over its text or image. A frame's own outline is a plain shape,
-// whose offset fill does not break.
+// The fill is drawn at the fill event, not again at the stroke: InDesign strokes a frame after
+// drawing its content, so a refill at the stroke would paint the frame's fill over its text or
+// image. Both events analyze the item alike (Analyze), so they agree on taking it.
+//
+// Whole points (the owner's rule, 2026-10-05): past the miter limit, a corner between two
+// straight edges, the shorter at least the stroke's reach long and the point at most five times
+// that edge, is a shape's own point and is drawn all the way (ise_miter::WholePoint). Every
+// other corner past the limit is beveled as InDesign bevels it: the tapered tips of script and
+// blackletter glyphs, which a point at the limit distance turned into spikes, and the needles
+// of decorative fonts.
 //
 // Where an Outside or Inside stroke follows the resolved region, the region's boundary has
 // corners the outline does not: where contours cross, and where a contour's loop (corner
@@ -113,7 +123,6 @@
 #include "IGraphicAttributeUtils.h"
 #include "IGraphicStyleDescriptor.h"
 #include "IGraphicsPort.h"
-#include "IHierarchy.h"
 #include "IOutlineInfo.h"
 #include "IPathGeometry.h"
 #include "IPathPageItem.h"
@@ -319,9 +328,11 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
         if (join == kPMMiterJoin && !PastLimit(s, limit)) {
             const bool trimmed = i < effect.size() && effect[i];
             out.push_back(ise_miter::JoinPolygon(s, h, trimmed ? ise_miter::EffectMiterReach(s, h) : s.ratio * h));
-        } else if (join == kPMMiterJoin && align != Align::Inside) {
-            // Past the limit: the point kept whole or cut (the owner's whole points).
-            out.push_back(ise_miter::JoinPolygon(s, h, ise_miter::PointReach(s, h, limit, kLongestMiter)));
+        } else if (join == kPMMiterJoin && align != Align::Inside && ise_miter::WholePoint(s, h)) {
+            // Past the limit, a shape's own point: kept whole (the owner's whole points).
+            out.push_back(ise_miter::JoinPolygon(s, h, ise_miter::WholePointReach(s, h, kLongestMiter)));
+        } else if (join == kPMMiterJoin && align == Align::Center) {
+            continue;   // past the limit, any other corner: the stroke's bevel, as InDesign's
         } else {
             // The beveled offset's stroke, with the outline's own stroke beside the corner
             // (JoinPolygon cut at the vertex: its bands and bevel) so no seam shows between them.
@@ -545,7 +556,7 @@ void Prepare(const std::vector<Contour>& contours, const std::vector<Pt>* anchor
     if (outside) {
         double reach = std::max(limit, 2.0);   // the longest join drawn, in half widths
         for (const Stub& s : out->stubs)
-            if (!s.interior && PastLimit(s, limit)) reach = std::max(reach, ise_miter::PointReach(s, h, limit, kLongestMiter) / h);
+            if (!s.interior && PastLimit(s, limit) && ise_miter::WholePoint(s, h)) reach = std::max(reach, ise_miter::WholePointReach(s, h, kLongestMiter) / h);
         // The frame lies past the longest join drawn.
         out->outsideClip = ise_miter::OutsideClip(path, (reach + 3) * h + 10, 0.001 * h, 0.01 * h, out->resolved, false);
         if (out->outsideClip.empty() || !ise_region::ClipsOutside(out->outsideClip, contours, checkTol)) return;
@@ -566,7 +577,7 @@ struct Plan {
     double weight = 0, limit = 0, h = 0;
     int32 join = 0, cap = 0;
     Align align = Align::Center;
-    bool solid = false, refill = false, hasFill = false;
+    bool solid = false, hasFill = false;
     bool16 overprint = kFalse, overprintFill = kFalse;
     std::vector<Contour> contours;
     std::shared_ptr<const Prepared> prepared;
@@ -635,8 +646,6 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     if (xp == nil) return false;
     if (xp->ItemHasTransparency(shape) != 0 && (!coverage.transparency || StrokeOrFillTransparency(style, coverage, ::GetUID(item)))) return false;
     if (!Invertible(item)) return false;
-    InterfacePtr<IHierarchy> hierarchy(item, UseDefaultIID());
-    plan->refill = hierarchy == nil || hierarchy->GetChildCount() == 0;   // no content drawn yet beneath the stroke
     plan->paint = InterfacePtr<IRenderingObject>(db, strokePaint, UseDefaultIID());
     if (plan->paint == nil) return false;
     // Overprint is set explicitly: IRenderingObject::Install does not carry it, and the PDF
@@ -703,10 +712,11 @@ bool DrawFill(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     IGraphicsPort* port = gd ? gd->GetGraphicsPort() : nil;
     if (port == nil || item == nil || tInsideStroke || coverage.probeNative) return false;
     Plan plan;
-    if (!Analyze(item, coverage, &plan) || plan.align != Align::Inside || !plan.hasFill) return false;
-    // InDesign fills an Inside-stroked item's inward offset, which spills past curved outlines
-    // and corner effects; the outline itself is filled instead, in the fill's place in the
-    // drawing order, beneath any content (see the file comment).
+    if (!Analyze(item, coverage, &plan) || plan.align == Align::Center || !plan.hasFill) return false;
+    // InDesign fills an Outside- or Inside-stroked item's offset outline, which breaks on curved
+    // outlines, loops, and corner effects (spilling past them, or flooding a letter's opening);
+    // the outline itself is filled instead, in the fill's place in the drawing order, beneath
+    // any content (see the file comment).
     Refill(port, plan.db, plan.style.get(), plan.none, plan.contours, plan.overprintFill);
     return true;
 }
@@ -731,18 +741,14 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     const bool center = align == Align::Center, outside = align == Align::Outside, inside = align == Align::Inside;
     const std::vector<Contour>& path = prepared.resolved ? prepared.stroked : contours;
     const std::vector<Stub>& stubs = prepared.stubs;
-    // Outside: InDesign fills the offset path, not the outline (see the file comment), so the
-    // outline is filled again first; the stroke covers the offset fill's band. Inside: the
-    // outline was filled at the fill event (DrawFill), in InDesign's place.
-    const bool refill = outside && plan.refill;
+    // Outside and Inside: the outline was filled at the fill event (DrawFill), in place of
+    // InDesign's offset fill.
 
     if (!plan.solid) {
         // InDesign's own stroke, clipped to where a stroke of this reach can paint: escaping
         // tips and stroke inside the letters are cut away, the pattern is InDesign's.
-        if (refill) Refill(port, plan.db, style, plan.none, contours, plan.overprintFill);
         return StrokeNatively(port, plan.pathItem.get(), style, paint, prepared.strokeClip, weight, join, limit, cap, plan.overprint);
     }
-    if (refill) Refill(port, plan.db, style, plan.none, contours, plan.overprintFill);
 
     AutoGSave save(port);
     paint->Install(port, style, IRenderingObject::kInstallStroke);

@@ -732,17 +732,26 @@ inline double EffectMiterReach(const Stub& s, double h)
     return std::min(s.ratio * h, h + s.edge);
 }
 
-/** How far past its vertex an exterior miter beyond the miter limit keeps its point, for half
-    width h: the whole miter (ratio * h) when that is no longer than the shorter of the corner's
-    two edges, otherwise as far as that edge reaches; never less than the limit distance, nor
-    more than `longest` half widths. A sharp corner between long edges is the shape's own
-    point, and its stroke keeps it whole; one between short edges (the notches and thorns of
-    decorative fonts, a near-reversal) would throw a point many times longer than the detail
-    it comes from, and is cut. Measured on Kerberos Fang (2026-10-04): every corner past limit
-    4 has edges under 16 pt at 72 pt, so its cut stays at the limit distance. */
-inline double PointReach(const Stub& s, double h, double limit, double longest)
+/** Whether an exterior corner past the miter limit keeps its whole point, for half width h (the
+    owner's rule, 2026-10-05): both edges straight, the shorter at least h long, and the whole
+    miter (ratio * h) no longer than five times that edge. Such a corner is a shape's own point
+    (a triangle's, the census thorn's at Outside 4 and 8, 2.3 and 4.6 times its 20 pt sides),
+    and its stroke reaches all the way (WholePointReach). Any other corner past the limit is
+    beveled as InDesign bevels it: a curve on either side or a short edge (the tapered tips of
+    script glyphs, which drew 16 pt spikes at the limit distance in Segoe Script and Great
+    Vibes), or a needle whose point would be many times longer than its edges (Kerberos Fang's
+    straight corners past the limit: 13 to 111 times at 72 to 300 pt; none qualifies at 72 pt,
+    2 or 3 of about 3,000 at 300 pt). */
+inline bool WholePoint(const Stub& s, double h)
 {
-    return std::min(longest * h, std::max(limit * h, std::min(s.ratio * h, s.edge)));
+    return !s.inCurve && !s.outCurve && s.edge >= h && s.ratio * h <= 5 * s.edge;
+}
+
+/** How far past its vertex a whole point reaches: the whole miter, up to `longest` half widths
+    (InDesign's highest miter limit is 500). */
+inline double WholePointReach(const Stub& s, double h, double longest)
+{
+    return std::min(s.ratio, longest) * h;
 }
 
 /** Where InDesign strokes an offset of the outline (an Outside stroke strokes it offset outward
