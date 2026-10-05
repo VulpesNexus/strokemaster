@@ -215,7 +215,7 @@ The cost is file size: every corner's join and the region's clip go into the PDF
 
 Core tests: 118 checks (the region of overlapping squares, holes both ways, and overlapping circles rebuilt as curves; join polygons and their bands). Retired: five intermediate research builds of this work, `764d8779`, `07a85e7a`, `e1ee659a`, `e661d8ff`, and `3a07f283` (uncommitted states between the fixes above), with their installer backups. `787656a3` stays in the installer's backup *20261004T073206Z*.
 
-## Extended coverage: candidate `410689fd`, not yet certified
+## Extended coverage: route X candidate `410689fd`
 
 The owner asked for every fix the coverage census pointed to (2026-10-04). They are:
 
@@ -230,7 +230,18 @@ Research build `9b924925` ran the extended census on 21.6, and an independent re
 
 Core tests: 194 miter-core checks and 65,585 stroke-behind checks. The crossing-corner rule was checked by an offline simulation over every Outside outline of the census.
 
-The candidate is built but not installed. Installing needs an elevated prompt, which was not available in this session, so it has had no host run. Session C11 (the full plan, edits, async, and the suite, against C10) and a census run on it are next. Until then the installed plugin is research build `9b924925`, without a control file in route W mode, or `3298f50c` once restored.
+**ROUTE_X extended coverage: CERTIFIED on 21.6; installed now as `410689fd`.** Session C11 (2026-10-05) repeats C10 in a fresh process with the candidate (260,096 bytes, `410689fd7512efc49136d8757881da80fc4d14f66357d597f5bbddfcdaaa2e97`, hash read from the loaded module):
+
+- All 110 measured lines keep C10's damage counts ([*C11.json*](../tests/audit/results/routex/C11.json)). The changes are all in sheared frames, where text is now stroked evenly in page space:
+  - The scope document's PNG differs from C10's only inside E07, the frame sheared 20°: 13,747 pixels, where C10 drew the stroke skewed with the frame and C11 draws it round and even.
+  - The edited scope document (ED2, whose edits shear E05 and rotate E07, so both are sheared and rotated) changes in those two frames only. Its two reference counts against the September route W session move from 14,420 to 37,066 pixels (PDF) and from 13,825 to 36,485 (PNG), the same frames' new stroke; its damage counts are unchanged.
+  - The other six PNGs are byte-identical to C10's.
+- Suite B and the four other saved suites render pixel-identical to C10 in foreground and background PDF (MuPDF, 300 dpi).
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_410689fd.json*](../tests/audit/results/cross_frame_census_21.6_410689fd.json), [*cross_frame_extension_census_410689fd.json*](../tests/audit/results/cross_frame_extension_census_410689fd.json)); every measurement in them equals C10's, only the output files' hashes differ. The 13 documents the session saved carry no plugin state ([*C11-state.json*](../tests/audit/results/routex/C11-state.json)).
+
+The extended census then ran on the research twin `ebd06435` (270,848 bytes), installed with the owner's approval for this run only ([census follow-up](COVERAGE_CENSUS_2026-10-04.md#host-run-of-the-candidate-2026-10-05), record [*coverage_census_3_21.6.json*](../tests/audit/results/coverage_census_3_21.6.json)). Every defect of the census build is gone, and every other row keeps the census build's gains. One gap remains against the design: items with object-level opacity or a drop shadow are left to InDesign too, as `3298f50c` left them, so nothing regresses, but the census build's gain on them is not kept. The owner chose to install `410689fd` and fix that in the next cycle.
+
+Installer backups: `410689fd` in *build/indesign-install/20261005T092856Z-backup*, `ebd06435` in *20261005T094118Z-backup*, and `3298f50c` in *20261004T161417Z-backup*.
 
 ## Owner verification and decisions
 
@@ -246,6 +257,6 @@ The candidate is built but not installed. Installing needs an elevated prompt, w
 ## Next
 
 1. The owner's look at overlapping outlines: the font, thorn, and shape test (outlined Kerberos Fang and German Beauty, filled and not; overlapping shapes), and shapes in their own documents.
-2. Certify candidate `410689fd` (session C11 against C10, and the extended census); then open paths and caps, and Inside on curved outlines (it needs InDesign's own fill replaced, *kBeginFrameFillDrawMessage*).
+2. Cover object-level transparency again: `410689fd`'s check for a stroke's or fill's own transparency reports every transparent item (the census's *xp=0* export measures the same as its corrected one on all 103 rows). Then open paths and caps, and Inside on curved outlines (it needs InDesign's own fill replaced, *kBeginFrameFillDrawMessage*).
 3. EPS, PostScript, and screen checks of the miter correction, text and page items; a font sweep beyond Minion, German Beauty, and Kerberos Fang (sans, script, a variable font) at large Outside weights.
 4. XE2 by hand: whether InDesign's interface threads anchored frames at all.

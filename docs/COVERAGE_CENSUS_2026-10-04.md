@@ -110,7 +110,7 @@ The certified build's census was measured again with the same tool, so that ever
   - A 200% kept scale and German Beauty sheared are fixed as well.
 - **Covered rows are unchanged from `3298f50c`** on every count, beyond anti-aliasing.
 
-**What the census build broke, and what the source now does instead** (production `410689fd`, research `ebd06435`; built, not yet run on the host):
+**What the census build broke, and what the source now does instead** (production `410689fd`, research `ebd06435`; measured on the host below):
 
 | Census build's defect | Measured | Now |
 | --- | --- | --- |
@@ -129,3 +129,23 @@ What is left:
 - **Open paths:** never reached in the census, and interior miters would be cut by the closing line, so they stay InDesign's.
 - **Text in a frame both sheared and rotated:** 94 → 88. Both drawings escape alike, so the cause is not found yet.
 - **Not tested:** vertical text, which now stays in its own coordinates; type on a path in a sheared frame; radial gradients.
+
+## Host run of the candidate (2026-10-05)
+
+Production `410689fd` was certified first (session C11, [report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md#extended-coverage-route-x-candidate-410689fd)). The census then ran on its research twin `ebd06435` in *build/look/coverage-census-3/* (ignored), with the same five exports. The record is [*coverage_census_3_21.6.json*](../tests/audit/results/coverage_census_3_21.6.json): the corrected export against native, and the *xp=0* export.
+
+**Every defect of the census build is gone:**
+
+- Stroke-level and fill-level opacity, and the stroke's own drop shadow (rows 60, 61, 62, 64, and 75), measure the same as native in every part.
+- On every Inside row the text measures the same as native. So do the fancy corners Inside (row 56) in every part, and the filled frame's Inside stroke (row 101).
+- Corner effects on outlined text no longer throw blocks: escaping is 33.8 pt² with fancy corners (row 12, census build 330) and 19.6 with inset corners (row 14, census build 352).
+
+**Every other row measures as on the census build**, within 1 pt² (off-level pixels within 2.5), so its gains hold: Outside with every join and dash, Inside on squares and the thorn, gradient refills, kept transforms, corner effects on squares and the thorn, and sheared text.
+
+**One gap against the design.** Object-level opacity and the object's drop shadow (rows 16, 17, 18, 41, 42, and 63) are left to InDesign as well, text included. The certified `3298f50c` left them to InDesign too, so this is no regression, but the census build's gain on them is lost. The *xp=0* export, which refuses all transparency, measures the same as the corrected export on all 103 rows: the check for a stroke's or fill's own transparency (*StrokeOrFillTransparency*) reports every transparent item. Why it does is not found yet: either an attribute read fails, which the check counts as transparency, or the object's values show through on the stroke and fill attributes.
+
+**Still worse than native, as before:**
+
+- Corner effects on outlined text keep a few long points at the corners the effect adds: escaping is 33.8 against native's 19.9 (fancy, row 12) and 19.6 against 4.6 (inset, row 14). Native draws white blocks over the letters there, so the rows are cleaner overall.
+- Rounded and bevel corner effects on outlined text (rows 15 and 58), as listed above.
+- Off-level pixels on corner-effect text rise by 40 to 100 pt² (rows 12, 14, 57, 58, and 59), and a sheared bevel line escapes 11.3 pt² against native's 9.8 (row 71). Both measure the same on the census build.
