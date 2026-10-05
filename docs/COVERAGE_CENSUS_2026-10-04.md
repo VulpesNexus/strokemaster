@@ -142,10 +142,16 @@ Production `410689fd` was certified first (session C11, [report](ROUTE_X_21_6_RE
 
 **Every other row measures as on the census build**, within 1 pt² (off-level pixels within 2.5), so its gains hold: Outside with every join and dash, Inside on squares and the thorn, gradient refills, kept transforms, corner effects on squares and the thorn, and sheared text.
 
-**One gap against the design.** Object-level opacity and the object's drop shadow (rows 16, 17, 18, 41, 42, and 63) are left to InDesign as well, text included. The certified `3298f50c` left them to InDesign too, so this is no regression, but the census build's gain on them is lost. The *xp=0* export, which refuses all transparency, measures the same as the corrected export on all 103 rows: the check for a stroke's or fill's own transparency (*StrokeOrFillTransparency*) reports every transparent item. Why it does is not found yet: either an attribute read fails, which the check counts as transparency, or the object's values show through on the stroke and fill attributes.
+**One gap against the design.** Object-level opacity and the object's drop shadow (rows 16, 17, 18, 41, 42, and 63) are left to InDesign as well, text included. The certified `3298f50c` left them to InDesign too, so this is no regression, but the census build's gain on them is lost. The *xp=0* export, which refuses all transparency, measures the same as the corrected export on all 103 rows: the check for a stroke's or fill's own transparency (*StrokeOrFillTransparency*) reports every transparent item. A read of an attribute the item does not carry fails, and the check counted that as transparency; `aca2a6c0` fixes it (below).
 
 **Still worse than native, as before:**
 
 - Corner effects on outlined text keep a few long points at the corners the effect adds: escaping is 33.8 against native's 19.9 (fancy, row 12) and 19.6 against 4.6 (inset, row 14). Native draws white blocks over the letters there, so the rows are cleaner overall.
 - Rounded and bevel corner effects on outlined text (rows 15 and 58), as listed above.
 - Off-level pixels on corner-effect text rise by 40 to 100 pt² (rows 12, 14, 57, 58, and 59), and a sheared bevel line escapes 11.3 pt² against native's 9.8 (row 71). Both measure the same on the census build.
+
+## Object-level transparency covered again (2026-10-05)
+
+Research build `4418348c` traced every transparency attribute read on the census ([*trace-xp-attributes.txt*](../tests/audit/results/routex/trace-xp-attributes.txt)). Items with only object-level opacity or an object drop shadow carry no stroke or fill transparency attribute at all, and every read of an absent attribute through the style descriptor failed. Production `aca2a6c0` and its research twin read an absent attribute as its hard-coded default instead ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md#object-level-transparency-route-x-candidate-aca2a6c0)).
+
+The census on `4418348c` (*build/look/coverage-census-4/*, ignored; record [*coverage_census_4_21.6.json*](../tests/audit/results/coverage_census_4_21.6.json)) changes rows 16, 17, 18, 41, 42, and 63 only, each to the census build's numbers to the hundredth. Every other row measures as on `ebd06435`. With the object's drop shadow (row 18), spill and off-level pixels rise slightly against native: the thorn's spill from 259.5 to 297.2 pt², and its off-level pixels from 399.7 to 446.2, now that its point is drawn whole; the census build measured the same.

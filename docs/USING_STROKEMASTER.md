@@ -1,6 +1,6 @@
 # Using StrokeMaster
 
-Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`410689fd`, certified and installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`aca2a6c0`, certified and installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
@@ -24,11 +24,10 @@ Which correction to use depends on one question: **does the file have to look ri
   - Center with a Miter join.
   - Outside with any join, including dashes, dots, and stripes. Those keep InDesign's own pattern, drawn under a clip that removes the stroke showing through letters.
   - Inside on outlines made of straight segments, without corner effects, in an item without content.
-  - Also covered: gradient fills, corner effects (Outside), overlapping contours, overprint, scale kept as a percentage, and shear.
+  - Also covered: gradient fills, corner effects (Outside), overlapping contours, overprint, object-level opacity and effects, scale kept as a percentage, and shear.
 
   These stay InDesign's own, and InDesign's drawing keeps its defects ([census](COVERAGE_CENSUS_2026-10-04.md)):
-  - **Opacity, a blend mode, or an effect set on the stroke or the fill itself.** InDesign applies these around its own stroke and fill.
-  - **Opacity, a blend mode, or an effect set on the object**, for now: `410689fd` cannot yet tell them from the stroke's or fill's own, so it leaves every transparent item to InDesign, as earlier builds did.
+  - **Opacity, a blend mode, or an effect set on the stroke or the fill itself** (not on the object). InDesign applies these around its own stroke and fill.
   - **Inside on curved outlines, with corner effects, or on a frame with content.** InDesign's inward offset fill spills past such outlines, and a corrected stroke would no longer cover the spill. These keep InDesign's Inside stroke, which spills outside thin parts and can drop them.
   - **Open paths**, and Center strokes with round or bevel joins (nothing to correct).
 - **Corner effects on outlined text** add thin loops to the path. The stroke follows them, as InDesign's own stroke of that path does.

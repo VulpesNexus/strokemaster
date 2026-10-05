@@ -230,7 +230,7 @@ Research build `9b924925` ran the extended census on 21.6, and an independent re
 
 Core tests: 194 miter-core checks and 65,585 stroke-behind checks. The crossing-corner rule was checked by an offline simulation over every Outside outline of the census.
 
-**ROUTE_X extended coverage: CERTIFIED on 21.6; installed now as `410689fd`.** Session C11 (2026-10-05) repeats C10 in a fresh process with the candidate (260,096 bytes, `410689fd7512efc49136d8757881da80fc4d14f66357d597f5bbddfcdaaa2e97`, hash read from the loaded module):
+**ROUTE_X extended coverage: CERTIFIED on 21.6; superseded by `aca2a6c0`, which covers object-level transparency again (below).** Session C11 (2026-10-05) repeats C10 in a fresh process with the candidate (260,096 bytes, `410689fd7512efc49136d8757881da80fc4d14f66357d597f5bbddfcdaaa2e97`, hash read from the loaded module):
 
 - All 110 measured lines keep C10's damage counts ([*C11.json*](../tests/audit/results/routex/C11.json)). The changes are all in sheared frames, where text is now stroked evenly in page space:
   - The scope document's PNG differs from C10's only inside E07, the frame sheared 20°: 13,747 pixels, where C10 drew the stroke skewed with the frame and C11 draws it round and even.
@@ -239,9 +239,25 @@ Core tests: 194 miter-core checks and 65,585 stroke-behind checks. The crossing-
 - Suite B and the four other saved suites render pixel-identical to C10 in foreground and background PDF (MuPDF, 300 dpi).
 - The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_410689fd.json*](../tests/audit/results/cross_frame_census_21.6_410689fd.json), [*cross_frame_extension_census_410689fd.json*](../tests/audit/results/cross_frame_extension_census_410689fd.json)); every measurement in them equals C10's, only the output files' hashes differ. The 13 documents the session saved carry no plugin state ([*C11-state.json*](../tests/audit/results/routex/C11-state.json)).
 
-The extended census then ran on the research twin `ebd06435` (270,848 bytes), installed with the owner's approval for this run only ([census follow-up](COVERAGE_CENSUS_2026-10-04.md#host-run-of-the-candidate-2026-10-05), record [*coverage_census_3_21.6.json*](../tests/audit/results/coverage_census_3_21.6.json)). Every defect of the census build is gone, and every other row keeps the census build's gains. One gap remains against the design: items with object-level opacity or a drop shadow are left to InDesign too, as `3298f50c` left them, so nothing regresses, but the census build's gain on them is not kept. The owner chose to install `410689fd` and fix that in the next cycle.
+The extended census then ran on the research twin `ebd06435` (270,848 bytes), installed with the owner's approval for this run only ([census follow-up](COVERAGE_CENSUS_2026-10-04.md#host-run-of-the-candidate-2026-10-05), record [*coverage_census_3_21.6.json*](../tests/audit/results/coverage_census_3_21.6.json)). Every defect of the census build is gone, and every other row keeps the census build's gains. One gap remains against the design: items with object-level opacity or a drop shadow are left to InDesign too, as `3298f50c` left them, so nothing regresses, but the census build's gain on them is not kept. The owner chose to install `410689fd` and fix that in the next cycle, which the same day did (below).
 
 Installer backups: `410689fd` in *build/indesign-install/20261005T092856Z-backup*, `ebd06435` in *20261005T094118Z-backup*, and `3298f50c` in *20261004T161417Z-backup*.
+
+## Object-level transparency: route X candidate `aca2a6c0`
+
+`410689fd` left every transparent page item to InDesign, where only a stroke's or a fill's own transparency was meant to be. A trace of each attribute read on the census, from research build `4418348c` ([*trace-xp-attributes.txt*](../tests/audit/results/routex/trace-xp-attributes.txt)), shows why. An item carries a stroke or fill transparency attribute only once that attribute is set. Reading one through the item's style descriptor (`IXPAttributeUtils::GetAttributeValue`) fails when it is absent, and the check counted a failed read as transparency. Of 507 reads, all 489 of absent attributes failed that way; the 18 attributes set on items (stroke opacity 50%, fill opacity 50%, the stroke's drop shadow) read correctly.
+
+The check now asks the descriptor for each attribute itself (`QueryAttribute`). An absent attribute takes its hard-coded default, which is opaque, Normal, and no effect; a present one is read from the attribute; a read that still fails refuses, as before.
+
+**Census on the research twin** (*build/look/coverage-census-4*, record [*coverage_census_4_21.6.json*](../tests/audit/results/coverage_census_4_21.6.json)): only the six rows with object-level opacity or the object's drop shadow change (16, 17, 18, 41, 42, and 63), each to the census build's numbers to the hundredth. Stray stroke through the letters and squares goes to 0 (342.6 pt² on squares, 143.8 on text, 398.4 on German Beauty), and the thorn's point comes back (points missing 101 → 2.4 with the shadow). Opacity and the shadow are kept. The rows that must stay InDesign's (stroke opacity, fill opacity, the stroke's own drop shadow: 60, 61, 62, 64, and 75) are unchanged, and so is the curved Inside text of row 63. The *xp=0* export now differs from the corrected one in those six rows only.
+
+**ROUTE_X object-level transparency: CERTIFIED on 21.6; installed now as `aca2a6c0`.** Session C12 repeats C11 in a fresh process with the candidate (261,632 bytes, `aca2a6c03b6c969f16a89c6e5347b9ad28d429816ea208aa2b9f1c864410ca38`, hash read from the loaded module):
+
+- All 110 measured lines are identical to C11's, and all seven PNGs are byte-identical ([*C12.json*](../tests/audit/results/routex/C12.json)). The corpus has no page item with object-level transparency, so nothing there was expected to change.
+- Suite B and the four other saved suites render pixel-identical to C11 in foreground and background PDF.
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_aca2a6c0.json*](../tests/audit/results/cross_frame_census_21.6_aca2a6c0.json), [*cross_frame_extension_census_aca2a6c0.json*](../tests/audit/results/cross_frame_extension_census_aca2a6c0.json)); the 13 documents it saved carry no plugin state ([*C12-state.json*](../tests/audit/results/routex/C12-state.json)).
+
+Core tests unchanged: 194 miter-core, 43 cross-frame, and 65,585 stroke-behind checks. Installer backups: `410689fd` in *build/indesign-install/20261005T095858Z-backup*, and the research build `4418348c` in *20261005T101144Z-backup*.
 
 ## Owner verification and decisions
 
@@ -257,6 +273,6 @@ Installer backups: `410689fd` in *build/indesign-install/20261005T092856Z-backup
 ## Next
 
 1. The owner's look at overlapping outlines: the font, thorn, and shape test (outlined Kerberos Fang and German Beauty, filled and not; overlapping shapes), and shapes in their own documents.
-2. Cover object-level transparency again: `410689fd`'s check for a stroke's or fill's own transparency reports every transparent item (the census's *xp=0* export measures the same as its corrected one on all 103 rows). Then open paths and caps, and Inside on curved outlines (it needs InDesign's own fill replaced, *kBeginFrameFillDrawMessage*).
+2. Open paths and caps, and Inside on curved outlines (it needs InDesign's own fill replaced, *kBeginFrameFillDrawMessage*).
 3. EPS, PostScript, and screen checks of the miter correction, text and page items; a font sweep beyond Minion, German Beauty, and Kerberos Fang (sans, script, a variable font) at large Outside weights.
 4. XE2 by hand: whether InDesign's interface threads anchored frames at all.
