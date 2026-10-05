@@ -1,6 +1,6 @@
 # Using StrokeMaster
 
-Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`bc1b850d`, certified and installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`e367f134`, certified and installed; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
@@ -23,13 +23,12 @@ Which correction to use depends on one question: **does the file have to look ri
 - **Shape strokes** (closed paths) are taken over as follows:
   - Center with a Miter join.
   - Outside with any join, including dashes, dots, and stripes. Those keep InDesign's own pattern, drawn under a clip that removes the stroke showing through letters.
-  - Inside on outlines made of straight segments, without corner effects, in an item without content.
+  - Inside, any join, on any outline, corner effects and frames with content included. The plugin fills the outline itself in place of InDesign's inward offset fill, which spills past curves.
   - Also covered: gradient fills, corner effects (Outside), overlapping contours (an Outside or Inside stroke goes around the filled shape only; InDesign also strokes the contour edges inside it), overprint, object-level opacity and effects, scale kept as a percentage, and shear.
 
   These stay InDesign's own, and InDesign's drawing keeps its defects ([census](COVERAGE_CENSUS_2026-10-04.md)):
   - **Opacity, a blend mode, or an effect set on the stroke or the fill itself** (not on the object). InDesign applies these around its own stroke and fill.
-  - **Inside on curved outlines, with corner effects, or on a frame with content.** InDesign's inward offset fill spills past such outlines, and a corrected stroke would no longer cover the spill. These keep InDesign's Inside stroke, which spills outside thin parts and can drop them.
-  - **Open paths**, and Center strokes with round or bevel joins (nothing to correct).
+  - **Open paths** with Outside or Inside alignment, arrowheads, or dashes, and Center strokes with round or bevel joins (nothing to correct). Open paths with a Center Miter stroke are taken over: corners past the limit keep whole points, as on closed shapes.
 - **Corner effects on outlined text** add thin loops and small zigzags to the path. The stroke follows them, as InDesign's own stroke does, but the corners the effect adds get no long points: past the miter limit they are beveled, as InDesign bevels them, and within it their miters are trimmed to the size of the zigzag.
 - **Vertical text in a sheared frame** keeps a stroke whose width varies slightly with direction, where InDesign's is even. Horizontal text is stroked evenly, as InDesign strokes it.
 - **Outlined decorative fonts make large PDFs.** Every corner's miter is a small filled shape in the PDF, and the outside of an overlapping outline is a clip as detailed as the outline itself. One line of outlined Kerberos Fang at 48 pt, stroked both ways, took the test page from 4.3 MB to 12.4 MB.

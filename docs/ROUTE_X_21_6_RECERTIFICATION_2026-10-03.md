@@ -280,13 +280,50 @@ On outlined text with fancy, inset, or inverse rounded corner effects, `aca2a6c0
 
 The census counts points past the limit at the effect's corners as missing; those counts return to native's, as InDesign bevels them. An intermediate research build with the bevel rule alone (`a2d09a70`, *build/look/coverage-census-5*) removed the long points and fixed rows 15 and 58; the trim then removed the zigzag points of rows 12, 13, and 14.
 
-**ROUTE_X corner-effect corners: CERTIFIED on 21.6; installed now as `bc1b850d`.** Session C13 repeats C12 in a fresh process with the candidate (266,752 bytes, `bc1b850d7fd0ec50e2d683157f7005541d38128fb6e88175c612a83162aa3790`, hash read from the loaded module):
+**ROUTE_X corner-effect corners: CERTIFIED on 21.6; superseded by `e367f134`, which adds Inside on curves and open paths below.** Session C13 repeats C12 in a fresh process with the candidate (266,752 bytes, `bc1b850d7fd0ec50e2d683157f7005541d38128fb6e88175c612a83162aa3790`, hash read from the loaded module):
 
 - All 110 measured lines are identical to C12's, and all seven PNGs are byte-identical ([*C13.json*](../tests/audit/results/routex/C13.json)). The corpus has no corner effects.
 - Suite B and the four other saved suites render pixel-identical to C12 in foreground and background PDF, the triangles' whole points included.
 - The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_bc1b850d.json*](../tests/audit/results/cross_frame_census_21.6_bc1b850d.json), [*cross_frame_extension_census_bc1b850d.json*](../tests/audit/results/cross_frame_extension_census_bc1b850d.json)); the 13 documents it saved carry no plugin state ([*C13-state.json*](../tests/audit/results/routex/C13-state.json)).
 
 Core tests: 213 miter-core checks (corners off the anchors, the effect's trimmed reach). Installer backups: `aca2a6c0` in *build/indesign-install/20261005T103911Z-backup*, `a2d09a70` in *20261005T110027Z-backup*, and `2b85d65a` in *20261005T110806Z-backup*.
+
+## Inside on curves, open paths: route X candidate `e367f134`
+
+The owner asked for the two remaining code items: Inside strokes on curved outlines, and open paths.
+
+**Inside: the fill drawn at the fill event.** InDesign fills an Inside-stroked item's outline offset inward by half the weight, and that offset spills past curved outlines, corner effects, and thin parts. The census build showed that a stroke clipped to the fill cannot cover the spill, because InDesign's fill is drawn before the stroke event. `e367f134` claims the fill event too (*kBeginFrameFillDrawMessage*, *DrawFill*) for every item whose Inside stroke it takes. It fills the outline itself, gradients included, in the fill's place in the drawing order, beneath any content, and InDesign skips its offset fill. The stroke is then drawn at twice the weight, clipped to the outline, as for straight outlines before. Both events run the same analysis of the item (*Analyze*), so they always agree. Curves, corner effects, and frames with content are taken over now; stroke-level and fill-level transparency still refuse, since claiming either event drops InDesign's adornments.
+
+With corner effects on overlapping contours, the effect's loops leave holes about 1.3 pt across in the filled region; stroked Inside, each became a white block about 9 pt wide. Such holes, smaller than the stroke's reach in both directions, are not stroked (*SmallHoles*); the fill keeps them as InDesign's does.
+
+**Open paths: Center, Miter, solid, without arrowheads.** InDesign strokes an open path with caps at its ends and no closing segment, and bevels corners past the limit. The plugin draws the open path itself with the item's caps: every corner's miter as InDesign draws it within the limit, and past it the whole point of closed shapes (*PointReach*). An open path's corners are not told apart by the fill the path closes. Arrowheads (a claimed stroke draws none), dashes, and Outside or Inside on an open path stay InDesign's. InDesign keeps Outside on an open path and offsets the path to one side by its direction, which on outlined text puts the stroke inside many letters (census row 34).
+
+**Census on the research twin** `03d0bd9a` (*build/look/coverage-census-8*, record [*coverage_census_6_21.6.json*](../tests/audit/results/coverage_census_6_21.6.json)); two rows appended: an open path with arrowheads (76), and the thorn opened at its base so its 10° tip stays a corner (77):
+
+| Inside row, text | Escaping, native → `e367f134` | Holes |
+| --- | ---: | ---: |
+| 4 pt, miter | 614.2 → 0 | 166.0 → 0 |
+| 8 pt, miter | 3,684.5 → 0 | 79.4 → 0 |
+| 4 pt, round / bevel / limit 2 | 553.9 / 463.9 / 467.9 → 0 | 234.4 / 309.3 / 259.6 → 0 |
+| 4 pt, thick-thin | 2,314.5 → 0 | 131.6 → 4.4 |
+| 4 pt, fancy corners | 3,814.0 → 0 | 25.2 → 0 |
+| 4 pt, opacity 50 / gradient fill / sheared 20 | 614.0 / 614.2 / 603.8 → 0 | 166.1 / 166.1 / 163.5 → 0 |
+| German Beauty, miter / round | 84.8 / 78.8 → 0 | 6.9 / 45.9 → 3.6 / 3.9 |
+
+Spill stays at the 55 pt² anti-aliasing baseline on every Inside text row. The opened thorn's point goes from 102.9 pt² missing to 3.0, and the arrowhead row is identical to native. Inside with fancy corners on the overlapping squares: holes 7.2 pt² against native's 10.8, stray stroke 157 → 5. Against `bc1b850d`, nothing else changes beyond anti-aliasing: the two appended rows make the page taller, which moves the PDF port's 0.001 pt rounding of the plugin's coordinates (up to 0.003 pt) while InDesign's own drawing stays put.
+
+Measured and left as they are:
+
+- The Inside-stroked filled text frame (row 103) spills 52 pt² more than native: one device pixel along the frame's top edge. The PDF port writes the stroke's clip as `16 145.001 368 50.001 re`, 0.002 pt past the frame, and MuPDF and Ghostscript rasterize clips without anti-aliasing, so that sliver claims a whole pixel. InDesign's own Inside stroke has no clip.
+- Inside with fancy corners bevels the thorn's effect corners past the limit (points missing 6.0 against native's 0.5), by the corner-effect rule above.
+
+**ROUTE_X Inside on curves and open paths: CERTIFIED on 21.6; installed now as `e367f134`.** Session C14 repeats C13 in a fresh process with the candidate (272,896 bytes, `e367f134fe34340e7b51073be554562decd8a18b227ddf23c7c119f07c02813e`, hash read from the loaded module):
+
+- All 110 measured lines are identical to C13's, and all seven PNGs are byte-identical ([*C14.json*](../tests/audit/results/routex/C14.json)). The corpus has no Inside-stroked or open page items.
+- Suite B and the four other saved suites render pixel-identical to C13 in foreground and background PDF.
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_e367f134.json*](../tests/audit/results/cross_frame_census_21.6_e367f134.json), [*cross_frame_extension_census_e367f134.json*](../tests/audit/results/cross_frame_extension_census_e367f134.json)); the 13 documents it saved carry no plugin state ([*C14-state.json*](../tests/audit/results/routex/C14-state.json)).
+
+Core tests: 216 miter-core checks (*SmallHoles*). Installer backups: `bc1b850d` in *build/indesign-install/20261005T114246Z-backup*, the first research build `53b91b17` (census 7, without the small-hole rule) in *20261005T115505Z-backup*, and `03d0bd9a` in *20261005T123315Z-backup*.
 
 ## Owner verification and decisions
 
@@ -303,6 +340,6 @@ Core tests: 213 miter-core checks (corners off the anchors, the effect's trimmed
 ## Next
 
 1. The owner's look at overlapping outlines: the font, thorn, and shape test (outlined Kerberos Fang and German Beauty, filled and not; overlapping shapes), and shapes in their own documents.
-2. Open paths and caps, and Inside on curved outlines (it needs InDesign's own fill replaced, *kBeginFrameFillDrawMessage*).
+2. Done: open paths (Center, Miter) and Inside on curved outlines (`e367f134`, above).
 3. EPS, PostScript, and screen checks of the miter correction, text and page items; a font sweep beyond Minion, German Beauty, and Kerberos Fang (sans, script, a variable font) at large Outside weights.
 4. XE2 by hand: whether InDesign's interface threads anchored frames at all.

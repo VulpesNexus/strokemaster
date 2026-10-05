@@ -159,6 +159,20 @@
         T('text frame filled, outside 4 frame stroke', TA.OUTSIDE_ALIGNMENT, 4, { frame: frameStroke(StrokeAlignment.OUTSIDE_ALIGNMENT) });
         T('text frame filled, inside 4 frame stroke', TA.OUTSIDE_ALIGNMENT, 4, { frame: frameStroke(StrokeAlignment.INSIDE_ALIGNMENT) });
         T('text frame filled, outside 4 dashed frame stroke', TA.OUTSIDE_ALIGNMENT, 4, { frame: frameStroke(StrokeAlignment.OUTSIDE_ALIGNMENT, 'Dashed') });
+        // Appended so earlier rows keep their numbers (2026-10-05): arrowheads, which a claimed
+        // stroke would drop, stay InDesign's.
+        P('center 8 miter open, arrowheads', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, function (it) {
+            open(it); it.leftLineEnd = ArrowHead.TRIANGLE_ARROW_HEAD; it.rightLineEnd = ArrowHead.TRIANGLE_ARROW_HEAD;
+        });
+        // The thorn's path starts at its tip, so opening it caps the tip; here it is opened at a
+        // base corner instead, and its 10 degree tip stays a corner past the limit.
+        P('center 8 miter open at the thorn base, unfilled', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, function (it, d) {
+            if (it.paths.length === 1 && it.paths[0].pathPoints.length === 7) {
+                var pts = it.paths[0].entirePath;
+                it.paths[0].entirePath = pts.slice(3).concat(pts.slice(0, 3));
+            }
+            open(it); it.fillColor = d.swatches.itemByName('None');
+        });
 
         var twins = 0;
         for (var c0 = 0; c0 < cases.length; c0++) { if (cases[c0].transform && cases[c0].transform.twinWeight) { twins++; } }
