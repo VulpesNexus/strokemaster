@@ -174,6 +174,26 @@
             open(it); it.fillColor = d.swatches.itemByName('None');
         });
 
+        // Font sweep (ISE_ARGS.sweep, a list of "family<TAB>style[<TAB>sample text]"): the core rows for each
+        // font instead of the census, labeled "sweep <n> ..." with the font in the manifest; for
+        // the plugin's corrections across typefaces (2026-10-05). Rows: outlined text, the thorn,
+        // and the squares Outside 4 and 8, Center 8, and Inside 4; live text Outside 4 and 8 and
+        // Center 8; all Miter, limit 4.
+        if (lib.args.sweep) {
+            cases = [];
+            for (var s0 = 0; s0 < lib.args.sweep.length; s0++) {
+                var sp = String(lib.args.sweep[s0]).split('\t'), sf = sp[0] + '\t' + sp[1], tag = 'sweep ' + (s0 + 1) + ' ', first = cases.length;
+                P(tag + 'outside 4 miter', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, null, null, sf);
+                P(tag + 'outside 8 miter', A.OUTSIDE_ALIGNMENT, 8, J.MITER_END_JOIN, null, null, sf);
+                P(tag + 'center 8 miter', A.CENTER_ALIGNMENT, 8, J.MITER_END_JOIN, null, null, sf);
+                P(tag + 'inside 4 miter', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, null, null, sf);
+                T(tag + 'text outside 4 miter', TA.OUTSIDE_ALIGNMENT, 4, null, sf);
+                T(tag + 'text outside 8 miter', TA.OUTSIDE_ALIGNMENT, 8, null, sf);
+                T(tag + 'text center 8 miter', TA.CENTER_ALIGNMENT, 8, null, sf);
+                for (var s1 = first; s1 < cases.length; s1++) { cases[s1].text = sp[2] || null; }
+            }
+        }
+
         var twins = 0;
         for (var c0 = 0; c0 < cases.length; c0++) { if (cases[c0].transform && cases[c0].transform.twinWeight) { twins++; } }
         var doc = lib.newDoc(W, 20 + (cases.length + twins) * ROW);
@@ -210,15 +230,15 @@
         var styles = {};
         function textStyle(font) {
             if (!styles[font]) {
-                styles[font] = lib.baseStyle(doc, 'ISE census ' + font.split('\t')[0], { appliedFont: font, pointSize: 36, strokeWeight: 4, endJoin: EndJoin.MITER_END_JOIN, miterLimit: 4 });
+                styles[font] = lib.baseStyle(doc, 'ISE census ' + font.split('\t').join(' '), { appliedFont: font, pointSize: 36, strokeWeight: 4, endJoin: EndJoin.MITER_END_JOIN, miterLimit: 4 });
             }
             return styles[font];
         }
         // The base set, `s` times its size, its top left at x, y.
-        function baseSet(x, y, s, font) {
+        function baseSet(x, y, s, font, text) {
             var tf = page.textFrames.add({ geometricBounds: [y, x, y + 70 * s, x + 300 * s] });
             tf.textFramePreferences.insetSpacing = [0, 0, 0, 0];
-            tf.contents = 'AMVWkz';
+            tf.contents = text || 'AMVWkz';
             tf.parentStory.texts[0].applyParagraphStyle(textStyle(font), true);
             tf.parentStory.texts[0].pointSize = 48 * s;
             var items = flat(tf.createOutlines(true));
@@ -303,7 +323,7 @@
             c = cases[i];
             if (c.kind !== 'page item') { continue; }
             var tr = c.transform || null;
-            var items = baseSet(16, y0(), tr ? tr.scale : 1, c.font);
+            var items = baseSet(16, y0(), tr ? tr.scale : 1, c.font, c.text);
             for (k = 0; k < items.length; k++) {
                 style(items[k], c);
                 if (tr) { transform(items[k], tr); }
@@ -348,7 +368,7 @@
                 var fw = x.size ? 180 : (x.transform && x.transform.rotate ? 280 : W - 32);
                 host = page.textFrames.add({ geometricBounds: [y0() + 25, 16, y0() + 75, 16 + fw] });
                 host.textFramePreferences.insetSpacing = [0, 0, 0, 0];
-                host.contents = TEXT;
+                host.contents = c.text || TEXT;
                 story = host.parentStory;
             }
             var tx = story.texts[0];

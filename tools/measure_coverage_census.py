@@ -18,7 +18,9 @@ is nearest. With h the stroke's reach from the outline
   holes     backdrop-colored pixels inside the fill, more than f in: fill that is not drawn
             (InDesign's offset fills break on some outlines);
   points    exterior corners past the miter limit (interior corners for Inside), and the part
-            of their points, out to ise_miter::PointReach, that is not drawn: beveled points;
+            of the points the plugin keeps whole (ise_miter::WholePoint: both edges straight,
+            the shorter at least h, the point at most five times it) that is not drawn; other
+            corners past the limit are beveled by design and expect no point;
   spill     fill-colored pixels outside the fill, more than f out: fill drawn past the outline
             (InDesign's inward offset for Inside strokes breaks on some outlines and spills);
   off       pixels more than OFF levels from every expected gray: paint at the wrong level,
@@ -124,7 +126,8 @@ def chord(seg):
 
 
 def corners(cs):
-    """(vertex, incoming tangent, outgoing tangent, shorter adjacent chord) at each junction."""
+    """(vertex, incoming tangent, outgoing tangent, shorter adjacent chord, both segments
+    straight) at each junction."""
     out = []
     for c in cs:
         n = len(c)
@@ -135,7 +138,7 @@ def corners(cs):
                 continue
             if ta[0] * tb[0] + ta[1] * tb[1] > math.cos(math.radians(1)):
                 continue
-            out.append((b[1], ta, tb, min(chord(a), chord(b))))
+            out.append((b[1], ta, tb, min(chord(a), chord(b)), a[0] == 'l' and b[0] == 'l'))
     return out
 
 
@@ -163,7 +166,7 @@ def measure(native, corrected, geo, cs, cell, zoom, align, w, levels, parts):
     def px(p):
         return ((p[0] - x0) * zoom, (p[1] - y0) * zoom)
 
-    for v, ta, tb, edge in corners(cs):
+    for v, ta, tb, edge, straight in corners(cs):
         b = unit((ta[0] - tb[0], ta[1] - tb[1]))
         if b is None:
             continue
@@ -176,13 +179,16 @@ def measure(native, corrected, geo, cs, cell, zoom, align, w, levels, parts):
         if not (0 <= iy < fill.shape[0] and 0 <= ix < fill.shape[1]):
             continue
         exterior = not fill[iy, ix]
-        tip = min(ratio, LONGEST) * h
+        whole = align != 'inside' and straight and edge >= h and ratio * h <= 5 * edge   # ise_miter::WholePoint
+        tip = min(ratio, 500 if whole else LONGEST) * h
         poly = [px(v), px((v[0] + h * n1[0], v[1] + h * n1[1])), px((v[0] + tip * b[0], v[1] + tip * b[1])), px((v[0] + h * n2[0], v[1] + h * n2[1]))]
         (de if exterior else di).polygon(poly, fill=255)
         stroked_side = exterior if align != 'inside' else not exterior
         if stroked_side and ratio > LIMIT:
             past += 1
-            reach = min(500 * h, max(LIMIT * h, min(ratio * h, edge)))
+            if not whole:
+                continue   # beveled by design, as InDesign bevels it
+            reach = min(500 * h, ratio * h)
             # The point beyond the bevel: the miter wedge from the bevel line out to `reach`.
             bev = c * h   # the bevel line's distance from the vertex along the bisector
             k = reach / (ratio * h)

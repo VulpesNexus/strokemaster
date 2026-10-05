@@ -230,6 +230,16 @@ $.global.ISE_CERT = (function () {
         return 'spreads=' + doc.spreads.length + ' balance=' + balance;
     };
 
+    // hideLayer:<name>, for example hideLayer:ISE geometry: the coverage census saves its document
+    // with the geometry layer (the unstroked outlines its measure compares against) visible.
+    cert.prep.hideLayer = function (doc, spec) {
+        var name = spec.substring(spec.indexOf(':') + 1);
+        var layer = doc.layers.itemByName(name);
+        if (!layer.isValid) { return 'no layer ' + name; }
+        layer.visible = false;
+        return 'hidden ' + name;
+    };
+
     cert.applyPrep = function (doc, name) {
         var key = name.split(':')[0];
         if (!cert.prep[key]) { throw new Error('unknown preparation ' + name); }
