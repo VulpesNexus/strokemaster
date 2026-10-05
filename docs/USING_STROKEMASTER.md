@@ -24,7 +24,7 @@ Which correction to use depends on one question: **does the file have to look ri
   - Center with a Miter join.
   - Outside with any join, including dashes, dots, and stripes. Those keep InDesign's own pattern, drawn under a clip that removes the stroke showing through letters.
   - Inside on outlines made of straight segments, without corner effects, in an item without content.
-  - Also covered: gradient fills, corner effects (Outside), overlapping contours, overprint, object-level opacity and effects, scale kept as a percentage, and shear.
+  - Also covered: gradient fills, corner effects (Outside), overlapping contours (an Outside or Inside stroke goes around the filled shape only; InDesign also strokes the contour edges inside it), overprint, object-level opacity and effects, scale kept as a percentage, and shear.
 
   These stay InDesign's own, and InDesign's drawing keeps its defects ([census](COVERAGE_CENSUS_2026-10-04.md)):
   - **Opacity, a blend mode, or an effect set on the stroke or the fill itself** (not on the object). InDesign applies these around its own stroke and fill.
