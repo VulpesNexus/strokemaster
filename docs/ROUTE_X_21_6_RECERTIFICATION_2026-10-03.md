@@ -251,13 +251,42 @@ The check now asks the descriptor for each attribute itself (`QueryAttribute`). 
 
 **Census on the research twin** (*build/look/coverage-census-4*, record [*coverage_census_4_21.6.json*](../tests/audit/results/coverage_census_4_21.6.json)): only the six rows with object-level opacity or the object's drop shadow change (16, 17, 18, 41, 42, and 63), each to the census build's numbers to the hundredth. Stray stroke through the letters and squares goes to 0 (342.6 pt² on squares, 143.8 on text, 398.4 on German Beauty), and the thorn's point comes back (points missing 101 → 2.4 with the shadow). Opacity and the shadow are kept. The rows that must stay InDesign's (stroke opacity, fill opacity, the stroke's own drop shadow: 60, 61, 62, 64, and 75) are unchanged, and so is the curved Inside text of row 63. The *xp=0* export now differs from the corrected one in those six rows only.
 
-**ROUTE_X object-level transparency: CERTIFIED on 21.6; installed now as `aca2a6c0`.** Session C12 repeats C11 in a fresh process with the candidate (261,632 bytes, `aca2a6c03b6c969f16a89c6e5347b9ad28d429816ea208aa2b9f1c864410ca38`, hash read from the loaded module):
+**ROUTE_X object-level transparency: CERTIFIED on 21.6; superseded by `bc1b850d`, which adds the corner-effect rule below.** Session C12 repeats C11 in a fresh process with the candidate (261,632 bytes, `aca2a6c03b6c969f16a89c6e5347b9ad28d429816ea208aa2b9f1c864410ca38`, hash read from the loaded module):
 
 - All 110 measured lines are identical to C11's, and all seven PNGs are byte-identical ([*C12.json*](../tests/audit/results/routex/C12.json)). The corpus has no page item with object-level transparency, so nothing there was expected to change.
 - Suite B and the four other saved suites render pixel-identical to C11 in foreground and background PDF.
 - The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_aca2a6c0.json*](../tests/audit/results/cross_frame_census_21.6_aca2a6c0.json), [*cross_frame_extension_census_aca2a6c0.json*](../tests/audit/results/cross_frame_extension_census_aca2a6c0.json)); the 13 documents it saved carry no plugin state ([*C12-state.json*](../tests/audit/results/routex/C12-state.json)).
 
 Core tests unchanged: 194 miter-core, 43 cross-frame, and 65,585 stroke-behind checks. Installer backups: `410689fd` in *build/indesign-install/20261005T095858Z-backup*, and the research build `4418348c` in *20261005T101144Z-backup*.
+
+## Corner-effect corners: route X candidate `bc1b850d`
+
+On outlined text with fancy, inset, or inverse rounded corner effects, `aca2a6c0` drew long points: above and below the M, by the k and z, and at the thorn's tip. The owner asked for them to be narrowed down and removed. They came from two kinds of corners, both of which the corner effect adds, none of them on the path the user drew:
+
+- **Past the miter limit:** the effect replaces each corner of the path with its own small shape, and on a glyph's acute corners (the M's apexes) that shape turns sharper than the limit. The whole-point rule drew each such corner out to at least the limit distance, 16 pt at Outside 4 pt, where InDesign bevels it. In the census, all 8 past-limit corners of the fancy row, 6 of the inset row, and 5 of the inverse rounded row are the effect's (*CornersNotAtAnchors*: no anchor of the item's own path within 0.001 pt).
+- **Within the limit:** the fancy and inset effects cut corners into zigzags of segments 0.06 to 0.5 pt long, whose full miters reach 7 to 10 pt from the vertex. InDesign's own stroke draws these points too. The owner asked for them trimmed as well.
+
+`bc1b850d` reads the item's own anchors (*IPathGeometry*) when the item has a corner effect. A corner off them keeps the stroke's bevel past the limit, as the crossing corners of a resolved region already do. Within the limit its miter reaches past the stroke's edge no farther than the corner's shorter edge (*EffectMiterReach*), so an effect's own square notch, with edges as long as the stroke is wide, keeps its whole miter. Items without corner effects, the triangles' whole points among them, are unchanged.
+
+**Census on the research twin** `2b85d65a` (*build/look/coverage-census-6*, record [*coverage_census_5_21.6.json*](../tests/audit/results/coverage_census_5_21.6.json)): only the corner-effect rows change (12, 13, 14, 15, 55, 58, and 59). Escaping ink on their text, in pt²:
+
+| Row | Native | `aca2a6c0` | `bc1b850d` |
+| --- | ---: | ---: | ---: |
+| 12, Outside, fancy corners | 19.9 | 33.8 | 1.6 |
+| 13, Center, fancy corners | 18.0 | 18.0 | 0.5 |
+| 14, Outside, inset corners | 4.6 | 19.6 | 3.0 |
+| 15, Outside, rounded corners | 0.1 | 26.5 | 0.7 |
+| 58, Outside, bevel corners | 0.9 | 5.9 | 0.1 |
+
+The census counts points past the limit at the effect's corners as missing; those counts return to native's, as InDesign bevels them. An intermediate research build with the bevel rule alone (`a2d09a70`, *build/look/coverage-census-5*) removed the long points and fixed rows 15 and 58; the trim then removed the zigzag points of rows 12, 13, and 14.
+
+**ROUTE_X corner-effect corners: CERTIFIED on 21.6; installed now as `bc1b850d`.** Session C13 repeats C12 in a fresh process with the candidate (266,752 bytes, `bc1b850d7fd0ec50e2d683157f7005541d38128fb6e88175c612a83162aa3790`, hash read from the loaded module):
+
+- All 110 measured lines are identical to C12's, and all seven PNGs are byte-identical ([*C13.json*](../tests/audit/results/routex/C13.json)). The corpus has no corner effects.
+- Suite B and the four other saved suites render pixel-identical to C12 in foreground and background PDF, the triangles' whole points included.
+- The cross-frame census passes 22 of 22 and the extension census 8 of 8 built cases ([*cross_frame_census_21.6_bc1b850d.json*](../tests/audit/results/cross_frame_census_21.6_bc1b850d.json), [*cross_frame_extension_census_bc1b850d.json*](../tests/audit/results/cross_frame_extension_census_bc1b850d.json)); the 13 documents it saved carry no plugin state ([*C13-state.json*](../tests/audit/results/routex/C13-state.json)).
+
+Core tests: 213 miter-core checks (corners off the anchors, the effect's trimmed reach). Installer backups: `aca2a6c0` in *build/indesign-install/20261005T103911Z-backup*, `a2d09a70` in *20261005T110027Z-backup*, and `2b85d65a` in *20261005T110806Z-backup*.
 
 ## Owner verification and decisions
 
@@ -268,6 +297,7 @@ Core tests unchanged: 194 miter-core, 43 cross-frame, and 65,585 stroke-behind c
 - **Miter suite for the owner's look:** *build/look/miter-suite/* (ignored) holds a copy of suite B (*B-miter.indd*, to view in InDesign with the plugin) and its PDFs: before (session M0), after the Outside correction (C5), after the Center correction (C6), *B-miter - after (route X 48e27348, text and page items).pdf* (C7), *B-miter - after (route X 787656a3, whole points).pdf* (C9), and *B-miter - after (route X 3298f50c, overlapping outlines).pdf* (C10). *build/look/font-points/* (ignored) holds the font, thorn, and shape test: its document and its native and corrected PDFs (research build `d8ee50f2`).
 - **Whole points (2026-10-04).** On `48e27348`'s suite B the owner asked for the triangles' points all the way, without regressions elsewhere, and suggested German Beauty and Kerberos Fang as pointy and extreme tests. Points are now kept whole up to the corner's shorter edge (above).
 - **Whole points: confirmed; full coverage (2026-10-04).** The owner confirmed `787656a3` and asked for outlined Kerberos Fang to be covered, so that nothing surprises the user. Outlines with overlapping contours are now covered (above). An Outside stroke on them goes around the filled shape only, where InDesign also strokes the contour edges inside the letters; to confirm on the look files.
+- **Corner-effect points: removed (2026-10-05).** The owner asked for the long points on corner-effect text to be narrowed down and removed, then for the shorter zigzag points InDesign also draws to be trimmed (above).
 - **Center miter correction: confirmed.** The owner looked at the C6 files: the last character spikes are gone. The outlined bottom line was the remaining outlier, which page-item strokes now draw whole.
 
 ## Next
