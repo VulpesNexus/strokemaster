@@ -182,6 +182,18 @@
         cases[cases.length - 1].text = 'Ribbons';
         P('script outside 8 miter thick-thin', A.OUTSIDE_ALIGNMENT, 8, J.MITER_END_JOIN, styled('Thick - Thin'), null, 'Segoe Script\tRegular');
         cases[cases.length - 1].text = 'Ribbons';
+        // The limitations (2026-10-06): what the plugin leaves to InDesign, and whether InDesign's own
+        // drawing of it shows a defect.
+        P('inside 4 miter open', A.INSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) { open(it); });
+        P('outside 4 miter open, arrowheads', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it) {
+            open(it); it.leftLineEnd = ArrowHead.TRIANGLE_ARROW_HEAD; it.rightLineEnd = ArrowHead.TRIANGLE_ARROW_HEAD;
+        });
+        P('outside 4 miter radial gradient fill', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it, d) { it.fillColor = d.gradients.itemByName('ISE radial gradient'); });
+        P('outside 4 miter radial gradient stroke', A.OUTSIDE_ALIGNMENT, 4, J.MITER_END_JOIN, function (it, d) { it.strokeColor = d.gradients.itemByName('ISE radial gradient'); });
+        T('text outside 4 miter, radial gradient fill', TA.OUTSIDE_ALIGNMENT, 4, { text: function (t, d) { t.fillColor = d.gradients.itemByName('ISE radial gradient'); } });
+        // No vertical text row: InDesign 21.6 refuses storyPreferences.storyOrientation from a
+        // script ("not supported"), so the row came out horizontal.
+        T('text outside 4 miter, type on a path, path sheared 20', TA.OUTSIDE_ALIGNMENT, 4, { path: true, transform: { shear: 20 } });
 
         // Font sweep (ISE_ARGS.sweep, a list of "family<TAB>style[<TAB>sample text]"): the core rows for each
         // font instead of the census, labeled "sweep <n> ..." with the font in the manifest; for
@@ -212,6 +224,11 @@
         var black = doc.swatches.itemByName('Black'), paper = doc.swatches.itemByName('Paper'), none = doc.swatches.itemByName('None');
         gradient('ISE dark gradient', lib.color(doc, 'ISE black 70', [0, 0, 0, 70]), black);
         gradient('ISE light gradient', paper, lib.color(doc, 'ISE black 20', [0, 0, 0, 20]));
+        lib.tryDo('radial gradient', function () {
+            var rg = doc.gradients.add({ name: 'ISE radial gradient', type: GradientType.RADIAL });
+            rg.gradientStops[0].stopColor = doc.colors.itemByName('ISE black 20');
+            rg.gradientStops[1].stopColor = black;
+        });
         var page = doc.pages[0];
         var whenScaling = app.transformPreferences.whenScaling;
 

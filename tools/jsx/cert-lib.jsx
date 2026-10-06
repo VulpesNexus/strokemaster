@@ -340,6 +340,25 @@ $.global.ISE_CERT = (function () {
 
     cert.write.idml = function (doc, o, path) { doc.exportFile(ExportFormat.INDESIGN_MARKUP, new File(path), false); };
 
+    // Interactive PDF: a different export path from the print PDF (pages, not spreads; RGB).
+    cert.write.ipdf = function (doc, o, path) {
+        var ip = app.interactivePDFExportPreferences;
+        ip.pageRange = PageRange.ALL_PAGES;
+        try { ip.exportAsSinglePages = true; } catch (e) {}
+        try { ip.viewPDF = false; } catch (e2) {}
+        doc.exportFile(ExportFormat.INTERACTIVE_PDF, new File(path), false);
+    };
+
+    // JPEG, as the screen-resolution raster InDesign exports.
+    cert.write.jpg = function (doc, o, path) {
+        var jp = app.jpegExportPreferences;
+        jp.exportResolution = o.ppi || 300;
+        jp.jpegQuality = JPEGOptionsQuality.MAXIMUM;
+        jp.jpegExportRange = ExportRangeOrAllPages.EXPORT_ALL;
+        try { jp.antiAlias = true; } catch (e) {}
+        doc.exportFile(ExportFormat.JPG, new File(path), false);
+    };
+
     cert.write.indd = function (doc, o, path) {
         if (new File(path).exists) { throw new Error('refusing to overwrite ' + path); }
         doc.saveACopy(new File(path));
