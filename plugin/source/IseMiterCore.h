@@ -820,23 +820,6 @@ inline std::vector<Pt> OffsetBevel(const Stub& s, double w, double limit, bool m
     return poly;
 }
 
-/** A whole point past the limit beyond the bevel a patterned stroke (dashes, dots, stripes)
-    draws there, as a polygon to fill solid in the stroke's paint: the miter cut at `distance`
-    from the vertex (CutMiter), less what the stroke itself paints at the corner. For a Center
-    stroke of half width h, the stroke's bevel from e0 to e1; for an Outside stroke of weight h
-    (`offset`), the beveled offset's stroke (OffsetBevel, mitered within `limit`). The point
-    does not carry the pattern (the owner's choice, 2026-10-05). */
-inline std::vector<Pt> PointBeyondBevel(const Stub& s, double h, double distance, bool offset, double limit)
-{
-    const std::vector<Pt> cut = CutMiter(s, h, distance);   // v, e0, tip or its cut, e1
-    std::vector<Pt> poly(cut.begin() + 1, cut.end());
-    if (offset) {
-        const std::vector<Pt> bevel = OffsetBevel(s, h, limit, true);   // v, e0, two edge points, e1
-        for (size_t k = bevel.size() - 2; k >= 2; --k) poly.push_back(bevel[k]);
-    }
-    return poly;
-}
-
 /** The exterior corners only: the joins an Outside stroke draws. */
 inline std::vector<Stub> ExteriorCorners(const std::vector<Contour>& contours, const Options& o)
 {

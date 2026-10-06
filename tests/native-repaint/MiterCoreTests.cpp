@@ -236,22 +236,6 @@ int main()
             Stub longTip = curved;
             longTip.ratio = 4; longTip.edge = 3;
             Check(std::fabs(TipReach(longTip, 2) - 5) < 1e-12, "a curved tip between long edges: h past the stroke's edge by the edge");
-            // PointBeyondBevel: the whole point a patterned stroke gets beyond its own bevel.
-            auto within = [](const std::vector<Pt>& poly, Pt p) {
-                Ring r; r.points = poly; r.x0 = r.y0 = -1e9; r.x1 = r.y1 = 1e9;
-                return Winding({r}, p) != 0;
-            };
-            const double reach = x.ratio * 2, bevel = 2 * std::sin(half);
-            const std::vector<Pt> center = PointBeyondBevel(x, 2, reach, false, 4);
-            Check(center.size() == 3 && Near(center[1], x.v + x.outward * reach), "Center: the bevel's ends and the tip");
-            Check(within(center, x.v + x.outward * (bevel + 0.01)) && !within(center, x.v + x.outward * (bevel - 0.01)) &&
-                  within(center, x.v + x.outward * (reach - 0.01)) && !within(center, x.v + x.outward * (reach + 0.01)),
-                  "Center: from the stroke's bevel line to the tip");
-            const std::vector<Pt> outside = PointBeyondBevel(x, 2, reach, true, 4);
-            const double offsetEdge = 1 * std::sin(half) + 1;   // the beveled offset's stroke edge, w / 2 (1 + cos)
-            Check(outside.size() == 5 && within(outside, x.v + x.outward * (offsetEdge + 0.01)) &&
-                  !within(outside, x.v + x.outward * (offsetEdge - 0.01)) && within(outside, x.v + x.outward * (reach - 0.01)),
-                  "Outside: from the beveled offset's stroke edge to the tip");
         }
         Check(apex, "the wedge's apex is an exterior corner");
         const std::vector<Ring> one = Flatten({ccw}, 1e-3, 1e-9);
@@ -648,10 +632,34 @@ int main()
         const Contour bend = Poly({{0, 0}, {10, 0}, {10, 4}, {4, 4}, {4, 10}, {0, 10}});
         const auto lBand = ise_region::DistanceBands({bend}, {{0, 2}}, BandJoin::Miter, {}, 0.03, 1e-3, &ok);
         Check(ok && in(lBand[0], {4.2, 4.2}) && in(lBand[0], {5.9, 5.9}) && !in(lBand[0], {6.1, 6.1}), "an L: the band fills its inner corner");
-        // Notches: what a stroke along the offset by half leaves at an inner corner.
-        const std::vector<Contour> notch = ise_region::Notches({bend}, 1, 0.1, 1e-3, &ok);
-        Check(ok && !notch.empty() && in(notch, {4.2, 4.2}) && !in(notch, {4.6, 4.6}), "an L's inner corner: a notch the offset's stroke misses");
-        Check(ise_region::Notches({sq}, 1, 0.1, 1e-3, &ok).empty() && ok, "a square has no notch");
+        // WordPath: the path a pattern stroker follows, the creases between letters rounded.
+        const std::vector<Contour> around = ise_region::WordPath({sq}, 1, BandJoin::Miter, 4, true, 1e-3, &ok);
+        double sideOff = 0;
+        for (const Ring& r : Flatten(around, 1e-4, 1e-9))
+            for (const Pt& p : r.points)
+                if (p.x > 0.5 && p.x < 9.5) sideOff = std::max(sideOff, std::fabs(std::fabs(p.y - 5) - 6));
+        Check(ok && around.size() == 1 && sideOff < 3e-3, "a square's path: its sides offset by half");
+        Check(in(around, {10.95, 10.95}) && !in(around, {11.05, 11.05}), "a square's path: mitered corners");
+        Check(ise_region::WordPath({sq}, 1, BandJoin::Miter, 4, false, 0.02, &ok)[0].segments.size() == 4,
+              "a square's path: four anchors, its corners (corner adjustment fits a pattern between anchors)");
+        // ContoursInteract: whether the contours' strokes meet.
+        const Contour far = Poly({{20, 0}, {30, 0}, {30, 10}, {20, 10}});
+        Check(!ise_region::ContoursInteract({sq, far}, 1, 1e-3), "squares 10 apart, reach 1: their strokes do not meet");
+        Check(ise_region::ContoursInteract({sq, far}, 6, 1e-3), "squares 10 apart, reach 6: they meet");
+        Check(ise_region::ContoursInteract({sq, sq2}, 1, 1e-3), "overlapping squares: they meet");
+        Check(!ise_region::ContoursInteract({sq}, 1, 1e-3), "one contour: nothing to meet");
+        const std::vector<Contour> sharp = ise_region::WordPath({bend}, 1, BandJoin::Miter, 4, false, 1e-3, &ok);
+        Check(ok && sharp.size() == 1 && sharp[0].segments.size() == 6, "without creases an L's path keeps its six corners");
+        const std::vector<Contour> creased = ise_region::WordPath({sq, sq2}, 1, BandJoin::Miter, 4, true, 1e-3, &ok);
+        Check(ok && in(creased, {11.1, 6.9}) && !in(creased, {11.5, 6.5}), "overlapping squares: the crease between their offsets rounded");
+        const Contour counter = Reversed(Poly({{3, 3}, {6, 3}, {6, 6}, {3, 6}}), 1e-9);
+        Check(ise_region::WordPath({sq, counter}, 1, BandJoin::Miter, 4, true, 1e-3, &ok).size() == 1 && ok,
+              "a counter whose offset is smaller than the stroke: dropped");
+        // Uncovered: what the stroke along that path leaves at an L's inner corner.
+        const std::vector<Contour> bendPath = ise_region::WordPath({bend}, 1, BandJoin::Miter, 4, true, 1e-3, &ok);
+        const std::vector<Contour> notch = ise_region::Uncovered({bend}, bendPath, 1, 0.1, 1e-3, &ok);
+        Check(ok && !notch.empty() && in(notch, {4.2, 4.2}) && !in(notch, {4.75, 4.75}), "an L's inner corner: a notch the stroke misses");
+        Check(ise_region::Uncovered({sq}, around, 1, 0.1, 1e-3, &ok).empty() && ok, "a square leaves nothing uncovered");
         // FitCurves: a circle's polyline as a few curves within the tolerance; a square's corners kept.
         std::vector<Pt> circle;
         for (int k = 0; k < 400; ++k) {

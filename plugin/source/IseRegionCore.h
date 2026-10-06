@@ -84,13 +84,31 @@ std::vector<std::vector<ise_miter::Contour>> DistanceBands(const std::vector<ise
                                                            const std::vector<BandCorner>& corners, double inset, double tol,
                                                            bool* ok);
 
-/** The notches a stroke along the fill's offset by `half` leaves: every point outside the fill,
-    within `half` of it, that lies farther than `half` from that offset (the fill's closing by a
-    disk of radius half, less the fill), where two contours meet at a sharp angle or a counter is
-    narrower than the stroke. Grown by `grow` all round, so they reach under the stroke beside
-    them and, for the caller's clip to the outside of the fill, into the fill. Contours fitted
-    within `tol`; empty where there are none, and `ok` false when Clipper2 fails. */
-std::vector<ise_miter::Contour> Notches(const std::vector<ise_miter::Contour>& fill, double half, double grow, double tol, bool* ok);
+/** The path a pattern stroker follows around one word: the nonzero fill of `fill` grown by
+    `half` with the join (a miter squared past `limit`). With `creases` (contours whose strokes
+    meet, ContoursInteract), then closed by a disk of radius `half`, which rounds the creases
+    where two letters' offsets meet and the corners of a counter's offset, and drops a counter's
+    offset smaller than that disk; the pattern broke into spikes and restarted at every crease
+    of InDesign's own offset (the owner's check, 2026-10-06). Otherwise a shape's own concave
+    corners stay sharp, as InDesign strokes them. As contours of cubic curves fitted within
+    `tol` (FitCurves), corners kept sharp; empty, and `ok` false, when Clipper2 fails. */
+std::vector<ise_miter::Contour> WordPath(const std::vector<ise_miter::Contour>& fill, double half, BandJoin join, double limit,
+                                         bool creases, double tol, bool* ok);
+
+/** What a stroke of half width `half` along `path` (WordPath) leaves unpainted between it and
+    the fill: every point of the region `path` encloses (even-odd) that lies neither in the fill
+    nor within `half` of the path, the notches where letters meet included. Grown by `grow` all
+    round, so it reaches under the stroke beside it and, for the caller's clip to the outside of
+    the fill, into the fill. Contours fitted within `tol`; empty where there is nothing, and `ok`
+    false when Clipper2 fails. */
+std::vector<ise_miter::Contour> Uncovered(const std::vector<ise_miter::Contour>& fill, const std::vector<ise_miter::Contour>& path,
+                                          double half, double grow, double tol, bool* ok);
+
+/** Whether a stroke `reach` either side of each contour would overlap another contour's: the
+    contours' bands, each within reach of its own line, overlap by more than slivers. Where they
+    do not, the word's path keeps a shape's own concave corners sharp (WordPath). True for more
+    than 400 contours, without measuring. */
+bool ContoursInteract(const std::vector<ise_miter::Contour>& contours, double reach, double tol);
 
 /** A closed polyline (at least three points) as cubic curves fitted within `tol` (Schneider's
     method), split at its corners (turning more than 30 degrees), which are kept sharp. */

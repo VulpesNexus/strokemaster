@@ -647,7 +647,11 @@ const int kBandPrecision = 4;
 std::vector<Contour> Fitted(const Clipper2Lib::PathsD& paths, double tol)
 {
     std::vector<Contour> out;
-    for (const Clipper2Lib::PathD& path : paths) {
+    for (const Clipper2Lib::PathD& raw : paths) {
+        // Simplified within the tolerance first: an offset's arcs, shrunk back to a corner,
+        // leave clusters of tiny edges there, each turning too little to read as a corner,
+        // which split the fit into curves half a point long.
+        const Clipper2Lib::PathD path = Clipper2Lib::SimplifyPath(raw, std::min(tol, 0.005), true);
         if (path.size() < 3) continue;
         Contour c = FitCurves(Points(path), tol);
         if (!c.segments.empty()) out.push_back(c);
@@ -662,6 +666,7 @@ Contour FitCurves(const std::vector<Pt>& ring, double tol)
     Contour out;
     // Repeated points dropped, and long edges divided, so the fit is checked along them.
     std::vector<Pt> p;
+    std::vector<size_t> corners;
     const double step = std::max(0.5, 100 * tol);
     for (size_t i = 0; i < ring.size(); ++i) {
         const Pt a = ring[i], b = ring[(i + 1) % ring.size()];
@@ -672,15 +677,62 @@ Contour FitCurves(const std::vector<Pt>& ring, double tol)
         for (int k = 1; k < pieces; ++k) p.push_back(ise_miter::Lerp(a, b, static_cast<double>(k) / pieces));
     }
     while (p.size() > 1 && ise_miter::Len(p.back() - p.front()) <= 1e-9) p.pop_back();
+    if (p.size() < 3) return out;
+    // Corners: turning by more than 30 degrees within `reach` either side. An offset's arc
+    // shrunk back to a corner leaves a cluster of tiny edges there, each turning too little to
+    // read as a corner on its own; the cluster's sharpest point is kept as the corner, and the
+    // rest of it dropped, so the fit does not split into short curves around it.
+    const double reach = std::max(4 * tol, 0.05);
+    const double cosCorner = std::cos(30 * 3.14159265358979323846 / 180);
+    {
+        const size_t m = p.size();
+        std::vector<double> turn(m, 1);   // the cosine of the turn at each point
+        for (size_t i = 0; i < m; ++i) {
+            size_t j = (i + m - 1) % m, k = (i + 1) % m;
+            for (size_t s = 0; s + 2 < m && ise_miter::Len(p[i] - p[j]) < reach; ++s) j = (j + m - 1) % m;
+            for (size_t s = 0; s + 2 < m && ise_miter::Len(p[k] - p[i]) < reach; ++s) k = (k + 1) % m;
+            turn[i] = ise_miter::Dot(Unit(p[i] - p[j]), Unit(p[k] - p[i]));
+        }
+        std::vector<char> corner(m, 0), drop(m, 0);
+        for (size_t i = 0; i < m; ++i) {
+            if (!(turn[i] < cosCorner)) continue;
+            // The sharpest point within reach either side.
+            bool best = true;
+            for (size_t s = 1; s < m && best; ++s) {
+                const size_t a = (i + s) % m, b = (i + m - s) % m;
+                const bool nearA = ise_miter::Len(p[a] - p[i]) < reach, nearB = ise_miter::Len(p[b] - p[i]) < reach;
+                if (!nearA && !nearB) break;
+                if ((nearA && (turn[a] < turn[i] || (turn[a] == turn[i] && a < i))) ||
+                    (nearB && (turn[b] < turn[i] || (turn[b] == turn[i] && b < i)))) best = false;
+            }
+            if (!best) continue;
+            corner[i] = 1;
+            for (size_t s = 1; s < m; ++s) {
+                const size_t a = (i + s) % m;
+                if (ise_miter::Len(p[a] - p[i]) >= reach) break;
+                drop[a] = 1;
+            }
+            for (size_t s = 1; s < m; ++s) {
+                const size_t b = (i + m - s) % m;
+                if (ise_miter::Len(p[b] - p[i]) >= reach) break;
+                drop[b] = 1;
+            }
+        }
+        std::vector<Pt> kept;
+        std::vector<char> keptCorner;
+        for (size_t i = 0; i < m; ++i) {
+            if (drop[i] && !corner[i]) continue;
+            kept.push_back(p[i]);
+            keptCorner.push_back(corner[i]);
+        }
+        p.swap(kept);
+        std::vector<size_t> found;
+        for (size_t i = 0; i < keptCorner.size(); ++i)
+            if (keptCorner[i]) found.push_back(i);
+        corners.swap(found);
+    }
     const size_t n = p.size();
     if (n < 3) return out;
-    // Corners: turning by more than 30 degrees.
-    std::vector<size_t> corners;
-    const double cosCorner = std::cos(30 * 3.14159265358979323846 / 180);
-    for (size_t i = 0; i < n; ++i) {
-        const Pt d0 = Unit(p[i] - p[(i + n - 1) % n]), d1 = Unit(p[(i + 1) % n] - p[i]);
-        if (ise_miter::Dot(d0, d1) < cosCorner) corners.push_back(i);
-    }
     std::vector<Pt> seq;
     if (corners.empty()) {
         // A smooth loop: from the first point around to it again, with one tangent there.
@@ -753,26 +805,76 @@ std::vector<std::vector<Contour>> DistanceBands(const std::vector<Contour>& fill
     return out;
 }
 
-std::vector<Contour> Notches(const std::vector<Contour>& fill, double half, double grow, double tol, bool* ok)
+bool ContoursInteract(const std::vector<Contour>& contours, double reach, double tol)
+{
+    if (contours.size() < 2) return false;
+    if (contours.size() > 400) return true;
+    const int precision = 3;
+    double sum = 0;
+    Clipper2Lib::PathsD all;
+    for (const Contour& c : contours) {
+        const Clipper2Lib::PathsD line = Paths({c}, tol);
+        if (line.empty()) continue;
+        const Clipper2Lib::PathsD band = Clipper2Lib::InflatePaths(line, reach, Clipper2Lib::JoinType::Round,
+                                                                   Clipper2Lib::EndType::Joined, 2.0, precision, tol);
+        sum += std::fabs(Clipper2Lib::Area(band));
+        all.insert(all.end(), band.begin(), band.end());
+    }
+    bool ok = true;
+    const double united = std::fabs(Clipper2Lib::Area(Union(all, Clipper2Lib::FillRule::NonZero, &ok, precision)));
+    return !ok || sum - united > 0.01 * reach * reach;
+}
+
+std::vector<Contour> WordPath(const std::vector<Contour>& fill, double half, BandJoin join, double limit, bool creases, double tol,
+                              bool* ok)
 {
     *ok = tol > 0 && half > 0;
     if (!*ok) return {};
     const int precision = kBandPrecision;
     const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
-    if (!*ok) return {};
-    // The closing, shrunk a little more than it grew: along the fill's edges it then lies
-    // within the fill, so what is left beyond it is the notches alone, not slivers of the
-    // flattening; the growth below brings them back to the fill.
-    const Clipper2Lib::PathsD grown = Clipper2Lib::InflatePaths(region, half, Clipper2Lib::JoinType::Round,
-                                                                Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
-    const Clipper2Lib::PathsD closed = Clipper2Lib::InflatePaths(grown, -(half + 2 * tol), Clipper2Lib::JoinType::Round,
+    if (!*ok || region.empty()) { *ok = false; return {}; }
+    const Clipper2Lib::JoinType jt = join == BandJoin::Round   ? Clipper2Lib::JoinType::Round
+                                     : join == BandJoin::Bevel ? Clipper2Lib::JoinType::Bevel
+                                                               : Clipper2Lib::JoinType::Miter;
+    const Clipper2Lib::PathsD grown = Clipper2Lib::InflatePaths(region, half, jt, Clipper2Lib::EndType::Polygon,
+                                                                std::max(limit, 1.0), precision, tol);
+    if (!creases) {
+        if (grown.empty()) { *ok = false; return {}; }
+        return Fitted(grown, tol);
+    }
+    // Closed by a disk of radius half: grown by it, then shrunk back with round joins, which
+    // round the creases. Grown with miter joins, the convex corners come back exact; grown
+    // round, they came back chamfered by the arcs' flattening, which split the fit there.
+    const Clipper2Lib::PathsD wide = Clipper2Lib::InflatePaths(grown, half, Clipper2Lib::JoinType::Miter,
+                                                               Clipper2Lib::EndType::Polygon, 100.0, precision, tol);
+    const Clipper2Lib::PathsD closed = Clipper2Lib::InflatePaths(wide, -half, Clipper2Lib::JoinType::Round,
                                                                  Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
-    Clipper2Lib::PathsD notches = Run(Clipper2Lib::ClipType::Difference, closed, region, precision, ok);
-    Clipper2Lib::PathsD kept;
-    for (const Clipper2Lib::PathD& path : notches)
-        if (std::fabs(Clipper2Lib::Area(path)) > 25 * tol * tol) kept.push_back(path);
-    if (!*ok || kept.empty()) return {};
-    return Fitted(Clipper2Lib::InflatePaths(kept, grow, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon, 2.0,
+    if (closed.empty()) { *ok = false; return {}; }
+    return Fitted(closed, tol);
+}
+
+std::vector<Contour> Uncovered(const std::vector<Contour>& fill, const std::vector<Contour>& path, double half, double grow,
+                               double tol, bool* ok)
+{
+    *ok = tol > 0 && half > 0;
+    if (!*ok) return {};
+    const int precision = kBandPrecision;
+    const Clipper2Lib::PathsD lines = Paths(path, tol);
+    const Clipper2Lib::PathsD enclosed = Union(lines, Clipper2Lib::FillRule::EvenOdd, ok, precision);
+    const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
+    const Clipper2Lib::PathsD band = Clipper2Lib::InflatePaths(lines, half, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Joined,
+                                                               2.0, precision, tol);
+    const Clipper2Lib::PathsD left = Run(Clipper2Lib::ClipType::Difference, Run(Clipper2Lib::ClipType::Difference, enclosed, region,
+                                                                                precision, ok),
+                                         band, precision, ok);
+    if (!*ok || left.empty()) return {};
+    // Opened by a few tolerances, which drops the slivers between the band and the fill that
+    // two flattenings leave, then grown.
+    const double open = 3 * tol;
+    const Clipper2Lib::PathsD core = Clipper2Lib::InflatePaths(left, -open, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon,
+                                                               2.0, precision, tol);
+    if (core.empty()) return {};
+    return Fitted(Clipper2Lib::InflatePaths(core, open + grow, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon, 2.0,
                                             precision, tol),
                   tol);
 }

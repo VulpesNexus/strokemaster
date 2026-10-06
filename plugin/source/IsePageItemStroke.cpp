@@ -64,14 +64,14 @@
 //     Outside outside the fill, for Inside within it. That removes escaping tips and the
 //     stroke shown through the letters while keeping InDesign's pattern; Outside and Inside
 //     are filled at the fill event. Past the limit, InDesign bevels the pattern; the whole
-//     points (below) are filled solid beyond its bevel, without the pattern (the owner's
-//     choice, 2026-10-05).
+//     points (below) are filled solid from the vertex over it, without the pattern (the
+//     owner's choice, 2026-10-05; from the vertex since 2026-10-06).
 //     Outside patterns follow one outline per word instead (the owner's choice, 2026-10-05;
 //     PrepareWord, DrawWord): InDesign strokes each contour's offset, so where letters touch
 //     or overlap their patterns cross. A path stroker (dashes, dots, hashes, waves, diamonds)
-//     draws its pattern, corner adjustment included, along the outline offset by InDesign's own
-//     offset (IOffsetPath, which unites the contours' offsets), over the gap color painted
-//     beneath; a dash stroker's notches where letters meet are filled solid. Stripes, which
+//     draws its pattern, corner adjustment included, along the word's united offset, its
+//     creases rounded (ise_region::WordPath), over the gap color painted beneath; what a dash
+//     stroker's band leaves where letters meet is filled solid (ise_region::Uncovered). Stripes, which
 //     the stripe stroker draws along a page item's path only, are filled as regions by
 //     distance from the fill (ise_region::DistanceBands), the gap color's beneath them: into
 //     the notches, without seams against the fill, and with the whole points, each stripe
@@ -143,7 +143,6 @@
 #include "IGraphicAttributeUtils.h"
 #include "IGraphicStyleDescriptor.h"
 #include "IGraphicsPort.h"
-#include "IOffsetPath.h"
 #include "IOutlineInfo.h"
 #include "IPathGeometry.h"
 #include "IPathPageItem.h"
@@ -376,9 +375,11 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
     return out;
 }
 
-/** The whole points a patterned stroke (Center or Outside, Miter) keeps past the limit, beyond
-    the bevel InDesign's own stroke draws there (ise_miter::PointBeyondBevel); the corners as in
-    StrokeSideJoins. */
+/** The whole points a patterned stroke (Center or Outside, Miter) keeps past the limit: the
+    whole miter from the vertex (ise_miter::CutMiter), filled solid over the pattern, so the
+    pattern ends where each side meets the point. Drawn from the bevel the pattern draws
+    there, it left a dash cut short and a gap below the point (the owner's check, 2026-10-06).
+    The corners as in StrokeSideJoins. */
 std::vector<std::vector<Pt>> PatternPoints(const std::vector<Stub>& stubs, const std::vector<char>& crossing, Align align,
                                            int32 join, double h, double limit, const Coverage& coverage)
 {
@@ -388,8 +389,7 @@ std::vector<std::vector<Pt>> PatternPoints(const std::vector<Stub>& stubs, const
         const Stub& s = stubs[i];
         if (s.interior || !PastLimit(s, limit) || !ise_miter::WholePoint(s, h)) continue;
         if (i < crossing.size() && crossing[i]) continue;
-        out.push_back(ise_miter::PointBeyondBevel(s, h, ise_miter::WholePointReach(s, h, kLongestMiter), align == Align::Outside,
-                                                  limit));
+        out.push_back(ise_miter::CutMiter(s, h, ise_miter::WholePointReach(s, h, kLongestMiter)));
     }
     return out;
 }
@@ -427,7 +427,7 @@ struct Prepared {
     std::vector<Contour> strokeClip;    // other stroke types
     // Outside patterns along one outline per word (PrepareWord):
     std::vector<Contour> word;          // the outline's united offset at half the weight, for a path stroker
-    std::vector<Contour> notches;       // what a dash stroker's band along it leaves (ise_region::Notches)
+    std::vector<Contour> notches;       // what a dash stroker's band along it leaves (ise_region::Uncovered)
     std::vector<std::vector<Contour>> bands;   // stripes: each stripe's region (ise_region::DistanceBands)
     std::vector<Contour> gapBand;       // stripes with a gap color: the region it paints, beneath them
 };
@@ -653,7 +653,7 @@ bool StripeStroker(ClassID c)
 }
 
 /** The dash strokers (dashes, not dots): their bands leave notches where letters meet, which are
-    filled solid (ise_region::Notches). */
+    filled solid (ise_region::Uncovered). */
 bool DashStroker(ClassID c)
 {
     return c == kDashedPathStrokerBoss || c == kCannedDash4x4PathStrokerBoss || c == kCannedDash3x2PathStrokerBoss ||
@@ -729,20 +729,6 @@ InterfacePtr<IPathGeometry> TempGeometry(const std::vector<Contour>& contours)
     return g;
 }
 
-/** The outline offset outward by `distance` with the stroke's join, by InDesign's own offset
-    (IOffsetPath, which unites the contours' offsets: touching and overlapping letters come out
-    as one outline, measured 2026-10-05). Empty when it fails. */
-std::vector<Contour> UnitedOffset(const std::vector<Contour>& contours, double distance, int32 join, double limit)
-{
-    InterfacePtr<IPathGeometry> src = TempGeometry(contours);
-    InterfacePtr<IOffsetPath> offset(static_cast<IOffsetPath*>(::CreateObject(kOffsetPathBoss, IID_IOFFSETPATH)));
-    if (src == nil || offset == nil) return {};
-    ise_miter::Recorder recorder;
-    Recording writer(&recorder);
-    if (offset->OffsetPath(src, &writer, distance, IOffsetPath::kOffsetArea, join, kPMButtCap, limit, kTrue) != kSuccess) return {};
-    return recorder.Contours();
-}
-
 /** The corners whose miters an Outside stroke's bands keep (ise_region::BandCorner), as
     StrokeSideJoins treats them at the full weight: within the limit the whole miter, an
     effect's corner trimmed to its shorter edge, a glyph tip trimmed (TipReach; beside a short
@@ -774,9 +760,13 @@ std::vector<ise_region::BandCorner> BandCorners(const Prepared& p, double weight
 
 /** One outline per word for an Outside patterned stroke (the owner's choice, 2026-10-05):
     InDesign strokes each contour's offset, so where letters touch or overlap their patterns
-    cross. For a path stroker (dashes, dots, hashes, waves), the outline's united offset at half
-    the weight, along which the stroker draws (DrawWord), with its gap color painted beneath;
-    for dashes, also the notches that band leaves where letters meet. For stripes, each
+    cross. For a path stroker (dashes, dots, hashes, waves), the word's path at half the weight
+    (ise_region::WordPath: the united offset, its creases rounded), along which the stroker
+    draws (DrawWord), with its gap color painted beneath; for dashes, also what that band
+    leaves unpainted where letters meet (ise_region::Uncovered). InDesign's own offset
+    (IOffsetPath) left creases where the pattern spiked and restarted, two anchors at a corner
+    where dots doubled, and a slightly different offset from the notches', which left crescent
+    gaps between them (the owner's check, 2026-10-06). For stripes, each
     stripe's region by distance from the fill, and the gap color's (ise_region::DistanceBands):
     the stripes' own offsets, stroked, left the notches white, seams against the fill, and a
     stray island where InDesign's offset folded (the owner's check, 2026-10-06), and now carry
@@ -787,12 +777,20 @@ void PrepareWord(const std::vector<Contour>& contours, bool pathStroker, bool da
 {
     // Within 0.005 pt, and under a fiftieth of the weight for hairlines.
     const double tol = std::min(0.005, weight / 50);
+    const ise_region::BandJoin bandJoin = join == kPMRoundJoin ? ise_region::BandJoin::Round
+                                          : join == kPMBevelJoin ? ise_region::BandJoin::Bevel
+                                                                 : ise_region::BandJoin::Miter;
     if (pathStroker) {
-        std::vector<Contour> word = UnitedOffset(contours, weight / 2, join, limit);
-        if (word.empty()) return;
+        // Creases are rounded only where contours' strokes meet (ise_region::ContoursInteract).
+        const bool creases = ise_region::ContoursInteract(contours, weight / 2, std::max(tol, 0.01));
+        // Fitted within 0.02 pt: the stroker's corner adjustment fits its pattern between every
+        // two anchors, so the path keeps as few as it can.
+        const double pathTol = std::min(0.02, weight / 50);
+        bool ok = false;
+        std::vector<Contour> word = ise_region::WordPath(contours, weight / 2, bandJoin, limit, creases, pathTol, &ok);
+        if (!ok || word.empty()) return;
         if (dashes) {
-            bool ok = false;
-            std::vector<Contour> notches = ise_region::Notches(contours, weight / 2, std::min(0.1, weight / 20), tol, &ok);
+            std::vector<Contour> notches = ise_region::Uncovered(contours, word, weight / 2, std::min(0.1, weight / 20), tol, &ok);
             if (!ok) return;
             out->notches.swap(notches);
         }
@@ -816,9 +814,6 @@ void PrepareWord(const std::vector<Contour>& contours, bool pathStroker, bool da
         const double to = bands.back().second < weight ? weight : (bands.back().first + bands.back().second) / 2;
         bands.push_back({from, to});
     }
-    const ise_region::BandJoin bandJoin = join == kPMRoundJoin ? ise_region::BandJoin::Round
-                                          : join == kPMBevelJoin ? ise_region::BandJoin::Bevel
-                                                                 : ise_region::BandJoin::Miter;
     const std::vector<ise_region::BandCorner> corners =
         bandJoin == ise_region::BandJoin::Miter ? BandCorners(*out, weight, limit, coverage) : std::vector<ise_region::BandCorner>();
     bool ok = false;
