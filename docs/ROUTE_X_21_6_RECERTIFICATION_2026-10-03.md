@@ -410,12 +410,27 @@ On outlined script, any adjustment but None runs the pattern together, with or w
 
 **Whole points on patterned strokes** are filled from the corner (*CutMiter*) over the pattern; *PointBeyondBevel* is gone. Tests: 251 miter-core checks.
 
-**ROUTE_X word path: CERTIFIED on 21.6 with default settings; installed now as `c41a16bb`.** Session C20 repeats C19 in a fresh process (hash read from the loaded module, `c41a16bbd8f91545`; no settings file present):
+**ROUTE_X word path: CERTIFIED on 21.6 with default settings; superseded by `c2f0cdc2` below.** Session C20 repeats C19 in a fresh process (hash read from the loaded module, `c41a16bbd8f91545`; no settings file present):
 - All 110 measured lines are identical, all seven PNGs are byte-identical, and the saved suites and the background suite export are pixel-identical ([*C20.json*](../tests/audit/results/routex/C20.json)).
 - The cross-frame census passes 22 of 22, and the extension census passes 8 of 8 built cases ([*cross_frame_census_21.6_c41a16bb.json*](../tests/audit/results/cross_frame_census_21.6_c41a16bb.json), [*cross_frame_extension_census_c41a16bb.json*](../tests/audit/results/cross_frame_extension_census_c41a16bb.json)).
 - The documents it saved carry no plugin state ([*C20-state.json*](../tests/audit/results/routex/C20-state.json)).
 
-**Not yet installed:** `15fe9bd3`, the owner's L11 finding. Custom stripes follow the path without rounded creases: along a rounded crease the thick stripe left the letters.
+## Custom stripes measured: route X candidate `c2f0cdc2`
+
+The owner's checks of L11 found two problems with custom stripes along the word's path. Along a rounded crease the thick stripe left the letters (`15fe9bd3` dropped the rounding for stripes). Even then, the stripes crossed in the counters and showed gaps. No public interface gives a custom striped style's layout, so it is now measured (*plugin/source/IseStripeProbe.h*):
+- The style's stroker draws a straight line (*IPathStroker::StrokePathForUI*) into a port that only records the bands it paints across the line (*StripeRecorder*).
+- The measurement is calibrated once on the built-in Thick - Thin style, whose layout is known.
+- The stripes are then filled by distance from the fill, as the built-in ones are.
+- A stroker the port cannot read keeps the drawing along the path.
+
+The showcase's L11 now matches the built-in stripes' quality.
+
+**ROUTE_X custom stripes: CERTIFIED on 21.6 with default settings, except the placed-EPS round trip; installed now as `c2f0cdc2`.** Session C22 repeats C20 in a fresh process (hash read from the loaded module, `c2f0cdc242aafaa6`; no settings file present):
+- The 94 measured lines outside the round-trip family are identical to C20's, all seven PNGs are byte-identical, and the five saved suites and the background suite export are pixel-identical ([*C22.json*](../tests/audit/results/routex/C22.json)).
+- The cross-frame census passes 22 of 22, and the extension census passes 8 of 8 built cases ([*cross_frame_census_21.6_c2f0cdc2.json*](../tests/audit/results/cross_frame_census_21.6_c2f0cdc2.json), [*cross_frame_extension_census_c2f0cdc2.json*](../tests/audit/results/cross_frame_extension_census_c2f0cdc2.json)).
+- The documents it saved carry no plugin state ([*C22-state.json*](../tests/audit/results/routex/C22-state.json)).
+
+**Open: the round trip that places the session's EPS.** Since session C21, its job reports success but writes a 0-byte PDF (and a different PNG) for both of its EPS files; C20 wrote them normally. Placed by hand in a fresh process with `c2f0cdc2`, the same EPS files export a 239,690-byte PDF with StrokeMaster off and on, as in C20. The fault appeared after a stuck certification instance was force-closed and the owner's own session ran in between, so it is likely InDesign state rather than the plugin; it is not yet explained.
 
 ## Owner verification and decisions
 
