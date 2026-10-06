@@ -223,6 +223,19 @@ int main()
             Stub foot = tiny;
             foot.ratio = std::sqrt(2.0);   // a serif foot's square corner beside a 1 pt edge
             Check(!TrimmedTip(foot, 4), "a square corner beside a short edge keeps its miter");
+            Stub ear = curved;
+            ear.ratio = 1.96; ear.edge = 1.26;   // Great Vibes' g: an ear beside a 1.26 pt curve
+            Check(TrimmedTip(ear, 5), "a curved corner of 61 degrees beside a short edge: a glyph tip");
+            ear.edge = 6;
+            Check(!TrimmedTip(ear, 5), "the same corner between long curves (a leaf's point): its whole miter");
+            Stub flat = curved;
+            flat.ratio = 1.45; flat.edge = 1;
+            Check(!TrimmedTip(flat, 5), "a curved corner blunter than 84 degrees: its whole miter");
+            // TipReach: flush beside a short edge, otherwise trimmed to the shorter edge past the stroke.
+            Check(std::fabs(TipReach(tiny, 4) - 4) < 1e-12, "a tip beside a short edge: cut flush at h");
+            Stub longTip = curved;
+            longTip.ratio = 4; longTip.edge = 3;
+            Check(std::fabs(TipReach(longTip, 2) - 5) < 1e-12, "a curved tip between long edges: h past the stroke's edge by the edge");
             // PointBeyondBevel: the whole point a patterned stroke gets beyond its own bevel.
             auto within = [](const std::vector<Pt>& poly, Pt p) {
                 Ring r; r.points = poly; r.x0 = r.y0 = -1e9; r.x1 = r.y1 = 1e9;
@@ -597,6 +610,65 @@ int main()
         const std::vector<Pt> deep = {{9, 4}, {9.9, 4}, {9.9, 6}, {9, 6}};
         const std::vector<Contour> insideJoined = ise_region::StrokeClip({sq}, 1, 0.1, {deep, join}, {sq}, ise_region::FillMode::Within, 1e-3);
         Check(inside(insideJoined, {9.5, 5}) && !inside(insideJoined, {10.5, -0.5}), "inside band: a join's part in the fill only");
+    }
+    {
+        // DistanceBands: an Outside patterned stroke's bands, by distance from the fill.
+        using ise_region::BandCorner;
+        using ise_region::BandJoin;
+        const Contour sq = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        auto in = [](const std::vector<Contour>& region, Pt p) { return Winding(Flatten(region, 1e-4, 1e-9), p) != 0; };
+        std::vector<BandCorner> miters;
+        for (const Stub& s : ExteriorCorners({sq}, With(1))) {
+            BandCorner c;
+            c.stub = s;
+            c.cap = s.ratio;
+            miters.push_back(c);
+        }
+        bool ok = false;
+        const auto whole = ise_region::DistanceBands({sq}, {{0, 2}}, BandJoin::Miter, miters, 0.03, 1e-3, &ok);
+        Check(ok && whole.size() == 1 && !whole[0].empty(), "a band around a square");
+        Check(in(whole[0], {11, 5}) && in(whole[0], {11.98, 5}) && !in(whole[0], {12.05, 5}) && !in(whole[0], {5, 5}),
+              "the band: from the fill out to its distance");
+        Check(in(whole[0], {9.985, 5}) && !in(whole[0], {9.95, 5}), "a band from 0 reaches the inset into the fill");
+        Check(in(whole[0], {11.95, 11.95}) && !in(whole[0], {12.05, 12.05}), "a corner's miter: the whole point");
+        const auto squared = ise_region::DistanceBands({sq}, {{0, 2}}, BandJoin::Miter, {}, 0.03, 1e-3, &ok);
+        Check(ok && in(squared[0], {11.3, 11.3}) && !in(squared[0], {11.6, 11.6}), "without its miter a corner is squared at the distance");
+        const auto rounded = ise_region::DistanceBands({sq}, {{0, 2}}, BandJoin::Round, {}, 0.03, 1e-3, &ok);
+        Check(ok && in(rounded[0], {11.35, 11.35}) && !in(rounded[0], {11.45, 11.45}), "round joins: an arc of the distance");
+        const auto stripes = ise_region::DistanceBands({sq}, {{0, 0.5}, {1.5, 2}}, BandJoin::Miter, miters, 0.03, 1e-3, &ok);
+        Check(ok && stripes.size() == 2 && in(stripes[0], {10.25, 5}) && !in(stripes[0], {11, 5}) && !in(stripes[1], {11, 5}) &&
+                  in(stripes[1], {11.75, 5}) && !in(stripes[1], {10.25, 5}),
+              "stripes: each its own distances, the gap between them empty");
+        Check(in(stripes[1], {11.6, 11.6}) && !in(stripes[1], {11.0, 11.0}) && in(stripes[0], {10.3, 10.3}),
+              "stripes follow the corner's miter, each at its own distance");
+        // Two squares overlapping at a corner, and an L: one outline, into the notch between them.
+        const Contour sq2 = Poly({{8, 8}, {18, 8}, {18, 18}, {8, 18}});
+        const auto pair = ise_region::DistanceBands({sq, sq2}, {{0, 1}}, BandJoin::Miter, {}, 0.03, 1e-3, &ok);
+        Check(ok && in(pair[0], {10.5, 7.5}) && !in(pair[0], {9, 9}) && !in(pair[0], {12, 12}), "overlapping squares: one band, not through the fill");
+        const Contour bend = Poly({{0, 0}, {10, 0}, {10, 4}, {4, 4}, {4, 10}, {0, 10}});
+        const auto lBand = ise_region::DistanceBands({bend}, {{0, 2}}, BandJoin::Miter, {}, 0.03, 1e-3, &ok);
+        Check(ok && in(lBand[0], {4.2, 4.2}) && in(lBand[0], {5.9, 5.9}) && !in(lBand[0], {6.1, 6.1}), "an L: the band fills its inner corner");
+        // Notches: what a stroke along the offset by half leaves at an inner corner.
+        const std::vector<Contour> notch = ise_region::Notches({bend}, 1, 0.1, 1e-3, &ok);
+        Check(ok && !notch.empty() && in(notch, {4.2, 4.2}) && !in(notch, {4.6, 4.6}), "an L's inner corner: a notch the offset's stroke misses");
+        Check(ise_region::Notches({sq}, 1, 0.1, 1e-3, &ok).empty() && ok, "a square has no notch");
+        // FitCurves: a circle's polyline as a few curves within the tolerance; a square's corners kept.
+        std::vector<Pt> circle;
+        for (int k = 0; k < 400; ++k) {
+            const double angle = 2 * 3.14159265358979323846 * k / 400;
+            circle.push_back({10 * std::cos(angle), 10 * std::sin(angle)});
+        }
+        const Contour fitted = ise_region::FitCurves(circle, 1e-3);
+        double worst = 0;
+        for (const Ring& r : Flatten({fitted}, 1e-5, 1e-9))
+            for (const Pt& p : r.points) worst = std::max(worst, std::fabs(Len(p) - 10));
+        Check(fitted.segments.size() < 40 && worst < 4e-3, "a circle's 400 points: under 40 curves within the tolerance");
+        const Contour box = ise_region::FitCurves({{0, 0}, {10, 0}, {10, 10}, {0, 10}}, 1e-3);
+        bool corners = Near(box.start, {0, 0}) || Near(box.start, {10, 0}) || Near(box.start, {10, 10}) || Near(box.start, {0, 10});
+        double off = 0;
+        for (const Ring& r : Flatten({box}, 1e-5, 1e-9))
+            for (const Pt& p : r.points) off = std::max(off, std::min(std::min(std::fabs(p.x), std::fabs(p.x - 10)), std::min(std::fabs(p.y), std::fabs(p.y - 10))));
+        Check(corners && off < 1e-6, "a square: its corners kept, its sides straight");
     }
 
     std::printf("miter core: %d checks passed\n", checks);

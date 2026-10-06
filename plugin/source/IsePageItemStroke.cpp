@@ -66,14 +66,18 @@
 //     are filled at the fill event. Past the limit, InDesign bevels the pattern; the whole
 //     points (below) are filled solid beyond its bevel, without the pattern (the owner's
 //     choice, 2026-10-05).
-//     Outside dashes, dots, and built-in stripes follow one outline per word instead (the
-//     owner's choice, 2026-10-05; PrepareWord, DrawWord): InDesign strokes each contour's
-//     offset, so where letters touch or overlap their patterns cross. Here the outline is
-//     offset by InDesign's own offset (IOffsetPath), which unites the contours' offsets; a
-//     dash stroker draws its pattern along that, corner adjustment included, over the gap
-//     color painted beneath; the seven built-in stripe styles are drawn as solid strokes of
-//     their measured stripes, since the stripe stroker refuses any path but a page item's.
-//     Custom stripes, stripes with a gap color, and the other styles keep the clip above.
+//     Outside patterns follow one outline per word instead (the owner's choice, 2026-10-05;
+//     PrepareWord, DrawWord): InDesign strokes each contour's offset, so where letters touch
+//     or overlap their patterns cross. A path stroker (dashes, dots, hashes, waves, diamonds)
+//     draws its pattern, corner adjustment included, along the outline offset by InDesign's own
+//     offset (IOffsetPath, which unites the contours' offsets), over the gap color painted
+//     beneath; a dash stroker's notches where letters meet are filled solid. Stripes, which
+//     the stripe stroker draws along a page item's path only, are filled as regions by
+//     distance from the fill (ise_region::DistanceBands), the gap color's beneath them: into
+//     the notches, without seams against the fill, and with the whole points, each stripe
+//     following the point (the owner's check, 2026-10-06). Custom stripes, whose layout no
+//     public interface reads, are drawn along the outline by their stroker's StrokePathForUI;
+//     a stroker that refuses the outline keeps the clip above.
 //
 // Where an Outside or Inside outline's fill rules disagree (overlapping contours, holes wound
 // the fill's way), the boundary of the region it fills is stroked instead of its contours
@@ -93,11 +97,13 @@
 // that edge, is a shape's own point and is drawn all the way (ise_miter::WholePoint). Every
 // other corner past the limit is beveled as InDesign bevels it: the tapered tips of script and
 // blackletter glyphs, which a point at the limit distance turned into spikes, and the needles
-// of decorative fonts. Within the limit, the miter of a corner sharper than 60 degrees with a
-// curve on either side or an edge shorter than the stroke's reach reaches past the stroke's
-// edge no farther than that edge (ise_miter::TrimmedTip, EffectMiterReach): a glyph tip's
-// whole miter stuck out as a spike (Segoe Script's W; the owner asked for them trimmed,
-// 2026-10-05). Blunter corners, such as serif feet, keep their whole miters.
+// of decorative fonts. A glyph tip (ise_miter::TrimmedTip: sharper than 60 degrees with a curve
+// on either side or an edge shorter than the stroke's reach, or sharper than 84 degrees with
+// both) is trimmed (TipReach): beside an edge shorter than the reach, its stroke ends flush,
+// cut at the reach along the tip, within the limit and past it; otherwise its miter reaches
+// past the stroke's edge no farther than that edge. A glyph tip's whole miter stuck out as a
+// spike (Segoe Script's W, Great Vibes' g; the owner asked for them trimmed, 2026-10-05, and
+// flush, 2026-10-06). Blunter corners, such as serif feet, keep their whole miters.
 //
 // Where an Outside or Inside stroke follows the resolved region, the region's boundary has
 // corners the outline does not: where contours cross, and where a contour's loop (corner
@@ -346,12 +352,18 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
         if (s.interior != wantInterior) continue;
         if (join == kPMRoundJoin) continue;   // the round stroke's own join is the offset's
         if (i < crossing.size() && crossing[i] && PastLimit(s, limit)) continue;   // the stroke's bevel
+        const bool tip = coverage.glyphTips && ise_miter::TrimmedTip(s, h);
         if (join == kPMMiterJoin && !PastLimit(s, limit)) {
-            const bool trimmed = (i < effect.size() && effect[i]) || (coverage.glyphTips && ise_miter::TrimmedTip(s, h));
-            out.push_back(ise_miter::JoinPolygon(s, h, trimmed ? ise_miter::EffectMiterReach(s, h) : s.ratio * h));
+            double reach = s.ratio * h;
+            if (i < effect.size() && effect[i]) reach = ise_miter::EffectMiterReach(s, h);
+            if (tip) reach = std::min(reach, ise_miter::TipReach(s, h));
+            out.push_back(ise_miter::JoinPolygon(s, h, reach));
         } else if (join == kPMMiterJoin && align != Align::Inside && coverage.wholePoints && ise_miter::WholePoint(s, h)) {
             // Past the limit, a shape's own point: kept whole (the owner's whole points).
             out.push_back(ise_miter::JoinPolygon(s, h, ise_miter::WholePointReach(s, h, kLongestMiter)));
+        } else if (join == kPMMiterJoin && align == Align::Outside && tip && s.edge < h) {
+            // Past the limit, a glyph tip: cut flush, as within it (TipReach), not beveled.
+            out.push_back(ise_miter::JoinPolygon(s, h, h));
         } else if (join == kPMMiterJoin && align == Align::Center) {
             continue;   // past the limit, any other corner: the stroke's bevel, as InDesign's
         } else {
@@ -413,9 +425,11 @@ struct Prepared {
     std::vector<char> effect;           // per stub, with corner effects: a corner the effect adds
     std::vector<Contour> outsideClip;   // Outside, solid
     std::vector<Contour> strokeClip;    // other stroke types
-    // Outside dashes, dots, and built-in stripes along one outline per word (PrepareWord):
-    std::vector<Contour> word;          // the outline's united offset at half the weight: dashes, and a gap color's band
-    std::vector<std::pair<double, std::vector<Contour>>> stripes;   // each stripe's width and path
+    // Outside patterns along one outline per word (PrepareWord):
+    std::vector<Contour> word;          // the outline's united offset at half the weight, for a path stroker
+    std::vector<Contour> notches;       // what a dash stroker's band along it leaves (ise_region::Notches)
+    std::vector<std::vector<Contour>> bands;   // stripes: each stripe's region (ise_region::DistanceBands)
+    std::vector<Contour> gapBand;       // stripes with a gap color: the region it paints, beneath them
 };
 
 /** A 64-bit FNV-1a hash of what Prepare reads. */
@@ -624,19 +638,65 @@ std::vector<std::pair<double, double>> BuiltInStripes(ClassID c)
     return {};
 }
 
-/** The dash strokers, whose own drawing (IPathStroker::StrokePath) follows any path given to it,
-    gap colors and corner adjustment included (measured on InDesign 21.6, 2026-10-05). The
-    stripe stroker refuses a path that is not a page item's (StrokePath fails), so stripes are
-    drawn here (BuiltInStripes). */
-bool DashStroker(ClassID c)
+/** A stroke type's own class: for a custom style (kCustomPathStrokerBoss), its document style's
+    class (custom dashes, dots, or stripes), as ITableLineType reads it. */
+ClassID StrokeClass(IDataBase* db, ClassID stroker, UID uid)
 {
-    return c == kDashedPathStrokerBoss || c == kCannedDotPathStrokerBoss || c == kCustomDashedPathStrokerBoss ||
-           c == kCustomDottedPathStrokerBoss;
+    if (stroker == kCustomPathStrokerBoss && uid != kInvalidUID) return db->GetClass(uid);
+    return stroker;
 }
 
+/** The stripe strokers: built-in, custom, and the tables' own. */
+bool StripeStroker(ClassID c)
+{
+    return !BuiltInStripes(c).empty() || c == kCustomStripedPathStrokerBoss || c == kTableStripePathStrokerBoss;
+}
+
+/** The dash strokers (dashes, not dots): their bands leave notches where letters meet, which are
+    filled solid (ise_region::Notches). */
+bool DashStroker(ClassID c)
+{
+    return c == kDashedPathStrokerBoss || c == kCannedDash4x4PathStrokerBoss || c == kCannedDash3x2PathStrokerBoss ||
+           c == kCustomDashedPathStrokerBoss;
+}
+
+/** The pattern strokers drawn along one outline per word (IPathStroker::StrokePath follows any
+    path given to it, gap colors and corner adjustment included, measured for the dash strokers
+    on InDesign 21.6, 2026-10-05): every stroke type but solid and stripes. The stripe stroker
+    refuses a path that is not a page item's (StrokePath fails), so built-in stripes are drawn
+    here (DistanceBands); a custom style's stripes, whose layout no public interface reads, are
+    drawn by its stroker's StrokePathForUI, which strokes any path. A stroker that fails is
+    remembered (Refused) and keeps InDesign's own stroke under the clip. */
+bool PatternStroker(ClassID c)
+{
+    return c != kSolidPathStrokerBoss && c != kInvalidClass && !StripeStroker(c);
+}
+
+/** The pattern strokers whose StrokePath failed on a word's outline, for this session. */
+class Refusals {
+public:
+    bool Has(ClassID c)
+    {
+        std::lock_guard<std::mutex> hold(fLock);
+        return std::find(fClasses.begin(), fClasses.end(), c) != fClasses.end();
+    }
+    void Add(ClassID c)
+    {
+        std::lock_guard<std::mutex> hold(fLock);
+        if (std::find(fClasses.begin(), fClasses.end(), c) == fClasses.end()) fClasses.push_back(c);
+    }
+private:
+    std::mutex fLock;
+    std::vector<ClassID> fClasses;
+};
+
+Refusals& Refused() { static Refusals r; return r; }
+
 /** A path geometry holding contours, in a temporary geometry boss of InDesign's offset plugin.
-    A point is smooth where its direction points line up, which a dash stroker's corner
-    adjustment reads. */
+    A point is smooth where its direction points line up within 2 degrees (InDesign's offset
+    turns its curves' joins by a fraction of a degree), which a dash stroker's corner adjustment
+    reads. The adjustment still fits its pattern between every two anchors of an outline, so on
+    outlined script it runs dashes together solid, as InDesign's own stroke does (2026-10-06). */
 InterfacePtr<IPathGeometry> TempGeometry(const std::vector<Contour>& contours)
 {
     InterfacePtr<IPathGeometry> g(static_cast<IPathGeometry*>(::CreateObject(kOffsetPathTempPathGeometry, IID_IPATHGEOMETRY)));
@@ -661,7 +721,7 @@ InterfacePtr<IPathGeometry> TempGeometry(const std::vector<Contour>& contours)
             const Pt a = anchor[i], l = left[i], r = right[i];
             const Pt dl = a - l, dr = r - a;
             const double ll = ise_miter::Len(dl), lr = ise_miter::Len(dr);
-            const bool smooth = ll > 1e-9 && lr > 1e-9 && std::fabs(ise_miter::Cross(dl, dr)) <= 1e-6 * ll * lr && ise_miter::Dot(dl, dr) > 0;
+            const bool smooth = ll > 1e-9 && lr > 1e-9 && std::fabs(ise_miter::Cross(dl, dr)) <= 0.0349 * ll * lr && ise_miter::Dot(dl, dr) > 0;
             g->AddPoint(path, PMPathPoint(smooth ? kCS : kCK, P(l), P(a), P(r)));
         }
         if (c.closed) g->ClosePath(path); else g->OpenPath(path);
@@ -683,28 +743,90 @@ std::vector<Contour> UnitedOffset(const std::vector<Contour>& contours, double d
     return recorder.Contours();
 }
 
-/** One outline per word for an Outside patterned stroke (the owner's choice, 2026-10-05):
-    InDesign strokes each contour's offset, so where letters touch or overlap their dashes and
-    stripes cross. The outline's united offset at half the weight, which a dash stroker itself
-    draws (DrawWord), and along which its gap color is painted first, at the full weight; for
-    built-in stripes without a gap color, also each stripe's united offset to its middle,
-    stroked solid at its width. Leaves `out` without them when an offset fails, and the stroke is then drawn as for
-    other stroke types. */
-void PrepareWord(const std::vector<Contour>& contours, bool dashes, const std::vector<std::pair<double, double>>& stripes, double weight,
-                 int32 join, double limit, Prepared* out)
+/** The corners whose miters an Outside stroke's bands keep (ise_region::BandCorner), as
+    StrokeSideJoins treats them at the full weight: within the limit the whole miter, an
+    effect's corner trimmed to its shorter edge, a glyph tip trimmed (TipReach; beside a short
+    edge cut flush, which the bands' squared offsets are already); past the limit a shape's own
+    point kept whole when the switches keep whole points on patterned strokes, every other
+    corner squared off at each band's distance, as close to InDesign's bevel as bands allow. */
+std::vector<ise_region::BandCorner> BandCorners(const Prepared& p, double weight, double limit, const Coverage& coverage)
 {
-    std::vector<Contour> word = UnitedOffset(contours, weight / 2, join, limit);
-    if (word.empty()) return;
-    std::vector<std::pair<double, std::vector<Contour>>> made;
-    if (dashes) { out->word.swap(word); return; }
-    for (const auto& st : stripes) {
-        const double middle = (1 - (st.first + st.second) / 2) * weight, width = (st.second - st.first) * weight;
-        std::vector<Contour> path = UnitedOffset(contours, middle, join, limit);
-        if (path.empty()) return;
-        made.push_back({width, std::move(path)});
+    std::vector<ise_region::BandCorner> out;
+    for (size_t i = 0; i < p.stubs.size(); ++i) {
+        const Stub& s = p.stubs[i];
+        if (s.interior) continue;
+        ise_region::BandCorner c;
+        c.stub = s;
+        const bool tip = coverage.glyphTips && ise_miter::TrimmedTip(s, weight);
+        if (!PastLimit(s, limit)) {
+            if (tip && s.edge < weight) continue;   // flush: the squared offset
+            if ((i < p.effect.size() && p.effect[i]) || tip) { c.cap = 1; c.extra = s.edge; }
+            else c.cap = s.ratio;
+        } else {
+            if ((i < p.crossing.size() && p.crossing[i]) || !coverage.wholePoints || !coverage.patternPoints ||
+                !ise_miter::WholePoint(s, weight)) continue;
+            c.cap = std::min(s.ratio, kLongestMiter);
+        }
+        out.push_back(c);
     }
-    out->word.swap(word);
-    out->stripes.swap(made);
+    return out;
+}
+
+/** One outline per word for an Outside patterned stroke (the owner's choice, 2026-10-05):
+    InDesign strokes each contour's offset, so where letters touch or overlap their patterns
+    cross. For a path stroker (dashes, dots, hashes, waves), the outline's united offset at half
+    the weight, along which the stroker draws (DrawWord), with its gap color painted beneath;
+    for dashes, also the notches that band leaves where letters meet. For stripes, each
+    stripe's region by distance from the fill, and the gap color's (ise_region::DistanceBands):
+    the stripes' own offsets, stroked, left the notches white, seams against the fill, and a
+    stray island where InDesign's offset folded (the owner's check, 2026-10-06), and now carry
+    the whole points. Leaves `out` without them when an offset fails, and the stroke is then
+    drawn as for other stroke types. */
+void PrepareWord(const std::vector<Contour>& contours, bool pathStroker, bool dashes, const std::vector<std::pair<double, double>>& stripes,
+                 bool gap, double weight, int32 join, double limit, const Coverage& coverage, Prepared* out)
+{
+    // Within 0.005 pt, and under a fiftieth of the weight for hairlines.
+    const double tol = std::min(0.005, weight / 50);
+    if (pathStroker) {
+        std::vector<Contour> word = UnitedOffset(contours, weight / 2, join, limit);
+        if (word.empty()) return;
+        if (dashes) {
+            bool ok = false;
+            std::vector<Contour> notches = ise_region::Notches(contours, weight / 2, std::min(0.1, weight / 20), tol, &ok);
+            if (!ok) return;
+            out->notches.swap(notches);
+        }
+        out->word.swap(word);
+        return;
+    }
+    if (stripes.empty()) return;
+    // Bounded as the band clips are: the bands offset the outline several times.
+    size_t points = 0;
+    for (const ise_miter::Ring& r : ise_miter::Flatten(contours, tol, 1e-9)) points += r.points.size();
+    if (points > 40000) return;
+    // Distances from the fill, outermost stripe last; the gap color's region from the middle of
+    // the innermost stripe (or the fill) to the middle of the outermost (or the stroke's edge),
+    // so its edges lie under stripes.
+    std::vector<std::pair<double, double>> bands;
+    for (auto it = stripes.rbegin(); it != stripes.rend(); ++it) bands.push_back({(1 - it->second) * weight, (1 - it->first) * weight});
+    std::sort(bands.begin(), bands.end());
+    const size_t count = bands.size();
+    if (gap) {
+        const double from = bands.front().first > 0 ? 0 : (bands.front().first + bands.front().second) / 2;
+        const double to = bands.back().second < weight ? weight : (bands.back().first + bands.back().second) / 2;
+        bands.push_back({from, to});
+    }
+    const ise_region::BandJoin bandJoin = join == kPMRoundJoin ? ise_region::BandJoin::Round
+                                          : join == kPMBevelJoin ? ise_region::BandJoin::Bevel
+                                                                 : ise_region::BandJoin::Miter;
+    const std::vector<ise_region::BandCorner> corners =
+        bandJoin == ise_region::BandJoin::Miter ? BandCorners(*out, weight, limit, coverage) : std::vector<ise_region::BandCorner>();
+    bool ok = false;
+    std::vector<std::vector<Contour>> regions = ise_region::DistanceBands(contours, bands, bandJoin, corners, 3 * tol, tol, &ok);
+    if (!ok) return;
+    if (gap) { out->gapBand.swap(regions.back()); regions.pop_back(); }
+    regions.resize(count);
+    out->bands.swap(regions);
 }
 
 /** Everything the route decides for an item from its attributes and outline (Analyze); the
@@ -722,6 +844,9 @@ struct Plan {
     bool solid = false, hasFill = false;
     ClassID stroker = kInvalidClass;   // the stroke type's path stroker, and its document style
     UID strokerUID = kInvalidUID;
+    ClassID strokeClass = kInvalidClass;   // a custom style's own class (StrokeClass)
+    bool pathStroker = false;              // one outline per word, drawn by the stroker (PatternStroker)
+    bool forUI = false;                    // custom stripes: drawn by IPathStroker::StrokePathForUI
     std::vector<std::pair<double, double>> stripes;   // built-in stripes (BuiltInStripes), when drawn here
     InterfacePtr<IRenderingObject> gap;                // the gap color, when there is one
     bool16 overprintGap = kFalse;
@@ -789,21 +914,26 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     plan->strokerUID = strokerUID;
     plan->solid = stroker == kSolidPathStrokerBoss;
     const bool solid = plan->solid;
+    plan->strokeClass = StrokeClass(db, stroker, strokerUID);
+    const ClassID strokeClass = plan->strokeClass;
     if (!solid && align == Align::Outside && coverage.wordOutline) {
-        // One outline per word (PrepareWord): dash strokers with their gap color, and built-in
-        // stripes without one (a gap color's band beneath stripes showed through, 2026-10-05).
-        plan->stripes = BuiltInStripes(stroker);
+        // One outline per word (PrepareWord): pattern strokers, and stripes, each with its gap
+        // color.
+        plan->stripes = BuiltInStripes(strokeClass);
+        plan->forUI = strokeClass == kCustomStripedPathStrokerBoss;
+        plan->pathStroker = (PatternStroker(strokeClass) || plan->forUI) && !Refused().Has(strokeClass);
         UID gap = kInvalidUID;
-        if (attrs->GetGapRenderingUID(gap, style) == kSuccess && gap != kInvalidUID && gap != plan->none) {
-            plan->stripes.clear();
+        if ((plan->pathStroker || !plan->stripes.empty()) && attrs->GetGapRenderingUID(gap, style) == kSuccess &&
+            gap != kInvalidUID && gap != plan->none) {
             plan->gap = InterfacePtr<IRenderingObject>(db, gap, UseDefaultIID());
             if (plan->gap == nil || attrs->GetOverprintGap(plan->overprintGap, style) != kSuccess) return false;
         }
     }
-    const bool dashes = !solid && align == Align::Outside && coverage.wordOutline && DashStroker(stroker);
+    const bool pathStroker = plan->pathStroker, dashes = pathStroker && DashStroker(strokeClass);
     if (coverage.trace && !solid)
-        coverage.trace("P stroker class=0x%x document style=%d dashes=%d stripes=%d", static_cast<unsigned>(stroker.Get()),
-                       strokerUID != kInvalidUID ? 1 : 0, dashes ? 1 : 0, static_cast<int>(plan->stripes.size()));
+        coverage.trace("P stroker class=0x%x own class=0x%x document style=%d path stroker=%d dashes=%d stripes=%d gap=%d",
+                       static_cast<unsigned>(stroker.Get()), static_cast<unsigned>(strokeClass.Get()), strokerUID != kInvalidUID ? 1 : 0,
+                       pathStroker ? 1 : 0, dashes ? 1 : 0, static_cast<int>(plan->stripes.size()), plan->gap != nil ? 1 : 0);
     bool16 evenOdd = kFalse;
     if (attrs->GetEvenOdd(evenOdd, style) == kSuccess && evenOdd) return false;   // filled even-odd
     InterfacePtr<IXPManager> xp(Utils<IXPUtils>()->QueryXPManager(db));
@@ -858,17 +988,19 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     key.Add(h); key.Add(limit); key.Add(static_cast<int32>(align)); key.Add(join); key.Add(static_cast<int32>(solid));
     key.Add(static_cast<int32>(effects));
     for (const Pt& a : anchors) key.Add(a);
-    key.Add(static_cast<int32>(dashes));
-    key.Add(static_cast<int32>(coverage.wholePoints) | static_cast<int32>(coverage.overlaps) << 1);
+    key.Add(static_cast<int32>(pathStroker) | static_cast<int32>(dashes) << 1 | static_cast<int32>(plan->gap != nil) << 2);
+    key.Add(static_cast<int32>(coverage.wholePoints) | static_cast<int32>(coverage.overlaps) << 1 |
+            static_cast<int32>(coverage.glyphTips) << 2 | static_cast<int32>(coverage.patternPoints) << 3);
     for (const auto& st : plan->stripes) { key.Add(st.first); key.Add(st.second); }
     std::shared_ptr<const Prepared> prepared = Cache().Find(key.Value());
     if (!prepared) {
         std::shared_ptr<Prepared> made = std::make_shared<Prepared>();
         Prepare(contours, effects ? &anchors : nullptr, align, join, solid, h, limit, coverage, made.get());
-        if (made->ok && (dashes || !plan->stripes.empty()))
-            PrepareWord(made->resolved ? made->stroked : contours, dashes, plan->stripes, weight, join, limit, made.get());
-        size_t words = Segments(made->word);
-        for (const auto& st : made->stripes) words += Segments(st.second);
+        if (made->ok && (pathStroker || !plan->stripes.empty()))
+            PrepareWord(made->resolved ? made->stroked : contours, pathStroker, dashes, plan->stripes, plan->gap != nil, weight, join,
+                        limit, coverage, made.get());
+        size_t words = Segments(made->word) + Segments(made->notches) + Segments(made->gapBand);
+        for (const auto& band : made->bands) words += Segments(band);
         Cache().Keep(key.Value(), made, Segments(contours) + Segments(made->stroked) + Segments(made->outsideClip) +
                                         Segments(made->strokeClip) + made->stubs.size() + words);
         prepared = made;
@@ -877,19 +1009,37 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     return prepared->ok;
 }
 
-/** Draws an Outside patterned stroke along one outline per word (PrepareWord), clipped to
-    outside the fill, then the whole points past the limit as for other patterned strokes. False
-    when the stroker fails. */
-bool DrawWord(IGraphicsPort* port, const Plan& plan, const Prepared& prepared, const std::vector<std::vector<Pt>>& points)
+/** Draws an Outside patterned stroke along one outline per word (PrepareWord). Stripes: each
+    stripe's region filled, over the gap color's. A path stroker: its pattern along the word's
+    offset, clipped to outside the fill, over the gap color's band, with the notches its dashes
+    leave; then the whole points past the limit as for other patterned strokes. False when the
+    stroker fails, which is then remembered (Refused). */
+bool DrawWord(IGraphicsPort* port, const Plan& plan, const Prepared& prepared, const std::vector<std::vector<Pt>>& points,
+              const Coverage& coverage)
 {
+    if (!prepared.bands.empty()) {
+        AutoGSave save(port);
+        if (plan.gap != nil && !prepared.gapBand.empty()) {
+            AutoGSave gapScope(port);
+            plan.gap->Install(port, plan.style.get(), IRenderingObject::kInstallGap);
+            if (plan.overprintGap) port->setoverprint(kTrue);
+            port->newpath();
+            EmitContours(port, prepared.gapBand);
+            port->fill();
+        }
+        plan.paint->Install(port, plan.style.get(), IRenderingObject::kInstallStroke);
+        if (plan.overprint) port->setoverprint(kTrue);
+        port->newpath();
+        for (const std::vector<Contour>& band : prepared.bands) EmitContours(port, band);
+        port->fill();
+        return true;
+    }
     InterfacePtr<IPathStroker> stroker;
     InterfacePtr<IPathGeometry> path;
-    if (prepared.stripes.empty()) {
-        if (plan.strokerUID != kInvalidUID) stroker = InterfacePtr<IPathStroker>(plan.db, plan.strokerUID, IID_IPATHSTROKER);
-        if (stroker == nil) stroker = InterfacePtr<IPathStroker>(static_cast<IPathStroker*>(::CreateObject(plan.stroker, IID_IPATHSTROKER)));
-        path = TempGeometry(prepared.word);
-        if (stroker == nil || path == nil) return false;
-    }
+    if (plan.strokerUID != kInvalidUID) stroker = InterfacePtr<IPathStroker>(plan.db, plan.strokerUID, IID_IPATHSTROKER);
+    if (stroker == nil) stroker = InterfacePtr<IPathStroker>(static_cast<IPathStroker*>(::CreateObject(plan.stroker, IID_IPATHSTROKER)));
+    path = TempGeometry(prepared.word);
+    if (stroker == nil || path == nil) { Refused().Add(plan.strokeClass); return false; }
     InsideStroke inside;
     {
         AutoGSave save(port);
@@ -914,18 +1064,20 @@ bool DrawWord(IGraphicsPort* port, const Plan& plan, const Prepared& prepared, c
         }
         plan.paint->Install(port, plan.style.get(), IRenderingObject::kInstallStroke);
         if (plan.overprint) port->setoverprint(kTrue);
-        if (stroker != nil) {
-            // The stroker strokes the path already in the port, with the port's paint and width.
-            port->setlinewidth(plan.weight);
-            port->newpath();
-            EmitContours(port, prepared.word);
-            if (stroker->StrokePath(plan.style.get(), path, port) != kSuccess) return false;
+        // The stroker strokes the path already in the port, with the port's paint and width.
+        port->setlinewidth(plan.weight);
+        port->newpath();
+        EmitContours(port, prepared.word);
+        const ErrorCode rc = plan.forUI ? stroker->StrokePathForUI(path, port, plan.weight) : stroker->StrokePath(plan.style.get(), path, port);
+        if (rc != kSuccess) {
+            if (coverage.trace) coverage.trace("P stroker refused class=0x%x", static_cast<unsigned>(plan.strokeClass.Get()));
+            Refused().Add(plan.strokeClass);
+            return false;
         }
-        for (const auto& st : prepared.stripes) {
-            port->setlinewidth(st.first);
+        if (!prepared.notches.empty()) {
             port->newpath();
-            EmitContours(port, st.second);
-            port->stroke();
+            EmitContours(port, prepared.notches);
+            port->fill();
         }
     }
     if (!points.empty()) {
@@ -977,8 +1129,10 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     // Outside and Inside: the outline was filled at the fill event (DrawFill), in place of
     // InDesign's offset fill.
 
-    if (!plan.solid && outside && !prepared.word.empty())
-        return DrawWord(port, plan, prepared, PatternPoints(stubs, prepared.crossing, align, join, h, limit, coverage));
+    if (!plan.solid && outside && !prepared.bands.empty()) return DrawWord(port, plan, prepared, {}, coverage);   // whole points in the bands
+    if (!plan.solid && outside && !prepared.word.empty() &&
+        DrawWord(port, plan, prepared, PatternPoints(stubs, prepared.crossing, align, join, h, limit, coverage), coverage))
+        return true;   // a refused stroker keeps InDesign's stroke below
     if (!plan.solid) {
         // InDesign's own stroke, clipped to where a stroke of this reach can paint: escaping
         // tips and stroke inside the letters are cut away, the pattern is InDesign's. Then the

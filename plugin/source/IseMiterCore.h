@@ -754,17 +754,32 @@ inline double WholePointReach(const Stub& s, double h, double longest)
     return std::min(s.ratio, longest) * h;
 }
 
-/** Whether a miter within the limit is trimmed as an effect's corner is (EffectMiterReach), for
-    half width h: a corner sharper than 60 degrees (ratio 2 or more) with a curve on either side
-    or an edge shorter than h, such as the tapered tip of a script glyph, a curve meeting a
-    0.02 pt segment, whose whole miter stuck out as a spike within the limit (Segoe Script's W
-    at ratio 3.67, the owner's screen check, 2026-10-05). Blunter corners keep their whole
-    miter, as InDesign draws it: the square corners of serif feet (ratio 1.41, edges about 1 pt)
-    were chamfered when they were trimmed too. So does a corner between straight edges at
-    least h long. */
+/** Whether a corner is a glyph tip, whose miter is trimmed (TipReach), for half width h: a
+    corner sharper than 60 degrees (ratio 2 or more) with a curve on either side or an edge
+    shorter than h, such as the tapered tip of a script glyph, a curve meeting a 0.02 pt segment,
+    whose whole miter stuck out as a spike within the limit (Segoe Script's W at ratio 3.67, the
+    owner's screen check, 2026-10-05); or one sharper than 84 degrees (ratio 1.5) with a curve
+    on either side and an edge shorter than h (the ear of Great Vibes' g, ratio 1.96 beside a
+    1.3 pt curve, threw a 5 pt spike at Outside 5 pt, the owner's check, 2026-10-06). Blunter
+    corners keep their whole miter, as InDesign draws it: the square corners of serif feet
+    (ratio 1.41, straight edges about 1 pt) were chamfered when they were trimmed too. So does a
+    corner between straight edges at least h long. */
 inline bool TrimmedTip(const Stub& s, double h)
 {
-    return s.ratio >= 2 && (s.inCurve || s.outCurve || s.edge < h);
+    const bool curve = s.inCurve || s.outCurve;
+    return (s.ratio >= 2 && (curve || s.edge < h)) || (s.ratio >= 1.5 && curve && s.edge < h);
+}
+
+/** How far past its vertex a glyph tip's miter reaches (TrimmedTip), for half width h: beside an
+    edge shorter than h, h itself, so the stroke ends flush around the tip (cut at its own reach
+    along the tip; the miter trimmed to its shorter edge past the stroke still left a small point,
+    the owner's check, 2026-10-06); otherwise the whole miter, but no farther past the stroke's
+    edge than the shorter edge (EffectMiterReach). The same past the limit, where a glyph tip is
+    cut flush instead of beveled as InDesign's offset bevels it (its two corners mitered, a point
+    of their own on Great Vibes' n). */
+inline double TipReach(const Stub& s, double h)
+{
+    return s.edge < h ? std::min(s.ratio * h, h) : EffectMiterReach(s, h);
 }
 
 /** Where InDesign strokes an offset of the outline (an Outside stroke strokes it offset outward

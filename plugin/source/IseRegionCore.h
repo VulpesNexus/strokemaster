@@ -20,6 +20,7 @@
 
 #include "IseMiterCore.h"
 
+#include <utility>
 #include <vector>
 
 namespace ise_region {
@@ -55,5 +56,44 @@ enum class FillMode { Add, Remove, Within };
 std::vector<ise_miter::Contour> StrokeClip(const std::vector<ise_miter::Contour>& stroked, double h, double margin,
                                            const std::vector<std::vector<ise_miter::Pt>>& extra,
                                            const std::vector<ise_miter::Contour>& fill, FillMode mode, double tol);
+
+/** The join the bands (DistanceBands) give their offsets' corners: rounded, beveled, or for a
+    miter squared off at the offset's own distance, with the miters of BandCorner added. */
+enum class BandJoin { Round, Bevel, Miter };
+
+/** A corner of the fill whose miter the bands keep: at distance d its miter (ise_miter::CutMiter
+    with half width d) is cut min(ratio d, cap d + extra) from the vertex. A whole miter has cap
+    = ratio (or the longest limit's) and no extra; a miter trimmed to its shorter edge past the
+    stroke (an effect's corner) has cap 1 and the edge as extra. */
+struct BandCorner {
+    ise_miter::Stub stub;
+    double cap = 0;
+    double extra = 0;
+};
+
+/** The regions of the bands of an Outside stroke, by distance from the fill: for each [from,
+    to] of `bands`, every point outside the nonzero fill of `fill` whose distance from it lies
+    between them, with the join (BandJoin) at the offsets' corners, so each band follows one
+    outline around touching and overlapping contours, into the notches where they meet, and
+    nested bands keep one another's points. A band from 0 reaches `inset` into the fill, so that
+    no seam shows between it and the fill drawn beneath. As contours of cubic curves fitted to
+    the offsets within `tol` (FitCurves), wound for the nonzero rule; empty, and `ok` false, when
+    Clipper2 fails. */
+std::vector<std::vector<ise_miter::Contour>> DistanceBands(const std::vector<ise_miter::Contour>& fill,
+                                                           const std::vector<std::pair<double, double>>& bands, BandJoin join,
+                                                           const std::vector<BandCorner>& corners, double inset, double tol,
+                                                           bool* ok);
+
+/** The notches a stroke along the fill's offset by `half` leaves: every point outside the fill,
+    within `half` of it, that lies farther than `half` from that offset (the fill's closing by a
+    disk of radius half, less the fill), where two contours meet at a sharp angle or a counter is
+    narrower than the stroke. Grown by `grow` all round, so they reach under the stroke beside
+    them and, for the caller's clip to the outside of the fill, into the fill. Contours fitted
+    within `tol`; empty where there are none, and `ok` false when Clipper2 fails. */
+std::vector<ise_miter::Contour> Notches(const std::vector<ise_miter::Contour>& fill, double half, double grow, double tol, bool* ok);
+
+/** A closed polyline (at least three points) as cubic curves fitted within `tol` (Schneider's
+    method), split at its corners (turning more than 30 degrees), which are kept sharp. */
+ise_miter::Contour FitCurves(const std::vector<ise_miter::Pt>& ring, double tol);
 
 } // namespace ise_region

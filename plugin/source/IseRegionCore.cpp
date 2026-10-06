@@ -486,4 +486,295 @@ std::vector<Contour> NonzeroRegion(const std::vector<Contour>& contours, double 
     return out;
 }
 
+namespace {
+
+Pt Unit(Pt d)
+{
+    const double l = ise_miter::Len(d);
+    return l > 1e-300 ? d * (1 / l) : Pt{0, 0};
+}
+
+/** Schneider's fitting of cubic curves to digitized points ("An Algorithm for Automatically
+    Fitting Digitized Curves", Graphics Gems, 1990): one curve by least squares on a chord-length
+    parameterization, refined by Newton steps, split at the worst point while it errs by more
+    than the tolerance. */
+class Fitter {
+public:
+    Fitter(const std::vector<Pt>& p, double tol, Contour* out) : fP(p), fTol2(tol * tol), fOut(out) {}
+
+    /** Fits fP[first..last], leaving the first along t1 and arriving at the last from t2 (unit
+        tangents, t2 pointing back from the last point). */
+    void Fit(size_t first, size_t last, Pt t1, Pt t2, int depth)
+    {
+        if (last - first == 1 || depth > 24) {
+            for (size_t i = first + 1; i <= last; ++i) Line(fP[i]);
+            return;
+        }
+        std::vector<double> u = ChordLength(first, last);
+        Pt bez[4];
+        Generate(first, last, u, t1, t2, bez);
+        size_t split = 0;
+        double err = MaxError(first, last, bez, u, &split);
+        if (err < fTol2) { Curve(bez); return; }
+        if (err < 16 * fTol2) {
+            for (int k = 0; k < 4; ++k) {
+                Reparameterize(first, last, bez, &u);
+                Generate(first, last, u, t1, t2, bez);
+                err = MaxError(first, last, bez, u, &split);
+                if (err < fTol2) { Curve(bez); return; }
+            }
+        }
+        if (split <= first) split = first + 1;
+        if (split >= last) split = last - 1;
+        const Pt center = Unit(fP[split - 1] - fP[split + 1]);
+        Fit(first, split, t1, center, depth + 1);
+        Fit(split, last, center * -1, t2, depth + 1);
+    }
+
+private:
+    void Line(Pt q) { Segment s; s.p = q; fOut->segments.push_back(s); }
+    void Curve(const Pt bez[4]) { Segment s; s.curve = true; s.c1 = bez[1]; s.c2 = bez[2]; s.p = bez[3]; fOut->segments.push_back(s); }
+
+    std::vector<double> ChordLength(size_t first, size_t last) const
+    {
+        std::vector<double> u{0};
+        for (size_t i = first + 1; i <= last; ++i) u.push_back(u.back() + ise_miter::Len(fP[i] - fP[i - 1]));
+        const double total = u.back();
+        for (double& v : u) v = total > 0 ? v / total : 0;
+        return u;
+    }
+
+    static Pt Bezier(const Pt b[4], double t) { return CubicAt(b[0], b[1], b[2], b[3], t); }
+
+    void Generate(size_t first, size_t last, const std::vector<double>& u, Pt t1, Pt t2, Pt bez[4]) const
+    {
+        const Pt p0 = fP[first], p3 = fP[last];
+        double c00 = 0, c01 = 0, c11 = 0, x0 = 0, x1 = 0;
+        for (size_t i = 0; i < u.size(); ++i) {
+            const double t = u[i], s = 1 - t;
+            const double b0 = s * s * s, b1 = 3 * t * s * s, b2 = 3 * t * t * s, b3 = t * t * t;
+            const Pt a1 = t1 * b1, a2 = t2 * b2;
+            c00 += ise_miter::Dot(a1, a1);
+            c01 += ise_miter::Dot(a1, a2);
+            c11 += ise_miter::Dot(a2, a2);
+            const Pt tmp = fP[first + i] - (p0 * (b0 + b1) + p3 * (b2 + b3));
+            x0 += ise_miter::Dot(a1, tmp);
+            x1 += ise_miter::Dot(a2, tmp);
+        }
+        const double det = c00 * c11 - c01 * c01;
+        double alpha1 = 0, alpha2 = 0;
+        if (std::fabs(det) > 1e-12) {
+            alpha1 = (x0 * c11 - x1 * c01) / det;
+            alpha2 = (c00 * x1 - c01 * x0) / det;
+        }
+        const double chord = ise_miter::Len(p3 - p0), eps = 1e-6 * chord;
+        if (alpha1 < eps || alpha2 < eps) alpha1 = alpha2 = chord / 3;   // Wu and Barsky's heuristic
+        bez[0] = p0; bez[1] = p0 + t1 * alpha1; bez[2] = p3 + t2 * alpha2; bez[3] = p3;
+    }
+
+    double MaxError(size_t first, size_t last, const Pt bez[4], const std::vector<double>& u, size_t* split) const
+    {
+        double worst = 0;
+        *split = (first + last) / 2;
+        for (size_t i = first + 1; i < last; ++i) {
+            const Pt d = Bezier(bez, u[i - first]) - fP[i];
+            const double e = ise_miter::Dot(d, d);
+            if (e >= worst) { worst = e; *split = i; }
+        }
+        // Between the points as well: a curve may bulge where the points lie far apart.
+        for (size_t i = first; i < last; ++i) {
+            const double t = (u[i - first] + u[i + 1 - first]) / 2;
+            const Pt mid = (fP[i] + fP[i + 1]) * 0.5, seg = fP[i + 1] - fP[i];
+            const double len = ise_miter::Len(seg);
+            if (len <= 1e-12) continue;
+            const Pt off = Bezier(bez, t) - mid;
+            const double across = ise_miter::Cross(seg, off) / len;   // distance from the chord
+            // The points lie within the tolerance of the curve they were taken from, and a chord
+            // within it of the curve: twice the tolerance between them.
+            const double e = across * across / 4;
+            if (e > worst) { worst = e; *split = i + 1 < last ? i + 1 : i; }
+        }
+        return worst;
+    }
+
+    void Reparameterize(size_t first, size_t last, const Pt bez[4], std::vector<double>* u) const
+    {
+        for (size_t i = first; i <= last; ++i) {
+            double& t = (*u)[i - first];
+            const Pt q = Bezier(bez, t);
+            const double s = 1 - t;
+            const Pt d1 = (bez[1] - bez[0]) * (3 * s * s) + (bez[2] - bez[1]) * (6 * s * t) + (bez[3] - bez[2]) * (3 * t * t);
+            const Pt d2 = (bez[2] - bez[1] * 2 + bez[0]) * (6 * s) + (bez[3] - bez[2] * 2 + bez[1]) * (6 * t);
+            const Pt diff = q - fP[i];
+            const double num = ise_miter::Dot(diff, d1), den = ise_miter::Dot(d1, d1) + ise_miter::Dot(diff, d2);
+            if (std::fabs(den) > 1e-12) t = std::min(1.0, std::max(0.0, t - num / den));
+        }
+    }
+
+    const std::vector<Pt>& fP;
+    double fTol2;
+    Contour* fOut;
+};
+
+Clipper2Lib::PathD Path(const std::vector<Pt>& poly)
+{
+    Clipper2Lib::PathD path;
+    for (const Pt& p : poly) path.push_back(Clipper2Lib::PointD(p.x, p.y));
+    return path;
+}
+
+std::vector<Pt> Points(const Clipper2Lib::PathD& path)
+{
+    std::vector<Pt> pts;
+    for (const Clipper2Lib::PointD& p : path) pts.push_back({p.x, p.y});
+    return pts;
+}
+
+Clipper2Lib::PathsD Run(Clipper2Lib::ClipType op, const Clipper2Lib::PathsD& a, const Clipper2Lib::PathsD& b, int precision,
+                        bool* ok)
+{
+    Clipper2Lib::ClipperD clipper(precision);
+    clipper.AddSubject(a);
+    if (!b.empty()) clipper.AddClip(b);
+    Clipper2Lib::PathsD r;
+    *ok = clipper.Execute(op, Clipper2Lib::FillRule::NonZero, r) && *ok;
+    return r;
+}
+
+/** Four decimal places: a ten-thousandth of a point, well under the fitting tolerance. */
+const int kBandPrecision = 4;
+
+std::vector<Contour> Fitted(const Clipper2Lib::PathsD& paths, double tol)
+{
+    std::vector<Contour> out;
+    for (const Clipper2Lib::PathD& path : paths) {
+        if (path.size() < 3) continue;
+        Contour c = FitCurves(Points(path), tol);
+        if (!c.segments.empty()) out.push_back(c);
+    }
+    return out;
+}
+
+} // namespace
+
+Contour FitCurves(const std::vector<Pt>& ring, double tol)
+{
+    Contour out;
+    // Repeated points dropped, and long edges divided, so the fit is checked along them.
+    std::vector<Pt> p;
+    const double step = std::max(0.5, 100 * tol);
+    for (size_t i = 0; i < ring.size(); ++i) {
+        const Pt a = ring[i], b = ring[(i + 1) % ring.size()];
+        if (!p.empty() && ise_miter::Len(a - p.back()) <= 1e-9) continue;
+        p.push_back(a);
+        const double len = ise_miter::Len(b - a);
+        const int pieces = static_cast<int>(std::ceil(len / step));
+        for (int k = 1; k < pieces; ++k) p.push_back(ise_miter::Lerp(a, b, static_cast<double>(k) / pieces));
+    }
+    while (p.size() > 1 && ise_miter::Len(p.back() - p.front()) <= 1e-9) p.pop_back();
+    const size_t n = p.size();
+    if (n < 3) return out;
+    // Corners: turning by more than 30 degrees.
+    std::vector<size_t> corners;
+    const double cosCorner = std::cos(30 * 3.14159265358979323846 / 180);
+    for (size_t i = 0; i < n; ++i) {
+        const Pt d0 = Unit(p[i] - p[(i + n - 1) % n]), d1 = Unit(p[(i + 1) % n] - p[i]);
+        if (ise_miter::Dot(d0, d1) < cosCorner) corners.push_back(i);
+    }
+    std::vector<Pt> seq;
+    if (corners.empty()) {
+        // A smooth loop: from the first point around to it again, with one tangent there.
+        seq.assign(p.begin(), p.end());
+        seq.push_back(p[0]);
+        out.start = p[0];
+        const Pt t = Unit(p[1] - p[n - 1]);
+        Fitter(seq, tol, &out).Fit(0, seq.size() - 1, t, t * -1, 0);
+        out.closed = true;
+        return out;
+    }
+    out.start = p[corners[0]];
+    for (size_t k = 0; k < corners.size(); ++k) {
+        const size_t from = corners[k], to = corners[(k + 1) % corners.size()];
+        seq.clear();
+        for (size_t i = from;; i = (i + 1) % n) {
+            seq.push_back(p[i]);
+            if (seq.size() > 1 && i == to) break;
+        }
+        const Pt t1 = Unit(seq[1] - seq[0]), t2 = Unit(seq[seq.size() - 2] - seq.back());
+        Fitter(seq, tol, &out).Fit(0, seq.size() - 1, t1, t2, 0);
+    }
+    out.closed = true;
+    return out;
+}
+
+std::vector<std::vector<Contour>> DistanceBands(const std::vector<Contour>& fill, const std::vector<std::pair<double, double>>& bands,
+                                                BandJoin join, const std::vector<BandCorner>& corners, double inset, double tol, bool* ok)
+{
+    std::vector<std::vector<Contour>> out(bands.size());
+    *ok = tol > 0;
+    if (!*ok) return out;
+    const int precision = kBandPrecision;
+    const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
+    if (!*ok || region.empty()) { *ok = false; return out; }
+    std::map<double, Clipper2Lib::PathsD> offsets;
+    // The fill grown by d (shrunk by the inset for d = 0), with the join at its corners.
+    auto offset = [&](double d) -> const Clipper2Lib::PathsD& {
+        auto it = offsets.find(d);
+        if (it != offsets.end()) return it->second;
+        Clipper2Lib::PathsD r;
+        if (!(d > 0)) {
+            r = inset > 0 ? Clipper2Lib::InflatePaths(region, -inset, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon,
+                                                      2.0, precision, tol)
+                          : region;
+        } else {
+            const Clipper2Lib::JoinType jt = join == BandJoin::Round   ? Clipper2Lib::JoinType::Round
+                                             : join == BandJoin::Bevel ? Clipper2Lib::JoinType::Bevel
+                                                                       : Clipper2Lib::JoinType::Square;
+            r = Clipper2Lib::InflatePaths(region, d, jt, Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+            if (join == BandJoin::Miter && !corners.empty()) {
+                // Each miter wound as the offset's outer contours are (positive area), so the
+                // nonzero union adds it instead of cancelling.
+                Clipper2Lib::PathsD miters;
+                for (const BandCorner& c : corners) {
+                    const double reach = std::min(c.stub.ratio * d, c.cap * d + c.extra);
+                    miters.push_back(Path(ise_miter::Counterclockwise(ise_miter::CutMiter(c.stub, d, reach))));
+                }
+                r = Run(Clipper2Lib::ClipType::Union, r, miters, precision, ok);
+            }
+        }
+        return offsets.emplace(d, r).first->second;
+    };
+    for (size_t i = 0; i < bands.size() && *ok; ++i) {
+        const double from = bands[i].first, to = bands[i].second;
+        if (!(to > from)) continue;
+        out[i] = Fitted(Run(Clipper2Lib::ClipType::Difference, offset(to), offset(from), precision, ok), tol);
+    }
+    if (!*ok) out.assign(bands.size(), {});
+    return out;
+}
+
+std::vector<Contour> Notches(const std::vector<Contour>& fill, double half, double grow, double tol, bool* ok)
+{
+    *ok = tol > 0 && half > 0;
+    if (!*ok) return {};
+    const int precision = kBandPrecision;
+    const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
+    if (!*ok) return {};
+    // The closing, shrunk a little more than it grew: along the fill's edges it then lies
+    // within the fill, so what is left beyond it is the notches alone, not slivers of the
+    // flattening; the growth below brings them back to the fill.
+    const Clipper2Lib::PathsD grown = Clipper2Lib::InflatePaths(region, half, Clipper2Lib::JoinType::Round,
+                                                                Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+    const Clipper2Lib::PathsD closed = Clipper2Lib::InflatePaths(grown, -(half + 2 * tol), Clipper2Lib::JoinType::Round,
+                                                                 Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+    Clipper2Lib::PathsD notches = Run(Clipper2Lib::ClipType::Difference, closed, region, precision, ok);
+    Clipper2Lib::PathsD kept;
+    for (const Clipper2Lib::PathD& path : notches)
+        if (std::fabs(Clipper2Lib::Area(path)) > 25 * tol * tol) kept.push_back(path);
+    if (!*ok || kept.empty()) return {};
+    return Fitted(Clipper2Lib::InflatePaths(kept, grow, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon, 2.0,
+                                            precision, tol),
+                  tol);
+}
+
 } // namespace ise_region
