@@ -189,6 +189,20 @@
         cell('F12', 'fix', 'Script glyph tips: spikes within the miter limit trimmed', 110, function (x, y1) {
             each(outlined(x, y1, 'Wave war', SCRIPT_B, 60), function (it) { paint(it, OUT, 8); });
         });
+        cell('F13', 'fix', 'Center stripes where letters touch and shapes overlap: one outline', 140, function (x, y1) {
+            each(outlined(x, y1, 'MAW kz', MINION_B, 60), function (it) { paint(it, CEN, 8, EndJoin.MITER_END_JOIN, strokeType('Thin - Thin')); });
+            paint(squares(x + 330, y1 + 10, 56), CEN, 8, EndJoin.MITER_END_JOIN, strokeType('Thin - Thin'));
+        });
+        cell('F14', 'fix', 'Inside dashes and stripes on overlapping shapes: one outline', 140, function (x, y1) {
+            paint(squares(x + 10, y1 + 10, 56), INS, 6, EndJoin.MITER_END_JOIN, dashed);
+            paint(squares(x + 190, y1 + 10, 56), INS, 8, EndJoin.MITER_END_JOIN, strokeType('Thick - Thin'));
+        });
+        cell('F15', 'fix', 'Stroke and fill opacity (50%): one outline, no doubled overlaps', 140, function (x, y1) {
+            each(outlined(x, y1, 'Ribbons', SCRIPT, 56), function (it) { paint(it, OUT, 5); it.strokeTransparencySettings.blendingSettings.opacity = 50; });
+            var sq = squares(x + 330, y1 + 10, 56);
+            paint(sq, OUT, 6);
+            sq.fillTransparencySettings.blendingSettings.opacity = 50;
+        });
 
         // ---------------------------------------------------------------- least confident
         cell('L1', 'doubt', 'Stripes drawn by StrokeMaster around counters (layouts measured from InDesign)', 120, function (x, y1) {

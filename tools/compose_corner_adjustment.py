@@ -27,15 +27,15 @@ COVER = [
     ('- Star: InDesign alone draws its Outside dashes and dots inside the star. StrokeMaster draws them', 11, False),
     ('  outside, along one outline it rebuilds with the star\'s own ten corners, so each setting still works.', 11, False),
     ('- Overlapping squares: one outline instead of two crossing ones, under every setting.', 11, False),
-    ('- Outlined text: a letter\'s outline has an anchor every few points. With any setting but None, the', 11, False),
-    ('  pattern is squeezed between them: Minion\'s dashes crowd at the serifs, and on script they run', 11, False),
-    ('  together almost solid, with or without StrokeMaster. StrokeMaster\'s outline has fewer anchors, so a', 11, False),
-    ('  few gaps show through on script; they can look like defects.', 11, False),
+    ('- Outlined text: a letter\'s outline has an anchor every few points. InDesign fits the pattern between', 11, False),
+    ('  every two of them, so with any setting but None Minion\'s dashes crowd at the serifs and on script', 11, False),
+    ('  they run together almost solid. StrokeMaster fits it between the outline\'s real corners only (turns', 11, False),
+    ('  over 30 degrees): the setting\'s own pattern, a dash or dot centered on each real corner, the rest', 11, False),
+    ('  laid evenly between, as InDesign lays it on a shape\'s corners.', 11, False),
     ('- A point past the miter limit: StrokeMaster adds the whole point, solid from the corner, over the', 11, False),
     ('  pattern, under every setting.', 11, False),
-    ('', 6, False),
-    ('The open question: on outlined text, should StrokeMaster ignore the corner adjustment? It would then', 11, False),
-    ('look like the None column, whatever the setting.', 11, False),
+    ('- The None column keeps InDesign\'s None: the pattern runs on regardless of corners, so a spike shows', 11, False),
+    ('  only where a dash happens to cover it, as in InDesign alone.', 11, False),
 ]
 
 

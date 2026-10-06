@@ -27,6 +27,9 @@ NOTES = {
     'F10': 'Stripes: the same, for the built-in striped styles. StrokeMaster fills each stripe as a region by its distance from the letters, so the stripes reach into the notches between letters, meet the fill without a seam, and leave no stray pieces.',
     'F11': 'Patterned strokes past the miter limit: InDesign bevels them; StrokeMaster adds the whole point. Dashes and dots get it solid, drawn from the corner over the pattern, so the dashes end where each side meets the point; stripes carry it, each stripe following the point.',
     'F12': 'Tapered script tips meet a curve at a sharp angle; their miters, within the limit, stuck out as spikes (under W). StrokeMaster cuts such glyph tips flush with the stroke\'s edge, within the limit and past it.',
+    'F13': 'Center stripes: InDesign stripes each contour, so where letters touch or shapes overlap, the stripes run into each other. StrokeMaster lays them across one outline of the filled shape.',
+    'F14': 'Inside dashes and stripes: InDesign draws them inside each contour, so in the overlap of two shapes they cross. StrokeMaster lays them inside the outline of the filled shape.',
+    'F15': 'Stroke and fill opacity: InDesign applies them to each contour, so overlapping strokes show darker where they cross, and inner edges show. StrokeMaster draws one outline, its stroke composited once at the stroke\'s opacity.',
     'L1': 'Least sure: StrokeMaster draws the built-in stripes itself, with layouts measured from InDesign\'s output, by distance from the letters: the stripe InDesign draws nearest the object lies nearest the fill, around counters too, where InDesign follows each contour\'s direction instead.',
     'L2': 'Stripes with a gap color: StrokeMaster paints the gap color beneath its stripes, between the innermost and the outermost, so it shows only between them.',
     'L3': 'Wavy: InDesign\'s own wave, drawn along one outline per word, rebuilt by StrokeMaster with its creases rounded (the wave broke into spikes at InDesign\'s creases). Least sure: where a closed loop\'s wave meets its own start.',
@@ -35,11 +38,11 @@ NOTES = {
     'L6': 'Least sure: a decorative font with thousands of tiny corners. Drawn, but slow to prepare the first time and large in PDF (every join is a filled shape).',
     'L7': 'Least sure: an open path with a Center Miter stroke. Whole points are kept past the limit, next to InDesign\'s caps at the ends.',
     'L8': 'Least sure: Inside strokes with inset corner effects: the tiny holes the effect\'s loops leave are not stroked; the fill keeps them.',
-    'L9': 'Least sure: object-level opacity and a drop shadow, which InDesign applies around StrokeMaster\'s stroke. Stroke-level or fill-level opacity and effects stay InDesign\'s.',
+    'L9': 'Least sure: object-level opacity and a drop shadow, which InDesign applies around StrokeMaster\'s stroke. Under object opacity a whole point keeps within the item\'s bounds, which bound InDesign\'s transparency group in PDF. Effects on the stroke or the fill alone stay InDesign\'s.',
     'L10': 'Least sure: brush serifs. Their sharp tips count as glyph tips, so their miters are cut flush; the halo loses some of its points.',
     'L11': 'Least sure: a custom stripe style. No public interface gives its layout, so StrokeMaster measures it: the style\'s own stroker draws a straight line into a port that only records the bands it paints. The stripes are then filled by distance from the letters, as the built-in ones are; if the measurement fails, the stroker draws along one outline per word.',
     'L12': 'Straight Hash and Japanese Dots: InDesign\'s own patterns along one outline per word, with one anchor at each corner (two anchors at a corner doubled the dots).',
-    'L13': 'Least sure: a custom dash style with corner adjustment on (InDesign\'s default). InDesign fits the dashes between every two anchors of an outline; on script they run together, with or without StrokeMaster, whose outline has fewer anchors and lets a few gaps through. The corner adjustment study shows each setting. White Diamond follows one outline per word.',
+    'L13': 'Least sure: a custom dash style with corner adjustment on (InDesign\'s default). InDesign fits the dashes between every two anchors of an outline, and on script they ran together almost solid. StrokeMaster fits them between the outline\'s real corners only, with the style\'s own adjustment (the corner adjustment study shows each setting). White Diamond follows one outline per word.',
 }
 
 MARGIN, GAP, NOTE_H, TOP = 24, 24, 46, 56
