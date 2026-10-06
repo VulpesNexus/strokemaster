@@ -434,6 +434,18 @@ The showcase's L11 now matches the built-in stripes' quality.
 
 **Resolved by C23: CERTIFIED on 21.6 in full.** Session C23 repeats C22 in a clean session with the same build (`c2f0cdc242aafaa6`, no settings file). The round trip wrote its PDF again (239,070 bytes, the same as C20's) and its PNG (343,128 bytes, the same). All 110 measured lines are identical to C20's, round trip included, and all seven PNGs are byte-identical ([*C23.json*](../tests/audit/results/routex/C23.json)). The cross-frame census passes 22 of 22, the extension census passes 8 of 8 built cases, and the saved documents carry no plugin state ([*C23-state.json*](../tests/audit/results/routex/C23-state.json)). InDesign quit cleanly in 9 seconds. The empty PDFs of C21 and C22 were a passing fault of that InDesign environment, during an afternoon when the owner saw the system hang under several concurrent sessions.
 
+## Patterns between real corners, Center and Inside outlines, and their own opacity: route X candidate `e2c96147`
+
+The owner approved the fixes from the 2026-10-06 checks ([report](RELEASE_CANDIDATE_CHECKS_2026-10-06.md#the-fixes-approved-2026-10-06)):
+
+- **Dashes on outlined text:** a pattern its stroker fits to corners is laid between the outline's real corners only (*IsePatternCore.h*).
+- **Center and Inside patterns where contours meet:** one outline.
+- **Opacity and blend modes:** the stroke's and the fill's own are taken over.
+- **Whole points under object opacity:** kept within InDesign's bounds.
+- **Vertical text:** left to InDesign.
+
+**CERTIFIED on 21.6 in full (C24).** C24 matches C23 on all 110 measured lines, and all seven PNGs are byte-identical ([*C24.json*](../tests/audit/results/routex/C24.json)). The cross-frame census passes 22 of 22, the extension census 8 of 8 built cases, and the saved documents carry no plugin state ([*C24-state.json*](../tests/audit/results/routex/C24-state.json)). InDesign quit cleanly in 6 seconds. The certification corpus has no patterned or transparent page-item strokes, so the changes show only in the coverage census, the showcase, and the corner adjustment study (the report above). Installed with the panel `5f4f5bab`.
+
 ## Owner verification and decisions
 
 - **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.

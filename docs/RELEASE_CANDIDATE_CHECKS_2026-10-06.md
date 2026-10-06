@@ -15,7 +15,7 @@ The census, the corner adjustment study, the showcase, and suite B were exported
 - Interactive PDF, EPS, PostScript, PNG, and JPEG differ within anti-aliasing once rasters are compared with a one-pixel tolerance.
 - Measured with the census itself, every format keeps the corrections. Summed over the census, escaping ink, stray ink, holes, and missing points stay within about 1% of the *High Quality Print* figures in X-1a, X-3, Interactive PDF, EPS, and PostScript. Natively the census has 64,634 pt² of escaping ink, 42,761 of stray ink, and 8,931 of missing points; corrected, 48,330, 12,526, and 3,783 (the rest is drawn natively by design, below).
 
-**One defect found.** With object-level opacity, the live-transparency exports (*High Quality Print*, *X-4*) clip a whole point flat at the bounds of InDesign's transparency group. The point reaches past the stroke bounds InDesign computes for the item. The flattened *X-1a* keeps the point whole. Not fixed yet (see the classification below).
+**One defect found.** With object-level opacity, the live-transparency exports (*High Quality Print*, *X-4*) clip a whole point flat at the bounds of InDesign's transparency group. The point reaches past the stroke bounds InDesign computes for the item. Fixed in `e2c96147` (below).
 
 ## Census and font sweep
 
@@ -53,7 +53,7 @@ The panel is under Window > StrokeMaster, not under Plug-Ins.
 
 ## The limitations, sorted
 
-The census gained the forms the plugin leaves to InDesign: Inside and Outside open paths with arrowheads, radial gradients on a fill, a stroke, and text, and type on a sheared path. The owner's comments on the interactive census point at the rest. Vertical text has no row: a script cannot set a story's orientation.
+The census gained the forms the plugin leaves to InDesign: Inside and Outside open paths with arrowheads, radial gradients on a fill, a stroke, and text, and type on a sheared path. The owner's comments on the interactive census point at the rest. Vertical text has no row: a script cannot set or read a story's orientation; the owner placed a vertical frame by hand (below).
 
 **Safe to leave to InDesign:**
 
@@ -63,7 +63,7 @@ The census gained the forms the plugin leaves to InDesign: Inside and Outside op
 - **Straight Hash and Japanese Dots on script:** the ticks are perpendicular to the path, so they fan on tight curves, as InDesign draws them.
 - **Radial gradients:** they already go through the plugin and lose their stray ink (row 83: 359 to 11 pt² on the squares).
 
-**Should be fixed by the plugin:**
+**Should be fixed by the plugin** (all fixed in `e2c96147`, below):
 
 - **Stroke- and fill-level opacity and blending** (rows 60, 61, and 75): InDesign doubles the overlaps and strokes the inner edges. The plugin could draw these strokes inside a transparency group of its own.
 - **Whole points under object opacity** in live-transparency PDF, as above.
@@ -77,4 +77,42 @@ The census gained the forms the plugin leaves to InDesign: Inside and Outside op
 The owner's notes on the corner adjustment study (with StrokeMaster on) fall into two groups.
 
 - **The None column:** dots and dashes not aligned to corners, lost spikes at the star's tips, overlaps at concave corners. This is what None means, and InDesign's own drawing shows the same. The star's tips (36°) are within the miter limit, so a point exists only where a dash covers the vertex.
-- **Outlined script under any adjustment:** "Not dashes." The adjustment fits its pattern between every two anchors of an outline, and the outline of script has anchors a few points apart, so the dashes run solid. A real fix lays the dashes out in the plugin, adjusting only at real corners. That is open for the owner's decision.
+- **Outlined script under any adjustment:** "Not dashes." The adjustment fits its pattern between every two anchors of an outline, and the outline of script has anchors a few points apart, so the dashes run solid. A real fix lays the dashes out in the plugin, adjusting only at real corners. The owner approved that fix (below).
+
+## The fixes approved 2026-10-06
+
+The owner approved the four fixes above and the dash layout. All went into route X `e2c96147`, certified as C24 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)), installed with the panel `5f4f5bab`.
+
+- **Dashes and dots between real corners** (*IsePatternCore.h*):
+  - A recording of InDesign's strokers showed how a fitted pattern is laid. On a shape's corners InDesign centers a dash (or a dot) on each corner, half on either side, and fits the dash array between. On an open line it puts a dash at both ends.
+  - The plugin cuts the word's outline at its real corners (turns over 30 degrees). It has the style's own stroker paint each run as the side of a square of the same length, and lays what is painted along the run. A dash ending one run and the dash starting the next become one piece through the corner.
+  - A pattern laid regardless of corners (None) is told apart on two straight lines, and keeps the stroker along the whole path.
+  - On outlined script every adjusted column of the corner adjustment study is dashed or dotted now. Squares, stars, and serif text keep a dash on each corner.
+- **Center and Inside patterns where contours meet:**
+  - Stripes lie at their signed distance from the filled shape, across it for Center and within it for Inside. InDesign's Inside Thick - Thin keeps its thick stripe at the shape's edge, so both count from the stroke's outer edge, as Outside does.
+  - Dashes, dots, and waves follow the united outline (Center) or its inward offset (Inside).
+  - Only where contours' strokes meet: Center where contours lie within half the weight of one another, Inside where contours overlap.
+- **The stroke's and the fill's own opacity and blend mode:**
+  - The stroke is drawn as one isolated transparency group with them, so its overlapping parts composite once.
+  - The fill gets them set.
+  - Effects on a stroke or a fill (a drop shadow, a feather, a glow) stay InDesign's.
+- **Whole points under object opacity or blending:** each point is shortened along its own axis to keep within the item's painted bounds, which bound InDesign's group in live-transparency PDF. A drop shadow alone does not bound it; its points stay whole.
+- **Vertical text:** the owner's vertical frame (Japanese, *DFGMincho-UB*) showed the text route drawing strokes beside and across vertical glyphs. Vertical runs are now left to InDesign, and the frame exports within 3 pixels of InDesign's own drawing. Its outlines go through the page-item route and match.
+
+**Measured.** Census 11 against census 9, at the same zoom: every move is one of the fixes or a known layout artifact.
+
+| Row | Case | Before | After |
+|---|---|---|---|
+| 9 | Center dashed, squares, stray ink | 283 pt² | 4.6 pt² |
+| 11 | Center Thin - Thin, text holes | 37.6 pt² | 0 |
+| 11 | Center Thin - Thin, squares, stray ink | 147 pt² | 4.6 pt² |
+| 54 | Center wavy, squares, stray ink | 139 pt² | 1.6 pt² |
+| 60, 75 | Stroke opacity 50%, holes | 145 to 405 pt² | 0 |
+| 60, 62, 75 | Stroke opacity 50%, thorn's missing point | 123 to 130 pt² | about 3.5 pt² |
+| 61 | Fill opacity 50%, squares' missing points | 140 pt² | 3.9 pt² |
+
+- **Inside dashed and Inside Thick - Thin (rows 49 and 50):** stray ink falls.
+- **Thorns reaching past their census cells:** the restored whole points of rows 18 and 60 reach into the rows above, a layout artifact.
+
+**Formats.** The corrected census exported to *PDF/X-4:2008* measures identical to *High Quality Print*. *PDF/X-1a:2001* and EPS stay within a few pt² of it on every metric. Under object opacity, EPS keeps a whole point that the PDFs bound. The transparency groups draw the same on screen (a background capture of overlapping squares with a 50% stroke, Center Thin - Thin, and Inside dashes).
+

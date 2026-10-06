@@ -1,6 +1,6 @@
 # Using StrokeMaster
 
-Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`c2f0cdc2`, certified and installed with the StrokeMaster panel; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`e2c96147`, certified and installed with the StrokeMaster panel `5f4f5bab` on 2026-10-06; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
@@ -21,16 +21,17 @@ Which correction to use depends on one question: **does the file have to look ri
 - **Separate stories are left as InDesign stacks them.** One story's stroke over another story's text looks the same as a deliberate halo, so it is not changed. A correction there would need a switch, and none exists yet.
 - **Center strokes keep InDesign's drawing and order**; only their escaping miter tips are removed. Hiding the half of a Center stroke that lies over its letter would need a switch, and none exists yet.
 - **Shape strokes** (closed paths) are taken over as follows:
-  - Center with a Miter join.
-  - Outside with any join, including dashes, dots, and stripes. Dashes, dots, and the built-in stripe styles follow one outline around each word, so letters that touch share their pattern instead of crossing it; dashes keep InDesign's own pattern and gap color. Custom stripes, stripes with a gap color, and other styles keep InDesign's own pattern for each letter, drawn under a clip that removes the stroke showing through letters. Past the miter limit, a pattern's corner gets a solid whole point, without the pattern.
-  - Inside, any join, on any outline, corner effects and frames with content included. The plugin fills the outline itself in place of InDesign's inward offset fill, which spills past curves.
-  - Also covered: gradient fills, corner effects (Outside), overlapping contours (an Outside or Inside stroke goes around the filled shape only; InDesign also strokes the contour edges inside it), overprint, object-level opacity and effects, scale kept as a percentage, and shear.
+  - Center with a Miter join. Where contours touch or overlap, its dashes, dots, and stripes follow one outline of the filled shape.
+  - Outside with any join, including dashes, dots, and stripes. Patterns follow one outline around each word, so letters that touch share their pattern instead of crossing it. Dashes and dots keep InDesign's own pattern, gap color, and corner adjustment; the adjustment applies at the outline's real corners only, so outlined script stays dashed. Stripes, built-in and custom, are drawn as bands at their distance from the letters. Past the miter limit, a pattern's corner gets a solid whole point, without the pattern.
+  - Inside, any join, on any outline, corner effects and frames with content included. The plugin fills the outline itself in place of InDesign's inward offset fill, which spills past curves. On overlapping contours, its dashes and stripes follow one outline inside the filled shape.
+  - Also covered: gradient fills, corner effects (Outside), overlapping contours (an Outside or Inside stroke goes around the filled shape only; InDesign also strokes the contour edges inside it), overprint, opacity and blend modes (on the object, the stroke, or the fill), object-level effects, scale kept as a percentage, and shear. A stroke with its own opacity is drawn as one piece, so its overlapping parts do not show darker.
 
   These stay InDesign's own, and InDesign's drawing keeps its defects ([census](COVERAGE_CENSUS_2026-10-04.md)):
-  - **Opacity, a blend mode, or an effect set on the stroke or the fill itself** (not on the object). InDesign applies these around its own stroke and fill.
+  - **An effect set on the stroke or the fill itself** (a drop shadow, a feather, a glow), not on the object. InDesign applies these around its own stroke and fill.
   - **Open paths** with Outside or Inside alignment, arrowheads, or dashes, and Center strokes with round or bevel joins (nothing to correct). Open paths with a Center Miter stroke are taken over: corners past the limit keep whole points, as on closed shapes.
 - **Corner effects on outlined text** add thin loops and small zigzags to the path. The stroke follows them, as InDesign's own stroke does, but the corners the effect adds get no long points: past the miter limit they are beveled, as InDesign bevels them, and within it their miters are trimmed to the size of the zigzag.
-- **Vertical text in a sheared frame** keeps a stroke whose width varies slightly with direction, where InDesign's is even. Horizontal text is stroked evenly, as InDesign strokes it.
+- **Vertical text stays InDesign's.** Its strokes are drawn as without the plugin; its outlines are covered as any shape.
+- **Whole points under object opacity** keep within the item's bounds in PDF, where InDesign's transparency group would cut them flat; they are shortened along their own axis.
 - **Outlined decorative fonts make large PDFs.** Every corner's miter is a small filled shape in the PDF, and the outside of an overlapping outline is a clip as detailed as the outline itself. One line of outlined Kerberos Fang at 48 pt, stroked both ways, took the test page from 4.3 MB to 12.4 MB.
 - **Content drawn between two frames of a story** (an unrelated filled or stroked object stacked between them) keeps InDesign's order where it covers a letter; invisible objects, such as empty frames, do not.
 - **A translucent upstream frame** is not corrected, and exporting a single page item draws the per-frame correction only.
@@ -52,7 +53,7 @@ Which correction to use depends on one question: **does the file have to look ri
 | *One outline per word (dashes, stripes)* | Outside patterns follow one outline around touching letters: dashes, dots, hashes, waves, and diamonds drawn by InDesign's own stroker along it (dashes with the notches between letters filled); built-in stripes, with or without a gap color, filled as regions by distance from the letters; custom stripes, measured from their own stroker, filled as built-in stripes are | InDesign's pattern on each contour, clipped outside the fill |
 | *Overlapping contours: one outline* | Outside and Inside strokes go around the filled shape | Such outlines are left to InDesign |
 | *Inside strokes*, *Open paths* | Drawn by the plugin | Left to InDesign |
-| *Objects with opacity or effects* | Object-level opacity and effects covered | Such objects are left to InDesign |
+| *Objects with opacity or effects* | Opacity and blend modes (object, stroke, fill) and object-level effects covered | Such objects are left to InDesign |
 
 A showcase of what each correction changes, and of the forms handled with the least certainty, is built by *tools/jsx/build-showcase.jsx* and set side by side by *tools/compose_showcase.py*.
 
