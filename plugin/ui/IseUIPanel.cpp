@@ -13,6 +13,8 @@
 #include "IApplication.h"
 #include "IBooleanControlData.h"
 #include "IControlView.h"
+#include "IDocument.h"
+#include "IDocumentList.h"
 #include "ILayoutUIUtils.h"
 #include "IPanelControlData.h"
 #include "IPanelMgr.h"
@@ -80,9 +82,19 @@ void ShowSettings(IPanelControlData* panel, const Settings& s)
     }
 }
 
-/** Every open document is drawn again, with the switches just written. */
+/** Every open document is drawn again, with the switches just written. A layout view keeps
+    each page item's rendering and repaints from it (zooms and page turns included), so the
+    items' cached renderings go first; invalidating the views alone shows the old strokes. */
 void Redraw()
 {
+    InterfacePtr<IApplication> app(GetExecutionContextSession()->QueryApplication());
+    InterfacePtr<IDocumentList> docs(app ? app->QueryDocumentList() : nil);
+    if (docs != nil) {
+        for (int32 i = 0; i < docs->GetDocCount(); i++) {
+            IDocument* doc = docs->GetNthDoc(i);
+            if (doc != nil) Utils<ILayoutUIUtils>()->InvalidateShapeGraphixCache(doc);
+        }
+    }
     Utils<ILayoutUIUtils>()->InvalidateAllDocumentViews();
 }
 
