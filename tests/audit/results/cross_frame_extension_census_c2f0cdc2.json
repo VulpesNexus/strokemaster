@@ -1,13 +1,13 @@
 {
  "schema": 1,
- "label": "route X candidate c2f0cdc2 on InDesign 21.6.0.57 (C22), extension census, against same-day native and route W (N4, W4)",
+ "label": "route X candidate c2f0cdc2 on InDesign 21.6.0.57 (C23), extension census, against same-day native and route W (N4, W4)",
  "census": "X2",
  "sessions": {
   "native": "native control: research build 7b178414 mode=native, InDesign 21.6.0.57, cert-X2 rebuilt",
   "route_w": "research build 7b178414 mode=routew, InDesign 21.6.0.57, cert-X2 rebuilt",
-  "route_x": "route X candidate c2f0cdc2 (custom stripes measured; default settings), fresh process, InDesign 21.6.0.57; RT not measured (placed-EPS PDF empty in this session)",
+  "route_x": "route X candidate c2f0cdc2 (custom stripes measured; default settings), fresh process, InDesign 21.6.0.57; repeats C22 with the round trip",
   "overlap": null,
-  "reference": "route X candidate c2f0cdc2 (custom stripes measured; default settings), fresh process, InDesign 21.6.0.57; RT not measured (placed-EPS PDF empty in this session)"
+  "reference": "route X candidate c2f0cdc2 (custom stripes measured; default settings), fresh process, InDesign 21.6.0.57; repeats C22 with the round trip"
  },
  "corpus_sha256": "84a9eb6f3fe909613b6d4ee3d4f9341c374a6c9442e771dbc80ed610e4324456",
  "verdict_counts": {
@@ -25,7 +25,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -33,7 +33,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -41,7 +41,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -57,7 +57,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 0,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -65,7 +65,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 0,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }
@@ -150,7 +150,7 @@
      "native_damage_px": 8022,
      "route_w_damage_px": 3754,
      "route_x_damage_px": 0,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -158,7 +158,7 @@
      "native_damage_px": 8022,
      "route_w_damage_px": 3754,
      "route_x_damage_px": 0,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -166,7 +166,7 @@
      "native_damage_px": 8022,
      "route_w_damage_px": 3754,
      "route_x_damage_px": 0,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -182,7 +182,7 @@
      "native_damage_px": 7988,
      "route_w_damage_px": 3752,
      "route_x_damage_px": 0,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -190,7 +190,7 @@
      "native_damage_px": 7988,
      "route_w_damage_px": 3752,
      "route_x_damage_px": 0,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }
@@ -284,7 +284,7 @@
      "native_damage_px": 13244,
      "route_w_damage_px": 4535,
      "route_x_damage_px": 0,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -292,7 +292,7 @@
      "native_damage_px": 13244,
      "route_w_damage_px": 4535,
      "route_x_damage_px": 0,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -300,7 +300,7 @@
      "native_damage_px": 13244,
      "route_w_damage_px": 4535,
      "route_x_damage_px": 0,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -316,7 +316,7 @@
      "native_damage_px": 13282,
      "route_w_damage_px": 4546,
      "route_x_damage_px": 0,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -324,7 +324,7 @@
      "native_damage_px": 13282,
      "route_w_damage_px": 4546,
      "route_x_damage_px": 0,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }
@@ -409,7 +409,7 @@
      "native_damage_px": 19662,
      "route_w_damage_px": 8396,
      "route_x_damage_px": 0,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -417,7 +417,7 @@
      "native_damage_px": 19662,
      "route_w_damage_px": 8396,
      "route_x_damage_px": 0,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -425,7 +425,7 @@
      "native_damage_px": 19662,
      "route_w_damage_px": 8396,
      "route_x_damage_px": 0,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -441,7 +441,7 @@
      "native_damage_px": 19552,
      "route_w_damage_px": 8392,
      "route_x_damage_px": 0,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -449,7 +449,7 @@
      "native_damage_px": 19552,
      "route_w_damage_px": 8392,
      "route_x_damage_px": 0,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }
@@ -534,7 +534,7 @@
      "native_damage_px": 17015,
      "route_w_damage_px": 6508,
      "route_x_damage_px": 0,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -542,7 +542,7 @@
      "native_damage_px": 17015,
      "route_w_damage_px": 6508,
      "route_x_damage_px": 0,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -550,7 +550,7 @@
      "native_damage_px": 17015,
      "route_w_damage_px": 6508,
      "route_x_damage_px": 0,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -566,7 +566,7 @@
      "native_damage_px": 17019,
      "route_w_damage_px": 6509,
      "route_x_damage_px": 0,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -574,7 +574,7 @@
      "native_damage_px": 17019,
      "route_w_damage_px": 6509,
      "route_x_damage_px": 0,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }
@@ -659,7 +659,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -667,7 +667,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -675,7 +675,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -691,7 +691,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 0,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -699,7 +699,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 0,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }
@@ -784,7 +784,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -792,7 +792,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -800,7 +800,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 0,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -816,7 +816,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 0,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -824,7 +824,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 0,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }
@@ -909,7 +909,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 3322,
-     "route_x_sha256": "85fe3e4f72195bf9d95588347cd80e8cb1c8f49e7671523f8e5ed6df85195802",
+     "route_x_sha256": "66014a7b4343da5271a3fb28dedafb7df16638b3ac3231a50665eada7e0032a3",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -917,7 +917,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 3322,
-     "route_x_sha256": "37a3288ca26cc857f0008e5890228e5558301b86978d41b88ea4d4bcbca66bba",
+     "route_x_sha256": "b82106278651f9d0ea9c36701fa4ccfcf28697848d2a83c20e5eea1d2d452c4d",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -925,7 +925,7 @@
      "native_damage_px": 11206,
      "route_w_damage_px": 4198,
      "route_x_damage_px": 3322,
-     "route_x_sha256": "50925d98eb7be2230f12e7cffcd2c4bd8a7b380aec2b3c14c0136610a00b048e",
+     "route_x_sha256": "e6b84babdef7da0cdd3f09936e23030f444d40a48d663727fd78d18e4ae59536",
      "renderer": "MuPDF 1.28.2",
      "verdict": "PASS"
     },
@@ -941,7 +941,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 3320,
-     "route_x_sha256": "d424f0e4540f231f022aecc8031e891aad2fe7c59c831a1d9926af553b2b4e71",
+     "route_x_sha256": "9ffb8e18d025336f367c6795c9ef9332a9288e133836b8c3a8121411b4b22b28",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     },
@@ -949,7 +949,7 @@
      "native_damage_px": 11152,
      "route_w_damage_px": 4196,
      "route_x_damage_px": 3320,
-     "route_x_sha256": "89a5de7d1f365da58c579bf3ae0471d8695eb7bf92a504e69ad64a48193da767",
+     "route_x_sha256": "e753fd1768b70f9b35957610c2cf970809d02aaeaa43d002b70b358e231496ed",
      "renderer": "Ghostscript",
      "verdict": "PASS"
     }

@@ -425,12 +425,14 @@ The owner's checks of L11 found two problems with custom stripes along the word'
 
 The showcase's L11 now matches the built-in stripes' quality.
 
-**ROUTE_X custom stripes: CERTIFIED on 21.6 with default settings, except the placed-EPS round trip; installed now as `c2f0cdc2`.** Session C22 repeats C20 in a fresh process (hash read from the loaded module, `c2f0cdc242aafaa6`; no settings file present):
+**ROUTE_X custom stripes: CERTIFIED on 21.6 with default settings (in full by C23, below); installed now as `c2f0cdc2`.** Session C22 repeats C20 in a fresh process (hash read from the loaded module, `c2f0cdc242aafaa6`; no settings file present):
 - The 94 measured lines outside the round-trip family are identical to C20's, all seven PNGs are byte-identical, and the five saved suites and the background suite export are pixel-identical ([*C22.json*](../tests/audit/results/routex/C22.json)).
 - The cross-frame census passes 22 of 22, and the extension census passes 8 of 8 built cases ([*cross_frame_census_21.6_c2f0cdc2.json*](../tests/audit/results/cross_frame_census_21.6_c2f0cdc2.json), [*cross_frame_extension_census_c2f0cdc2.json*](../tests/audit/results/cross_frame_extension_census_c2f0cdc2.json)).
 - The documents it saved carry no plugin state ([*C22-state.json*](../tests/audit/results/routex/C22-state.json)).
 
-**Open: the round trip that places the session's EPS.** Since session C21, its job reports success but writes a 0-byte PDF (and a different PNG) for both of its EPS files; C20 wrote them normally. Placed by hand in a fresh process with `c2f0cdc2`, the same EPS files export a 239,690-byte PDF with StrokeMaster off and on, as in C20. The fault appeared after a stuck certification instance was force-closed and the owner's own session ran in between, so it is likely InDesign state rather than the plugin; it is not yet explained.
+**Open: the round trip that places the session's EPS.** Since session C21, its job reports success but writes a 0-byte PDF (and a different PNG) for both of its EPS files; C20 wrote them normally. Placed by hand in a fresh process with `c2f0cdc2`, the same EPS files export a 239,690-byte PDF with StrokeMaster off and on, as in C20. The fault appeared after a stuck certification instance was force-closed and the owner's own session ran in between, so it is likely InDesign state rather than the plugin.
+
+**Resolved by C23: CERTIFIED on 21.6 in full.** Session C23 repeats C22 in a clean session with the same build (`c2f0cdc242aafaa6`, no settings file). The round trip wrote its PDF again (239,070 bytes, the same as C20's) and its PNG (343,128 bytes, the same). All 110 measured lines are identical to C20's, round trip included, and all seven PNGs are byte-identical ([*C23.json*](../tests/audit/results/routex/C23.json)). The cross-frame census passes 22 of 22, the extension census passes 8 of 8 built cases, and the saved documents carry no plugin state ([*C23-state.json*](../tests/audit/results/routex/C23-state.json)). InDesign quit cleanly in 9 seconds. The empty PDFs of C21 and C22 were a passing fault of that InDesign environment, during an afternoon when the owner saw the system hang under several concurrent sessions.
 
 ## Owner verification and decisions
 
