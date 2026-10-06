@@ -35,7 +35,7 @@ Which correction to use depends on one question: **does the file have to look ri
 - **Content drawn between two frames of a story** (an unrelated filled or stroked object stacked between them) keeps InDesign's order where it covers a letter; invisible objects, such as empty frames, do not.
 - **A translucent upstream frame** is not corrected, and exporting a single page item draws the per-frame correction only.
 
-**The StrokeMaster panel.** *Window > StrokeMaster* opens a panel with one checkbox per correction; a click redraws every open document at once, so a correction can be compared on and off in place. The switches apply to every document, to the screen and to every export, and are kept between sessions (in *%APPDATA%\StrokeMaster\settings.txt*). *Restore Defaults* (the button, or the panel menu) puts them all back. A switch whose parent is off is shown grayed out, its own state kept.
+**The StrokeMaster panel.** *Window > StrokeMaster* opens a panel with one checkbox per correction; a click redraws every open document at once, so a correction can be compared on and off in place. The switches apply to every document, to the screen and to every export, and are kept between sessions (in *%APPDATA%\StrokeMaster\settings.txt*). *Restore Defaults* (the button, or the panel menu) puts them all back. A switch whose parent is off is shown grayed out, its own state kept. The panel is under *Window*, not *Plug-Ins*. An edit to the settings file by hand applies to the next export at once, but the screen keeps each item's last rendering until the panel redraws or a new window opens.
 
 | Switch | On (default unless noted) | Off |
 | --- | --- | --- |
