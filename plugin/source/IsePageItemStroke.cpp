@@ -171,6 +171,7 @@
 #include "IsePageItemStroke.h"
 #include "IseMiterCore.h"
 #include "IseRegionCore.h"
+#include "IseStripeProbe.h"
 
 #include <algorithm>
 #include <cmath>
@@ -729,6 +730,67 @@ InterfacePtr<IPathGeometry> TempGeometry(const std::vector<Contour>& contours)
     return g;
 }
 
+/** The stripes a striped stroker paints, measured (ise_stripe_probe): across a straight line
+    1000 pt long at a weight of 100, read at its middle, as [from, to] fractions of the weight
+    from the side y < 0. Empty when the stroker draws nothing it can read, or clips. */
+std::vector<std::pair<double, double>> MeasureStripes(const IPathStroker* stroker)
+{
+    std::vector<std::pair<double, double>> out;
+    if (stroker == nil) return out;
+    Contour line;
+    line.start = {0, 0};
+    line.closed = false;
+    ise_miter::Segment s;
+    s.p = {1000, 0};
+    line.segments.push_back(s);
+    InterfacePtr<IPathGeometry> path = TempGeometry({line});
+    if (path == nil) return out;
+    ise_stripe_probe::StripeRecorder port(500);
+    if (stroker->StrokePathForUI(path, &port, 100) != kSuccess || port.unreadable || port.Clipped()) return out;
+    for (const auto& b : ise_stripe_probe::Merged(port.bands)) {
+        const double from = std::max(0.0, (b.first + 50) / 100), to = std::min(1.0, (b.second + 50) / 100);
+        if (to - from > 1e-3) out.push_back({from, to});
+    }
+    return out;
+}
+
+/** Which way the measured stripes face (MeasureStripes): +1 when the side y < 0 is the edge
+    away from the object, as BuiltInStripes counts, -1 when it is the other edge, 0 when the
+    built-in Thick - Thin style does not measure as its known layout either way. Measured once. */
+int StripeOrientation()
+{
+    static const int orientation = [] {
+        InterfacePtr<IPathStroker> thickThin(static_cast<IPathStroker*>(::CreateObject(kThickThinPathStrokerBoss, IID_IPATHSTROKER)));
+        const std::vector<std::pair<double, double>> measured = MeasureStripes(thickThin.get()), known = BuiltInStripes(kThickThinPathStrokerBoss);
+        if (measured.size() != known.size()) return 0;
+        auto same = [&](bool flip) {
+            for (size_t i = 0; i < known.size(); ++i) {
+                const auto& k = flip ? known[known.size() - 1 - i] : known[i];
+                const double from = flip ? 1 - k.second : k.first, to = flip ? 1 - k.first : k.second;
+                if (std::fabs(measured[i].first - from) > 0.01 || std::fabs(measured[i].second - to) > 0.01) return false;
+            }
+            return true;
+        };
+        return same(false) ? 1 : same(true) ? -1 : 0;
+    }();
+    return orientation;
+}
+
+/** A custom striped style's stripes, as BuiltInStripes gives them, measured from its own
+    stroker (MeasureStripes, StripeOrientation); empty when they cannot be measured. */
+std::vector<std::pair<double, double>> CustomStripes(IDataBase* db, UID uid, const Coverage& coverage)
+{
+    std::vector<std::pair<double, double>> out;
+    const int orientation = StripeOrientation();
+    InterfacePtr<IPathStroker> stroker(db, uid, IID_IPATHSTROKER);
+    const std::vector<std::pair<double, double>> measured = orientation != 0 ? MeasureStripes(stroker.get())
+                                                                              : std::vector<std::pair<double, double>>();
+    if (coverage.trace) coverage.trace("P custom stripes orientation=%d measured=%d", orientation, static_cast<int>(measured.size()));
+    if (orientation > 0) return measured;
+    for (auto it = measured.rbegin(); it != measured.rend(); ++it) out.push_back({1 - it->second, 1 - it->first});
+    return out;
+}
+
 /** The corners whose miters an Outside stroke's bands keep (ise_region::BandCorner), as
     StrokeSideJoins treats them at the full weight: within the limit the whole miter, an
     effect's corner trimmed to its shorter edge, a glyph tip trimmed (TipReach; beside a short
@@ -917,8 +979,8 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     if (!solid && align == Align::Outside && coverage.wordOutline) {
         // One outline per word (PrepareWord): pattern strokers, and stripes, each with its gap
         // color.
-        plan->stripes = BuiltInStripes(strokeClass);
-        plan->forUI = strokeClass == kCustomStripedPathStrokerBoss;
+        plan->stripes = strokeClass == kCustomStripedPathStrokerBoss ? CustomStripes(db, strokerUID, coverage) : BuiltInStripes(strokeClass);
+        plan->forUI = strokeClass == kCustomStripedPathStrokerBoss && plan->stripes.empty();
         plan->pathStroker = (PatternStroker(strokeClass) || plan->forUI) && !Refused().Has(strokeClass);
         UID gap = kInvalidUID;
         if ((plan->pathStroker || !plan->stripes.empty()) && attrs->GetGapRenderingUID(gap, style) == kSuccess &&

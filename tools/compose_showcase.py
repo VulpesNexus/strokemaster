@@ -37,7 +37,7 @@ NOTES = {
     'L8': 'Least sure: Inside strokes with inset corner effects: the tiny holes the effect\'s loops leave are not stroked; the fill keeps them.',
     'L9': 'Least sure: object-level opacity and a drop shadow, which InDesign applies around StrokeMaster\'s stroke. Stroke-level or fill-level opacity and effects stay InDesign\'s.',
     'L10': 'Least sure: brush serifs. Their sharp tips count as glyph tips, so their miters are cut flush; the halo loses some of its points.',
-    'L11': 'Least sure: a custom stripe style. No public interface gives its layout, so InDesign\'s own stripe stroker draws it along one outline per word (its preview drawing, which takes any path). A counter smaller than the stroke still gets a ring.',
+    'L11': 'Least sure: a custom stripe style. No public interface gives its layout, so StrokeMaster measures it: the style\'s own stroker draws a straight line into a port that only records the bands it paints. The stripes are then filled by distance from the letters, as the built-in ones are; if the measurement fails, the stroker draws along one outline per word.',
     'L12': 'Straight Hash and Japanese Dots: InDesign\'s own patterns along one outline per word, with one anchor at each corner (two anchors at a corner doubled the dots).',
     'L13': 'Least sure: a custom dash style with corner adjustment on (InDesign\'s default). InDesign fits the dashes between every two anchors of an outline; on script they run together, with or without StrokeMaster, whose outline has fewer anchors and lets a few gaps through. The corner adjustment study shows each setting. White Diamond follows one outline per word.',
 }
