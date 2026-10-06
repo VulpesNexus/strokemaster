@@ -41,7 +41,7 @@ struct Settings {
     bool overlaps = true;        // overlapping contours: Outside and Inside go around the filled shape
     bool inside = true;          // Inside strokes
     bool openPaths = true;       // open paths (Center, Miter)
-    bool transparency = true;    // items with object-level opacity, blending, or effects
+    bool transparency = true;    // items with opacity, blending, or object-level effects
 };
 
 /** The switches by name, in the file's order. */

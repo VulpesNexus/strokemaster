@@ -395,6 +395,10 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     if (db == nil) return;
     Recover(run, data, glyphs, db);
     RecoverJoin(run, data, glyphs, db, nil);
+    // Vertical text stays InDesign's: its glyphs are placed and turned by the run in ways the
+    // outline written here does not follow, and its strokes landed beside and across the
+    // glyphs (the owner's vertical frame, 2026-10-06).
+    if (run->IsVerticalWritingMode()) return;
 #ifdef ISE_ROUTE_X
     ise_cross_frame::TraceRun('W', gd, run, data, glyphs, db, "visit");
     // Every fill this parcel is about to paint, stroked or not (route X; a no-op otherwise).

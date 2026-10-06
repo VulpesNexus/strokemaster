@@ -1,6 +1,8 @@
 // Pure tests for plugin/source/IseMiterCore.h (which corners keep their miter) and
-// IseRegionCore.h (the region an overlapping outline fills). No Adobe host.
+// IseRegionCore.h (the region an overlapping outline fills), and IsePatternCore.h (a stroke
+// pattern laid by runs between real corners). No Adobe host.
 #include "../../plugin/source/IseMiterCore.h"
+#include "../../plugin/source/IsePatternCore.h"
 #include "../../plugin/source/IseRegionCore.h"
 
 #include <cmath>
@@ -677,6 +679,135 @@ int main()
         for (const Ring& r : Flatten({box}, 1e-5, 1e-9))
             for (const Pt& p : r.points) off = std::max(off, std::min(std::min(std::fabs(p.x), std::fabs(p.x - 10)), std::min(std::fabs(p.y), std::fabs(p.y - 10))));
         Check(corners && off < 1e-6, "a square: its corners kept, its sides straight");
+    }
+
+    {
+        // Signed bands and paths: an Inside stroke's bands lie within the fill, a Center
+        // stroke's path is the outline itself, an Inside stroke's the outline shrunk.
+        const Contour sq10 = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        auto area = [](const std::vector<Contour>& cs) {
+            double a = 0;
+            for (const Ring& r : Flatten(cs, 1e-4, 1e-9)) a += SignedArea(r);
+            return std::fabs(a);
+        };
+        bool okBands = false;
+        const auto inward = ise_region::DistanceBands({sq10}, {{-2, 0}}, ise_region::BandJoin::Miter, {}, 0, 1e-3, &okBands, 4);
+        Check(okBands && inward.size() == 1 && std::fabs(area(inward[0]) - 64) < 0.05, "a band 2 inside a square of 10: 64");
+        const auto across = ise_region::DistanceBands({sq10}, {{-1, 0}, {0, 1}}, ise_region::BandJoin::Round, {}, 0, 1e-3, &okBands, 4);
+        Check(okBands && std::fabs(area(across[0]) - 36) < 0.05 && area(across[1]) > 40 && area(across[1]) < 44,
+              "bands either side of a square's edge: 36 within, 40 plus round corners without");
+        bool okPath = false;
+        const std::vector<Contour> centerPath = ise_region::WordPath({sq10}, 0, ise_region::BandJoin::Miter, 4, false, 1e-3, &okPath);
+        Check(okPath && centerPath.size() == 1 && std::fabs(area(centerPath) - 100) < 0.05, "a Center path: the outline itself");
+        const std::vector<Contour> insidePath = ise_region::WordPath({sq10}, -1, ise_region::BandJoin::Miter, 4, true, 1e-3, &okPath);
+        Check(okPath && insidePath.size() == 1 && std::fabs(area(insidePath) - 64) < 0.05, "an Inside path: the outline shrunk by half the weight");
+    }
+    {
+        using namespace ise_pattern;
+        // Arc: a line's length and points; a quarter circle's length.
+        Segment lineSeg; lineSeg.p = {10, 0};
+        const Arc straightArc({0, 0}, {lineSeg});
+        Pt atPt, dirPt;
+        straightArc.At(4, &atPt, &dirPt);
+        Check(std::fabs(straightArc.Length() - 10) < 1e-12 && Near(atPt, {4, 0}) && Near(dirPt, {1, 0}), "a line's arc: length and point");
+        const double kappa = 0.5522847498 * 10;
+        Segment quarter; quarter.curve = true; quarter.c1 = {10, kappa}; quarter.c2 = {kappa, 10}; quarter.p = {0, 10};
+        const Arc quarterArc({10, 0}, {quarter});
+        Check(std::fabs(quarterArc.Length() - 3.14159265358979 * 5) < 2e-3, "a quarter circle's arc: about pi r / 2");
+        const Contour halfArc = quarterArc.Piece(0, quarterArc.Length() / 2);
+        Check(std::fabs(Len(halfArc.segments.back().p) - 10) < 1e-3 && std::fabs(halfArc.segments.back().p.x - halfArc.segments.back().p.y) < 0.02,
+              "half a quarter circle ends at 45 degrees");
+        // Runs: a square's four sides; a circle all the way round.
+        const Contour squareC = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
+        const std::vector<Run> sideRuns = CornerRuns(squareC);
+        Check(sideRuns.size() == 4 && !sideRuns[0].loop && std::fabs(sideRuns[0].arc.Length() - 10) < 1e-12, "a square: four runs of 10");
+        Contour circleC;
+        circleC.start = {10, 0};
+        const Pt quads[4][3] = {{{10, kappa}, {kappa, 10}, {0, 10}}, {{-kappa, 10}, {-10, kappa}, {-10, 0}}, {{-10, -kappa}, {-kappa, -10}, {0, -10}}, {{kappa, -10}, {10, -kappa}, {10, 0}}};
+        for (const auto& c : quads) { Segment s; s.curve = true; s.c1 = c[0]; s.c2 = c[1]; s.p = c[2]; circleC.segments.push_back(s); }
+        const std::vector<Run> roundRuns = CornerRuns(circleC);
+        Check(roundRuns.size() == 1 && roundRuns[0].loop, "a circle: one run round");
+        // A stroker that fits dashes 2 and gaps 1 to a line, half a dash at each end, and one that
+        // lays them from the start regardless.
+        auto dashLine = [](double from, double to) {
+            Contour c; c.closed = false; c.start = {from, 0};
+            Segment s; s.p = {to, 0}; c.segments.push_back(s);
+            return c;
+        };
+        auto fittedLine = [&](double length) {
+            Mark m; m.width = 1;
+            const int dashCount = std::max(1, static_cast<int>(std::lround(length / 3)));
+            const double period = length / dashCount, dash = period * 2 / 3;
+            m.path.push_back(dashLine(0, dash / 2));
+            for (int i = 1; i < dashCount; ++i) m.path.push_back(dashLine(i * period - dash / 2, i * period + dash / 2));
+            m.path.push_back(dashLine(length - dash / 2, length));
+            return std::vector<Mark>{m};
+        };
+        auto laidFromStart = [&](double length) {
+            Mark m; m.width = 1;
+            for (double x = 0; x < length; x += 3) m.path.push_back(dashLine(x, std::min(length, x + 2)));
+            return std::vector<Mark>{m};
+        };
+        Check(Fitted(fittedLine(40), 40, fittedLine(55), 55, 1e-6), "a pattern fitted to the line's length: Fitted");
+        Check(!Fitted(laidFromStart(40), 40, laidFromStart(55), 55, 1e-6), "a pattern laid from the start: not Fitted");
+        // Laid along a square's sides: three dashes a side, the one at each corner one piece.
+        Laid laidSq;
+        LayContour(squareC, fittedLine, 1e-6, 30, &laidSq);
+        Check(laidSq.strokes.size() == 1 && laidSq.strokes[0].pieces.size() == 12, "a square: twelve dashes, one through each corner");
+        int throughCorners = 0;
+        for (const Contour& c : laidSq.strokes[0].pieces) if (c.segments.size() == 2) ++throughCorners;
+        Check(throughCorners == 4, "a square: four dashes turn its corners");
+        // Round a circle: the dash at the start and the one at the end are one.
+        Laid ringLaid;
+        LayContour(circleC, fittedLine, 1e-6, 30, &ringLaid);
+        const int dashCount = static_cast<int>(std::lround(roundRuns[0].arc.Length() / 3));
+        Check(ringLaid.strokes.size() == 1 && static_cast<int>(ringLaid.strokes[0].pieces.size()) == dashCount, "a circle: its dashes, the one at its start whole");
+        // A solid stroke round a circle: one closed piece.
+        auto solidLine = [&](double length) { Mark m; m.width = 1; m.path.push_back(dashLine(0, length)); return std::vector<Mark>{m}; };
+        Laid wholeLaid;
+        LayContour(circleC, solidLine, 1e-6, 30, &wholeLaid);
+        Check(wholeLaid.strokes.size() == 1 && wholeLaid.strokes[0].pieces.size() == 1 && wholeLaid.strokes[0].pieces[0].closed, "solid round a circle: one closed piece");
+        // A dash array on one stroked line.
+        Mark dashedMark; dashedMark.width = 1; dashedMark.dash = {2, 1}; dashedMark.path.push_back(dashLine(0, 10));
+        const auto dashSpans = Signature({dashedMark}, 10, 1e-6, 100);
+        Check(dashSpans.size() == 4 && std::fabs(dashSpans[3].first - 9) < 1e-12 && std::fabs(dashSpans[3].second - 10) < 1e-12, "a dash array: four dashes along 10");
+        // A filled dot turned to the run: on a side going up, its middle on the side.
+        Contour dotC = Poly({{4.5, -0.5}, {5.5, -0.5}, {5.5, 0.5}, {4.5, 0.5}});
+        auto dotMarks = [&](double) { Mark m; m.stroke = false; m.path.push_back(dotC); return std::vector<Mark>{m}; };
+        Laid dottedLaid;
+        LayContour(squareC, dotMarks, 1e-6, 30, &dottedLaid);
+        bool onRight = false;
+        for (const Contour& c : dottedLaid.fills) {
+            Pt lo = c.start, hi = c.start;
+            for (const Segment& s : c.segments) { lo = {std::min(lo.x, s.p.x), std::min(lo.y, s.p.y)}; hi = {std::max(hi.x, s.p.x), std::max(hi.y, s.p.y)}; }
+            if (Near((lo + hi) * 0.5, {10, 5})) onRight = true;
+        }
+        Check(dottedLaid.fills.size() == 4 && onRight, "a dot a side, at each side's middle");
+        // A wave along the line cannot be laid by pieces.
+        Mark waveMark; waveMark.width = 1;
+        Contour waveLine; waveLine.closed = false; waveLine.start = {0, 0};
+        Segment waveSeg; waveSeg.curve = true; waveSeg.c1 = {3, 2}; waveSeg.c2 = {7, -2}; waveSeg.p = {10, 0}; waveLine.segments.push_back(waveSeg);
+        waveMark.path.push_back(waveLine);
+        Check(!Layable({waveMark}, 1e-6, 2) && Layable(fittedLine(10), 1e-6, 2) && Layable(dotMarks(0), 1e-6, 2), "a wave cannot be laid; dashes and dots can");
+        // As InDesign 21.6 paints a square's side: a straight piece written as a curve, with a
+        // dash array and phase, and the corners' dashes as separate pieces turning them; only
+        // what lies on the first side counts.
+        auto straightCurve = [](Pt a, Pt b) { Segment sg; sg.curve = true; sg.c1 = a; sg.c2 = b; sg.p = b; return sg; };
+        Mark sideMark; sideMark.width = 1; sideMark.dash = {2, 1}; sideMark.phase = 2;
+        Contour side; side.closed = false; side.start = {1.5, 0}; side.segments.push_back(straightCurve({1.5, 0}, {8.5, 0}));
+        sideMark.path.push_back(side);
+        Mark cornerMark; cornerMark.width = 1;
+        Contour startCorner; startCorner.closed = false; startCorner.start = {0, 1};
+        startCorner.segments.push_back(straightCurve({0, 1}, {0, 0})); startCorner.segments.push_back(straightCurve({0, 0}, {1, 0}));
+        Contour endCorner; endCorner.closed = false; endCorner.start = {9, 0};
+        endCorner.segments.push_back(straightCurve({9, 0}, {10, 0})); endCorner.segments.push_back(straightCurve({10, 0}, {10, 1}));
+        Contour farCorner; farCorner.closed = false; farCorner.start = {10, 9};
+        farCorner.segments.push_back(straightCurve({10, 9}, {10, 10})); farCorner.segments.push_back(straightCurve({10, 10}, {9, 10}));
+        cornerMark.path = {startCorner, endCorner, farCorner};
+        const auto sideSig = Signature({sideMark, cornerMark}, 10, 1e-6, 100);
+        Check(sideSig.size() == 4 && std::fabs(sideSig[0].second - 1) < 1e-9 && std::fabs(sideSig[1].first - 2.5) < 1e-9 &&
+                  std::fabs(sideSig[2].second - 7.5) < 1e-9 && std::fabs(sideSig[3].first - 9) < 1e-9 && std::fabs(sideSig[3].second - 10) < 1e-9,
+              "a square's side: its half corner dashes and its fitted dashes, the far corner left out");
     }
 
     std::printf("miter core: %d checks passed\n", checks);

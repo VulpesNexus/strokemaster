@@ -760,7 +760,8 @@ Contour FitCurves(const std::vector<Pt>& ring, double tol)
 }
 
 std::vector<std::vector<Contour>> DistanceBands(const std::vector<Contour>& fill, const std::vector<std::pair<double, double>>& bands,
-                                                BandJoin join, const std::vector<BandCorner>& corners, double inset, double tol, bool* ok)
+                                                BandJoin join, const std::vector<BandCorner>& corners, double inset, double tol, bool* ok,
+                                                double limit)
 {
     std::vector<std::vector<Contour>> out(bands.size());
     *ok = tol > 0;
@@ -769,15 +770,21 @@ std::vector<std::vector<Contour>> DistanceBands(const std::vector<Contour>& fill
     const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
     if (!*ok || region.empty()) { *ok = false; return out; }
     std::map<double, Clipper2Lib::PathsD> offsets;
-    // The fill grown by d (shrunk by the inset for d = 0), with the join at its corners.
+    // The fill grown by d (shrunk by the inset for d = 0), with the join at its corners; for d < 0,
+    // shrunk by -d, its inner corners mitered within the limit.
     auto offset = [&](double d) -> const Clipper2Lib::PathsD& {
         auto it = offsets.find(d);
         if (it != offsets.end()) return it->second;
         Clipper2Lib::PathsD r;
-        if (!(d > 0)) {
+        if (d == 0) {
             r = inset > 0 ? Clipper2Lib::InflatePaths(region, -inset, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon,
                                                       2.0, precision, tol)
                           : region;
+        } else if (d < 0) {
+            const Clipper2Lib::JoinType jt = join == BandJoin::Round   ? Clipper2Lib::JoinType::Round
+                                             : join == BandJoin::Bevel ? Clipper2Lib::JoinType::Bevel
+                                                                       : Clipper2Lib::JoinType::Miter;
+            r = Clipper2Lib::InflatePaths(region, d, jt, Clipper2Lib::EndType::Polygon, std::max(limit, 1.0), precision, tol);
         } else {
             const Clipper2Lib::JoinType jt = join == BandJoin::Round   ? Clipper2Lib::JoinType::Round
                                              : join == BandJoin::Bevel ? Clipper2Lib::JoinType::Bevel
@@ -828,11 +835,13 @@ bool ContoursInteract(const std::vector<Contour>& contours, double reach, double
 std::vector<Contour> WordPath(const std::vector<Contour>& fill, double half, BandJoin join, double limit, bool creases, double tol,
                               bool* ok)
 {
-    *ok = tol > 0 && half > 0;
+    *ok = tol > 0;
     if (!*ok) return {};
     const int precision = kBandPrecision;
     const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
     if (!*ok || region.empty()) { *ok = false; return {}; }
+    if (half == 0) return Fitted(region, tol);   // a Center stroke: the united outline itself
+    if (half < 0) creases = false;              // an Inside stroke: the region shrunk, its corners kept
     const Clipper2Lib::JoinType jt = join == BandJoin::Round   ? Clipper2Lib::JoinType::Round
                                      : join == BandJoin::Bevel ? Clipper2Lib::JoinType::Bevel
                                                                : Clipper2Lib::JoinType::Miter;

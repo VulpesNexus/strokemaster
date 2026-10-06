@@ -1,20 +1,26 @@
 //========================================================================================
-// The layout of a striped stroke style, measured: the style's own stroker draws a straight line
-// (IPathStroker::StrokePathForUI, which strokes any path) into a port that only records what is
-// drawn (StripeRecorder), and each stripe is read off as the band it paints across the line.
-// A custom striped style keeps its stripes where no public interface reads them (only its
-// stroker does), and drawn along the word's path by that stroker, its stripes left the letters
-// and crossed in the counters (the owner's check, 2026-10-06); with the layout, custom stripes
-// are filled as regions by distance from the fill, as the built-in styles are.
+// What a stroke style's own stroker paints, measured: it draws a straight line into a port that
+// only records what is drawn (RecordingPort), and the drawing is read off.
 //
-// Calibrated on the built-in Thick - Thin style, whose layout is known (BuiltInStripes): the side
-// of the line its thick stripe falls on is the side away from the object.
+// Stripes (StripeRecorder): each stripe is read off as the band it paints across the line. A
+// custom striped style keeps its stripes where no public interface reads them (only its stroker
+// does), and drawn along the word's path by that stroker, its stripes left the letters and
+// crossed in the counters (the owner's check, 2026-10-06); with the layout, custom stripes are
+// filled as regions by distance from the fill, as the built-in styles are. Calibrated on the
+// built-in Thick - Thin style, whose layout is known (BuiltInStripes): the side of the line its
+// thick stripe falls on is the side away from the object.
+//
+// Marks (MarkRecorder): every paint, with its path, width, cap, join, and dash array, in the
+// line's space, for laying a pattern along a path by runs between its real corners
+// (ise_pattern, IsePatternCore.h).
 //========================================================================================
 #pragma once
 
 #include "IGraphicsPort.h"
 #include "IPathGeometry.h"
 #include "IPathStroker.h"
+
+#include "IsePatternCore.h"
 
 #include <algorithm>
 #include <cmath>
@@ -24,43 +30,49 @@
 
 namespace ise_stripe_probe {
 
-/** A graphics port that draws nothing: it records, in its own space, each stroked or filled
-    band that crosses the vertical line x = probeX, as an interval of y. Anything it cannot read
-    (an AGM path, an image, text) marks the recording unreadable. */
-class StripeRecorder : public IGraphicsPort
+using ise_miter::Contour;
+using ise_miter::Pt;
+using ise_miter::Segment;
+
+/** A graphics port that draws nothing: it keeps the current path in its own space (curves kept)
+    and the stroke state, and hands each fill and stroke to Painted. Anything it cannot read (an
+    AGM path, an image, text, a shading) marks the recording unreadable; a clip marks it
+    clipped. */
+class RecordingPort : public IGraphicsPort
 {
 public:
-    explicit StripeRecorder(double probeX) : fProbeX(probeX) {}
-
-    std::vector<std::pair<double, double>> bands;   // y intervals painted across x = probeX
     bool unreadable = false;
 
     // IPMUnknown: a stack object, not a boss; it offers no other interface.
-    IPMUnknown* QueryInterface(PMIID iid) const override { return iid == IID_IGRAPHICSPORT ? const_cast<StripeRecorder*>(this) : nil; }
+    IPMUnknown* QueryInterface(PMIID iid) const override { return iid == IID_IGRAPHICSPORT ? const_cast<RecordingPort*>(this) : nil; }
     void AddRef() const override {}
     void Release() const override {}
 
     void Setup() override {}
     void newpath() override { fPath.clear(); }
-    void moveto(const PMReal& x, const PMReal& y) override { fPath.push_back({At(x, y)}); }
-    void rmoveto(const PMReal& x, const PMReal& y) override
+    void moveto(const PMReal& x, const PMReal& y) override { Begin(At(x, y)); }
+    void rmoveto(const PMReal& x, const PMReal& y) override { Begin(Last() + Delta(x, y)); }
+    void lineto(const PMReal& x, const PMReal& y) override
     {
-        const Point last = Last();
-        fPath.push_back({Add(last, Delta(x, y))});
+        Segment s;
+        s.p = At(x, y);
+        Extend(s);
     }
-    void lineto(const PMReal& x, const PMReal& y) override { Extend(At(x, y)); }
     void curveto(const PMReal& x1, const PMReal& y1, const PMReal& x2, const PMReal& y2, const PMReal& x3, const PMReal& y3) override
     {
-        Curve(At(x1, y1), At(x2, y2), At(x3, y3));
+        Segment s;
+        s.curve = true;
+        s.c1 = At(x1, y1); s.c2 = At(x2, y2); s.p = At(x3, y3);
+        Extend(s);
     }
     void curvetov(const PMReal& x2, const PMReal& y2, const PMReal& x3, const PMReal& y3) override
     {
-        Curve(Last(), At(x2, y2), At(x3, y3));
+        Segment s;
+        s.curve = true;
+        s.c1 = Last(); s.c2 = At(x2, y2); s.p = At(x3, y3);
+        Extend(s);
     }
-    void closepath() override
-    {
-        if (!fPath.empty() && !fPath.back().empty()) fPath.back().push_back(fPath.back().front());
-    }
+    void closepath() override { if (!fPath.empty()) fPath.back().closed = true; }
     void gsave() override { fStack.push_back(fState); }
     void grestore() override
     {
@@ -80,15 +92,20 @@ public:
         Concat({ToDouble(m[0]), ToDouble(m[1]), ToDouble(m[2]), ToDouble(m[3]), ToDouble(m[4]), ToDouble(m[5])});
     }
     void setlinewidth(const PMReal& width) override { fState.width = ToDouble(width); }
-    void setdash(int32 numDash, float*, float) override { fState.dashed = numDash > 0; }
+    void setdash(int32 numDash, float* dashes, float phase) override
+    {
+        fState.dash.clear();
+        for (int32 i = 0; i < numDash && dashes != nullptr; ++i) fState.dash.push_back(dashes[i]);
+        fState.phase = phase;
+    }
     void setblendingmode(PMBlendingMode) override {}
     void starttransparencygroup(const PMRect&, AGMColorSpace*, bool16, bool16) override {}
     void endtransparencygroup() override {}
     void BeginGroup(const PMString, const_AIMDictionaryContainer*) override {}
     void EndGroup(const PMString) override {}
     void setopacity(const PMReal&, bool16) override {}
-    void setlinecap(int32) override {}
-    void setlinejoin(int32) override {}
+    void setlinecap(int32 cap) override { fState.cap = cap; }
+    void setlinejoin(int32 join) override { fState.join = join; }
     void setmiterlimit(const PMReal&) override {}
     void setstrokeadjust(bool16) override {}
     void setgray(const PMReal&) override {}
@@ -102,9 +119,9 @@ public:
     void SetColorServer(AGMPaint*, bool16, const PMMatrix&) override {}
     void SetAlphaServer(AGMPaint*, bool16, const PMMatrix&) override {}
     void setoverprint(bool32) override {}
-    void fill() override { FillBands(); fPath.clear(); }
-    void eofill() override { FillBands(); fPath.clear(); }
-    void stroke() override { StrokeBands(); fPath.clear(); }
+    void fill() override { Painted(false); fPath.clear(); }
+    void eofill() override { Painted(false); fPath.clear(); }
+    void stroke() override { Painted(true); fPath.clear(); }
     void image(_t_AGMImageRecord*, const PMMatrix&, int32) override { unreadable = true; }
     void image(_t_AGMImageRecord*, AGMColorSpace*, const PMMatrix&, int32) override { unreadable = true; }
     void image(AGMImage*, const PMMatrix&, int32) override { unreadable = true; }
@@ -116,8 +133,7 @@ public:
     void ctshow(IFontInstance*, PMRealGlyphPoint*, uint32, TextGraphicsFlags, bool16) override { unreadable = true; }
     void selectfont(IPMFont*, const PMMatrix&) override {}
     void selectfont(IPMFont*, const PMReal&) override {}
-    // Clips are ignored: a stroker that clipped its stripes would be misread, and is caught by
-    // the calibration only if the built-in stroker clips too, so a clip marks the recording.
+    // Clips are ignored, and mark the recording: what a stroker clips would be misread.
     void clip() override { fClipped = true; }
     void eoclip() override { fClipped = true; }
     void strokepath_clip() override { fClipped = true; }
@@ -126,7 +142,7 @@ public:
     void rectfill(const PMReal& x, const PMReal& y, const PMReal& w, const PMReal& h) override
     {
         RectPath(ToDouble(x), ToDouble(y), ToDouble(w), ToDouble(h));
-        FillBands();
+        Painted(false);
         fPath.clear();
     }
     void rectfill(const PMRect& r) override { rectfill(r.Left(), r.Top(), r.Width(), r.Height()); }
@@ -142,7 +158,7 @@ public:
     IDrawMgr* PortDrawMgr() override { return nil; }
     void BeginAuxInfoContext(GPortAuxInfoParam*) override {}
     void EndAuxInfoContext(GPortAuxInfoParam*) override {}
-    void show(const CCTTextList&, int32, const PMMatrix*) const override { const_cast<StripeRecorder*>(this)->unreadable = true; }
+    void show(const CCTTextList&, int32, const PMMatrix*) const override { const_cast<RecordingPort*>(this)->unreadable = true; }
     void SetRenderingIntent(RenderingIntent) override {}
     void SetOverPrintMode(bool32) override {}
     void FillPath(AGMPath*) override { unreadable = true; }
@@ -151,49 +167,69 @@ public:
 
     bool Clipped() const { return fClipped; }
 
-private:
-    struct Point { double x, y; };
+protected:
     struct State {
         double m[6] = {1, 0, 0, 1, 0, 0};   // a b c d tx ty: x' = a x + c y + tx, y' = b x + d y + ty
         double width = 1;
-        bool dashed = false;
+        int cap = 0, join = 0;
+        std::vector<double> dash;
+        double phase = 0;
     };
 
-    Point At(const PMReal& x, const PMReal& y) const
+    /** A fill (stroke false) or a stroke of the current path (fPath), in the state fState. */
+    virtual void Painted(bool stroke) = 0;
+
+    /** How the matrix scales lengths (the square root of its determinant's size). */
+    double Scale() const { return std::sqrt(std::fabs(fState.m[0] * fState.m[3] - fState.m[1] * fState.m[2])); }
+
+    State fState;
+    std::vector<Contour> fPath;
+
+private:
+    Pt At(const PMReal& x, const PMReal& y) const
     {
         const double px = ToDouble(x), py = ToDouble(y);
         const double* m = fState.m;
         return {m[0] * px + m[2] * py + m[4], m[1] * px + m[3] * py + m[5]};
     }
-    Point Delta(const PMReal& x, const PMReal& y) const
+    Pt Delta(const PMReal& x, const PMReal& y) const
     {
         const double px = ToDouble(x), py = ToDouble(y);
         const double* m = fState.m;
         return {m[0] * px + m[2] * py, m[1] * px + m[3] * py};
     }
-    static Point Add(Point a, Point b) { return {a.x + b.x, a.y + b.y}; }
-    Point Last() const { return fPath.empty() || fPath.back().empty() ? Point{0, 0} : fPath.back().back(); }
-    void Extend(Point p)
+    Pt Last() const
     {
-        if (fPath.empty()) fPath.push_back({});
-        fPath.back().push_back(p);
+        if (fPath.empty()) return {0, 0};
+        const Contour& c = fPath.back();
+        return c.segments.empty() ? c.start : c.segments.back().p;
     }
-    void Curve(Point c1, Point c2, Point p)
+    void Begin(Pt p)
     {
-        const Point p0 = Last();
-        for (int k = 1; k <= 16; ++k) {
-            const double t = k / 16.0, s = 1 - t;
-            Extend({s * s * s * p0.x + 3 * s * s * t * c1.x + 3 * s * t * t * c2.x + t * t * t * p.x,
-                    s * s * s * p0.y + 3 * s * s * t * c1.y + 3 * s * t * t * c2.y + t * t * t * p.y});
-        }
+        Contour c;
+        c.closed = false;
+        c.start = p;
+        fPath.push_back(c);
+    }
+    void Extend(const Segment& s)
+    {
+        if (fPath.empty()) Begin({0, 0});
+        if (fPath.back().closed) Begin(Last());   // after closepath, a new subpath from its start
+        fPath.back().segments.push_back(s);
     }
     void RectPath(double x, double y, double w, double h)
     {
-        fPath.push_back({});
-        for (const Point& p : {Point{x, y}, Point{x + w, y}, Point{x + w, y + h}, Point{x, y + h}, Point{x, y}}) {
-            const double* m = fState.m;
-            fPath.back().push_back({m[0] * p.x + m[2] * p.y + m[4], m[1] * p.x + m[3] * p.y + m[5]});
+        const double* m = fState.m;
+        auto map = [m](double px, double py) { return Pt{m[0] * px + m[2] * py + m[4], m[1] * px + m[3] * py + m[5]}; };
+        Contour c;
+        c.start = map(x, y);
+        for (const Pt& p : {Pt{x + w, y}, Pt{x + w, y + h}, Pt{x, y + h}}) {
+            Segment s;
+            s.p = map(p.x, p.y);
+            c.segments.push_back(s);
         }
+        c.closed = true;
+        fPath.push_back(c);
     }
     void Concat(const double n[6])
     {
@@ -204,13 +240,57 @@ private:
         std::copy(r, r + 6, fState.m);
     }
     void Concat(std::initializer_list<double> n) { std::vector<double> v(n); Concat(v.data()); }
+
+    std::vector<State> fStack;
+    bool fClipped = false;
+};
+
+/** Records, in its own space, each stroked or filled band that crosses the vertical line
+    x = probeX, as an interval of y. */
+class StripeRecorder : public RecordingPort
+{
+public:
+    explicit StripeRecorder(double probeX) : fProbeX(probeX) {}
+
+    std::vector<std::pair<double, double>> bands;   // y intervals painted across x = probeX
+
+protected:
+    void Painted(bool stroke) override
+    {
+        if (stroke) StrokeBands(); else FillBands();
+    }
+
+private:
+    /** The current path flattened: each subpath's points (16 steps a curve, as before). */
+    std::vector<std::vector<Pt>> Polylines() const
+    {
+        std::vector<std::vector<Pt>> out;
+        for (const Contour& c : fPath) {
+            std::vector<Pt> pts{c.start};
+            Pt from = c.start;
+            for (const Segment& s : c.segments) {
+                if (s.curve) {
+                    for (int k = 1; k <= 16; ++k) {
+                        const double t = k / 16.0, r = 1 - t;
+                        pts.push_back(from * (r * r * r) + s.c1 * (3 * r * r * t) + s.c2 * (3 * r * t * t) + s.p * (t * t * t));
+                    }
+                } else {
+                    pts.push_back(s.p);
+                }
+                from = s.p;
+            }
+            if (c.closed) pts.push_back(c.start);
+            out.push_back(pts);
+        }
+        return out;
+    }
     // Where the path's segments cross x = probeX: their y values, sorted.
     std::vector<double> Crossings() const
     {
         std::vector<double> ys;
-        for (const std::vector<Point>& sub : fPath)
+        for (const std::vector<Pt>& sub : Polylines())
             for (size_t i = 1; i < sub.size(); ++i) {
-                const Point a = sub[i - 1], b = sub[i];
+                const Pt a = sub[i - 1], b = sub[i];
                 if ((a.x <= fProbeX) == (b.x <= fProbeX) || a.x == b.x) continue;
                 ys.push_back(a.y + (fProbeX - a.x) * (b.y - a.y) / (b.x - a.x));
             }
@@ -226,14 +306,14 @@ private:
     }
     void StrokeBands()
     {
-        if (fState.dashed) { unreadable = true; return; }
+        if (!fState.dash.empty()) { unreadable = true; return; }
         // A stroked line crossing x = probeX paints width / 2 either side of it, the width
         // scaled as the matrix scales across the line (the line is nearly horizontal).
         const double* m = fState.m;
         const double across = std::sqrt(m[2] * m[2] + m[3] * m[3]);
-        for (const std::vector<Point>& sub : fPath)
+        for (const std::vector<Pt>& sub : Polylines())
             for (size_t i = 1; i < sub.size(); ++i) {
-                const Point a = sub[i - 1], b = sub[i];
+                const Pt a = sub[i - 1], b = sub[i];
                 if ((a.x <= fProbeX) == (b.x <= fProbeX) || a.x == b.x) continue;
                 const double y = a.y + (fProbeX - a.x) * (b.y - a.y) / (b.x - a.x), half = fState.width * across / 2;
                 bands.push_back({y - half, y + half});
@@ -241,10 +321,30 @@ private:
     }
 
     double fProbeX;
-    State fState;
-    std::vector<State> fStack;
-    std::vector<std::vector<Point>> fPath;
-    bool fClipped = false;
+};
+
+/** Records every paint as a mark (ise_pattern::Mark): its path in the recorder's own space, and
+    for a stroke its width, cap, join, and dash array scaled into that space. */
+class MarkRecorder : public RecordingPort
+{
+public:
+    std::vector<ise_pattern::Mark> marks;
+
+protected:
+    void Painted(bool stroke) override
+    {
+        if (fPath.empty()) return;
+        ise_pattern::Mark m;
+        m.stroke = stroke;
+        const double scale = Scale();
+        m.width = fState.width * scale;
+        m.cap = fState.cap;
+        m.join = fState.join;
+        for (double d : fState.dash) m.dash.push_back(d * scale);
+        m.phase = fState.phase * scale;
+        m.path = fPath;
+        marks.push_back(std::move(m));
+    }
 };
 
 /** The union of the recorded bands, as sorted, disjoint intervals. */

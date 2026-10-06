@@ -12,7 +12,7 @@ namespace ise_page_stroke {
 // What the route may take over, and how: the StrokeMaster switches (IseSettings.h), or in the
 // research build its control file (IseCrossFrame.cpp), for interleaved comparisons.
 struct Coverage {
-    bool transparency = true;    // items with object-level transparency (stroke or fill level: never)
+    bool transparency = true;    // items with opacity or blending (object, stroke, or fill level); effects on a stroke or fill: never
     bool probeNative = false;    // research: InDesign's own stroke drawn from the event, unclipped
     bool wordOutline = true;     // Outside dashes and built-in stripes along one outline per word
     bool wholePoints = true;     // past the limit, a shape's own points kept whole (else beveled as InDesign)

@@ -71,21 +71,23 @@ struct BandCorner {
     double extra = 0;
 };
 
-/** The regions of the bands of an Outside stroke, by distance from the fill: for each [from,
-    to] of `bands`, every point outside the nonzero fill of `fill` whose distance from it lies
-    between them, with the join (BandJoin) at the offsets' corners, so each band follows one
-    outline around touching and overlapping contours, into the notches where they meet, and
-    nested bands keep one another's points. A band from 0 reaches `inset` into the fill, so that
-    no seam shows between it and the fill drawn beneath. As contours of cubic curves fitted to
-    the offsets within `tol` (FitCurves), wound for the nonzero rule; empty, and `ok` false, when
-    Clipper2 fails. */
+/** The regions of the bands of a stroke, by signed distance from the boundary of the nonzero
+    fill of `fill` (outside positive, inside negative): for each [from, to] of `bands`, every
+    point whose distance lies between them, with the join (BandJoin) at the offsets' corners
+    (outward, the miters of `corners` added; inward, mitered within `limit`), so each band
+    follows one outline around touching and overlapping contours, into the notches where they
+    meet, and nested bands keep one another's points. A band from 0 outward reaches `inset` into
+    the fill, so that no seam shows between it and the fill drawn beneath. As contours of cubic
+    curves fitted to the offsets within `tol` (FitCurves), wound for the nonzero rule; empty, and
+    `ok` false, when Clipper2 fails. */
 std::vector<std::vector<ise_miter::Contour>> DistanceBands(const std::vector<ise_miter::Contour>& fill,
                                                            const std::vector<std::pair<double, double>>& bands, BandJoin join,
                                                            const std::vector<BandCorner>& corners, double inset, double tol,
-                                                           bool* ok);
+                                                           bool* ok, double limit = 4);
 
 /** The path a pattern stroker follows around one word: the nonzero fill of `fill` grown by
-    `half` with the join (a miter squared past `limit`). With `creases` (contours whose strokes
+    `half` with the join (a miter squared past `limit`); for a Center stroke (half 0) its boundary
+    itself, for an Inside stroke (half < 0) shrunk, without creases. With `creases` (contours whose strokes
     meet, ContoursInteract), then closed by a disk of radius `half`, which rounds the creases
     where two letters' offsets meet and the corners of a counter's offset, and drops a counter's
     offset smaller than that disk; the pattern broke into spikes and restarted at every crease
