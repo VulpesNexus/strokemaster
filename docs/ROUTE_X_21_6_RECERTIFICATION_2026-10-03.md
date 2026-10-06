@@ -388,13 +388,34 @@ Tests: 244 miter-core checks (19 new: bands, notches, curve fitting, the glyph-t
 
 **Not changed:** with corner adjustment on (InDesign's default for custom dash styles), a dash stroker fits its pattern between every two anchors of the outline, so dashes on outlined script run together solid, with or without the plugin. This is an open question for the owner.
 
-**ROUTE_X word outlines by distance: CERTIFIED on 21.6 with default settings; installed now as `f89b1ca4`.** Session C19 repeats C18 in a fresh process with the candidate (hash read from the loaded module, `f89b1ca49d78cfa7`; no settings file present):
+**ROUTE_X word outlines by distance: CERTIFIED on 21.6 with default settings; superseded by `c41a16bb` below.** Session C19 repeats C18 in a fresh process with the candidate (hash read from the loaded module, `f89b1ca49d78cfa7`; no settings file present):
 
 - All 110 measured lines are identical, all seven PNGs are byte-identical, and the five saved suites and the background suite export are pixel-identical ([*C19.json*](../tests/audit/results/routex/C19.json)).
 - The cross-frame census passes 22 of 22, and the extension census passes 8 of 8 built cases ([*cross_frame_census_21.6_f89b1ca4.json*](../tests/audit/results/cross_frame_census_21.6_f89b1ca4.json), [*cross_frame_extension_census_f89b1ca4.json*](../tests/audit/results/cross_frame_extension_census_f89b1ca4.json)).
 - The documents it saved carry no plugin state ([*C19-state.json*](../tests/audit/results/routex/C19-state.json)).
 
 The showcase was rebuilt and exported with this build (25 cases).
+
+## The word's path built here, whole points from the corner: route X candidate `c41a16bb`
+
+The owner's second check of the showcase (2026-10-06) found three problems: a wave that spiked and restarted at the creases of InDesign's offset, doubled dots at square corners, and crescent gaps beside the dash notches. They also asked for practical examples of corner adjustment.
+
+**The word's path.** Pattern strokers now follow a path built here (*ise_region::WordPath*): the fill grown by half the weight with the stroke's join, fitted within 0.02 pt with one anchor per corner. Where the contours' strokes meet (*ContoursInteract*), the path is also closed by a disk of that radius, which rounds the creases and drops counters too small for the stroke. Dash notches are measured against the same path (*Uncovered*). *FitCurves* simplifies its input and finds corners over a short reach.
+
+**The corner adjustment study** (*tools/jsx/build-corner-adjustment.jsx*, *tools/compose_corner_adjustment.py*) grids seven subjects, three stroke types, and the four corner adjustments, InDesign alone above StrokeMaster. It showed two problems:
+- A path with an anchor every half point ran dashes solid on a star and an ellipse, since the adjustment fits the pattern between every two anchors.
+- InDesign alone draws a star's Outside dashes and dots inside the star. A fallback that left such shapes to InDesign then clipped that stroke away entirely, so it was removed.
+
+On outlined script, any adjustment but None runs the pattern together, with or without the plugin; whether to override it there is the owner's question.
+
+**Whole points on patterned strokes** are filled from the corner (*CutMiter*) over the pattern; *PointBeyondBevel* is gone. Tests: 251 miter-core checks.
+
+**ROUTE_X word path: CERTIFIED on 21.6 with default settings; installed now as `c41a16bb`.** Session C20 repeats C19 in a fresh process (hash read from the loaded module, `c41a16bbd8f91545`; no settings file present):
+- All 110 measured lines are identical, all seven PNGs are byte-identical, and the saved suites and the background suite export are pixel-identical ([*C20.json*](../tests/audit/results/routex/C20.json)).
+- The cross-frame census passes 22 of 22, and the extension census passes 8 of 8 built cases ([*cross_frame_census_21.6_c41a16bb.json*](../tests/audit/results/cross_frame_census_21.6_c41a16bb.json), [*cross_frame_extension_census_c41a16bb.json*](../tests/audit/results/cross_frame_extension_census_c41a16bb.json)).
+- The documents it saved carry no plugin state ([*C20-state.json*](../tests/audit/results/routex/C20-state.json)).
+
+**Not yet installed:** `15fe9bd3`, the owner's L11 finding. Custom stripes follow the path without rounded creases: along a rounded crease the thick stripe left the letters.
 
 ## Owner verification and decisions
 

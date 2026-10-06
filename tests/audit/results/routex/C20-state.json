@@ -1,0 +1,96 @@
+{
+ "schema": 1,
+ "marks": [
+  "496e44657369676e5374726f6b65456e67696e65",
+  "496e44657369676e205374726f6b6520456e67696e65",
+  "0005a200",
+  "00a20500"
+ ],
+ "idml_marks": [
+  "InDesignStrokeEngine",
+  "InDesign Stroke Engine",
+  "5A200",
+  "5a200",
+  "368128"
+ ],
+ "files": [
+  {
+   "file": "ED1-edited.indd",
+   "bytes": 1261568,
+   "sha256": "8f410849f9bf82893f53c0935d3d2b18cc8dfe0e523a28dd3eb7bc5d591958a3",
+   "hits": []
+  },
+  {
+   "file": "ED2-edited.indd",
+   "bytes": 1261568,
+   "sha256": "3a41376fe7b21bc4e21efb9690196646516311c217cefd7713879de8a6237900",
+   "hits": []
+  },
+  {
+   "file": "ED4-edited.indd",
+   "bytes": 1409024,
+   "sha256": "653f533d5bf5227b2220f58c7b21ae853e9549407c881eceb868045a9a016532",
+   "hits": []
+  },
+  {
+   "file": "ED1.indd",
+   "bytes": 1310720,
+   "sha256": "943456cade47dbcce14d17ab865a6d3b2e3ce08324db23e1ef1d22ab8ba0e46d",
+   "hits": []
+  },
+  {
+   "file": "ED2.indd",
+   "bytes": 1306624,
+   "sha256": "ad8b44e1659b89b40c8babaa4df7e67f4a1159dfabdc977bc647ddc0c3b4c064",
+   "hits": []
+  },
+  {
+   "file": "ED3.indd",
+   "bytes": 1298432,
+   "sha256": "62e1a02417a70edee74938f4617129ad5437d86b9d85b46d06ba25cbf759b0fd",
+   "hits": []
+  },
+  {
+   "file": "ED4.idml",
+   "bytes": 68798,
+   "sha256": "a0738043a466f5948dee4b4065bbe795e3457ca141474441ca123023d7a2977a",
+   "hits": []
+  },
+  {
+   "file": "ED4.indd",
+   "bytes": 1474560,
+   "sha256": "c3f262067449851ca0ab9681702a4aa3c7961aaf7d5c16c6ee87543c08b583f3",
+   "hits": []
+  },
+  {
+   "file": "from-idml.indd",
+   "bytes": 1286144,
+   "sha256": "a67e6dbc2049660a9c55394b2bbd6e01e268bf7604aefb6706f5ef7b82787277",
+   "hits": []
+  },
+  {
+   "file": "RT.package-copy.indd",
+   "bytes": 1245184,
+   "sha256": "11e17b3f9e58d2ca5c6daca1c6ae3c336fe0ee61aec365824f1c9ae6fbad8869",
+   "hits": []
+  },
+  {
+   "file": "RT.save.src.indd",
+   "bytes": 1245184,
+   "sha256": "11e17b3f9e58d2ca5c6daca1c6ae3c336fe0ee61aec365824f1c9ae6fbad8869",
+   "hits": []
+  },
+  {
+   "file": "saved.indd",
+   "bytes": 1245184,
+   "sha256": "bb5a7dfca177e69523d5e24b65ba62d6e880bbe7e01d733036afc0b926d3c995",
+   "hits": []
+  },
+  {
+   "file": "victims.idml",
+   "bytes": 57878,
+   "sha256": "3c6ab92ea41112c2655bc16875e899cd35b003bd0193e337e2d3a30beaa1b1e3",
+   "hits": []
+  }
+ ]
+}
