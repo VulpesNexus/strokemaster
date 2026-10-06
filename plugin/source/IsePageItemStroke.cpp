@@ -772,7 +772,8 @@ std::vector<ise_region::BandCorner> BandCorners(const Prepared& p, double weight
     stray island where InDesign's offset folded (the owner's check, 2026-10-06), and now carry
     the whole points. Leaves `out` without them when an offset fails, and the stroke is then
     drawn as for other stroke types. */
-void PrepareWord(const std::vector<Contour>& contours, bool pathStroker, bool dashes, const std::vector<std::pair<double, double>>& stripes,
+void PrepareWord(const std::vector<Contour>& contours, bool pathStroker, bool dashes, bool stripedPath,
+                 const std::vector<std::pair<double, double>>& stripes,
                  bool gap, double weight, int32 join, double limit, const Coverage& coverage, Prepared* out)
 {
     // Within 0.005 pt, and under a fiftieth of the weight for hairlines.
@@ -781,8 +782,10 @@ void PrepareWord(const std::vector<Contour>& contours, bool pathStroker, bool da
                                           : join == kPMBevelJoin ? ise_region::BandJoin::Bevel
                                                                  : ise_region::BandJoin::Miter;
     if (pathStroker) {
-        // Creases are rounded only where contours' strokes meet (ise_region::ContoursInteract).
-        const bool creases = ise_region::ContoursInteract(contours, weight / 2, std::max(tol, 0.01));
+        // Creases are rounded only where contours' strokes meet (ise_region::ContoursInteract),
+        // and never for stripes, which keep their distance from the fill: along a rounded crease
+        // custom stripes left the letters (the owner's check, 2026-10-06).
+        const bool creases = !stripedPath && ise_region::ContoursInteract(contours, weight / 2, std::max(tol, 0.01));
         // Fitted within 0.02 pt: the stroker's corner adjustment fits its pattern between every
         // two anchors, so the path keeps as few as it can.
         const double pathTol = std::min(0.02, weight / 50);
@@ -983,7 +986,8 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     key.Add(h); key.Add(limit); key.Add(static_cast<int32>(align)); key.Add(join); key.Add(static_cast<int32>(solid));
     key.Add(static_cast<int32>(effects));
     for (const Pt& a : anchors) key.Add(a);
-    key.Add(static_cast<int32>(pathStroker) | static_cast<int32>(dashes) << 1 | static_cast<int32>(plan->gap != nil) << 2);
+    key.Add(static_cast<int32>(pathStroker) | static_cast<int32>(dashes) << 1 | static_cast<int32>(plan->gap != nil) << 2 |
+            static_cast<int32>(plan->forUI) << 3);
     key.Add(static_cast<int32>(coverage.wholePoints) | static_cast<int32>(coverage.overlaps) << 1 |
             static_cast<int32>(coverage.glyphTips) << 2 | static_cast<int32>(coverage.patternPoints) << 3);
     for (const auto& st : plan->stripes) { key.Add(st.first); key.Add(st.second); }
@@ -992,7 +996,7 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
         std::shared_ptr<Prepared> made = std::make_shared<Prepared>();
         Prepare(contours, effects ? &anchors : nullptr, align, join, solid, h, limit, coverage, made.get());
         if (made->ok && (pathStroker || !plan->stripes.empty()))
-            PrepareWord(made->resolved ? made->stroked : contours, pathStroker, dashes, plan->stripes, plan->gap != nil, weight, join,
+            PrepareWord(made->resolved ? made->stroked : contours, pathStroker, dashes, plan->forUI, plan->stripes, plan->gap != nil, weight, join,
                         limit, coverage, made.get());
         size_t words = Segments(made->word) + Segments(made->notches) + Segments(made->gapBand);
         for (const auto& band : made->bands) words += Segments(band);
