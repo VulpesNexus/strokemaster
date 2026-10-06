@@ -112,7 +112,13 @@
             return sq;
         }
         function strokeType(name) { return function (it) { it.strokeType = doc.strokeStyles.itemByName(name); }; }
-        function dashed(it) { it.strokeType = doc.strokeStyles.itemByName('Dashed'); it.strokeDashAndGap = [12, 4]; }
+        // Without corner adjustment: InDesign fits dashes to every corner of an outlined letter,
+        // whose many corners left no gap at all (the owner's check, 2026-10-06).
+        function dashed(it) {
+            it.strokeType = doc.strokeStyles.itemByName('Dashed');
+            it.strokeDashAndGap = [12, 4];
+            it.strokeCornerAdjustment = StrokeCornerAdjustment.NONE;
+        }
         function corners(option) {
             return function (it) {
                 var c = ['topLeft', 'topRight', 'bottomLeft', 'bottomRight'];
@@ -124,8 +130,14 @@
         var TOUT = TextStrokeAlign.OUTSIDE_ALIGNMENT, TCEN = TextStrokeAlign.CENTER_ALIGNMENT;
 
         // ---------------------------------------------------------------- what it fixes
-        cell('F1', 'fix', 'Live text, Outside stroke: a letter\'s stroke no longer covers its neighbor', 100, function (x, y1) {
-            textStroke(frame(x, y1, 540, 70, 'Strokes overlap', MINION_B, 56), TOUT, 6, EndJoin.ROUND_END_JOIN, -90);
+        cell('F1', 'fix', 'Live text, Outside stroke: no stroke over the line above or the run before', 150, function (x, y1) {
+            // InDesign strokes each line, and each run of one format, over the fills drawn before
+            // it (fixture A): line 2's ascenders reach line 1's descenders, and a recolored run
+            // starts inside a word.
+            var tf = frame(x, y1, 540, 130, 'Typography\rblack ink', MINION_B, 60);
+            textStroke(tf, TOUT, 10, EndJoin.ROUND_END_JOIN);
+            tf.parentStory.texts[0].leading = 38;
+            tf.parentStory.paragraphs[0].characters.itemByRange(4, 7).fillColor = gap;
         });
         cell('F2', 'fix', 'Live text across two threaded frames of one story', 120, function (x, y1) {
             var a = frame(x, y1, 250, 50, 'Threaded frames', MINION_B, 44);
@@ -134,9 +146,10 @@
             a.nextTextFrame = b;
             textStroke(a, TOUT, 6, EndJoin.ROUND_END_JOIN, -40);
         });
-        cell('F3', 'fix', 'Live text, Center and Outside Miter strokes: no spikes at sharp joints', 110, function (x, y1) {
-            textStroke(frame(x, y1, 275, 90, 'MVWAz', MINION, 64), TCEN, 4, EndJoin.MITER_END_JOIN);
-            textStroke(frame(x + 280, y1, 275, 90, 'MVWAz', MINION, 64), TOUT, 4, EndJoin.MITER_END_JOIN);
+        cell('F3', 'fix', 'Live text, Outside Miter strokes (8 pt, 6 pt): no spikes at sharp joints', 110, function (x, y1) {
+            // Suite B's glyphs and weights, where InDesign's spikes are plain (v, w, M, y).
+            textStroke(frame(x, y1, 275, 90, 'vwMyz', MINION, 56), TOUT, 8, EndJoin.MITER_END_JOIN);
+            textStroke(frame(x + 280, y1, 275, 90, 'vwMyz', MINION, 56), TOUT, 6, EndJoin.MITER_END_JOIN);
         });
         cell('F4', 'fix', 'Shapes past the miter limit: whole points instead of flat tops', 190, function (x, y1) {
             paint(triangle(x + 10, y1 + 70, 10, 80), CEN, 8);
@@ -181,12 +194,12 @@
         cell('L1', 'doubt', 'Stripes drawn by StrokeMaster around counters (layouts measured from InDesign)', 120, function (x, y1) {
             each(outlined(x, y1, 'BOOK', MINION_B, 60), function (it) { paint(it, OUT, 8, EndJoin.MITER_END_JOIN, strokeType('Thin - Thick - Thin')); });
         });
-        cell('L2', 'doubt', 'Stripes with a gap color: left to InDesign, so they still cross', 145, function (x, y1) {
+        cell('L2', 'doubt', 'Stripes with a gap color, drawn by StrokeMaster beneath its stripes', 145, function (x, y1) {
             var g = function (it) { it.strokeType = doc.strokeStyles.itemByName('Thick - Thin'); it.gapColor = gap; };
             each(outlined(x, y1, 'Ribbons', SCRIPT, 56), function (it) { paint(it, OUT, 8, EndJoin.MITER_END_JOIN, g); });
             paint(squares(x + 330, y1 + 10, 56), OUT, 8, EndJoin.MITER_END_JOIN, g);
         });
-        cell('L3', 'doubt', 'Other stroke styles (Wavy, hashes, custom stripes): left to InDesign', 145, function (x, y1) {
+        cell('L3', 'doubt', 'Wavy, its pattern drawn by InDesign along one outline per word', 145, function (x, y1) {
             each(outlined(x, y1, 'Ribbons', SCRIPT, 56), function (it) { paint(it, OUT, 6, EndJoin.MITER_END_JOIN, strokeType('Wavy')); });
             paint(squares(x + 330, y1 + 10, 56), OUT, 6, EndJoin.MITER_END_JOIN, strokeType('Wavy'));
         });
@@ -229,6 +242,22 @@
                 each(outlined(x, y1, '\u6C38\u3042\u9B31', MINCHO, 60), function (it) { paint(it, OUT, 8); });
             });
         }
+        cell('L11', 'doubt', 'Custom stripes (0-20 and 50-100 percent), read from the style', 145, function (x, y1) {
+            var st = doc.stripedStrokeStyles.add({ name: 'SM stripes', stripeArray: [0, 20, 50, 100] });
+            var g = function (it) { it.strokeType = st; };
+            each(outlined(x, y1, 'Ribbons', SCRIPT, 56), function (it) { paint(it, OUT, 8, EndJoin.MITER_END_JOIN, g); });
+            paint(squares(x + 330, y1 + 10, 56), OUT, 8, EndJoin.MITER_END_JOIN, g);
+        });
+        cell('L12', 'doubt', 'Straight Hash and Japanese Dots along one outline per word', 145, function (x, y1) {
+            each(outlined(x, y1, 'Ribbons', SCRIPT, 56), function (it) { paint(it, OUT, 6, EndJoin.MITER_END_JOIN, strokeType('Straight Hash')); });
+            paint(squares(x + 330, y1 + 10, 56), OUT, 6, EndJoin.MITER_END_JOIN, strokeType('Japanese Dots'));
+        });
+        cell('L13', 'doubt', 'A custom dash style (corner adjustment on) and White Diamond along one outline per word', 145, function (x, y1) {
+            var ds = doc.dashedStrokeStyles.add({ name: 'SM dashes', dashArray: [10, 3, 2, 3] });
+            var g = function (it) { it.strokeType = ds; };
+            each(outlined(x, y1, 'Ribbons', SCRIPT, 56), function (it) { paint(it, OUT, 4, EndJoin.MITER_END_JOIN, g); });
+            paint(squares(x + 330, y1 + 10, 56), OUT, 6, EndJoin.MITER_END_JOIN, strokeType('White Diamond'));
+        });
 
         // Resizing the page keeps its center, which leaves the first cells above its new top: move
         // everything back down so the first label is at 20 again, then measure each cell from
