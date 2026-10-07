@@ -1,0 +1,1322 @@
+{
+ "schema": 1,
+ "label": "route X candidate dc36839e on InDesign 21.6.0.57 (C31) against same-day native and route W (N3, W3)",
+ "census": "X",
+ "sessions": {
+  "native": "native control: research build 7b178414 mode=native, fresh process, InDesign 21.6.0.57",
+  "route_w": "research build 7b178414 mode=routew, same process, InDesign 21.6.0.57",
+  "route_x": "route X candidate dc36839e (adversarial review fixes), fresh process on a cleared host, InDesign 21.6.0.57",
+  "overlap": null,
+  "reference": null
+ },
+ "corpus_sha256": "29237a413ebddba2d7cff7323ab22bb38444f5df9b62d436b5d85ec63c4b62ff",
+ "verdict_counts": {
+  "PASS": 22
+ },
+ "cases": [
+  {
+   "key": "XA0",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories; the upper frame's stroke over the lower frame's fill is page-item stacking",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2750,
+     "route_w_damage_px": 2750,
+     "route_x_damage_px": 2750,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2706,
+     "route_w_damage_px": 2706,
+     "route_x_damage_px": 2706,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XA1",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories; stroked upper frame over an unstroked lower frame",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2750,
+     "route_w_damage_px": 2750,
+     "route_x_damage_px": 2750,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2706,
+     "route_w_damage_px": 2706,
+     "route_x_damage_px": 2706,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XA2",
+   "relation": "independent",
+   "expectation": "control",
+   "why": "the stroked frame is below: no damage natively",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XA3",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories in touching frames: the XB0 geometry without the thread",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 4198,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 4198,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 4198,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 4214,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XA4",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "two stories on two layers",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2758,
+     "route_w_damage_px": 2758,
+     "route_x_damage_px": 2758,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2750,
+     "route_w_damage_px": 2750,
+     "route_x_damage_px": 2750,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2706,
+     "route_w_damage_px": 2706,
+     "route_x_damage_px": 2706,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2752,
+     "route_w_damage_px": 2752,
+     "route_x_damage_px": 2752,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XA5",
+   "relation": "independent",
+   "expectation": "unchanged",
+   "why": "a headline halo over another frame's text: the same geometry as XA0, drawn on purpose",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 278,
+     "route_w_damage_px": 278,
+     "route_x_damage_px": 278,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 278,
+     "route_w_damage_px": 278,
+     "route_x_damage_px": 278,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 278,
+     "route_w_damage_px": 278,
+     "route_x_damage_px": 278,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 273,
+     "route_w_damage_px": 273,
+     "route_x_damage_px": 273,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 270,
+     "route_w_damage_px": 270,
+     "route_x_damage_px": 270,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 270,
+     "route_w_damage_px": 270,
+     "route_x_damage_px": 270,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB0",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded continuation, downstream frame in front (E00)",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB1",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded, upstream frame in front",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 6992,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 6992,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 6974,
+     "route_w_damage_px": 4194,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 6932,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 7030,
+     "route_w_damage_px": 4246,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 7030,
+     "route_w_damage_px": 4246,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB2",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded frames that overlap",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 9994,
+     "route_w_damage_px": 4826,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 9994,
+     "route_w_damage_px": 4826,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 9986,
+     "route_w_damage_px": 4818,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 9898,
+     "route_w_damage_px": 4774,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 9988,
+     "route_w_damage_px": 4784,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 9988,
+     "route_w_damage_px": 4784,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB3",
+   "relation": "same story",
+   "expectation": "partial",
+   "why": "an unrelated rectangle stacked between the frames covers the upstream second line, which keeps InDesign's order; the first line is corrected",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4150,
+     "route_x_damage_px": 3274,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4150,
+     "route_x_damage_px": 3274,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 3320,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4204,
+     "route_x_damage_px": 3272,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 3372,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 3372,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB4",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "downstream frame fill that does not reach the upstream glyphs",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB5",
+   "relation": "same story",
+   "expectation": "partial",
+   "why": "bordered frames: glyphs the upstream border crosses keep InDesign's order",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11118,
+     "route_w_damage_px": 4296,
+     "route_x_damage_px": 219,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11118,
+     "route_w_damage_px": 4296,
+     "route_x_damage_px": 219,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11116,
+     "route_w_damage_px": 4292,
+     "route_x_damage_px": 218,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 10988,
+     "route_w_damage_px": 4222,
+     "route_x_damage_px": 206,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11238,
+     "route_w_damage_px": 4470,
+     "route_x_damage_px": 355,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11238,
+     "route_w_damage_px": 4470,
+     "route_x_damage_px": 355,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB6",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "two columns of one frame (two parcels)",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 7287,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 7287,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 7277,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 7195,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 7275,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 7275,
+     "route_w_damage_px": 2461,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XB7",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair on two layers",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XD0",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair in a group",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11214,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XD1",
+   "relation": "same story",
+   "expectation": "unchanged",
+   "why": "translucent upstream frame: its fill is not opaque, so it is not recorded",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 4196,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11170,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 4196,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11162,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 4196,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4148,
+     "route_x_damage_px": 4148,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11148,
+     "route_w_damage_px": 4248,
+     "route_x_damage_px": 4248,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XD2",
+   "relation": "same story",
+   "expectation": "control",
+   "why": "upstream frame on a hidden layer: nothing drawn beneath the stroke",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 3806,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 3762,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XD3",
+   "relation": "same story",
+   "expectation": "control",
+   "why": "table rows: cell text does not overlap",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XN0",
+   "relation": "single frame",
+   "expectation": "control",
+   "why": "stroked text over a rectangle",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 0,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XN1",
+   "relation": "single frame",
+   "expectation": "control",
+   "why": "a rectangle over stroked text",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 2751,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 2751,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 2747,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 2703,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 2745,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 2745,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XN2",
+   "relation": "same story",
+   "expectation": "center",
+   "why": "Center strokes",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 21056,
+     "route_w_damage_px": 21056,
+     "route_x_damage_px": 21056,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XN3",
+   "relation": "same story",
+   "expectation": "control",
+   "why": "nonprinting upstream frame: absent from exports",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "a4c476531fe28a5f9175c8a2949ad06eca7b16ed3bc27205b70d83bc958b3fe0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 3814,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "d24e996b68046d56b69df15d2e613a9fb3841360ed09549b7470f5bc83295718",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 3806,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "b9aaf543f6d824bed66037deaae0d209c089b8807f0b8f3fb125dde602258758",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 3762,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "cec84e43f8894c36f1dcf6d7e304c1cdd8d9717cb07c9e9b208d735f09578212",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "db7f262f375a45492c0634f3d9dc263364f36a106a1becf86dfc416314b0a110",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 3764,
+     "route_w_damage_px": 0,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "f6258a2828b10a8fa306ea7fde2e852352b4ebb3248a2dfcc08fe68f449d9e9e",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  }
+ ],
+ "pdf_structure_vs_route_w": {
+  "hqp.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "f",
+    "gs"
+   ],
+   "only_clip_and_state_changed": false,
+   "text_chars": 192,
+   "images": 0
+  },
+  "x4.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "f",
+    "gs"
+   ],
+   "only_clip_and_state_changed": false,
+   "text_chars": 192,
+   "images": 0
+  },
+  "x1a.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "f",
+    "gs"
+   ],
+   "only_clip_and_state_changed": false,
+   "text_chars": 208,
+   "images": 0
+  }
+ }
+}
