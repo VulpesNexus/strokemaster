@@ -446,6 +446,18 @@ The owner approved the fixes from the 2026-10-06 checks ([report](RELEASE_CANDID
 
 **CERTIFIED on 21.6 in full (C24).** C24 matches C23 on all 110 measured lines, and all seven PNGs are byte-identical ([*C24.json*](../tests/audit/results/routex/C24.json)). The cross-frame census passes 22 of 22, the extension census 8 of 8 built cases, and the saved documents carry no plugin state ([*C24-state.json*](../tests/audit/results/routex/C24-state.json)). InDesign quit cleanly in 6 seconds. The certification corpus has no patterned or transparent page-item strokes, so the changes show only in the coverage census, the showcase, and the corner adjustment study (the report above). Installed with the panel `5f4f5bab`.
 
+### Route X `dc36839e`: the adversarial review fixes (2026-10-07)
+
+The fixes are listed in [the release-candidate checks](RELEASE_CANDIDATE_CHECKS_2026-10-06.md) (*The adversarial review, 2026-10-07*). `906e70e7`, with a recorder check since removed, passed as C25 ([*C25.json*](../tests/audit/results/routex/C25.json)).
+
+**CERTIFIED on 21.6 in full (C31).** C31 matches C24 on all 110 measured lines, and all seven PNGs are byte-identical ([*C31.json*](../tests/audit/results/routex/C31.json)). The cross-frame census passes 22 of 22, the extension census 8 of 8 built cases, and the saved documents carry no plugin state ([*C31-state.json*](../tests/audit/results/routex/C31-state.json)). InDesign quit cleanly in 6 seconds.
+
+Sessions C26 to C30 do not count:
+
+- C26 wrote one PDF empty.
+- C27 and C30 were stopped by the system for memory.
+- C28 and C29 ran with C27's working copy recovered and open, which drew the placed EPS one pixel lower and hung the quit.
+
 ## Owner verification and decisions
 
 - **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.

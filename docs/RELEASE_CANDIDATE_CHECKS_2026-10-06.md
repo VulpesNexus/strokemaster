@@ -171,5 +171,10 @@ After the owner's last pass on the showcase PDF, the open spikes were inspected,
   - Its certification is open. In C26 one export, the extension census's X-1a reference, was written empty though the job reported success, as the placed EPS was in C21 and C22. The rerun (C27) was stopped by the system when memory ran low.
   - C28 and C29 match C24 on 108 of 110 lines. The two others are the placed-EPS round trip, drawn one device pixel lower from an EPS identical to C25's but for its font-subset prefix. Both sessions also hung at quit with a document open.
   - That document was C27's working copy, which InDesign recovered at every launch after C27 was stopped. It was closed without saving. C30, on the cleared host, was stopped by the system for memory again.
+  - **C31 certifies `dc36839e` in full:**
+    - All 110 measured lines are identical to C24's, the placed-EPS round trip included, and all seven PNGs are byte-identical ([*C31.json*](../tests/audit/results/routex/C31.json)).
+    - The cross-frame census passes 22 of 22, and the extension census 8 of 8 built cases.
+    - The 13 saved documents carry no plugin state ([*C31-state.json*](../tests/audit/results/routex/C31-state.json)).
+    - InDesign quit cleanly in 6 seconds.
 - **Core tests:** 283 miter-core checks.
 
