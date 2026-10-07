@@ -32,7 +32,7 @@ Controls: research build `7b178414` (74,752 bytes, *build-plugin.ps1 -RouteX -Re
 | --- | --- | ---: | ---: | --- |
 | XE0 | threaded pair on the parent page | > 0 | 0 | PASS |
 | XE1 | path text threaded into a frame | > 0 | 0 | PASS |
-| XE2 | threaded anchored frames | — | — | UNTESTED: 21.6 refuses to thread anchored frames by script, inline or custom |
+| XE2 | threaded anchored frames | — | — | CANNOT OCCUR: 21.6 threads anchored frames neither by script nor in the interface (the owner's check, 2026-10-07) |
 | XE3 | threaded pair rotated 30° | > 0 | 0 | PASS |
 | XE4 | three frames threaded in a chain | > 0 | 0 | PASS |
 | XE5 | downstream frame scaled 125% in its matrix | > 0 | 0 | PASS |

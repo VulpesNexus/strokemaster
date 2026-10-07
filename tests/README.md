@@ -32,6 +32,7 @@ The September 13 run of the exact Node selection above records **308 tests passe
 | *probe-takeover-safety.jsx* | InDesign 21.5.1.73; eleven checks | Readable preference values verified; 15 values unverified across PDF/EPS |
 | *probe-takeover-sync.jsx* | Same InDesign; 16 checks | Document-scoped direct tick, not idle-event timing |
 | *probe-takeover-outline.jsx* | Same InDesign; 13 checks | Staging, cleanup, paint attributes, and placement; broader rendering remains open |
+| *probe-takeover-faults.jsx* | InDesign 21.6.0.57; 58 checks | Split and resync refuse every unsupported constraint and appearance, on either frame, before changing anything. Failures midway cannot be injected in the host (page item methods are read only); the mocks cover them |
 | *probe-fill-mask.jsx* | Same InDesign; 46 word positions unchanged | Independent coverage mask for the 23 historical transparency samples |
 | *probe-unstroked-victim.jsx* | Same InDesign; V0 fails native coverage, V1/V2 controls hold | A reproduced defect, not a passing plugin release gate |
 | *probe-zero-stroke.jsx* | Same InDesign; four text-access routes | None alone retains weight; explicit zero plus None works |
