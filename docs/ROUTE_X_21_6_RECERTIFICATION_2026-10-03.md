@@ -458,6 +458,12 @@ Sessions C26 to C30 do not count:
 - C27 and C30 were stopped by the system for memory.
 - C28 and C29 ran with C27's working copy recovered and open, which drew the placed EPS one pixel lower and hung the quit.
 
+### Route X `73fb1805`: the owner's verdicts (2026-10-07)
+
+White Diamond's corners are InDesign's again, counters keep their pattern, and Wavy is laid as whole waves round each outline ([the release-candidate checks](RELEASE_CANDIDATE_CHECKS_2026-10-06.md), *The owner's verdicts and the final build*).
+
+**CERTIFIED on 21.6 in full (C32).** C32 matches C24 on all 110 measured lines, and all seven PNGs are byte-identical ([*C32.json*](../tests/audit/results/routex/C32.json)). The cross-frame census passes 22 of 22, the extension census 8 of 8 built cases, and the saved documents carry no plugin state ([*C32-state.json*](../tests/audit/results/routex/C32-state.json)). InDesign quit cleanly in 9 seconds. This is the installed build, and with it the InDesign plugin is complete.
+
 ## Owner verification and decisions
 
 - **Overlap: confirmed.** The owner checked *cert-X.indd* and a document of their own set in Times New Roman with the plugin installed; the overlap correction works on both. The InDesign overlap work is complete for this release scope (*OPEN_QUESTIONS.md* Q25), and [the usage guide](USING_STROKEMASTER.md#the-plugin) now describes the plugin.

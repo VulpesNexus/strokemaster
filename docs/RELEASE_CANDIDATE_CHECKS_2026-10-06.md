@@ -178,3 +178,35 @@ After the owner's last pass on the showcase PDF, the open spikes were inspected,
     - InDesign quit cleanly in 6 seconds.
 - **Core tests:** 283 miter-core checks.
 
+## The owner's verdicts and the final build, 2026-10-07
+
+The owner judged the two cells the review changed, then the counters and Wavy that followed.
+
+- **White Diamond:** InDesign sets a smaller diamond near each corner, centered on neither side, which no run can lay. Laid by runs, the corners showed gaps, and the owner preferred InDesign's own corners. A stroker that sets such a mark again draws its pattern along the whole path, as in C24.
+  - The check looks only at sides at least two weights long. A 0.9 pt run of outlined script, where every mark crowds the corners, had sent the custom dotted style back to InDesign, solid. The corner study caught it, and the research build's trace located it.
+- **Straight Hash** stays laid between real corners; the owner found either version fine.
+- **Counters:** the rounding of the word's creases, by a disk of half the weight, also filled every counter narrower than twice the weight, which left the counters of script letters without their pattern. Those counters keep their path again, as InDesign's own stroke runs round each counter, unless they come within the disk of the outside. In narrow counters the marks crowd, as in InDesign's drawing; the owner kept them.
+- **Wavy:** InDesign lays its wave from the path's start without fitting it, so each closed outline showed a step where the wave met its own start. The plugin now lays the wave itself, from InDesign's own half-wave:
+  - a whole number of half-waves between real corners, and an even number round an outline without corners;
+  - at a corner, the half-waves on either side bulge away from the inside of the turn;
+  - none rises higher than half the tightest radius beneath it;
+  - an outline shorter than three whole waves, such as a small counter, has three, scaled down.
+  - These rules were tuned offline, with the plugin's own code run on the showcase's outlines, before the host run.
+- **The dip on the b stem** stays. The creases are rounded at the smallest radius at which hash ticks do not cross.
+
+**C32 certifies `73fb1805` in full.**
+
+- All 110 measured lines are identical to C24's, and all seven PNGs are byte-identical ([*C32.json*](../tests/audit/results/routex/C32.json)).
+- The cross-frame census passes 22 of 22, and the extension census 8 of 8 built cases.
+- The 13 saved documents carry no plugin state ([*C32-state.json*](../tests/audit/results/routex/C32-state.json)).
+- InDesign quit cleanly in 9 seconds.
+- In the review exports, the showcase changes in L12 (hashes in the counters) and L3 (Wavy) only, and the corner study only in the counters of its serif and script rows. The vertical frame is identical.
+- **Core tests:** 299 miter-core checks.
+
+## Status
+
+**The InDesign plugin is complete (2026-10-07).** Route X `73fb1805` and the panel `5f4f5bab` are certified and installed, and the owner has signed off the showcase.
+
+- What the plugin leaves to InDesign, and why, is listed above: *The limitations, sorted* and *Not fixed, and why*.
+- Three cases still need a check in the host by hand: roman and tate-chu-yoko text in a vertical frame, opacity on strokes InDesign draws under the plugin's group, and the orientation of Center Thick - Thin.
+- The extension census's XE2 case is still not built, as in every session.

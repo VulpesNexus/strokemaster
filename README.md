@@ -1,6 +1,6 @@
 # StrokeMaster
 
-Experimental stroke scripts, native Adobe integration, and topology research. This is not a production release. The [support matrix](HOST_SUPPORT_MATRIX.md) separates current behavior, historical prototype results, and unresolved release gates.
+Experimental stroke scripts, native Adobe integration, and topology research. The InDesign plugin is complete: route X `73fb1805`, certified on 2026-10-07 ([status](docs/RELEASE_CANDIDATE_CHECKS_2026-10-06.md#status)). The rest is not a production release. The [support matrix](HOST_SUPPORT_MATRIX.md) separates current behavior, historical prototype results, and unresolved release gates.
 
 ## Current support
 
