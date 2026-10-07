@@ -169,5 +169,7 @@ After the owner's last pass on the showcase PDF, the open spikes were inspected,
 - **A "recolored" check on the recorder** was then removed: it refused any stroker that set a color after its first mark.
   - The rebuilt `dc36839e` exports the showcase, the study, and the frame exactly as `906e70e7` did.
   - Its certification is open. In C26 one export, the extension census's X-1a reference, was written empty though the job reported success, as the placed EPS was in C21 and C22. The rerun (C27) was stopped by the system when memory ran low.
+  - C28 and C29 match C24 on 108 of 110 lines. The two others are the placed-EPS round trip, drawn one device pixel lower from an EPS identical to C25's but for its font-subset prefix. Both sessions also hung at quit with a document open.
+  - That document was C27's working copy, which InDesign recovered at every launch after C27 was stopped. It was closed without saving. C30, on the cleared host, was stopped by the system for memory again.
 - **Core tests:** 283 miter-core checks.
 
