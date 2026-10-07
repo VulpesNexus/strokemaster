@@ -208,5 +208,8 @@ The owner judged the two cells the review changed, then the counters and Wavy th
 **The InDesign plugin is complete (2026-10-07).** Route X `73fb1805` and the panel `5f4f5bab` are certified and installed, and the owner has signed off the showcase.
 
 - What the plugin leaves to InDesign, and why, is listed above: *The limitations, sorted* and *Not fixed, and why*.
-- Three cases still need a check in the host by hand: roman and tate-chu-yoko text in a vertical frame, opacity on strokes InDesign draws under the plugin's group, and the orientation of Center Thick - Thin.
-- The extension census's XE2 case is still not built, as in every session.
+- The three cases left for a host test were run on 2026-10-07, each exported with StrokeMaster off and on:
+  - **Stroke opacity under the plugin's group:** not doubled. Eight cells at 50% stroke opacity, among them InDesign's own Center dashes and Japanese Dots drawn under the group, White Diamond, laid dashes, Wavy, and Thick - Thin, measure 145 natively and 146 corrected on white (doubled would be near 200).
+  - **Center Thick - Thin:** the thick stripe lies where InDesign puts it, on overlapping squares, with one square's path reversed, and for Thin - Thick.
+  - **Vertical text:** roman letters and a tate-chu-yoko run in a copy of the owner's vertical frame draw identically with StrokeMaster off and on, stroked Outside and Center. So do the 13 vertical lines of the owner's Japanese document. Its one frame of sideways text, stroked, is corrected: the next character's stroke no longer hides a kana, and a miter spike is gone.
+- The extension census's XE2 case is still not built. The owner's attempt pasted the second anchored frame over the first, which was still selected; the interface may still thread anchored frames.
