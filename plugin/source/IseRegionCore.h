@@ -90,9 +90,10 @@ std::vector<std::vector<ise_miter::Contour>> DistanceBands(const std::vector<ise
     `half` with the join (a miter squared past `limit`); for a Center stroke (half 0) its boundary
     itself, for an Inside stroke (half < 0) shrunk, without creases. With `creases` (contours whose strokes
     meet, ContoursInteract), then closed by a disk of radius `half`, which rounds the creases
-    where two letters' offsets meet and the corners of a counter's offset, and drops a counter's
-    offset smaller than that disk; the pattern broke into spikes and restarted at every crease
-    of InDesign's own offset (the owner's check, 2026-10-06). Otherwise a shape's own concave
+    where two letters' offsets meet and the corners of a counter's offset; the pattern broke
+    into spikes and restarted at every crease of InDesign's own offset (the owner's check,
+    2026-10-06). A counter's offset smaller than that disk, which the closing fills, is kept
+    as grown (the owner's check, 2026-10-07); a counter narrower than the stroke has none. Otherwise a shape's own concave
     corners stay sharp, as InDesign strokes them. As contours of cubic curves fitted within
     `tol` (FitCurves), corners kept sharp; empty, and `ok` false, when Clipper2 fails. */
 std::vector<ise_miter::Contour> WordPath(const std::vector<ise_miter::Contour>& fill, double half, BandJoin join, double limit,

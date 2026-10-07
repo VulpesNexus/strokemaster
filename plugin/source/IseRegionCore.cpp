@@ -883,9 +883,22 @@ std::vector<Contour> WordPath(const std::vector<Contour>& fill, double half, Ban
     // round, they came back chamfered by the arcs' flattening, which split the fit there.
     const Clipper2Lib::PathsD wide = Clipper2Lib::InflatePaths(grown, half, Clipper2Lib::JoinType::Miter,
                                                                Clipper2Lib::EndType::Polygon, 100.0, precision, tol);
-    const Clipper2Lib::PathsD closed = Clipper2Lib::InflatePaths(wide, -half, Clipper2Lib::JoinType::Round,
-                                                                 Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+    Clipper2Lib::PathsD closed = Clipper2Lib::InflatePaths(wide, -half, Clipper2Lib::JoinType::Round,
+                                                           Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
     if (closed.empty()) { *ok = false; return {}; }
+    // A counter's offset narrower than the disk is filled by the closing: it is cut back out as
+    // grown, so the pattern runs round every counter that has room for its path, as InDesign's
+    // runs round each counter (the owner's check, 2026-10-07: the counters of script letters
+    // were left empty). Holes are the paths Clipper2 winds negative.
+    Clipper2Lib::PathsD filled;
+    for (const Clipper2Lib::PathD& p : grown) {
+        const double area = Clipper2Lib::Area(p);
+        if (!(area < 0)) continue;
+        const double left = std::fabs(Clipper2Lib::Area(Run(Clipper2Lib::ClipType::Difference, {p}, closed, precision, ok)));
+        if (left <= 0.01 * -area) filled.push_back(p);
+    }
+    if (!filled.empty()) closed = Run(Clipper2Lib::ClipType::Difference, closed, filled, precision, ok);
+    if (!*ok || closed.empty()) { *ok = false; return {}; }
     return Fitted(closed, tol);
 }
 

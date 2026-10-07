@@ -500,12 +500,19 @@ inline Contour RunSquare(double length)
     that ends a run at its end joins the piece of the same stroke (width, cap, and join) the
     next run starts with, so a dash through a corner is one piece. `eps`: how near the side
     counts as on it, at the least (it grows with the run, for the float dash arrays strokers
-    set). */
+    set). False when the stroker sets a mark at a corner of the side that is centered on
+    neither side there (InDesign 21.6's smaller White Diamond at each corner): no run can lay
+    it, and without it the corners showed gaps (the owner's check, 2026-10-07), so the stroker
+    is left to draw the pattern along the whole path. Such marks are looked for only on sides
+    at least twice `weight` long: along a shorter one every mark crowds its corners (a run of
+    0.9 pt in outlined script, at a weight of 3). `stray`, when given, is then where that
+    mark's middle lies on the square, and its side's length. */
 template <typename Record>
-void LayContour(const Contour& c, Record record, double eps, double cornerDegrees, Laid* laid)
+bool LayContour(const Contour& c, Record record, double eps, double cornerDegrees, Laid* laid, double weight = 0,
+                std::pair<Pt, double>* stray = nullptr)
 {
     const std::vector<Run> runs = CornerRuns(c, cornerDegrees);
-    if (runs.empty()) return;
+    if (runs.empty()) return true;
     const size_t n = runs.size();
     // Per run, the spans its strokes lay, in order along it, and how near its ends counts.
     std::vector<std::vector<detail::Span>> spans(n);
@@ -534,7 +541,16 @@ void LayContour(const Contour& c, Record record, double eps, double cornerDegree
                 double lo = 0, hi = 0;
                 Pt middle;
                 detail::Extent(sub, &lo, &hi, &middle);
-                if (std::fabs(middle.y) > tol || middle.x < -tol || middle.x >= length - tol) continue;
+                if (std::fabs(middle.y) > tol || middle.x < -tol || middle.x >= length - tol) {
+                    // On no side of the square, and nearer this side than the opposite one: a
+                    // corner's own mark.
+                    if (length >= 2 * weight && middle.y < length / 2 && std::fabs(middle.y) > tol && std::fabs(middle.x) > tol &&
+                        std::fabs(middle.x - length) > tol) {
+                        if (stray != nullptr) *stray = {middle, length};
+                        return false;
+                    }
+                    continue;
+                }
                 Pt at, dir;
                 arc.At(std::max(0.0, std::min(length, middle.x)), &at, &dir);
                 const Contour turned = detail::Turned(sub, middle.x, at, dir);
@@ -606,6 +622,7 @@ void LayContour(const Contour& c, Record record, double eps, double cornerDegree
                 const size_t group = spans[r][k].group;
                 laid->strokes[group].pieces.push_back(chain(r, k));
             }
+    return true;
 }
 
 } // namespace ise_pattern

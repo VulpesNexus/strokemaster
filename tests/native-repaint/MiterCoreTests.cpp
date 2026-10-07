@@ -655,8 +655,12 @@ int main()
         const std::vector<Contour> creased = ise_region::WordPath({sq, sq2}, 1, BandJoin::Miter, 4, true, 1e-3, &ok);
         Check(ok && in(creased, {11.1, 6.9}) && !in(creased, {11.5, 6.5}), "overlapping squares: the crease between their offsets rounded");
         const Contour counter = Reversed(Poly({{3, 3}, {6, 3}, {6, 6}, {3, 6}}), 1e-9);
-        Check(ise_region::WordPath({sq, counter}, 1, BandJoin::Miter, 4, true, 1e-3, &ok).size() == 1 && ok,
-              "a counter whose offset is smaller than the stroke: dropped");
+        const std::vector<Contour> kept = ise_region::WordPath({sq, counter}, 1, BandJoin::Miter, 4, true, 1e-3, &ok);
+        Check(ok && kept.size() == 2 && !in(kept, {4.5, 4.5}) && in(kept, {3.5, 3.5}),
+              "a counter whose offset is smaller than the stroke: kept, not filled by the creases' rounding");
+        const Contour slit = Reversed(Poly({{3, 3}, {4.5, 3}, {4.5, 6}, {3, 6}}), 1e-9);
+        Check(ise_region::WordPath({sq, slit}, 1, BandJoin::Miter, 4, true, 1e-3, &ok).size() == 1 && ok,
+              "a counter narrower than the stroke: no path round it");
         // Uncovered: what the stroke along that path leaves at an L's inner corner.
         const std::vector<Contour> bendPath = ise_region::WordPath({bend}, 1, BandJoin::Miter, 4, true, 1e-3, &ok);
         const std::vector<Contour> notch = ise_region::Uncovered({bend}, bendPath, 1, 0.1, 1e-3, &ok);
@@ -855,6 +859,26 @@ int main()
         Laid hashed;
         LayContour(squareC, hashes, 1e-6, 30, &hashed);
         Check(hashed.strokes.size() == 1 && hashed.strokes[0].pieces.size() == 4, "a hash a side, turned to it");
+        // A mark set at a corner of the side, centered on neither side there (InDesign 21.6's
+        // smaller White Diamond): the runs cannot lay it. One at the far corners is not this
+        // side's.
+        auto cornered = [&](bool far) {
+            return [&, far](double length) {
+                std::vector<Mark> marks = fittedLine(length);
+                const Pt c = far ? Pt{length - 1, length - 0.8} : Pt{1, 0.8};
+                Mark d; d.width = 0.5;
+                d.path.push_back(Poly({{c.x - 0.5, c.y}, {c.x, c.y - 0.5}, {c.x + 0.5, c.y}, {c.x, c.y + 0.5}}));
+                marks.push_back(d);
+                return marks;
+            };
+        };
+        Laid nearCorner, farCorners;
+        Check(!LayContour(squareC, cornered(false), 1e-6, 30, &nearCorner), "a mark inside the side's corner: not laid by runs");
+        Check(LayContour(squareC, cornered(true), 1e-6, 30, &farCorners) && farCorners.strokes.size() == 1 && farCorners.strokes[0].pieces.size() == 12,
+              "a mark at the far corners: left to the sides it is on");
+        Laid crowded;
+        Check(LayContour(squareC, cornered(false), 1e-6, 30, &crowded, 6),
+              "a side shorter than two weights: its corners' marks are crowded, not the corner's own");
         // A tick standing on the line touches it at one point only: not along it, and off its
         // middle, so the pattern is not laid by runs (and not dropped from them).
         Mark tick; tick.width = 0.5;

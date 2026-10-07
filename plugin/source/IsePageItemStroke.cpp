@@ -1014,7 +1014,9 @@ std::vector<ise_region::BandCorner> BandCorners(const Prepared& p, double h, dou
     by runs between its real corners (`record`: what the stroker paints along a straight line
     of a length; ise_pattern::LayContour), not by the stroker along the whole path: its
     adjustment fitted the pattern between every two anchors, which ran dashes solid along
-    outlined script (the owner's check of the corner adjustment study, 2026-10-06).
+    outlined script (the owner's check of the corner adjustment study, 2026-10-06). A stroker
+    that sets a mark of its own at each corner (White Diamond) draws along the path itself,
+    since no run can lay that mark (LayContour).
     Center and Inside patterns follow one outline too, where their contours' strokes meet: a
     Center stroke where contours lie within its half width of one another (ContoursInteract),
     an Inside stroke where contours overlap (`resolved`). InDesign strokes each contour, so
@@ -1081,13 +1083,20 @@ void PrepareWord(const std::vector<Contour>& contours, Align align, bool resolve
                 if (it != recorded.end()) return it->second;
                 bool ok = false;
                 std::vector<ise_pattern::Mark> marks = (*record)(length, &ok);
-                if (!ok) readable = false;
+                if (!ok) {
+                    readable = false;
+                    if (coverage.trace) coverage.trace("P pattern run unread length=%.4f", length);
+                }
                 recorded[length] = marks;
                 return marks;
             };
             ise_pattern::Laid laid;
-            for (const Contour& c : word) ise_pattern::LayContour(c, line, 1e-4, 30, &laid);
-            if (readable) out->laid = std::move(laid);   // otherwise the stroker draws along the path
+            bool layable = true;
+            std::pair<Pt, double> stray;
+            for (const Contour& c : word) layable = layable && ise_pattern::LayContour(c, line, 1e-4, 30, &laid, weight, &stray);
+            if (!layable && coverage.trace)
+                coverage.trace("P pattern corner mark at %.4f %.4f on a side of %.4f: drawn along the path", stray.first.x, stray.first.y, stray.second);
+            if (readable && layable) out->laid = std::move(laid);   // otherwise the stroker draws along the path
         }
         out->word.swap(word);
         return;
