@@ -1,0 +1,533 @@
+{
+ "schema": 1,
+ "label": "route X candidate 906e70e7 on InDesign 21.6.0.57 (C25), extension census, against same-day native and route W (N4, W4)",
+ "census": "X2",
+ "sessions": {
+  "native": "native control: research build 7b178414 mode=native, InDesign 21.6.0.57, cert-X2 rebuilt",
+  "route_w": "research build 7b178414 mode=routew, InDesign 21.6.0.57, cert-X2 rebuilt",
+  "route_x": "route X candidate 906e70e7 (adversarial review fixes), fresh process, InDesign 21.6.0.57",
+  "overlap": null,
+  "reference": null
+ },
+ "corpus_sha256": "84a9eb6f3fe909613b6d4ee3d4f9341c374a6c9442e771dbc80ed610e4324456",
+ "verdict_counts": {
+  "PASS": 8,
+  "UNTESTED": 1
+ },
+ "cases": [
+  {
+   "key": "XE0",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair on the parent page, drawn on the document page",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XE1",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "path text threaded into a frame below it",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 8022,
+     "route_w_damage_px": 3754,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 8022,
+     "route_w_damage_px": 3754,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 8022,
+     "route_w_damage_px": 3754,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 7934,
+     "route_w_damage_px": 3750,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 7988,
+     "route_w_damage_px": 3752,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 7988,
+     "route_w_damage_px": 3752,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XE2",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded anchored frames: InDesign 21.6 refuses to thread them by script, so the case is not built",
+   "outputs": {},
+   "verdict": "UNTESTED"
+  },
+  {
+   "key": "XE3",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair rotated 30 degrees as a unit",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 13244,
+     "route_w_damage_px": 4535,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 13244,
+     "route_w_damage_px": 4535,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 13244,
+     "route_w_damage_px": 4535,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 13284,
+     "route_w_damage_px": 4551,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 13282,
+     "route_w_damage_px": 4546,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 13282,
+     "route_w_damage_px": 4546,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XE4",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "three frames threaded in a chain",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 19662,
+     "route_w_damage_px": 8396,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 19662,
+     "route_w_damage_px": 8396,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 19662,
+     "route_w_damage_px": 8396,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 19442,
+     "route_w_damage_px": 8428,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 19552,
+     "route_w_damage_px": 8392,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 19552,
+     "route_w_damage_px": 8392,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XE5",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "downstream frame scaled 125% in its matrix",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 17015,
+     "route_w_damage_px": 6508,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 17015,
+     "route_w_damage_px": 6508,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 17015,
+     "route_w_damage_px": 6508,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 17012,
+     "route_w_damage_px": 6514,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 17019,
+     "route_w_damage_px": 6509,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 17019,
+     "route_w_damage_px": 6509,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XE6",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "an invisible rectangle stacked between the frames draws nothing in between",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XE7",
+   "relation": "same story",
+   "expectation": "corrected",
+   "why": "threaded pair in a group nested in another group",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 0,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  },
+  {
+   "key": "XE8",
+   "relation": "same story",
+   "expectation": "partial",
+   "why": "an unfilled rectangle with a 1 pt border stacked between the frames: glyphs under the border keep InDesign's order",
+   "outputs": {
+    "hqp.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 3322,
+     "route_x_sha256": "ea2bdf806819c6770853e412c7a1d72eb6bbd7c98b2f4fb0c739c2ad8a09b7fc",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x4.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 3322,
+     "route_x_sha256": "73f7394fd7ef70478254b538178d7e12e46d52b5417150fa9b0b19a267404cab",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "x1a.pdf": {
+     "native_damage_px": 11206,
+     "route_w_damage_px": 4198,
+     "route_x_damage_px": 3322,
+     "route_x_sha256": "07c580536741a8cc68acf42712205508ab92a7e8b913debf228f614f2bb92bd0",
+     "renderer": "MuPDF 1.28.2",
+     "verdict": "PASS"
+    },
+    "png600.png": {
+     "native_damage_px": 11074,
+     "route_w_damage_px": 4214,
+     "route_x_damage_px": 3282,
+     "route_x_sha256": "4e4902dbcfe2781d11aa9714524c9a9340bd0df9984bc57c8299cc1e9b1215ca",
+     "renderer": "InDesign PNG",
+     "verdict": "PASS"
+    },
+    "eps.eps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 3320,
+     "route_x_sha256": "7d4cc69f697cf4738f978d38ebfc287a2541c72305674712837bcdcabbea50d2",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    },
+    "pshigh.ps": {
+     "native_damage_px": 11152,
+     "route_w_damage_px": 4196,
+     "route_x_damage_px": 3320,
+     "route_x_sha256": "824ba573eaf22303a759ad99f413a2309e986810d3823ff3a3d5cf66c1470d28",
+     "renderer": "Ghostscript",
+     "verdict": "PASS"
+    }
+   },
+   "verdict": "PASS"
+  }
+ ],
+ "pdf_structure_vs_route_w": {
+  "hqp.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "f",
+    "gs"
+   ],
+   "only_clip_and_state_changed": false,
+   "text_chars": 66,
+   "images": 0
+  },
+  "x4.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "f",
+    "gs"
+   ],
+   "only_clip_and_state_changed": false,
+   "text_chars": 66,
+   "images": 0
+  },
+  "x1a.pdf": {
+   "same_as_route_w": {
+    "text_chars": true,
+    "text_render_modes": true,
+    "images": true,
+    "fonts": true
+   },
+   "changed_operators": [
+    "W",
+    "f",
+    "gs"
+   ],
+   "only_clip_and_state_changed": false,
+   "text_chars": 66,
+   "images": 0
+  }
+ }
+}
