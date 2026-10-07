@@ -625,4 +625,154 @@ bool LayContour(const Contour& c, Record record, double eps, double cornerDegree
     return true;
 }
 
+/** A wave as a stroker paints it along a straight line (InDesign 21.6's Wavy: one stroked
+    curve of half-waves, each a cubic from a node on the line to the next, bulging to either side
+    in turn, never fitted to the path's length): its first whole half-wave, with x in units of
+    its length (from (0, 0) to (1, 0)) and y as painted, its length, and the stroke. */
+struct WaveShape {
+    Segment half;                  // the cubic to (1, 0), from (0, 0)
+    double length = 0;             // a half-wave's length along the line
+    Mark stroke;                   // its width, cap, and join (no path)
+};
+
+/** Reads a wave from what a stroker painted along a line (RecordLine): one undashed stroke of
+    one open curve along the line, whose whole half-waves (from a node within `eps` of the line
+    to the next) have one length within a thousandth, at least two of them, bulging to either
+    side in turn. False for any other pattern. */
+inline bool ReadWave(const std::vector<Mark>& marks, double eps, WaveShape* out)
+{
+    if (marks.size() != 1 || !marks[0].stroke || !marks[0].dash.empty() || marks[0].path.size() != 1) return false;
+    const Contour& c = marks[0].path[0];
+    if (c.closed) return false;
+    auto onLine = [&](Pt q) { return std::fabs(q.y) <= eps; };
+    auto bulge = [](const Segment& g) { return g.c1.y + g.c2.y; };
+    Pt from = c.start;
+    int whole = 0;
+    double sign = 0;
+    for (size_t i = 0; i < c.segments.size(); ++i) {
+        const Segment& g = c.segments[i];
+        const Pt to = g.p;
+        if (!(g.curve && onLine(from) && onLine(to) && to.x > from.x + eps && std::fabs(bulge(g)) > eps)) {
+            // Before the first whole half-wave anything; after it, only the line's last, cut short.
+            if (whole > 0 && i + 1 != c.segments.size()) return false;
+            from = to;
+            continue;
+        }
+        const double length = to.x - from.x, side = bulge(g) > 0 ? 1 : -1;
+        if (whole == 0) {
+            out->length = length;
+            out->half.curve = true;
+            out->half.c1 = {(g.c1.x - from.x) / length, g.c1.y - from.y};
+            out->half.c2 = {(g.c2.x - from.x) / length, g.c2.y - from.y};
+            out->half.p = {1, 0};
+        } else if (std::fabs(length - out->length) > 1e-3 * out->length || side == sign) {
+            return false;
+        }
+        sign = side;
+        ++whole;
+        from = to;
+    }
+    if (whole < 2) return false;
+    out->stroke = marks[0];
+    out->stroke.path.clear();
+    return true;
+}
+
+/** Lays a wave (ReadWave) along a closed contour, as one closed stroke piece: along each run
+    between its real corners (CornerRuns) a whole number of half-waves, each stretched to fit,
+    so that the wave meets itself where the contour closes and has a node at each corner.
+    InDesign lays its wave from the path's start without fitting it, which left a step where
+    each closed outline met its own start (the owner's check, 2026-10-07). At each corner the
+    half-waves on either side bulge away from the inside of the turn: one bulging into a sharp
+    inner corner crossed the wave beyond it. That fixes whether each run holds an odd or even
+    number; round a contour without corners the number is even, so that the half-waves still
+    bulge to either side in turn. A half-wave squeezed shorter than the stroker's keeps its
+    shape, lower, and none rises higher than half the tightest radius the path turns on under
+    it; a contour shorter than three whole waves (a small counter) has three, scaled down: round a small counter, and where outlined script nearly folds, half-waves at full height
+    bent the wave out of shape and crossed it over itself (the owner's check, 2026-10-07).
+    False for an open contour. */
+inline bool LayWave(const Contour& c, const WaveShape& wave, double cornerDegrees, Laid* laid)
+{
+    if (!c.closed || !(wave.length > 0)) return false;
+    const std::vector<Run> runs = CornerRuns(c, cornerDegrees);
+    if (runs.empty()) return true;
+    const size_t n = runs.size();
+    double perimeter = 0;
+    for (const Run& r : runs) perimeter += r.arc.Length();
+    const double unit = std::min(wave.length, perimeter / 6);   // three whole waves at the least
+    // The template's own side, and, for each run, which way its first half-wave bulges (+1 as
+    // the template, -1 mirrored) and how many it holds.
+    const double own = wave.half.c1.y + wave.half.c2.y > 0 ? 1 : -1;
+    std::vector<double> first(n, 1);
+    std::vector<long> count(n, 1);
+    // The side away from the inside of the turn at the corner each run starts at: the turn to
+    // the left (counterclockwise) has its inside on the left normal.
+    auto away = [&](size_t r) {
+        const Arc& before = runs[(r + n - 1) % n].arc;
+        Pt at, in, out;
+        before.At(before.Length(), &at, &in);
+        runs[r].arc.At(0, &at, &out);
+        return ise_miter::Cross(in, out) > 0 ? -own : own;
+    };
+    for (size_t r = 0; r < n; ++r) {
+        const double ideal = runs[r].arc.Length() / unit;
+        // Even round a contour without corners; otherwise odd when both ends bulge alike.
+        const bool loop = runs[r].loop;
+        const double start = loop ? 1 : away(r), end = loop ? 1 : away((r + 1) % n);
+        const long parity = loop ? 0 : start == end ? 1 : 0;
+        long best = parity == 0 ? 2 : 1;
+        for (long k = best; k <= static_cast<long>(ideal) + 2; k += 2)
+            if (std::fabs(std::log(k / ideal)) < std::fabs(std::log(best / ideal))) best = k;
+        first[r] = start;
+        count[r] = best;
+    }
+    const int samples = 24;   // points a half-wave: within a few thousandths of a point
+    auto eval = [&](double t) {
+        const double u = 1 - t;
+        const Segment& h = wave.half;
+        return h.c1 * (3 * u * u * t) + h.c2 * (3 * u * t * t) + h.p * (t * t * t);
+    };
+    double amplitude = 0;
+    for (int i = 0; i <= samples; ++i) amplitude = std::max(amplitude, std::fabs(eval(static_cast<double>(i) / samples).y));
+    // The tightest radius the arc turns on from `from` to `to`: the turn of its direction across
+    // a short step either side of each of a few points.
+    auto tightest = [](const Arc& arc, double from, double to) {
+        const double d = std::max(0.05, std::min(1.0, 0.1 * (to - from)));
+        double radius = 1e300;
+        for (int i = 0; i <= 8; ++i) {
+            const double at = from + (to - from) * i / 8;
+            Pt p, a, b;
+            arc.At(std::max(0.0, at - d), &p, &a);
+            arc.At(std::min(arc.Length(), at + d), &p, &b);
+            const double turn = std::fabs(std::atan2(ise_miter::Cross(a, b), ise_miter::Dot(a, b)));
+            if (turn > 1e-9) radius = std::min(radius, 2 * d / turn);
+        }
+        return radius;
+    };
+    Contour piece;
+    piece.closed = true;
+    bool begun = false;
+    for (size_t r = 0; r < n; ++r) {
+        const Arc& arc = runs[r].arc;
+        const double step = arc.Length() / count[r], height = std::min(1.0, step / wave.length);
+        for (long j = 0; j < count[r]; ++j) {
+            const double cap = amplitude > 0 ? 0.5 * tightest(arc, j * step, (j + 1) * step) / amplitude : 1;
+            const double side = (j % 2 == 0 ? 1 : -1) * first[r] * std::min(height, cap);
+            for (int i = begun ? 1 : 0; i <= samples; ++i) {
+                const Pt q = eval(static_cast<double>(i) / samples);
+                Pt at, dir;
+                arc.At((j + q.x) * step, &at, &dir);
+                const Pt point = at + Pt{-dir.y, dir.x} * (side * q.y);
+                if (!begun) { piece.start = point; begun = true; continue; }
+                Segment sg;
+                sg.p = point;
+                piece.segments.push_back(sg);
+            }
+        }
+    }
+    if (!piece.segments.empty()) piece.segments.pop_back();   // the start again: the piece closes there
+    laid->strokes[detail::GroupFor(laid, wave.stroke)].pieces.push_back(piece);
+    return true;
+}
+
 } // namespace ise_pattern

@@ -901,6 +901,69 @@ int main()
         int dropTurning = 0;
         for (const Contour& c : dropLaid.strokes[0].pieces) if (c.segments.size() >= 2) ++dropTurning;
         Check(dropRuns.size() == 1 && !dropRuns[0].loop && dropTurning == 1, "a teardrop: one run, its corner's dash one piece");
+        // A wave as InDesign 21.6 paints Wavy along a line of 50: half-waves of 12 bulging to
+        // either side in turn, the last cut short.
+        Mark waved; waved.width = 1.5; waved.cap = 1;
+        {
+            Contour wl; wl.closed = false; wl.start = {0, 0};
+            for (int k = 0; k < 4; ++k) {
+                const double x0 = 12.0 * k, bulge = k % 2 == 0 ? -1 : 1;
+                Segment sg; sg.curve = true; sg.c1 = {x0 + 3, 2.93 * bulge}; sg.c2 = {x0 + 9, 2.93 * bulge}; sg.p = {x0 + 12, 0};
+                wl.segments.push_back(sg);
+            }
+            Segment cut; cut.curve = true; cut.c1 = {48.5, -0.7}; cut.c2 = {49.5, -1.5}; cut.p = {50, -1.8};
+            wl.segments.push_back(cut);
+            waved.path.push_back(wl);
+        }
+        WaveShape wave;
+        Check(ReadWave({waved}, 1e-4, &wave) && std::fabs(wave.length - 12) < 1e-9 && std::fabs(wave.half.c1.x - 0.25) < 1e-9 &&
+                  std::fabs(wave.half.c1.y + 2.93) < 1e-9 && wave.stroke.width == 1.5,
+              "Wavy along a line: half-waves of 12, the first's shape");
+        WaveShape notWave;
+        Check(!ReadWave(fittedLine(40), 1e-4, &notWave) && !ReadWave(dotMarks(0), 1e-4, &notWave), "dashes and dots are no wave");
+        // Round a circle of about 62.8: six half-waves (an even number), closed on itself.
+        Laid waveRing;
+        Check(LayWave(circleC, wave, 30, &waveRing) && waveRing.strokes.size() == 1 && waveRing.strokes[0].pieces.size() == 1,
+              "a wave round a circle: one piece");
+        const Contour& ring = waveRing.strokes[0].pieces[0];
+        double nearest = 1e9, farthest = 0;
+        for (const Segment& sg : ring.segments) { nearest = std::min(nearest, Len(sg.p)); farthest = std::max(farthest, Len(sg.p)); }
+        Check(ring.closed && ring.segments.size() == 6 * 24 - 1 && Near(ring.start, {10, 0}) && nearest < 8.3 && farthest > 11.7 && farthest < 12.0,
+              "a wave round a circle: six half-waves either side of it, squeezed lower, from its start back to it");
+        // Round a square of 10: a half-wave a side, a node at each corner.
+        Laid waveSquare;
+        Check(LayWave(squareC, wave, 30, &waveSquare), "a wave round a square");
+        int corners = 0;
+        const Contour& sqWave = waveSquare.strokes[0].pieces[0];
+        if (Near(sqWave.start, {0, 0})) ++corners;
+        for (const Segment& sg : sqWave.segments)
+            for (const Pt& c : {Pt{10, 0}, Pt{10, 10}, Pt{0, 10}}) if (Near(sg.p, c)) ++corners;
+        Check(corners == 4 && sqWave.segments.size() == 4 * 24 - 1, "a wave round a square: four half-waves, a node at each corner");
+        bool outward = true;
+        for (size_t i = 0; i < 23; ++i) if (sqWave.segments[i].p.y > 1e-9) outward = false;   // the first side, (0, 0) to (10, 0)
+        Check(outward, "a wave round a square: each half-wave bulges out, away from the turns at its corners");
+        // A sharp inner corner (an L's): the half-waves either side bulge away from it.
+        Laid waveL;
+        Check(LayWave(Poly({{0, 0}, {30, 0}, {30, 12}, {12, 12}, {12, 30}, {0, 30}}), wave, 30, &waveL), "a wave round an L");
+        bool clear = true;
+        for (const Segment& sg : waveL.strokes[0].pieces[0].segments)
+            if (sg.p.x > 12 + 1e-9 && sg.p.y > 12 + 1e-9 && sg.p.x < 20 && sg.p.y < 20) clear = false;   // into the inner corner
+        Check(clear, "a wave round an L: nothing bulges into its inner corner");
+        // Round a small circle (radius 2, under three whole waves round): three, scaled down.
+        Contour smallC;
+        smallC.start = {2, 0};
+        for (const auto& q : quads) {
+            Segment sg; sg.curve = true; sg.c1 = q[0] * 0.2; sg.c2 = q[1] * 0.2; sg.p = q[2] * 0.2; smallC.segments.push_back(sg);
+        }
+        Laid smallLaid;
+        Check(LayWave(smallC, wave, 30, &smallLaid), "a wave round a small circle");
+        double lowest = 1e9, highest = 0;
+        for (const Segment& sg : smallLaid.strokes[0].pieces[0].segments) { lowest = std::min(lowest, Len(sg.p)); highest = std::max(highest, Len(sg.p)); }
+        Check(smallLaid.strokes[0].pieces[0].segments.size() == 6 * 24 - 1 && lowest > 2 - 0.4 && highest < 2 + 0.4 && highest > 2.3,
+              "a wave round a small circle: three whole waves, scaled down to its size");
+        Contour openLine = squareC; openLine.closed = false;
+        Laid openLaid;
+        Check(!LayWave(openLine, wave, 30, &openLaid), "a wave along an open path: left to the stroker");
     }
     {
         // An Inside stroke's thin parts: an L of 10 by 10, 2 thick in one arm and 6 in the other,

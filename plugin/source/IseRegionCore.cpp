@@ -889,13 +889,21 @@ std::vector<Contour> WordPath(const std::vector<Contour>& fill, double half, Ban
     // A counter's offset narrower than the disk is filled by the closing: it is cut back out as
     // grown, so the pattern runs round every counter that has room for its path, as InDesign's
     // runs round each counter (the owner's check, 2026-10-07: the counters of script letters
-    // were left empty). Holes are the paths Clipper2 winds negative.
+    // were left empty). Holes are the paths Clipper2 winds negative. Not a pocket that comes
+    // within the disk of the outside (a script terminal curled against its stroke): cut out,
+    // it pinched the path into a loop.
     Clipper2Lib::PathsD filled;
     for (const Clipper2Lib::PathD& p : grown) {
         const double area = Clipper2Lib::Area(p);
         if (!(area < 0)) continue;
         const double left = std::fabs(Clipper2Lib::Area(Run(Clipper2Lib::ClipType::Difference, {p}, closed, precision, ok)));
-        if (left <= 0.01 * -area) filled.push_back(p);
+        if (left > 0.01 * -area) continue;
+        const Clipper2Lib::PathsD reach = Clipper2Lib::InflatePaths({p}, half, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon,
+                                                                    2.0, precision, tol);
+        const Clipper2Lib::PathsD outside = Run(Clipper2Lib::ClipType::Difference, Run(Clipper2Lib::ClipType::Difference, reach, grown, precision, ok),
+                                               {p}, precision, ok);
+        if (std::fabs(Clipper2Lib::Area(outside)) <= 0.01 * -area)
+            filled.push_back(p);
     }
     if (!filled.empty()) closed = Run(Clipper2Lib::ClipType::Difference, closed, filled, precision, ok);
     if (!*ok || closed.empty()) { *ok = false; return {}; }

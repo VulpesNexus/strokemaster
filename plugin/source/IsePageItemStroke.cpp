@@ -1016,7 +1016,9 @@ std::vector<ise_region::BandCorner> BandCorners(const Prepared& p, double h, dou
     adjustment fitted the pattern between every two anchors, which ran dashes solid along
     outlined script (the owner's check of the corner adjustment study, 2026-10-06). A stroker
     that sets a mark of its own at each corner (White Diamond) draws along the path itself,
-    since no run can lay that mark (LayContour).
+    since no run can lay that mark (LayContour). A wave (`wave`, Wavy) is laid along the path
+    here too, with a whole number of half-waves between real corners (ise_pattern::LayWave):
+    InDesign's own left a step where each closed outline met its start.
     Center and Inside patterns follow one outline too, where their contours' strokes meet: a
     Center stroke where contours lie within its half width of one another (ContoursInteract),
     an Inside stroke where contours overlap (`resolved`). InDesign strokes each contour, so
@@ -1029,7 +1031,8 @@ std::vector<ise_region::BandCorner> BandCorners(const Prepared& p, double h, dou
 void PrepareWord(const std::vector<Contour>& contours, Align align, bool resolved, bool pathStroker, bool dashes, bool stripedPath,
                  const std::vector<std::pair<double, double>>& stripes,
                  bool gap, double weight, int32 join, double limit, const Coverage& coverage, const PointBounds& bounds,
-                 const std::function<std::vector<ise_pattern::Mark>(double, bool*)>* record, Prepared* out)
+                 const std::function<std::vector<ise_pattern::Mark>(double, bool*)>* record, const ise_pattern::WaveShape* wave,
+                 Prepared* out)
 {
     // Within 0.005 pt, and under a fiftieth of the weight for hairlines.
     const double tol = std::min(0.005, weight / 50);
@@ -1074,7 +1077,12 @@ void PrepareWord(const std::vector<Contour>& contours, Align align, bool resolve
         }
         size_t runs = 0;
         for (const Contour& c : word) runs += c.segments.size();
-        if (record != nullptr && runs <= 20000) {
+        if (wave != nullptr && runs <= 20000) {
+            ise_pattern::Laid laid;
+            bool closed = true;
+            for (const Contour& c : word) closed = closed && ise_pattern::LayWave(c, *wave, 30, &laid);
+            if (closed) out->laid = std::move(laid);   // otherwise the stroker draws along the path
+        } else if (record != nullptr && runs <= 20000) {
             // Runs of the same length (a shape's equal sides) are recorded once.
             std::map<double, std::vector<ise_pattern::Mark>> recorded;
             bool readable = true;
@@ -1363,20 +1371,24 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
         std::shared_ptr<Prepared> made = std::make_shared<Prepared>();
         Prepare(contours, effects ? &anchors : nullptr, align, join, solid, h, limit, centerWord, coverage, made.get());
         // A pattern its stroker fits to a path's length is laid by runs (ise_pattern::Fitted, on
-        // a second line), when every mark can be laid so (ise_pattern::Layable: not a wave).
+        // a second line), when every mark can be laid so (ise_pattern::Layable: not a wave); a
+        // wave is laid whole (ise_pattern::ReadWave).
         bool layRuns = false;
+        ise_pattern::WaveShape wave;
+        bool layWave = false;
         if (made->ok && lineRead && !shortLine.empty()) {
             bool longRead = false;
             const std::vector<ise_pattern::Mark> longLine = RecordLine(patternStroker.get(), style, weight, plan->cap, join, limit, lineB, &longRead);
             layRuns = longRead && ise_pattern::Layable(shortLine, markEps, 3 * weight) && ise_pattern::Fitted(shortLine, lineA, longLine, lineB, markEps);
+            layWave = !layRuns && ise_pattern::ReadWave(shortLine, markEps, &wave);
             if (coverage.trace)
-                coverage.trace("P pattern marks=%d long line read=%d layable=%d laid by runs=%d", static_cast<int>(shortLine.size()), longRead ? 1 : 0,
-                               ise_pattern::Layable(shortLine, markEps, 3 * weight) ? 1 : 0, layRuns ? 1 : 0);
+                coverage.trace("P pattern marks=%d long line read=%d layable=%d laid by runs=%d wave=%d", static_cast<int>(shortLine.size()),
+                               longRead ? 1 : 0, ise_pattern::Layable(shortLine, markEps, 3 * weight) ? 1 : 0, layRuns ? 1 : 0, layWave ? 1 : 0);
         }
         if (made->ok && (pathStroker || !plan->stripes.empty()))
             PrepareWord(made->resolved ? made->stroked : contours, align, made->resolved, pathStroker, dashes, plan->forUI, plan->stripes,
                         plan->gap != nil, weight, join,
-                        limit, coverage, plan->pointBounds, layRuns ? &record : nullptr, made.get());
+                        limit, coverage, plan->pointBounds, layRuns ? &record : nullptr, layWave ? &wave : nullptr, made.get());
         size_t words = Segments(made->word) + Segments(made->notches) + Segments(made->gapBand);
         for (const auto& band : made->bands) words += Segments(band);
         for (const auto& st : made->laid.strokes) words += Segments(st.pieces);
