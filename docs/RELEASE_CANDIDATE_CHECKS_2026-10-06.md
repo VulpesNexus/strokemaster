@@ -116,3 +116,58 @@ The owner approved the four fixes above and the dash layout. All went into route
 
 **Formats.** The corrected census exported to *PDF/X-4:2008* measures identical to *High Quality Print*. *PDF/X-1a:2001* and EPS stay within a few pt² of it on every metric. Under object opacity, EPS keeps a whole point that the PDFs bound. The transparency groups draw the same on screen (a background capture of overlapping squares with a 50% stroke, Center Thin - Thin, and Inside dashes).
 
+## The adversarial review, 2026-10-07
+
+After the owner's last pass on the showcase PDF, the open spikes were inspected, and the engine's code was reviewed adversarially: first by area, then a second review of the fixes themselves.
+
+**The spikes.** Nothing left to fix. Row 55 (Center inset corners) is the effect's own geometry. Rows 58 and 59 are a bevel at the inverse-rounded cusp, past the limit, as the owner's rule for effect corners keeps it. The hairline beside it is a renderer seam at 2400 dpi.
+
+**Fixed:**
+
+- **A regression: Center patterns with the overlaps switch off.** They still followed one outline per word. Center is now resolved only when the word outline and the overlaps switches are both on.
+- **Laying by runs** (*IsePatternCore.h*):
+  - A run shorter than its corners' dashes laid them twice. Overlapping spans of one stroke are now one span.
+  - Odd dash arrays and negative phases follow PostScript: the array is repeated, and the phase is taken modulo the period.
+  - A dash shorter than the tolerance, or a dot a hair past a side's end, was dropped.
+  - Fills are grouped per mark.
+  - A mark centered on its side is laid only on that side.
+  - A mark that only touches the line was misread as one running along it. White Diamond and Straight Hash, whose marks touch the line at their points, were taken for unfitted patterns and drawn by the stroker along the whole path. They are now laid between real corners, as dashes and dots are (showcase cells L12 and the White Diamond squares, below).
+  - A pattern with a mark off the line's middle is not laid by runs, where it would have been dropped.
+- **The stroke recorder** (*IseStripeProbe.h*):
+  - `gsave` and `grestore` keep the path, as in PostScript.
+  - `rectfill` keeps the current path.
+  - The current point after `closepath` is the subpath's start.
+  - A dash array without its values, an even-odd fill, or a stroke under a sheared transform now marks the recording unreadable.
+- **The word's caches.** The marks' cache key hashes their points too. The 40,000-point bound now covers every path, and laying by runs is bounded at 20,000 segments.
+- **Inside path strokers.** The parts of a shape thinner than the stroke, which the inward path misses, are filled solid, as InDesign's solid Inside stroke fills them. They are defined as the fill less its opening by the stroke's half width, so a shape's sharp corners do not count. The second review caught a first version that filled every corner.
+- **Inside stripes** are clipped to the shape.
+- **The gap color's band** is drawn undashed, whatever dash the port inherits.
+- **Transparency:**
+  - The stroke's own transparency group is not isolated when the stroke overprints.
+  - Object blending also counts knockout and isolation groups.
+  - A whole point within a group's opacity or blending keeps to the group's painted bounds as well.
+  - A corner that the bounds leave nothing of keeps its bevel.
+- **The research control file** reads every page-item switch. The production build starts from the switches' file.
+
+**Not fixed, and why:**
+
+- **A group above an anchored object** does not bound its whole points. Past the inline's anchor lies the text frame, whose painted bounds need not hold an object hanging out of it, so trimming there could cut visible points.
+- **A rare refusal** can paint the gap color twice, at the same place.
+- **Reading the transparency attributes on every draw** costs little next to drawing, so it stays.
+- **Inside and Center inward bands at reflex corners** trim slightly differently from InDesign's offset. Not visible at review zoom.
+- **Needing a host test:**
+  - roman and tate-chu-yoko text in a vertical frame;
+  - opacity on strokes InDesign draws natively under the plugin's group;
+  - the orientation of Center Thick - Thin.
+
+**Certification.**
+
+- **C25, on `906e70e7`, passed in full.** All 110 measured lines are identical to C24's, and all seven PNGs are byte-identical ([*C25.json*](../tests/audit/results/routex/C25.json)). The cross-frame census passes 22 of 22, the extension census passes 8 of 8 built cases, and the 13 saved documents carry no plugin state ([*C25-state.json*](../tests/audit/results/routex/C25-state.json)).
+- **The visual checks on `906e70e7`:**
+  - The corner adjustment study and the vertical frame export identical to C24 at 150 dpi.
+  - The showcase changes in two cells only, the White Diamond squares and L12's Straight Hash, as above.
+- **A "recolored" check on the recorder** was then removed: it refused any stroker that set a color after its first mark.
+  - The rebuilt `dc36839e` exports the showcase, the study, and the frame exactly as `906e70e7` did.
+  - Its certification is open. In C26 one export, the extension census's X-1a reference, was written empty though the job reported success, as the placed EPS was in C21 and C22. The rerun (C27) was stopped by the system when memory ran low.
+- **Core tests:** 283 miter-core checks.
+
