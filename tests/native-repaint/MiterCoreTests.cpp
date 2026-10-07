@@ -777,11 +777,12 @@ int main()
         Laid dottedLaid;
         LayContour(squareC, dotMarks, 1e-6, 30, &dottedLaid);
         bool onRight = false;
-        for (const Contour& c : dottedLaid.fills) {
-            Pt lo = c.start, hi = c.start;
-            for (const Segment& s : c.segments) { lo = {std::min(lo.x, s.p.x), std::min(lo.y, s.p.y)}; hi = {std::max(hi.x, s.p.x), std::max(hi.y, s.p.y)}; }
-            if (Near((lo + hi) * 0.5, {10, 5})) onRight = true;
-        }
+        for (const std::vector<Contour>& fill : dottedLaid.fills)
+            for (const Contour& c : fill) {
+                Pt lo = c.start, hi = c.start;
+                for (const Segment& s : c.segments) { lo = {std::min(lo.x, s.p.x), std::min(lo.y, s.p.y)}; hi = {std::max(hi.x, s.p.x), std::max(hi.y, s.p.y)}; }
+                if (Near((lo + hi) * 0.5, {10, 5})) onRight = true;
+            }
         Check(dottedLaid.fills.size() == 4 && onRight, "a dot a side, at each side's middle");
         // A wave along the line cannot be laid by pieces.
         Mark waveMark; waveMark.width = 1;
@@ -808,6 +809,89 @@ int main()
         Check(sideSig.size() == 4 && std::fabs(sideSig[0].second - 1) < 1e-9 && std::fabs(sideSig[1].first - 2.5) < 1e-9 &&
                   std::fabs(sideSig[2].second - 7.5) < 1e-9 && std::fabs(sideSig[3].first - 9) < 1e-9 && std::fabs(sideSig[3].second - 10) < 1e-9,
               "a square's side: its half corner dashes and its fitted dashes, the far corner left out");
+        // A run shorter than its corners' dashes: their pieces along it run past both ends, and
+        // are cut to the side, so the corner dashes still meet through it.
+        auto shortRun = [&](double length) {
+            Mark m; m.width = 1;
+            Contour a; a.closed = false; a.start = {0, 3}; a.segments.push_back(straightCurve({0, 3}, {0, 0})); a.segments.push_back(straightCurve({0, 0}, {3, 0}));
+            Contour b; b.closed = false; b.start = {length - 3, 0}; b.segments.push_back(straightCurve({length - 3, 0}, {length, 0}));
+            b.segments.push_back(straightCurve({length, 0}, {length, 3}));
+            m.path = {a, b};
+            return std::vector<Mark>{m};
+        };
+        Laid tiny;
+        LayContour(Poly({{0, 0}, {1, 0}, {1, 1}, {0, 1}}), shortRun, 1e-6, 30, &tiny);
+        Check(tiny.strokes.size() == 1 && tiny.strokes[0].pieces.size() == 1 && tiny.strokes[0].pieces[0].closed,
+              "a square of 1 under dashes of 6 at its corners: solid all round");
+        // Two strokes meeting at a corner: each joins its own through it.
+        auto twoKinds = [&](double length) {
+            Mark dash; dash.width = 1; dash.path = {dashLine(0, 1), dashLine(length - 1, length)};
+            Mark dot; dot.width = 1; dot.cap = 1; dot.path = {dashLine(length - 0.2, length - 0.2)};
+            return std::vector<Mark>{dash, dot};
+        };
+        Laid kinds;
+        LayContour(squareC, twoKinds, 1e-6, 30, &kinds);
+        int turning = 0;
+        for (const Laid::Stroke& st : kinds.strokes)
+            if (st.cap == 0) for (const Contour& c : st.pieces) if (c.segments.size() == 2) ++turning;
+        Check(kinds.strokes.size() == 2 && turning == 4, "dashes and dots at the corners: each corner's dash one piece");
+        // Dash arrays: an odd one repeats to an even period; a negative phase counts back.
+        Mark odd; odd.width = 1; odd.dash = {3}; odd.phase = 4; odd.path.push_back(dashLine(0, 12));
+        const auto oddSig = Signature({odd}, 12, 1e-6, 100);
+        Check(oddSig.size() == 2 && std::fabs(oddSig[0].first - 2) < 1e-9 && std::fabs(oddSig[0].second - 5) < 1e-9,
+              "an odd dash array [3], phase 4: dashes from 2 to 5 and 8 to 11");
+        Mark back; back.width = 1; back.dash = {4, 4}; back.phase = -2; back.path.push_back(dashLine(0, 12));
+        const auto backSig = Signature({back}, 12, 1e-6, 100);
+        Check(backSig.size() == 2 && std::fabs(backSig[0].first - 2) < 1e-9 && std::fabs(backSig[0].second - 6) < 1e-9 &&
+                  std::fabs(backSig[1].first - 10) < 1e-9,
+              "a negative phase: [4, 4] at -2 is at 6, painting 2 to 6 and 10 on");
+        // A stroked hash across the line is turned to the run, not dropped.
+        auto hashes = [&](double length) {
+            Mark m; m.width = 0.5;
+            Contour hc; hc.closed = false; hc.start = {length / 2, -1}; Segment hs; hs.p = {length / 2, 1}; hc.segments.push_back(hs);
+            m.path.push_back(hc);
+            return std::vector<Mark>{m};
+        };
+        Laid hashed;
+        LayContour(squareC, hashes, 1e-6, 30, &hashed);
+        Check(hashed.strokes.size() == 1 && hashed.strokes[0].pieces.size() == 4, "a hash a side, turned to it");
+        // A tick standing on the line touches it at one point only: not along it, and off its
+        // middle, so the pattern is not laid by runs (and not dropped from them).
+        Mark tick; tick.width = 0.5;
+        { Contour tc; tc.closed = false; tc.start = {5, 0}; Segment ts; ts.p = {5, 2}; tc.segments.push_back(ts); tick.path.push_back(tc); }
+        std::vector<Pt> tickPts;
+        Check(!detail::AlongLine(tick.path[0], 1e-6, &tickPts) && !Layable({tick}, 1e-6, 2), "a tick standing on the line: not laid by runs");
+        // A dot a hair past either end of the side stays a dot at that end; a dash shorter than
+        // the tolerance still counts.
+        const auto before = detail::SideSpans({{-1e-7, 0}}, {}, 0, 10, 1e-6), after = detail::SideSpans({{10 + 1e-7, 0}}, {}, 0, 10, 1e-6);
+        Check(before.size() == 1 && before[0].first == 0 && before[0].second == 0 && after.size() == 1 && after[0].first == 10,
+              "dots a hair past the side's ends: dots at its ends");
+        Check(detail::OnIntervals(9.5, {1e-5, 2}, 0, 1e-4).size() == 5, "dashes shorter than the tolerance still paint");
+        // A contour with one corner (a teardrop): the dash through it is one piece.
+        Contour drop;
+        drop.start = {0, 0};
+        { Segment sg; sg.curve = true; sg.c1 = {10, -10}; sg.c2 = {20, 10}; sg.p = {0, 0}; drop.segments.push_back(sg); }
+        const std::vector<Run> dropRuns = CornerRuns(drop);
+        Laid dropLaid;
+        LayContour(drop, fittedLine, 1e-6, 30, &dropLaid);
+        int dropTurning = 0;
+        for (const Contour& c : dropLaid.strokes[0].pieces) if (c.segments.size() >= 2) ++dropTurning;
+        Check(dropRuns.size() == 1 && !dropRuns[0].loop && dropTurning == 1, "a teardrop: one run, its corner's dash one piece");
+    }
+    {
+        // An Inside stroke's thin parts: an L of 10 by 10, 2 thick in one arm and 6 in the other,
+        // stroked inside at 3: the thin arm, which the shrunk path misses, is left to fill.
+        const Contour el = Poly({{0, 0}, {10, 0}, {10, 6}, {2, 6}, {2, 10}, {0, 10}});
+        bool okThin = false;
+        const std::vector<Contour> thin = ise_region::UncoveredWithin({el}, 1.5, 0.05, 1e-3, &okThin);
+        auto inThin = [&](Pt q) { return Winding(Flatten(thin, 1e-4, 1e-9), q) != 0; };
+        Check(okThin && inThin({1, 9}) && !inThin({8, 3}) && !inThin({11, 3}), "Inside: the 2-thick arm left to fill, the 6-thick one stroked");
+        Check(!inThin({0.1, 0.1}) && !inThin({9.9, 0.1}) && !inThin({9.9, 5.9}), "Inside: the thick arm's corners stroked, not filled");
+        // A square and a sharp triangle: nothing thin, their corners included.
+        const std::vector<Contour> sqThin = ise_region::UncoveredWithin({Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}})}, 1.5, 0.05, 1e-3, &okThin);
+        Check(okThin && sqThin.empty(), "Inside: a square has no thin parts, its corners included");
+        const std::vector<Contour> triThin = ise_region::UncoveredWithin({Poly({{0, 0}, {30, 0}, {15, 20}})}, 1.5, 0.05, 1e-3, &okThin);
+        Check(okThin && triThin.empty(), "Inside: a triangle has no thin parts, its corners included");
     }
 
     std::printf("miter core: %d checks passed\n", checks);

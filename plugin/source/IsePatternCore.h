@@ -7,13 +7,15 @@
 // along the outline of script, whose anchors lie a few points apart, the dashes run together
 // solid (the owner's check of the corner adjustment study, 2026-10-06). Here the path is cut at
 // its real corners only (turning more than 30 degrees; a contour without one is a single run
-// around), the stroker paints a square whose sides are as long as each run into a recording
-// port, and what it painted along the first side is laid along the run: a mark on the line (a dash, a round-capped dot) as the
-// run's own piece, any other mark (a filled dot, a hash) turned to the run's direction at its
-// middle. A dash that ends one run at a corner and the dash that starts the next become one
-// piece through the corner, stroked with the join, as a pattern fitted to a shape's corners
-// draws it. So the stroker's own pattern and its own corner adjustment are kept, applied at
-// real corners only.
+// around). The stroker paints a square whose sides are as long as each run into a recording
+// port (RunSquare), and what it painted along the first side is laid along the run: a stroke
+// lying along the side (a dash, a round-capped dot) as the run's own piece, any other mark
+// centered on the side (a filled dot, a hash) turned to the run's direction at its middle. A
+// dash that ends one run at a corner and the dash that starts the next become one piece through
+// the corner, stroked with the join, as a pattern fitted to a shape's corners draws it (InDesign
+// 21.6 centers a dash on each corner, half on either side, and fits the dash array between). So
+// the stroker's own pattern and its own corner adjustment are kept, applied at real corners
+// only.
 //========================================================================================
 #pragma once
 
@@ -50,6 +52,7 @@ public:
                 prev = q;
             }
             fTables.push_back(std::move(table));
+            fEnds.push_back(total);
             fFroms.push_back(from);
             from = s.p;
         }
@@ -140,29 +143,28 @@ private:
         out.c1 = q1; out.c2 = q2; out.p = q3;
         return out;
     }
+    /** The segment and curve parameter at length s: searched, segments then samples. */
     void Locate(double s, size_t* index, double* t) const
     {
         *index = 0; *t = 0;
         if (fSegments.empty()) return;
-        s = std::max(0.0, std::min(s, fLength));
-        for (size_t i = 0; i < fTables.size(); ++i) {
-            const auto& tab = fTables[i];
-            if (s > tab.back().second && i + 1 < fTables.size()) continue;
-            for (size_t k = 1; k < tab.size(); ++k) {
-                if (s > tab[k].second && k + 1 < tab.size()) continue;
-                const double l0 = tab[k - 1].second, l1 = tab[k].second;
-                const double f = l1 > l0 ? std::max(0.0, std::min(1.0, (s - l0) / (l1 - l0))) : 0;
-                *index = i;
-                *t = tab[k - 1].first + f * (tab[k].first - tab[k - 1].first);
-                return;
-            }
-        }
-        *index = fSegments.size() - 1; *t = 1;
+        if (!(s > 0)) return;   // NaN and negative lengths: the start
+        s = std::min(s, fLength);
+        const size_t i = std::min(static_cast<size_t>(std::lower_bound(fEnds.begin(), fEnds.end(), s) - fEnds.begin()),
+                                  fSegments.size() - 1);
+        const auto& tab = fTables[i];
+        auto k = std::lower_bound(tab.begin() + 1, tab.end(), s, [](const std::pair<double, double>& e, double v) { return e.second < v; });
+        if (k == tab.end()) k = tab.end() - 1;
+        const double l0 = (k - 1)->second, l1 = k->second;
+        const double f = l1 > l0 ? std::max(0.0, std::min(1.0, (s - l0) / (l1 - l0))) : 0;
+        *index = i;
+        *t = (k - 1)->first + f * (k->first - (k - 1)->first);
     }
 
     Pt fStart;
     std::vector<Segment> fSegments;
     std::vector<std::vector<std::pair<double, double>>> fTables;
+    std::vector<double> fEnds;   // the length along the arc at each segment's end
     std::vector<Pt> fFroms;
     double fLength = 0;
 };
@@ -221,8 +223,8 @@ inline std::vector<Run> CornerRuns(const Contour& c, double cornerDegrees = 30)
     return out;
 }
 
-/** What a stroker painted along a straight line from (0, 0) to (length, 0): one paint (a fill
-    or a stroke) with its path, in the line's space. */
+/** What a stroker painted: one paint (a fill or a stroke) with its path, in the recording's
+    space. */
 struct Mark {
     bool stroke = true;
     double width = 0;              // a stroke's width
@@ -232,7 +234,8 @@ struct Mark {
     std::vector<Contour> path;
 };
 
-/** Marks laid along runs: strokes (a width, cap, and join, and their pieces) and fills. */
+/** Marks laid along runs: strokes (a width, cap, and join, and their pieces) and fills (each
+    mark's subpaths together, filled as one, nonzero). */
 struct Laid {
     struct Stroke {
         double width = 0;
@@ -240,7 +243,7 @@ struct Laid {
         std::vector<Contour> pieces;
     };
     std::vector<Stroke> strokes;
-    std::vector<Contour> fills;
+    std::vector<std::vector<Contour>> fills;
     bool Empty() const { return strokes.empty() && fills.empty(); }
 };
 
@@ -278,36 +281,53 @@ inline bool Polyline(const Contour& c, double eps, std::vector<Pt>* out)
     return true;
 }
 
+/** A stroked subpath that runs along the line y = 0 (a straight piece of it within eps of the
+    line, or a dot on it), as a polyline: a dash, a dot, a corner's dash turning onto the line.
+    A mark that only touches the line (a tick standing on it) does not. */
+inline bool AlongLine(const Contour& c, double eps, std::vector<Pt>* pts)
+{
+    if (!Polyline(c, eps, pts)) return false;
+    auto on = [&](const Pt& p) { return std::fabs(p.y) <= eps; };
+    if (pts->size() == 1) return on((*pts)[0]);
+    for (size_t i = 1; i < pts->size(); ++i)
+        if (on((*pts)[i - 1]) && on((*pts)[i])) return true;
+    return false;
+}
+
 /** The intervals along a length `total` that a dash array paints (PostScript's: from the
-    start, offset by phase); all of it without one. */
-inline std::vector<std::pair<double, double>> OnIntervals(double total, const std::vector<double>& dash, double phase)
+    start, offset by phase, an odd array repeated to an even one); all of it without one. A
+    dash that lies within the length, `tol` either side, counts however short (a dot as well);
+    one cut to nothing at an end does not. */
+inline std::vector<std::pair<double, double>> OnIntervals(double total, std::vector<double> dash, double phase, double tol = 1e-9)
 {
     std::vector<std::pair<double, double>> on;
+    if (dash.size() % 2 == 1) { const std::vector<double> once = dash; dash.insert(dash.end(), once.begin(), once.end()); }
     double period = 0;
     for (double d : dash) period += std::max(0.0, d);
-    if (dash.empty() || !(period > 0)) {
+    if (dash.empty() || !(period > 0) || !std::isfinite(period)) {
         on.push_back({0, total});
         return on;
     }
-    double s = -std::fmod(std::max(0.0, phase), period);
+    double ph = std::isfinite(phase) ? std::fmod(phase, period) : 0;
+    if (ph < 0) ph += period;
+    double s = -ph;
     size_t k = 0;
-    for (int guard = 0; s <= total && guard < 1000000; ++guard) {
+    for (int guard = 0; s <= total + tol && guard < 1000000; ++guard) {
         const double d = std::max(0.0, dash[k % dash.size()]);
         if (k % 2 == 0) {
-            // A dash cut to nothing at either end is none; a dash of no length (a dot) is one.
-            const double from = std::max(0.0, s), to = std::min(total, s + d);
-            if (to > from || (d == 0 && s >= 0)) on.push_back({from, to});
+            const double from = std::min(total, std::max(0.0, s)), to = std::min(total, std::max(from, s + d));
+            if (to > from + tol || (s >= -tol && s + d <= total + tol)) on.push_back({from, to});
         }
         s += d;
         ++k;
-        if (d == 0 && dash.size() == 1) break;
     }
     return on;
 }
 
-/** What a stroked polyline paints on the side y = 0, 0 <= x <= length (within eps): each
-    interval its dash array paints along it, cut to its pieces on that side, as [from, to] in x
-    (a dot as [x, x]). */
+/** What a stroked polyline lying along the line paints on the side y = 0, 0 <= x <= length:
+    each interval its dash array paints along it, cut to its pieces on the line and to the side,
+    as [from, to] in x (a dot as [x, x]). Pieces off the line (a corner's dash turning away) are
+    left out. */
 inline std::vector<std::pair<double, double>> SideSpans(const std::vector<Pt>& pts, const std::vector<double>& dash, double phase,
                                                         double length, double eps)
 {
@@ -315,30 +335,33 @@ inline std::vector<std::pair<double, double>> SideSpans(const std::vector<Pt>& p
     std::vector<double> at{0};
     for (size_t i = 1; i < pts.size(); ++i) at.push_back(at.back() + ise_miter::Len(pts[i] - pts[i - 1]));
     const double total = at.back();
-    auto onSide = [&](Pt p) { return std::fabs(p.y) <= eps && p.x >= -eps && p.x <= length + eps; };
-    for (const auto& iv : OnIntervals(total, dash, phase)) {
+    auto onLine = [&](Pt p) { return std::fabs(p.y) <= eps; };
+    auto clip = [&](double a, double b, std::vector<std::pair<double, double>>* parts) {
+        // Clamped to the side first: a dot a hair past either end stays a dot at it.
+        const double lo = std::min(length, std::max(0.0, std::min(a, b))), hi = std::min(length, std::max(lo, std::max(a, b)));
+        if (std::max(a, b) >= -eps && std::min(a, b) <= length + eps) parts->push_back({lo, hi});
+    };
+    for (const auto& iv : OnIntervals(total, dash, phase, eps)) {
         std::vector<std::pair<double, double>> parts;
         if (pts.size() == 1 || total <= 0) {   // a dot
-            if (onSide(pts[0])) parts.push_back({pts[0].x, pts[0].x});
+            if (onLine(pts[0])) clip(pts[0].x, pts[0].x, &parts);
         }
         for (size_t i = 1; i < pts.size() && total > 0; ++i) {
             const Pt p0 = pts[i - 1], p1 = pts[i];
-            if (!onSide(p0) || !onSide(p1)) continue;
+            if (!onLine(p0) || !onLine(p1)) continue;
             const double lo = std::max(iv.first, at[i - 1]), hi = std::min(iv.second, at[i]);
             if (hi < lo - 1e-12) continue;
             const double span = at[i] - at[i - 1];
             auto x = [&](double s) { return span > 0 ? p0.x + (p1.x - p0.x) * (s - at[i - 1]) / span : p0.x; };
-            const double a = x(lo), b = x(hi);
-            parts.push_back({std::min(a, b), std::max(a, b)});
+            clip(x(lo), x(hi), &parts);
         }
         // One on-interval along collinear pieces of the side is one span.
         std::sort(parts.begin(), parts.end());
-        for (const auto& p : parts) {
-            if (!out.empty() && &p != &parts.front() && p.first <= out.back().second + eps) out.back().second = std::max(out.back().second, p.second);
-            else out.push_back(p);
+        for (size_t k = 0; k < parts.size(); ++k) {
+            if (k > 0 && parts[k].first <= out.back().second + eps) out.back().second = std::max(out.back().second, parts[k].second);
+            else out.push_back(parts[k]);
         }
     }
-    for (auto& sp : out) { sp.first = std::max(0.0, std::min(length, sp.first)); sp.second = std::max(sp.first, std::min(length, sp.second)); }
     return out;
 }
 
@@ -400,19 +423,21 @@ inline Contour Joined(const Contour& a, const Contour& b)
 
 } // namespace detail
 
-/** Whether marks can be laid along runs: every stroked subpath is straight (a dash, a dot, a
-    hash), and every other mark no longer than `longest` along the line (a filled dot); a mark
-    that curves along the line (a wave) cannot be laid by pieces. */
+/** Whether marks, recorded along a straight line, can be laid along runs: every stroked
+    subpath lies along the line, or is centered on it and no longer along it than `longest` (a
+    dash, a dot, a hash), and so is every filled one (a filled dot). A mark that curves along
+    the line (a wave) cannot be laid by pieces, and one off its middle (LayContour lays only
+    marks centered on a side) is not. */
 inline bool Layable(const std::vector<Mark>& marks, double eps, double longest)
 {
     std::vector<Pt> pts;
     for (const Mark& m : marks)
         for (const Contour& c : m.path) {
-            if (m.stroke && detail::Polyline(c, eps, &pts)) continue;
+            if (m.stroke && detail::AlongLine(c, eps, &pts)) continue;
             double lo = 0, hi = 0;
             Pt middle;
             detail::Extent(c, &lo, &hi, &middle);
-            if (hi - lo > longest) return false;
+            if (hi - lo > longest || std::fabs(middle.y) > eps) return false;
         }
     return true;
 }
@@ -426,7 +451,7 @@ inline std::vector<std::pair<double, double>> Signature(const std::vector<Mark>&
     std::vector<Pt> pts;
     for (const Mark& m : marks)
         for (const Contour& c : m.path) {
-            if (m.stroke && detail::Polyline(c, eps, &pts)) {
+            if (m.stroke && detail::AlongLine(c, eps, &pts)) {
                 for (const auto& sp : detail::SideSpans(pts, m.dash, m.phase, length, eps))
                     if (sp.second < before) out.push_back(sp);
                 continue;
@@ -434,7 +459,7 @@ inline std::vector<std::pair<double, double>> Signature(const std::vector<Mark>&
             double lo = 0, hi = 0;
             Pt middle;
             detail::Extent(c, &lo, &hi, &middle);
-            if (hi < before) out.push_back({middle.x, middle.x});
+            if (std::fabs(middle.y) <= eps && hi < before) out.push_back({middle.x, middle.x});   // centered on the line, as laid
         }
     std::sort(out.begin(), out.end());
     return out;
@@ -455,8 +480,7 @@ inline bool Fitted(const std::vector<Mark>& shortLine, double a, const std::vect
 
 /** The square a run of `length` is measured on (LayContour): its first side is the run, from
     (0, 0) to (length, 0), between two corners, as a stroker that fits its pattern to corners
-    lays it between a shape's corners (InDesign 21.6: a dash centered on each corner, half on
-    either side, and the pattern fitted between). */
+    lays it between a shape's corners. */
 inline Contour RunSquare(double length)
 {
     Contour c;
@@ -471,28 +495,34 @@ inline Contour RunSquare(double length)
 }
 
 /** Lays a contour's pattern by its runs (CornerRuns): `record(length)` returns what the stroker
-    paints around RunSquare(length), of which the first side is taken: a stroke's parts on it
+    paints around RunSquare(length), of which the first side is taken: a stroke's parts along it
     as pieces of the run, any other mark centered on it turned to the run's direction. A piece
-    that ends a run at its end joins the piece the next run starts with at its start (the same
-    width, cap, and join), so a dash through a corner is one piece. `eps`: how near the side
-    counts as on it. */
+    that ends a run at its end joins the piece of the same stroke (width, cap, and join) the
+    next run starts with, so a dash through a corner is one piece. `eps`: how near the side
+    counts as on it, at the least (it grows with the run, for the float dash arrays strokers
+    set). */
 template <typename Record>
 void LayContour(const Contour& c, Record record, double eps, double cornerDegrees, Laid* laid)
 {
     const std::vector<Run> runs = CornerRuns(c, cornerDegrees);
     if (runs.empty()) return;
-    // Per run, the spans its strokes lay, in order along it.
-    std::vector<std::vector<detail::Span>> spans(runs.size());
+    const size_t n = runs.size();
+    // Per run, the spans its strokes lay, in order along it, and how near its ends counts.
+    std::vector<std::vector<detail::Span>> spans(n);
+    std::vector<double> slack(n, eps);
     std::vector<Pt> pts;
-    for (size_t r = 0; r < runs.size(); ++r) {
+    for (size_t r = 0; r < n; ++r) {
         const Arc& arc = runs[r].arc;
         const double length = arc.Length();
         if (!(length > 0)) continue;
+        const double tol = std::max(eps, 1e-6 * length);
+        slack[r] = tol;
         const std::vector<Mark> marks = record(length);
-        for (const Mark& m : marks)
+        for (const Mark& m : marks) {
+            std::vector<Contour> filled;
             for (const Contour& sub : m.path) {
-                if (m.stroke && detail::Polyline(sub, eps, &pts)) {
-                    const std::vector<std::pair<double, double>> on = detail::SideSpans(pts, m.dash, m.phase, length, eps);
+                if (m.stroke && detail::AlongLine(sub, tol, &pts)) {
+                    const std::vector<std::pair<double, double>> on = detail::SideSpans(pts, m.dash, m.phase, length, tol);
                     if (!on.empty()) {
                         const size_t g = detail::GroupFor(laid, m);
                         for (const auto& sp : on) spans[r].push_back({sp.first, sp.second, g});
@@ -504,45 +534,67 @@ void LayContour(const Contour& c, Record record, double eps, double cornerDegree
                 double lo = 0, hi = 0;
                 Pt middle;
                 detail::Extent(sub, &lo, &hi, &middle);
-                if (std::fabs(middle.y) > eps || middle.x < -eps || middle.x >= length - eps) continue;
+                if (std::fabs(middle.y) > tol || middle.x < -tol || middle.x >= length - tol) continue;
                 Pt at, dir;
                 arc.At(std::max(0.0, std::min(length, middle.x)), &at, &dir);
                 const Contour turned = detail::Turned(sub, middle.x, at, dir);
                 if (m.stroke) laid->strokes[detail::GroupFor(laid, m)].pieces.push_back(turned);
-                else laid->fills.push_back(turned);
+                else filled.push_back(turned);
             }
+            if (!filled.empty()) laid->fills.push_back(filled);
+        }
         std::sort(spans[r].begin(), spans[r].end(), [](const detail::Span& x, const detail::Span& y) { return x.from < y.from; });
+        // Spans of the same stroke that overlap paint the same ink: one span (a short run's two
+        // corner dashes both covering it).
+        std::vector<detail::Span> merged;
+        for (const detail::Span& sp : spans[r]) {
+            bool joined = false;
+            for (detail::Span& m : merged)
+                if (m.group == sp.group && sp.from <= m.to + tol && sp.to >= m.from - tol) {
+                    m.from = std::min(m.from, sp.from);
+                    m.to = std::max(m.to, sp.to);
+                    joined = true;
+                    break;
+                }
+            if (!joined) merged.push_back(sp);
+        }
+        spans[r].swap(merged);
     }
-    // The pieces, a run's last span joined to the next run's first through the corner (round a
-    // loop, to its own first). A chain starts at a span that continues no other, so that a dash
-    // through a corner is one piece whichever run it starts in; a chain all the way round (a
-    // solid contour) is closed.
-    const size_t n = runs.size();
-    auto reachesEnd = [&](size_t r, size_t k) {
-        return k + 1 == spans[r].size() && spans[r][k].to >= runs[r].arc.Length() - eps;
+    // The pieces, a run's span reaching its end joined to the next run's span of the same stroke
+    // starting at its start, through the corner (round a loop, to its own). A chain starts at a
+    // span that continues no other, so that a dash through a corner is one piece whichever run
+    // it starts in; a chain all the way round (a solid contour) is closed.
+    auto reachesEnd = [&](size_t r, size_t k) { return spans[r][k].to >= runs[r].arc.Length() - slack[r]; };
+    auto startOf = [&](size_t r, size_t group) -> long {   // the span of `group` starting run r
+        for (size_t k = 0; k < spans[r].size() && spans[r][k].from <= slack[r]; ++k)
+            if (spans[r][k].group == group) return static_cast<long>(k);
+        return -1;
     };
-    auto continues = [&](size_t r) {   // spans[r][0] carries on the previous run's last span
-        if (spans[r].empty() || spans[r][0].from > eps) return false;
+    auto continues = [&](size_t r, size_t k) {   // spans[r][k] carries on a span ending the previous run
+        if (spans[r][k].from > slack[r]) return false;
         const size_t prev = (r + n - 1) % n;
-        return !spans[prev].empty() && reachesEnd(prev, spans[prev].size() - 1) && spans[prev].back().group == spans[r][0].group;
+        for (size_t j = 0; j < spans[prev].size(); ++j)
+            if (spans[prev][j].group == spans[r][k].group && reachesEnd(prev, j) && !(prev == r && j == k)) return true;
+        return false;
     };
     std::vector<std::vector<char>> used(n);
     for (size_t r = 0; r < n; ++r) used[r].assign(spans[r].size(), 0);
     auto chain = [&](size_t r, size_t k) {
-        const size_t startRun = r, startSpan = k;
+        const size_t startRun = r, startSpan = k, group = spans[r][k].group;
         used[r][k] = 1;
         Contour piece = runs[r].arc.Piece(spans[r][k].from, spans[r][k].to);
-        while (reachesEnd(r, k)) {
+        for (size_t guard = 0; guard <= n && reachesEnd(r, k); ++guard) {
             const size_t next = (r + 1) % n;
-            if (!continues(next)) break;
-            if (used[next][0]) {
-                piece.closed = next == startRun && startSpan == 0;   // all the way round
+            const long j = startOf(next, group);
+            if (j < 0) break;
+            if (used[next][static_cast<size_t>(j)]) {
+                piece.closed = next == startRun && static_cast<size_t>(j) == startSpan;   // all the way round
                 break;
             }
-            used[next][0] = 1;
-            piece = detail::Joined(piece, runs[next].arc.Piece(spans[next][0].from, spans[next][0].to));
+            used[next][static_cast<size_t>(j)] = 1;
+            piece = detail::Joined(piece, runs[next].arc.Piece(spans[next][static_cast<size_t>(j)].from, spans[next][static_cast<size_t>(j)].to));
             r = next;
-            k = 0;
+            k = static_cast<size_t>(j);
         }
         return piece;
     };
@@ -550,7 +602,7 @@ void LayContour(const Contour& c, Record record, double eps, double cornerDegree
         for (size_t r = 0; r < n; ++r)
             for (size_t k = 0; k < spans[r].size(); ++k) {
                 if (used[r][k]) continue;
-                if (pass == 0 && k == 0 && continues(r)) continue;   // picked up by the chain before it
+                if (pass == 0 && continues(r, k)) continue;   // picked up by the chain before it
                 const size_t group = spans[r][k].group;
                 laid->strokes[group].pieces.push_back(chain(r, k));
             }

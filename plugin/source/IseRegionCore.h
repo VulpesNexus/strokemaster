@@ -76,8 +76,9 @@ struct BandCorner {
     point whose distance lies between them, with the join (BandJoin) at the offsets' corners
     (outward, the miters of `corners` added; inward, mitered within `limit`), so each band
     follows one outline around touching and overlapping contours, into the notches where they
-    meet, and nested bands keep one another's points. A band from 0 outward reaches `inset` into
-    the fill, so that no seam shows between it and the fill drawn beneath. As contours of cubic
+    meet, and nested bands keep one another's points. The distance 0 is taken `inset` into the
+    fill, so that no seam shows between an Outside stroke's innermost band and the fill drawn
+    beneath; Center and Inside bands, which cross or lie within the fill, pass 0. As contours of cubic
     curves fitted to the offsets within `tol` (FitCurves), wound for the nonzero rule; empty, and
     `ok` false, when Clipper2 fails. */
 std::vector<std::vector<ise_miter::Contour>> DistanceBands(const std::vector<ise_miter::Contour>& fill,
@@ -105,6 +106,15 @@ std::vector<ise_miter::Contour> WordPath(const std::vector<ise_miter::Contour>& 
     false when Clipper2 fails. */
 std::vector<ise_miter::Contour> Uncovered(const std::vector<ise_miter::Contour>& fill, const std::vector<ise_miter::Contour>& path,
                                           double half, double grow, double tol, bool* ok);
+
+/** What an Inside stroke of half width `half` along the fill shrunk by `half` (WordPath) leaves
+    unpainted of the nonzero fill of `fill`: the parts thinner than the stroke (2 half), which
+    the shrunk path drops; the fill less its opening by a disk of radius half, regrown with
+    miter joins so that sharp corners are not counted. Grown by `grow`, within the fill.
+    Contours fitted within `tol`; empty where there is nothing, and `ok` false when Clipper2
+    fails. */
+std::vector<ise_miter::Contour> UncoveredWithin(const std::vector<ise_miter::Contour>& fill, double half, double grow, double tol,
+                                                bool* ok);
 
 /** Whether a stroke `reach` either side of each contour would overlap another contour's: the
     contours' bands, each within reach of its own line, overlap by more than slivers. Where they

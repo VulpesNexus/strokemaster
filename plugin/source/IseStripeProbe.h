@@ -36,8 +36,10 @@ using ise_miter::Segment;
 
 /** A graphics port that draws nothing: it keeps the current path in its own space (curves kept)
     and the stroke state, and hands each fill and stroke to Painted. Anything it cannot read (an
-    AGM path, an image, text, a shading) marks the recording unreadable; a clip marks it
-    clipped. */
+    AGM path, an image, text, a shading, a dash array without its values) marks the recording
+    unreadable; a clip marks it clipped. Colors, transparency, and soft masks are ignored: the
+    strokers it records paint every mark in the paint they are given (a stroke's gap color is
+    painted by its caller). */
 class RecordingPort : public IGraphicsPort
 {
 public:
@@ -73,11 +75,13 @@ public:
         Extend(s);
     }
     void closepath() override { if (!fPath.empty()) fPath.back().closed = true; }
-    void gsave() override { fStack.push_back(fState); }
+    // gsave keeps the current path too, as PostScript's does.
+    void gsave() override { fStack.push_back({fState, fPath}); }
     void grestore() override
     {
         if (fStack.empty()) return;
-        fState = fStack.back();
+        fState = fStack.back().first;
+        fPath = fStack.back().second;
         fStack.pop_back();
     }
     void translate(const PMReal& x, const PMReal& y) override { Concat({1, 0, 0, 1, ToDouble(x), ToDouble(y)}); }
@@ -94,6 +98,7 @@ public:
     void setlinewidth(const PMReal& width) override { fState.width = ToDouble(width); }
     void setdash(int32 numDash, float* dashes, float phase) override
     {
+        if (numDash > 0 && dashes == nullptr) unreadable = true;
         fState.dash.clear();
         for (int32 i = 0; i < numDash && dashes != nullptr; ++i) fState.dash.push_back(dashes[i]);
         fState.phase = phase;
@@ -119,9 +124,9 @@ public:
     void SetColorServer(AGMPaint*, bool16, const PMMatrix&) override {}
     void SetAlphaServer(AGMPaint*, bool16, const PMMatrix&) override {}
     void setoverprint(bool32) override {}
-    void fill() override { Painted(false); fPath.clear(); }
-    void eofill() override { Painted(false); fPath.clear(); }
-    void stroke() override { Painted(true); fPath.clear(); }
+    void fill() override { Paint(false, false); }
+    void eofill() override { Paint(false, true); }
+    void stroke() override { Paint(true, false); }
     void image(_t_AGMImageRecord*, const PMMatrix&, int32) override { unreadable = true; }
     void image(_t_AGMImageRecord*, AGMColorSpace*, const PMMatrix&, int32) override { unreadable = true; }
     void image(AGMImage*, const PMMatrix&, int32) override { unreadable = true; }
@@ -139,11 +144,14 @@ public:
     void strokepath_clip() override { fClipped = true; }
     void rectclip(const PMReal&, const PMReal&, const PMReal&, const PMReal&) override { fClipped = true; }
     void rectclip(const PMRect&) override { fClipped = true; }
+    // rectfill paints a rectangle of its own and leaves the current path as it was.
     void rectfill(const PMReal& x, const PMReal& y, const PMReal& w, const PMReal& h) override
     {
+        std::vector<Contour> kept;
+        kept.swap(fPath);
         RectPath(ToDouble(x), ToDouble(y), ToDouble(w), ToDouble(h));
-        Painted(false);
-        fPath.clear();
+        Paint(false, false);
+        fPath.swap(kept);
     }
     void rectfill(const PMRect& r) override { rectfill(r.Left(), r.Top(), r.Width(), r.Height()); }
     void rectstroke(const PMReal&, const PMReal&, const PMReal&, const PMReal&) override { unreadable = true; }
@@ -176,16 +184,31 @@ protected:
         double phase = 0;
     };
 
-    /** A fill (stroke false) or a stroke of the current path (fPath), in the state fState. */
-    virtual void Painted(bool stroke) = 0;
+    /** A fill (stroke false; even-odd or nonzero) or a stroke of the current path (fPath), in
+        the state fState. */
+    virtual void Painted(bool stroke, bool evenOdd) = 0;
 
     /** How the matrix scales lengths (the square root of its determinant's size). */
     double Scale() const { return std::sqrt(std::fabs(fState.m[0] * fState.m[3] - fState.m[1] * fState.m[2])); }
+
+    /** Whether the matrix keeps shapes (no shear, the same scale both ways): a stroke's pen
+        stays round, and its width and dashes scale by Scale(). */
+    bool Similar() const
+    {
+        const double* m = fState.m;
+        const double a = m[0] * m[0] + m[1] * m[1], d = m[2] * m[2] + m[3] * m[3], cross = m[0] * m[2] + m[1] * m[3];
+        return std::fabs(a - d) <= 1e-9 * std::max(a, d) + 1e-12 && std::fabs(cross) <= 1e-9 * std::max(a, d) + 1e-12;
+    }
 
     State fState;
     std::vector<Contour> fPath;
 
 private:
+    void Paint(bool stroke, bool evenOdd)
+    {
+        Painted(stroke, evenOdd);
+        fPath.clear();
+    }
     Pt At(const PMReal& x, const PMReal& y) const
     {
         const double px = ToDouble(x), py = ToDouble(y);
@@ -198,14 +221,17 @@ private:
         const double* m = fState.m;
         return {m[0] * px + m[2] * py, m[1] * px + m[3] * py};
     }
+    /** The current point: after closepath, the closed subpath's start. */
     Pt Last() const
     {
         if (fPath.empty()) return {0, 0};
         const Contour& c = fPath.back();
-        return c.segments.empty() ? c.start : c.segments.back().p;
+        return c.closed || c.segments.empty() ? c.start : c.segments.back().p;
     }
+    /** A new subpath at p; a moveto right after another replaces it, as it paints nothing. */
     void Begin(Pt p)
     {
+        if (!fPath.empty() && fPath.back().segments.empty() && !fPath.back().closed) fPath.pop_back();
         Contour c;
         c.closed = false;
         c.start = p;
@@ -213,7 +239,8 @@ private:
     }
     void Extend(const Segment& s)
     {
-        if (fPath.empty()) Begin({0, 0});
+        // A segment without a current point starts a subpath at its end, as the recorder did.
+        if (fPath.empty()) { Begin(s.p); return; }
         if (fPath.back().closed) Begin(Last());   // after closepath, a new subpath from its start
         fPath.back().segments.push_back(s);
     }
@@ -241,7 +268,7 @@ private:
     }
     void Concat(std::initializer_list<double> n) { std::vector<double> v(n); Concat(v.data()); }
 
-    std::vector<State> fStack;
+    std::vector<std::pair<State, std::vector<Contour>>> fStack;
     bool fClipped = false;
 };
 
@@ -255,7 +282,7 @@ public:
     std::vector<std::pair<double, double>> bands;   // y intervals painted across x = probeX
 
 protected:
-    void Painted(bool stroke) override
+    void Painted(bool stroke, bool) override
     {
         if (stroke) StrokeBands(); else FillBands();
     }
@@ -324,16 +351,19 @@ private:
 };
 
 /** Records every paint as a mark (ise_pattern::Mark): its path in the recorder's own space, and
-    for a stroke its width, cap, join, and dash array scaled into that space. */
+    for a stroke its width, cap, join, and dash array scaled into that space. An even-odd fill,
+    and a stroke through a matrix that does not keep shapes (its pen an ellipse), cannot be laid
+    as recorded, and mark the recording unreadable. */
 class MarkRecorder : public RecordingPort
 {
 public:
     std::vector<ise_pattern::Mark> marks;
 
 protected:
-    void Painted(bool stroke) override
+    void Painted(bool stroke, bool evenOdd) override
     {
         if (fPath.empty()) return;
+        if (evenOdd || (stroke && !Similar())) { unreadable = true; return; }
         ise_pattern::Mark m;
         m.stroke = stroke;
         const double scale = Scale();

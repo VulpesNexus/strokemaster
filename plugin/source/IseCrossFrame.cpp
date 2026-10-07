@@ -19,8 +19,10 @@
 //                   xp=0|1 (page-item strokes on items with object-level transparency; on by default),
 //                   probe=native (research: claim each stroked page item's event and draw
 //                   InDesign's own stroke from it, unclipped; off by default),
-//                   word=0|1 (Outside dashes and built-in stripes along one outline per word,
-//                   IsePageItemStroke.cpp's PrepareWord; on by default)
+//                   word=0|1 (patterns along one outline per word, IsePageItemStroke.cpp's
+//                   PrepareWord; on by default), overlaps, inside, whole_points,
+//                   pattern_points, glyph_tips, effect_corners, open_paths=0|1 (the
+//                   page-item switches of IseSettings.h; on by default)
 //   ISE_XF_TRACE    the trace file, appended to
 // Without the control file, the research build follows the StrokeMaster switches as the
 // production build does: the file the StrokeMaster panel writes (IseSettings.h), read again at
@@ -183,6 +185,20 @@ void ReloadControl()
             c.coverage.probeNative = v == "native";
         } else if (k == "word") {
             c.coverage.wordOutline = v != "0";
+        } else if (k == "overlaps") {
+            c.coverage.overlaps = v != "0";
+        } else if (k == "inside") {
+            c.coverage.inside = v != "0";
+        } else if (k == "whole_points") {
+            c.coverage.wholePoints = v != "0";
+        } else if (k == "pattern_points") {
+            c.coverage.patternPoints = v != "0";
+        } else if (k == "glyph_tips") {
+            c.coverage.glyphTips = v != "0";
+        } else if (k == "effect_corners") {
+            c.coverage.effectCorners = v != "0";
+        } else if (k == "open_paths") {
+            c.coverage.openPaths = v != "0";
         }
     }
     std::fclose(f);
@@ -233,7 +249,17 @@ const char* PortKind(GraphicsData* gd)
 #else
 // Each drawing thread keeps its own copy of the switches and reads them again when their file
 // changes, at the start of each spread it draws.
-Control& Ctl() { thread_local Control c = FromSettings(ise_settings::Settings()); return c; }
+Control& Ctl()
+{
+    // The switches as their file has them, from the thread's first use; read again when the file
+    // changes, at the start of each spread drawn (ReloadControl).
+    thread_local Control c = [] {
+        ise_settings::Settings s;
+        ise_settings::Load(&s);
+        return FromSettings(s);
+    }();
+    return c;
+}
 thread_local FILETIME gSettingsStamp = {0, 0};
 thread_local bool gSettingsSeen = false;
 void ReloadControl() { ReloadSettings(Ctl(), gSettingsStamp, gSettingsSeen); }

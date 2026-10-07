@@ -14,12 +14,12 @@ namespace ise_page_stroke {
 struct Coverage {
     bool transparency = true;    // items with opacity or blending (object, stroke, or fill level); effects on a stroke or fill: never
     bool probeNative = false;    // research: InDesign's own stroke drawn from the event, unclipped
-    bool wordOutline = true;     // Outside dashes and built-in stripes along one outline per word
+    bool wordOutline = true;     // patterns along one outline per word (Center and Inside also need overlaps)
     bool wholePoints = true;     // past the limit, a shape's own points kept whole (else beveled as InDesign)
     bool glyphTips = true;       // within the limit, glyph tips trimmed
     bool effectCorners = true;   // corner-effect corners told apart (beveled past the limit, trimmed within)
     bool patternPoints = true;   // whole points added to dashed, dotted, and striped strokes
-    bool overlaps = true;        // Outside and Inside on overlapping contours (else left to InDesign)
+    bool overlaps = true;        // overlapping contours: Outside and Inside strokes, Center patterns (else InDesign's)
     bool inside = true;          // Inside strokes (else left to InDesign)
     bool openPaths = true;       // open paths (else left to InDesign)
     void (*trace)(const char* fmt, ...) = nullptr;   // research: one line per transparency attribute read

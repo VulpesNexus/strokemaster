@@ -28,7 +28,7 @@
 // space instead (PageSpace): the outline placed through the frame's transform, the port's
 // transform undone by as much, the width scaled by the transform's area factor (1 for a
 // shear), and the corners found on the placed outline. Only lines the frame itself does not
-// turn (horizontal text) are; vertical text keeps the stroke in its own coordinates. The
+// turn (horizontal text) are. Vertical runs are left to InDesign entirely (Draw). The
 // document's attributes are never changed, so without this plugin the same document draws
 // natively. The stroke is written as paths (the glyph fills stay native text), so exported
 // PDF keeps its searchable text and fonts.

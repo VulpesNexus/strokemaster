@@ -812,6 +812,33 @@ std::vector<std::vector<Contour>> DistanceBands(const std::vector<Contour>& fill
     return out;
 }
 
+std::vector<Contour> UncoveredWithin(const std::vector<Contour>& fill, double half, double grow, double tol, bool* ok)
+{
+    *ok = tol > 0 && half > 0;
+    if (!*ok) return {};
+    const int precision = kBandPrecision;
+    const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
+    if (!*ok || region.empty()) { *ok = false; return {}; }
+    // The fill less its opening by a disk of radius half: shrunk by half (the path's own
+    // shrinking), then grown back with miter joins, which restores every part at least as thick
+    // as the stroke, its sharp corners included (a round band along the path left every corner).
+    const Clipper2Lib::PathsD core = Clipper2Lib::InflatePaths(region, -half, Clipper2Lib::JoinType::Round,
+                                                               Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+    const Clipper2Lib::PathsD opening = core.empty() ? core
+        : Clipper2Lib::InflatePaths(core, half, Clipper2Lib::JoinType::Miter, Clipper2Lib::EndType::Polygon, 100.0, precision, tol);
+    const Clipper2Lib::PathsD left = Run(Clipper2Lib::ClipType::Difference, region, opening, precision, ok);
+    if (!*ok || left.empty()) return {};
+    // Opened by a few tolerances, which drops the slivers two flattenings leave, then grown
+    // under the band beside it and kept within the fill.
+    const double open = 3 * tol;
+    const Clipper2Lib::PathsD opened = Clipper2Lib::InflatePaths(left, -open, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon,
+                                                                 2.0, precision, tol);
+    if (opened.empty()) return {};
+    const Clipper2Lib::PathsD grown = Clipper2Lib::InflatePaths(opened, open + grow, Clipper2Lib::JoinType::Round,
+                                                                Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+    return Fitted(Run(Clipper2Lib::ClipType::Intersection, grown, region, precision, ok), tol);
+}
+
 bool ContoursInteract(const std::vector<Contour>& contours, double reach, double tol)
 {
     if (contours.size() < 2) return false;
