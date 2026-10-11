@@ -56,3 +56,11 @@ The render comparator accepts an independent fill-only mask. Without it, its ero
 | [Fixture census](docs/STROKE_FIXTURE_CENSUS.md) | Inventory of the supplied InDesign fixture |
 | [Mechanisms](docs/STROKE_MECHANISMS.md) | Paint-order, miter, outlining, and comparison evidence |
 | [History](docs/MITER_JOIN_HISTORY.md) | Primary-source background and confidence limits |
+
+## License
+
+**GPL-3.0-or-later**, with an **Adobe InDesign SDK linking exception** ([LICENSE](LICENSE), [LICENSE-EXCEPTION](LICENSE-EXCEPTION)).
+
+The exception is load-bearing, not boilerplate: both InDesign plugins compile three of Adobe's SDK source files into themselves, under terms GPL section 10 forbids passing on. The repository itself vendors no Adobe code, and the scripts in *tools/jsx/* link nothing.
+
+Vibecoded by [Vixen420](https://github.com/VulpesNexus) in October 2026. Copyright © 2026 Vixen420.

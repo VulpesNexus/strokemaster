@@ -23,18 +23,26 @@
 
 // PluginID:
 DECLARE_PMID(kPlugInIDSpace, kIseUIPluginID, kIseUIPrefix + 0x40)
+// The engine (plugin/source/IseID.h's kIsePluginID), whose presence the panel reports.
+DECLARE_PMID(kPlugInIDSpace, kIseUIEnginePluginID, kIseUIPrefix + 0)
 
 // ClassIDs:
 DECLARE_PMID(kClassIDSpace, kIseUIPanelWidgetBoss, kIseUIPrefix + 0x40)
 DECLARE_PMID(kClassIDSpace, kIseUIActionComponentBoss, kIseUIPrefix + 0x41)
+DECLARE_PMID(kClassIDSpace, kIseUICheckBoxWidgetBoss, kIseUIPrefix + 0x42)   // a checkbox with a tip
+DECLARE_PMID(kClassIDSpace, kIseUIButtonWidgetBoss, kIseUIPrefix + 0x43)     // a button with a tip
 
 // ImplementationIDs:
 DECLARE_PMID(kImplementationIDSpace, kIseUIPanelObserverImpl, kIseUIPrefix + 0x40)
 DECLARE_PMID(kImplementationIDSpace, kIseUIActionComponentImpl, kIseUIPrefix + 0x41)
+DECLARE_PMID(kImplementationIDSpace, kIseUITipImpl, kIseUIPrefix + 0x42)
+DECLARE_PMID(kImplementationIDSpace, kIseUIPanelViewImpl, kIseUIPrefix + 0x43)
 
 // ActionIDs:
 DECLARE_PMID(kActionIDSpace, kIseUIPanelWidgetActionID, kIseUIPrefix + 0x40)
 DECLARE_PMID(kActionIDSpace, kIseUIRestoreActionID, kIseUIPrefix + 0x41)
+DECLARE_PMID(kActionIDSpace, kIseUISeparatorActionID, kIseUIPrefix + 0x42)
+DECLARE_PMID(kActionIDSpace, kIseUIAboutActionID, kIseUIPrefix + 0x43)
 
 // WidgetIDs: the panel, its switches (one per IseSettings.h field), and the button.
 DECLARE_PMID(kWidgetIDSpace, kIseUIPanelWidgetID, kIseUIPrefix + 0x40)
@@ -57,6 +65,9 @@ DECLARE_PMID(kWidgetIDSpace, kIseUIRestoreWidgetID, kIseUIPrefix + 0x50)
 DECLARE_PMID(kWidgetIDSpace, kIseUITextHeadWidgetID, kIseUIPrefix + 0x51)
 DECLARE_PMID(kWidgetIDSpace, kIseUIShapesHeadWidgetID, kIseUIPrefix + 0x52)
 DECLARE_PMID(kWidgetIDSpace, kIseUINoteWidgetID, kIseUIPrefix + 0x53)
+DECLARE_PMID(kWidgetIDSpace, kIseUIMasterSeparatorWidgetID, kIseUIPrefix + 0x54)
+DECLARE_PMID(kWidgetIDSpace, kIseUIShapesSeparatorWidgetID, kIseUIPrefix + 0x55)
+DECLARE_PMID(kWidgetIDSpace, kIseUIFooterSeparatorWidgetID, kIseUIPrefix + 0x56)
 
 // Strings (StringTable in IseUI.fr):
 #define kIseUIPanelTitleKey          kIseUIStringPrefix "kIseUIPanelTitleKey"
@@ -81,8 +92,34 @@ DECLARE_PMID(kWidgetIDSpace, kIseUINoteWidgetID, kIseUIPrefix + 0x53)
 #define kIseUITransparencyKey        kIseUIStringPrefix "kIseUITransparencyKey"
 #define kIseUIRestoreKey             kIseUIStringPrefix "kIseUIRestoreKey"
 #define kIseUINoteKey                kIseUIStringPrefix "kIseUINoteKey"
+#define kIseUIEngineMissingKey       kIseUIStringPrefix "kIseUIEngineMissingKey"
+#define kIseUIAboutMenuKey           kIseUIStringPrefix "kIseUIAboutMenuKey"
 
-#define kIseUIRestoreMenuItemPosition  1.0
+// Tips (IseUITip.cpp), one per checkbox and the button:
+#define kIseUIEnabledTipKey            kIseUIStringPrefix "kIseUIEnabledTipKey"
+#define kIseUITextBehindTipKey         kIseUIStringPrefix "kIseUITextBehindTipKey"
+#define kIseUITextStoryTipKey          kIseUIStringPrefix "kIseUITextStoryTipKey"
+#define kIseUITextStoriesTipKey        kIseUIStringPrefix "kIseUITextStoriesTipKey"
+#define kIseUITextMiterTipKey          kIseUIStringPrefix "kIseUITextMiterTipKey"
+#define kIseUIShapesTipKey             kIseUIStringPrefix "kIseUIShapesTipKey"
+#define kIseUIWholePointsTipKey        kIseUIStringPrefix "kIseUIWholePointsTipKey"
+#define kIseUIPatternPointsTipKey      kIseUIStringPrefix "kIseUIPatternPointsTipKey"
+#define kIseUIGlyphTipsTipKey          kIseUIStringPrefix "kIseUIGlyphTipsTipKey"
+#define kIseUIEffectCornersTipKey      kIseUIStringPrefix "kIseUIEffectCornersTipKey"
+#define kIseUIWordOutlineTipKey        kIseUIStringPrefix "kIseUIWordOutlineTipKey"
+#define kIseUIOverlapsTipKey           kIseUIStringPrefix "kIseUIOverlapsTipKey"
+#define kIseUIInsideTipKey             kIseUIStringPrefix "kIseUIInsideTipKey"
+#define kIseUIOpenPathsTipKey          kIseUIStringPrefix "kIseUIOpenPathsTipKey"
+#define kIseUITransparencyTipKey       kIseUIStringPrefix "kIseUITransparencyTipKey"
+#define kIseUIRestoreTipKey            kIseUIStringPrefix "kIseUIRestoreTipKey"
+
+// The panel's icon (plugin/ui/icons, from tools/make_panel_icons.py): 23 px, its 2x copy
+// (IconPNGDefs.h's kHIDPIIconOffset), and the vector.
+#define kIseUIPanelIconRsrcID  1000
+
+#define kIseUIRestoreMenuItemPosition    1.0
+#define kIseUISeparatorMenuItemPosition  2.0
+#define kIseUIAboutMenuItemPosition      3.0
 
 // Format IDs for the PluginVersion resource:
 #define kIseUIMajorFormat  kSDKDef_30_PersistMajorVersionNumber

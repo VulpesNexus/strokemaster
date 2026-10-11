@@ -33,6 +33,52 @@ param(
 )
 $ErrorActionPreference = 'Stop'
 
+# Some launchers supply both Path and PATH. MSBuild's child environment rejects duplicate
+# keys regardless of case. Merge only this process's inherited search paths; no saved setting.
+$buildEnvironment = [Environment]::GetEnvironmentVariables('Process')
+$buildPathKeys = @($buildEnvironment.Keys | Where-Object { $_ -ieq 'PATH' })
+if ($buildPathKeys.Count -gt 1) {
+    $buildPathParts = @($buildPathKeys | ForEach-Object { $buildEnvironment[$_] -split ';' } | Where-Object { $_ } | Select-Object -Unique)
+    foreach ($buildPathKey in $buildPathKeys) { [Environment]::SetEnvironmentVariable($buildPathKey, $null, 'Process') }
+    [Environment]::SetEnvironmentVariable('PATH', ($buildPathParts -join ';'), 'Process')
+}
+
+
+
+# Suppress direct child windows and preserve diagnostics.
+function ConvertTo-ProcessArgument([string]$Value) {
+    if ($Value -notmatch '[\s"]' -and $Value.Length) { return $Value }
+    # Windows argv quoting: double backslashes before quotes and the closing quote.
+    $Value = [regex]::Replace($Value, '(\\*)"', '$1$1\"')
+    $Value = [regex]::Replace($Value, '(\\+)$', '$1$1')
+    return '"' + $Value + '"'
+}
+function Invoke-HiddenProcess([string]$File, [string[]]$Arguments) {
+    $start = New-Object System.Diagnostics.ProcessStartInfo
+    $start.FileName = $File
+    $start.Arguments = (($Arguments | ForEach-Object { ConvertTo-ProcessArgument $_ }) -join ' ')
+    $start.UseShellExecute = $false
+    $start.CreateNoWindow = $true
+    $start.RedirectStandardOutput = $true
+    $start.RedirectStandardError = $true
+    $child = New-Object System.Diagnostics.Process
+    $child.StartInfo = $start
+    try {
+        if (-not $child.Start()) { throw 'Hidden process did not start.' }
+        $stdoutTask = $child.StandardOutput.ReadToEndAsync()
+        $stderrTask = $child.StandardError.ReadToEndAsync()
+        $child.WaitForExit()
+        return [pscustomobject]@{ ExitCode = $child.ExitCode; Stdout = $stdoutTask.Result; Stderr = $stderrTask.Result }
+    } finally { $child.Dispose() }
+}
+function Protect-BuildText([string]$Text) {
+    foreach ($location in @($script:repoLink, $script:junction, $script:repo, $script:sdkFull, $env:USERPROFILE, $env:LOCALAPPDATA, $env:TEMP)) {
+        if ($location) { $Text = $Text.Replace($location, '<local>') }
+    }
+    return $Text
+}
+
+
 if (-not (Test-Path -LiteralPath $SdkPath)) { throw "SDK not found: $SdkPath" }
 $sdkFull = (Resolve-Path -LiteralPath $SdkPath).ProviderPath
 if (-not (Test-Path -LiteralPath (Join-Path $sdkFull 'source\public\interfaces\text\IWaxRun.h'))) {
@@ -41,7 +87,9 @@ if (-not (Test-Path -LiteralPath (Join-Path $sdkFull 'source\public\interfaces\t
 
 $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
 if (-not (Test-Path -LiteralPath $vswhere)) { throw "vswhere.exe not found; is Visual Studio installed?" }
-$candidates = @(& $vswhere -all -products * -requires Microsoft.Component.MSBuild -property installationPath)
+$discovery = Invoke-HiddenProcess $vswhere @('-all', '-products', '*', '-requires', 'Microsoft.Component.MSBuild', '-property', 'installationPath')
+if ($discovery.ExitCode -ne 0) { throw ('Visual Studio discovery failed: ' + $discovery.Stderr) }
+$candidates = @($discovery.Stdout -split '\r?\n' | Where-Object { $_.Trim() })
 if (-not $candidates) { throw "No Visual Studio installation with MSBuild was found." }
 
 # Pick the first installation that actually carries a toolset this SDK supports. The newest
@@ -104,12 +152,12 @@ $project = Join-Path $repoLink $(if ($UI) { 'plugin\prj\StrokeMasterUI.vcxproj' 
 $outDir = Join-Path $repoLink ('build\' + $variant + '\')
 $intDir = Join-Path $repoLink ('build\obj\' + $variant + '\')
 try {
-    Write-Host "SDK        : $sdkFull"
-    Write-Host "via        : $junction"
-    Write-Host "repository : $repo"
-    Write-Host "via        : $repoLink"
+    Write-Host (Protect-BuildText "SDK        : $sdkFull")
+    Write-Host (Protect-BuildText "via        : $junction")
+    Write-Host (Protect-BuildText "repository : $repo")
+    Write-Host (Protect-BuildText "via        : $repoLink")
     Write-Host "toolset    : $toolset"
-    Write-Host "output     : $outDir"
+    Write-Host (Protect-BuildText "output     : $outDir")
     # The SDK's response files list include paths relative to the SDK's own project folder,
     # so they only work for projects that live there. Write copies with absolute paths.
     $generated = Join-Path $repoLink 'build\rsp'
@@ -156,15 +204,20 @@ try {
         '/m', '/v:minimal', '/nologo',
         "/flp:logfile=$buildLog;verbosity=normal"
     )
-    Write-Host "log        : $buildLog"
-    & $msbuild @arguments
-    $buildExit = $LASTEXITCODE
+    Write-Host (Protect-BuildText "log        : $buildLog")
+    $built = Invoke-HiddenProcess $msbuild $arguments
+    if ($built.Stdout) { Write-Host (Protect-BuildText $built.Stdout) }
+    if ($built.Stderr) { Write-Host (Protect-BuildText $built.Stderr) }
+    $buildExit = $built.ExitCode
+    if (Test-Path -LiteralPath $buildLog) {
+        Protect-BuildText (Get-Content -LiteralPath $buildLog -Raw) | Set-Content -LiteralPath $buildLog -Encoding UTF8
+    }
     if ($buildExit -ne 0) {
         # Surface the diagnostics rather than only the exit code: the log outlives this run.
-        Write-Host "--- diagnostics from $buildLog"
+        Write-Host (Protect-BuildText "Diagnostics from $buildLog")
         Select-String -LiteralPath $buildLog -Pattern 'error|warning' -CaseSensitive:$false |
             Select-Object -First 40 | ForEach-Object { Write-Host ("    " + $_.Line.Trim()) }
-        throw "MSBuild failed with exit code $buildExit; full log: $buildLog"
+        throw (Protect-BuildText "MSBuild failed with exit code $buildExit; full log: $buildLog")
     }
     Get-ChildItem -LiteralPath $outDir -Filter *.pln | Select-Object Name, Length, LastWriteTime
 } finally {

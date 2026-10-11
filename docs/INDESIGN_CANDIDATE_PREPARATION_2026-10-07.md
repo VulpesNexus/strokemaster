@@ -1,0 +1,17 @@
+> Superseded by [the latest UI candidate](INDESIGN_LATEST_UI_CANDIDATE.md). This older package used the certified panel and omitted Claude's later UI work; that installation has now been corrected.
+
+# InDesign candidate preparation, 2026-10-07
+
+**DONE_WITH_CONCERNS.** [The local candidate](../build/release-candidate/StrokeMaster-InDesign-21.6.0.57-C32.zip) contains the C32 correction source, certified engine and panel resource sets, unchanged existing installer, licenses, a packaging utility, and [installation instructions](INDESIGN_RELEASE_CANDIDATE.md). SHA-256: `5ec12aba51f021187aff29a5abfc0e14b331f36e190613eb27201c58c7497a5a`.
+
+All 71 ZIP entries were reopened and verified. All manifest hashes match. The regression checks passed for ZIP corruption, truncation, unsafe paths, unapproved binary inputs, missing licenses and resources, and signed or invalid PE inputs. The bounded scan for this machine's personal profile and workspace paths found no remaining matches. This is not a universal privacy guarantee. Detailed checks are in *build/release-candidate/preparation-checks.json*.
+
+The certified inputs are engine `73fb1805` and panel `5f4f5bab`. The panel was recovered from the backup preceding the newer installed panel. Only the absolute CodeView PDB path bytes were replaced in the packaged copies; the manifest records exact ranges and original and packaged hashes. Executable code, resource data, GUID, age, and record sizes were retained. The installed files were not changed. The packaged copies require host acceptance; their new hashes must not be represented as C32-tested binaries.
+
+Native project source was read from commit `c6673588e7ea1e536c8bcd9aec2f72fb8de518fc`. Both linker projects carry a documented overlay preventing absolute PDB paths in future binaries, using [Microsoft's PDBALTPATH option](https://learn.microsoft.com/en-us/cpp/build/reference/pdbaltpath-use-alternate-pdb-path?view=msvc-170). Existing UI edits were preserved in the working tree and excluded from this source snapshot. Current *LICENSE* and *LICENSE-EXCEPTION* were included; both are untracked at preparation. No license grant was changed here.
+
+**Release concerns:** host load and export acceptance of the sanitized copies, a fresh build of the linker change, and clean-machine installation, update, restoration, and removal remain unverified. The native prefix is unassigned; signing and publication are unresolved. Compatibility is limited to the C32 host, InDesign 21.6.0.57 on Windows x64. No installation, host launch or restart, commit, push, signing, or publication was performed.
+
+Packaging used in-process Node APIs. Automatic review rejected Git subprocess inspection because its silent-launch boundary was unverified; refs, index entries, and commit objects were read in process instead. The shell-based style and privacy gates were not run. One verification runtime exited unexpectedly before writing this report; the archive was reopened, its hash and manifest were checked again, and the regression suite passed in a fresh runtime.
+
+The reusable packaging API is *tools/package_indesign.mjs*. The regressions are *tests/scripts/test_package_indesign.mjs*. The ZIP's installer retains its repository-compatible *build* and *tools* layout. Installing the candidate requires the owner's deliberate elevated installation step with InDesign closed; no installation is implied by preparing it.

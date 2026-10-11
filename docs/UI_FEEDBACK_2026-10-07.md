@@ -1,0 +1,15 @@
+# StrokeMaster panel feedback, 2026-10-07
+
+**Installed and independently verified; InDesign was closed during installation.** The new panel built as `52bda8d6`. Three offline layout and icon tests pass. Native dragging and visual appearance still need owner confirmation when InDesign starts again; these checks do not certify host resizing.
+
+The panel now has separators below *StrokeMaster switch*, before *Shapes, frames, and outlined text*, and above the footer. *Open paths* has its own row. It previously shared a row with *Inside strokes* to save space in a fixed 270 × 372 panel; the switches have the same parent dependency, but no functional coupling requiring a shared row. The panel now starts at 270 × 418, registers as resizable, constrains its minimum to keep every control visible, and anchors the footer to the bottom.
+
+The About window uses InDesign's `kInterfaceBrightnessAwareHyperlinkColor` for links and the default button's fill. The supplied screen capture shows that color as gray. This is a host-theme choice, not a rendering limitation; this revision retains the native InDesign colors instead of imposing Illustrator's blue.
+
+**Measured icon padding:** InDesign's native *Layers* icon has 17 × 17 visible pixels on its 23 × 23 canvas, with 3 pixels of transparent padding on each side. The native *Links* icon spans 19 × 9, with 2 horizontal pixels of padding. The old crown spanned all 23 × 23 pixels. The revised crown matches *Layers*: 17 × 17, with 3-pixel padding, in both theme variants. At 2× it spans 34 × 34 on 46 × 46 with 6-pixel padding. Bounds include every nonzero-alpha pixel. The original *SM.svg* is unchanged; the generator expands the derived SVG viewBox.
+
+The local archive *build/release-candidate/StrokeMaster-InDesign-21.6.0.57-UI-feedback.zip* includes this panel, the existing sanitized C32 engine, current native source, the generator, licenses, and the installer. To install, extract it with InDesign closed and use *tools/install-indesign-plugin.ps1*: `-Variant Release-UI -Name StrokeMasterUI` for the panel; `-Variant Release-RouteX` for the included engine if needed. `-ValidateOnly` checks without writing. Installation needs administrator access, retains backups, and verifies file hashes. Native binaries take effect when InDesign starts again. Do not replace a loaded plugin.
+
+The engine was not rebuilt. No settings, documents, workspace layout, or global environment settings were changed. The build runner now hides its direct child processes, captures both streams and exit status, and merges duplicate PATH spellings in its own process only. The successful build retained the known MSB8029 junction warning. New build logs redact local paths, and the rebuilt panel's PDB reference is a basename.
+
+No commit or push was made. External distribution still requires an assigned Adobe prefix and the release gates already documented. Detailed local evidence: *build/ui-feedback-2026-10-07/checks.json*. Tests: *tests/ui/test_panel_layout.py*.

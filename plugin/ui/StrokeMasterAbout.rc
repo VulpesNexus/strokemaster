@@ -1,0 +1,31 @@
+// SPDX-License-Identifier: GPL-3.0-or-later
+// Copyright (C) 2026 Vixen420
+//
+// StrokeMaster is free software: you may redistribute it and/or modify it under the
+// terms of the GNU General Public License as published by the Free Software
+// Foundation, either version 3 of the License, or (at your option) any later
+// version. It comes with ABSOLUTELY NO WARRANTY. See the file LICENSE, or
+// <https://www.gnu.org/licenses/>, for the full text.
+//
+// Additional permission under GPL-3.0 section 7: this file may be combined with
+// the Adobe InDesign SDK, whose sample framework sources are compiled into
+// every plugin built from it. See LICENSE-EXCEPTION.
+
+// The About dialog, the house template (.workspace/ADOBE_PLUGIN_ABOUT.md, as in Subgroup,
+// LiveShear, and FreeDistort+), kept in a file of its own so the panel plugin's resource
+// script and tools/AboutHarness compile the same template. Every string is set from
+// StrokeMasterAbout.cpp, in UTF-16; sizes are in dialog units.
+
+IDD_STROKEMASTER_ABOUT DIALOGEX 0, 0, 284, 244
+STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About StrokeMaster"
+FONT 9, "Segoe UI", 400, 0, 0x0
+BEGIN
+    CONTROL         "", IDC_ABOUT_TITLE, "SysLink", WS_TABSTOP, 16, 12, 252, 20
+    CONTROL         "", IDC_ABOUT_BODY, "RICHEDIT50W",
+                    ES_MULTILINE | ES_READONLY | WS_CHILD | WS_VISIBLE,
+                    16, 40, 252, 110
+    DEFPUSHBUTTON   "OK", IDOK, 216, 166, 52, 15
+    CONTROL         "", IDC_ABOUT_ATTRIB, "SysLink", WS_TABSTOP, 16, 188, 252, 11
+    CONTROL         "", IDC_ABOUT_LEGAL,  "SysLink", WS_TABSTOP, 16, 202, 252, 32
+END

@@ -24,6 +24,8 @@
 #include "InterfaceColorDefines.h"
 #include "IControlViewDefs.h"
 #include "SysControlIds.h"
+#include "IconPNGDefs.h"
+#include "TipsID.h"
 #include "PlugInModel_UIAttributes.h"
 
 #include "IseUIID.h"
@@ -60,6 +62,7 @@ resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
         {
             IID_IPANELMENUDATA, kCPanelMenuDataImpl,
             IID_IOBSERVER, kIseUIPanelObserverImpl,
+            IID_ICONTROLVIEW, kIseUIPanelViewImpl,
         }
     },
     /** The panel menu's Restore Defaults. */
@@ -71,7 +74,34 @@ resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
             IID_IACTIONCOMPONENT, kIseUIActionComponentImpl,
         }
     },
+    /** A checkbox, and a button, that say what they do when hovered (IseUITip). */
+    Class
+    {
+        kIseUICheckBoxWidgetBoss,
+        kCheckBoxWidgetBoss,
+        {
+            IID_ITIP, kIseUITipImpl,
+        }
+    },
+    Class
+    {
+        kIseUIButtonWidgetBoss,
+        kButtonWidgetBoss,
+        {
+            IID_ITIP, kIseUITipImpl,
+        }
+    },
 }}};
+
+// The panel's icon, from the owner's artwork (tools/make_panel_icons.py): dark art for the
+// light interfaces (PNGA, SVGA) and light art for the dark ones (PNGD, SVGD), which InDesign
+// switches between with its interface brightness, each at 1x and 2x (kHIDPIIconOffset).
+resource PNGA(kIseUIPanelIconRsrcID) "icons/StrokeMaster_N_23.png"
+resource PNGA(kIseUIPanelIconRsrcID + kHIDPIIconOffset) "icons/StrokeMaster_N_46.png"
+resource PNGAD(kIseUIPanelIconRsrcID) "icons/StrokeMaster_D_23.png"
+resource PNGAD(kIseUIPanelIconRsrcID + kHIDPIIconOffset) "icons/StrokeMaster_D_46.png"
+resource SVGA(kIseUIPanelIconRsrcID) "icons/StrokeMaster_N.svg"
+resource SVGAD(kIseUIPanelIconRsrcID) "icons/StrokeMaster_D.svg"
 
 resource FactoryList (kSDKDefFactoryListResourceID)
 {
@@ -88,6 +118,16 @@ resource MenuDef (kSDKDefMenuResourceID)
         kIseUIInternalMenuNameKey,
         kIseUIRestoreMenuItemPosition,
         kSDKDefIsNotDynamicMenuFlag,
+
+        kIseUISeparatorActionID,
+        kIseUIInternalMenuNameKey kSDKDefDelimiterAndSeparatorPath,
+        kIseUISeparatorMenuItemPosition,
+        kSDKDefIsNotDynamicMenuFlag,
+
+        kIseUIAboutActionID,
+        kIseUIInternalMenuNameKey,
+        kIseUIAboutMenuItemPosition,
+        kSDKDefIsNotDynamicMenuFlag,
     }
 };
 
@@ -97,6 +137,15 @@ resource ActionDef (kSDKDefActionResourceID)
         kIseUIActionComponentBoss,
         kIseUIRestoreActionID,
         kIseUIRestoreMenuKey,
+        kOtherActionArea,
+        kNormalAction,
+        kDisableIfLowMem,
+        kInvalidInterfaceID,
+        kSDKDefInvisibleInKBSCEditorFlag,
+
+        kIseUIActionComponentBoss,
+        kIseUIAboutActionID,
+        kIseUIAboutMenuKey,
         kOtherActionArea,
         kNormalAction,
         kDisableIfLowMem,
@@ -139,7 +188,7 @@ resource StringTable (kSDKDefStringsResourceID + index_enUS)
         kIseUICompanyKey,        kIseUICompanyValue,
         kIseUIPanelTitleKey,     "StrokeMaster",
         kIseUIRestoreMenuKey,    "Restore Defaults",
-        kIseUIEnabledKey,        "StrokeMaster on",
+        kIseUIEnabledKey,        "StrokeMaster switch",
         kIseUITextHeadKey,       "Live text",
         kIseUITextBehindKey,     "Strokes behind other letters' fills",
         kIseUITextStoryKey,      "Across a story's threaded frames",
@@ -158,6 +207,25 @@ resource StringTable (kSDKDefStringsResourceID + index_enUS)
         kIseUITransparencyKey,   "Objects with opacity or effects",
         kIseUIRestoreKey,        "Restore Defaults",
         kIseUINoteKey,           "Applies to every document.",
+        kIseUIEngineMissingKey,  "Engine not installed.",
+        kIseUIAboutMenuKey,      "About StrokeMaster...",
+
+        kIseUIEnabledTipKey,         "When on, StrokeMaster corrects strokes as the switches below say, on screen and in every export of every document; when off, InDesign draws every stroke itself, as without the plugin.",
+        kIseUITextBehindTipKey,      "When on, text strokes are drawn beneath the fills of the other letters in their frame, so an Outside stroke no longer covers the line above or the letters before it; when off, InDesign's order.",
+        kIseUITextStoryTipKey,       "When on, strokes also stay beneath the fills across the columns and threaded frames of one story; when off, within each frame only.",
+        kIseUITextStoriesTipKey,     "When on, strokes also go beneath the fills of other stories they overlap, which also removes a halo drawn on purpose over another frame; when off, separate stories keep InDesign's stacking.",
+        kIseUITextMiterTipKey,       "When on, the miter tips of mitered text strokes that would poke through thin parts of a letter are removed, and the others kept; when off, InDesign's miters.",
+        kIseUIShapesTipKey,          "When on, StrokeMaster draws the strokes of shapes, frames, and outlined text, with the corrections below; when off, InDesign draws them, with its spilled fills and spikes.",
+        kIseUIWholePointsTipKey,     "When on, a shape's own sharp point between two straight edges keeps its whole point past the miter limit; when off, it is cut flat as InDesign bevels it. Other corners past the limit stay beveled.",
+        kIseUIPatternPointsTipKey,   "When on, dashed, dotted, and striped strokes also get a solid whole point at such corners; when off, the pattern's own bevel.",
+        kIseUIGlyphTipsTipKey,       "When on, the sharp tips of letters are cut flush with the stroke's edge instead of ending in a long miter; when off, whole miters within the limit.",
+        kIseUIEffectCornersTipKey,   "When on, the small corners a corner effect adds are beveled past the miter limit and trimmed within it, so they grow no long points; when off, they are treated as the outline's own corners.",
+        kIseUIWordOutlineTipKey,     "When on, Outside dashes, dots, waves, and stripes run along one outline around letters that touch, with dashes fitted between real corners; when off, InDesign's pattern on each contour, crossing where letters meet.",
+        kIseUIOverlapsTipKey,        "When on, Outside and Inside strokes go around the filled shape only, not along contour edges inside the letters (as Create Outlines leaves decorative fonts); when off, such outlines are left to InDesign.",
+        kIseUIInsideTipKey,          "When on, StrokeMaster draws Inside strokes and fills the outline itself, where InDesign's inward offset fill spills past curves; when off, InDesign draws them.",
+        kIseUIOpenPathsTipKey,       "When on, open paths with a Center Miter stroke keep whole points past the miter limit, as closed shapes do; when off, InDesign draws them.",
+        kIseUITransparencyTipKey,    "When on, objects with opacity, blend modes, or object-level effects are corrected too, and a translucent stroke is drawn as one piece; when off, such objects are left to InDesign.",
+        kIseUIRestoreTipKey,         "Turns every switch back on, except Across separate stories, which goes back off.",
     }
 };
 
@@ -174,17 +242,20 @@ type IseUIPanelWidget(kViewRsrcType) : PalettePanelWidget(ClassID = kIseUIPanelW
     CPanelMenuData;
 };
 
+type IseUICheckBoxWidget(kViewRsrcType) : CheckBoxWidget(ClassID = kIseUICheckBoxWidgetBoss) {};
+type IseUIButtonWidget(kViewRsrcType) : ButtonWidget(ClassID = kIseUIButtonWidgetBoss) {};
+
 resource PanelList (kSDKDefPanelResourceID)
 {
     {
         kSDKDefPanelResourceID,
         kIseUIPluginID,
-        kNotResizable,
+        kIsResizable,
         kIseUIPanelWidgetActionID,
         kIseUIPanelTitleKey,
         "",
         0.0,
-        0, 0,
+        kIseUIPanelIconRsrcID, kIseUIPluginID,
         c_Panel
     }
 };
@@ -195,35 +266,38 @@ resource IseUIPanelWidget(kSDKDefPanelResourceID + index_enUS)
     kIseUIPanelWidgetID,
     kPMRsrcID_None,
     kBindNone,
-    Frame(0, 0, 270, 372),
+    Frame(0, 0, 270, 418),
     kTrue, kTrue,
     kFalse,
     kInterfacePaletteFill,
     kFalse,
     kIseUIPanelTitleKey,
     {
-        CheckBoxWidget(kIseUIEnabledWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(8, 8, 262, 26) kTrue, kTrue, kAlignLeft, kIseUIEnabledKey),
+        IseUICheckBoxWidget(kIseUIEnabledWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(8, 8, 262, 26) kTrue, kTrue, kAlignLeft, kIseUIEnabledKey),
+        SeparatorWidget(kIseUIMasterSeparatorWidgetID, kPMRsrcID_None, kBindLeft | kBindRight | kBindTop, Frame(8, 32, 262, 33) kTrue, kTrue),
 
-        StaticTextWidget(kIseUITextHeadWidgetID, kSysStaticTextPMRsrcId, kBindNone, Frame(8, 34, 262, 50) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUITextHeadKey, 0),
-        CheckBoxWidget(kIseUITextBehindWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(16, 52, 262, 70) kTrue, kTrue, kAlignLeft, kIseUITextBehindKey),
-        CheckBoxWidget(kIseUITextStoryWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 72, 262, 90) kTrue, kTrue, kAlignLeft, kIseUITextStoryKey),
-        CheckBoxWidget(kIseUITextStoriesWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(48, 92, 262, 110) kTrue, kTrue, kAlignLeft, kIseUITextStoriesKey),
-        CheckBoxWidget(kIseUITextMiterWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 112, 262, 130) kTrue, kTrue, kAlignLeft, kIseUITextMiterKey),
+        StaticTextWidget(kIseUITextHeadWidgetID, kSysStaticTextPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(8, 42, 262, 58) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUITextHeadKey, 0),
+        IseUICheckBoxWidget(kIseUITextBehindWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(16, 60, 262, 78) kTrue, kTrue, kAlignLeft, kIseUITextBehindKey),
+        IseUICheckBoxWidget(kIseUITextStoryWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 80, 262, 98) kTrue, kTrue, kAlignLeft, kIseUITextStoryKey),
+        IseUICheckBoxWidget(kIseUITextStoriesWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(48, 100, 262, 118) kTrue, kTrue, kAlignLeft, kIseUITextStoriesKey),
+        IseUICheckBoxWidget(kIseUITextMiterWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 120, 262, 138) kTrue, kTrue, kAlignLeft, kIseUITextMiterKey),
 
-        StaticTextWidget(kIseUIShapesHeadWidgetID, kSysStaticTextPMRsrcId, kBindNone, Frame(8, 138, 262, 154) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUIShapesHeadKey, 0),
-        CheckBoxWidget(kIseUIShapesWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(16, 156, 262, 174) kTrue, kTrue, kAlignLeft, kIseUIShapesKey),
-        CheckBoxWidget(kIseUIWholePointsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 176, 262, 194) kTrue, kTrue, kAlignLeft, kIseUIWholePointsKey),
-        CheckBoxWidget(kIseUIPatternPointsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(48, 196, 262, 214) kTrue, kTrue, kAlignLeft, kIseUIPatternPointsKey),
-        CheckBoxWidget(kIseUIGlyphTipsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 216, 262, 234) kTrue, kTrue, kAlignLeft, kIseUIGlyphTipsKey),
-        CheckBoxWidget(kIseUIEffectCornersWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 236, 262, 254) kTrue, kTrue, kAlignLeft, kIseUIEffectCornersKey),
-        CheckBoxWidget(kIseUIWordOutlineWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 256, 262, 274) kTrue, kTrue, kAlignLeft, kIseUIWordOutlineKey),
-        CheckBoxWidget(kIseUIOverlapsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 276, 262, 294) kTrue, kTrue, kAlignLeft, kIseUIOverlapsKey),
-        CheckBoxWidget(kIseUIInsideWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 296, 150, 314) kTrue, kTrue, kAlignLeft, kIseUIInsideKey),
-        CheckBoxWidget(kIseUIOpenPathsWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(150, 296, 262, 314) kTrue, kTrue, kAlignLeft, kIseUIOpenPathsKey),
-        CheckBoxWidget(kIseUITransparencyWidgetID, kSysCheckBoxPMRsrcId, kBindNone, Frame(32, 316, 262, 334) kTrue, kTrue, kAlignLeft, kIseUITransparencyKey),
+        SeparatorWidget(kIseUIShapesSeparatorWidgetID, kPMRsrcID_None, kBindLeft | kBindRight | kBindTop, Frame(8, 146, 262, 147) kTrue, kTrue),
+        StaticTextWidget(kIseUIShapesHeadWidgetID, kSysStaticTextPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(8, 154, 262, 170) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUIShapesHeadKey, 0),
+        IseUICheckBoxWidget(kIseUIShapesWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(16, 172, 262, 190) kTrue, kTrue, kAlignLeft, kIseUIShapesKey),
+        IseUICheckBoxWidget(kIseUIWholePointsWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 192, 262, 210) kTrue, kTrue, kAlignLeft, kIseUIWholePointsKey),
+        IseUICheckBoxWidget(kIseUIPatternPointsWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(48, 212, 262, 230) kTrue, kTrue, kAlignLeft, kIseUIPatternPointsKey),
+        IseUICheckBoxWidget(kIseUIGlyphTipsWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 232, 262, 250) kTrue, kTrue, kAlignLeft, kIseUIGlyphTipsKey),
+        IseUICheckBoxWidget(kIseUIEffectCornersWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 252, 262, 270) kTrue, kTrue, kAlignLeft, kIseUIEffectCornersKey),
+        IseUICheckBoxWidget(kIseUIWordOutlineWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 272, 262, 290) kTrue, kTrue, kAlignLeft, kIseUIWordOutlineKey),
+        IseUICheckBoxWidget(kIseUIOverlapsWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 292, 262, 310) kTrue, kTrue, kAlignLeft, kIseUIOverlapsKey),
+        IseUICheckBoxWidget(kIseUIInsideWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 312, 262, 330) kTrue, kTrue, kAlignLeft, kIseUIInsideKey),
+        IseUICheckBoxWidget(kIseUIOpenPathsWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 332, 262, 350) kTrue, kTrue, kAlignLeft, kIseUIOpenPathsKey),
+        IseUICheckBoxWidget(kIseUITransparencyWidgetID, kSysCheckBoxPMRsrcId, kBindLeft | kBindRight | kBindTop, Frame(32, 352, 262, 370) kTrue, kTrue, kAlignLeft, kIseUITransparencyKey),
 
-        ButtonWidget(kIseUIRestoreWidgetID, kSysButtonPMRsrcId, kBindNone, Frame(8, 342, 128, 364) kTrue, kTrue, kIseUIRestoreKey),
-        StaticTextWidget(kIseUINoteWidgetID, kSysStaticTextPMRsrcId, kBindNone, Frame(136, 345, 266, 361) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUINoteKey, 0),
+        SeparatorWidget(kIseUIFooterSeparatorWidgetID, kPMRsrcID_None, kBindLeft | kBindRight | kBindBottom, Frame(8, 380, 262, 381) kTrue, kTrue),
+        IseUIButtonWidget(kIseUIRestoreWidgetID, kSysButtonPMRsrcId, kBindLeft | kBindBottom, Frame(8, 388, 128, 410) kTrue, kTrue, kIseUIRestoreKey),
+        StaticTextWidget(kIseUINoteWidgetID, kSysStaticTextPMRsrcId, kBindRight | kBindBottom, Frame(136, 391, 266, 407) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUINoteKey, 0),
     }
     kIseUIInternalMenuNameKey
 };

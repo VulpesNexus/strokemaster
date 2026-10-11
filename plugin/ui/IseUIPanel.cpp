@@ -4,7 +4,9 @@
 //  (IseSettings.h). A click writes the switches' file and redraws every open document; the
 //  engine reads the file again at the start of the next spread it draws. A switch whose
 //  parent is off is shown disabled, its own state kept. Restore Defaults (the button, or the
-//  panel menu) puts every switch back.
+//  panel menu) puts every switch back. Without the engine installed, every switch is shown
+//  disabled and the note says so. The panel menu also opens the About window
+//  (StrokeMasterAbout.cpp), in InDesign's interface colors.
 //
 //========================================================================================
 #include "VCPlugInHeaders.h"
@@ -15,11 +17,14 @@
 #include "IControlView.h"
 #include "IDocument.h"
 #include "IDocumentList.h"
+#include "IInterfaceColors.h"
 #include "ILayoutUIUtils.h"
 #include "IPanelControlData.h"
 #include "IPanelMgr.h"
+#include "IPlugInList.h"
 #include "ISession.h"
 #include "ISubject.h"
+#include "ITextControlData.h"
 #include "ITriStateControlData.h"
 
 // General includes:
@@ -30,6 +35,7 @@
 // Project includes:
 #include "IseUIID.h"
 #include "IseSettings.h"
+#include "StrokeMasterAbout.h"
 
 namespace {
 
@@ -72,14 +78,64 @@ void SetChecked(IPanelControlData* panel, const WidgetID& id, bool on, bool enab
     if (enabled) view->Enable(); else view->Disable();
 }
 
-/** Shows the switches on the panel's checkboxes, without notifying anyone. */
+/** Whether the engine (InDesignStrokeEngine.pln) is installed and did not fail to load: the
+    switches do nothing without it. */
+bool EngineInstalled()
+{
+    InterfacePtr<IPlugInList> plugins(GetExecutionContextSession(), UseDefaultIID());
+    return plugins == nil || (!plugins->GetPluginName(kIseUIEnginePluginID).IsEmpty() && !plugins->LoadFailed(kIseUIEnginePluginID));
+}
+
+/** Shows the switches on the panel's checkboxes, without notifying anyone; all of them
+    disabled, and the note saying why, when the engine is missing. */
 void ShowSettings(IPanelControlData* panel, const Settings& s)
 {
-    SetChecked(panel, kIseUIEnabledWidgetID, s.enabled, true);
+    const bool engine = EngineInstalled();
+    SetChecked(panel, kIseUIEnabledWidgetID, s.enabled, engine);
     for (const Box& b : kBoxes) {
-        const bool enabled = s.enabled && (b.parent == nullptr || s.*(b.parent)) && (b.parent2 == nullptr || s.*(b.parent2));
+        const bool enabled = engine && s.enabled && (b.parent == nullptr || s.*(b.parent)) && (b.parent2 == nullptr || s.*(b.parent2));
         SetChecked(panel, b.widget, s.*(b.field), enabled);
     }
+    IControlView* note = panel->FindWidget(kIseUINoteWidgetID);
+    InterfacePtr<ITextControlData> text(note, UseDefaultIID());
+    if (text != nil) {
+        PMString line(engine ? kIseUINoteKey : kIseUIEngineMissingKey);
+        line.Translate();
+        text->SetString(line);
+    }
+}
+
+/** One of InDesign's interface colors (InterfaceColorDefines.h), or `fallback`. */
+COLORREF InterfaceColor(IInterfaceColors* colors, int32 id, COLORREF fallback)
+{
+    RealAGMColor c;
+    if (colors == nil || !colors->GetRealAGMColor(id, c)) return fallback;
+    auto byte = [](PMReal v) { return static_cast<BYTE>(ToInt32(Round(v * 255))); };
+    return RGB(byte(c.red), byte(c.green), byte(c.blue));
+}
+
+/** The About window, in InDesign's own interface colors, centered on InDesign's window. */
+void ShowAbout()
+{
+    InterfacePtr<IInterfaceColors> colors(static_cast<IInterfaceColors*>(GetExecutionContextSession()->QueryInterface(IID_IINTERFACECOLORS)));
+    StrokeMasterAboutTheme t;
+    t.panel = InterfaceColor(colors, kInterfacePaletteFill, t.panel);
+    t.panelText = InterfaceColor(colors, kInterfaceTextColor, t.panelText);
+    t.band = t.panel;
+    t.bandText = t.panelText;
+    t.rule = InterfaceColor(colors, kInterfaceSeparatorColor, t.rule);
+    t.link = InterfaceColor(colors, kInterfaceBrightnessAwareHyperlinkColor, t.link);
+    t.ownerDrawButton = true;   // InDesign's own buttons are drawn, in either brightness
+    t.button = InterfaceColor(colors, kInterfaceButtonUpFill, t.button);
+    t.buttonText = t.panelText;
+    t.buttonBorder = InterfaceColor(colors, kInterfaceBorder, t.buttonBorder);
+    t.darkTitleBar = GetRValue(t.panel) * 299 + GetGValue(t.panel) * 587 + GetBValue(t.panel) * 114 < 128 * 1000;
+    HMODULE module = nullptr;
+    GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
+                       reinterpret_cast<LPCWSTR>(&ShowAbout), &module);
+    HWND active = ::GetActiveWindow();
+    HWND owner = active != nullptr ? ::GetAncestor(active, GA_ROOTOWNER) : nullptr;
+    StrokeMasterShowAboutDialog(module, owner, t);
 }
 
 /** Every open document is drawn again, with the switches just written. A layout view keeps
@@ -194,6 +250,7 @@ CREATE_PMINTERFACE(IseUIActionComponent, kIseUIActionComponentImpl)
 
 void IseUIActionComponent::DoAction(IActiveContext*, ActionID actionID, GSysPoint, IPMUnknown*)
 {
+    if (actionID == kIseUIAboutActionID) { ShowAbout(); return; }
     if (actionID != kIseUIRestoreActionID) return;
     const Settings s;
     ise_settings::Save(s);

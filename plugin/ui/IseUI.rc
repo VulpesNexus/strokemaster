@@ -1,5 +1,7 @@
+#include <winres.h>
 #include "winver.h"
 #include "IseUIID.h"
+#include "StrokeMasterAboutRes.h"
 
 VS_VERSION_INFO VERSIONINFO
 FILEVERSION    1,0,0,0
@@ -20,6 +22,7 @@ BEGIN
             VALUE "InternalName",     kIseUIPluginName "\0"
             VALUE "OriginalFilename", kIseUIPluginName ".pln\0"
             VALUE "ProductName",      kIseUICompanyValue "\0"
+            VALUE "LegalCopyright",   "Copyright (C) 2026 Vixen420. GPL-3.0-or-later with an Adobe InDesign SDK linking exception.\0"
             VALUE "ProductVersion",   "1.0.0.0\0"
         END
     END
@@ -28,3 +31,6 @@ BEGIN
         VALUE "Translation", 0x409, 1200
     END
 END
+
+// The About window (StrokeMasterAbout.cpp), the same template tools/AboutHarness builds.
+#include "StrokeMasterAbout.rc"

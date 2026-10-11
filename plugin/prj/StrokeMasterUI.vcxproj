@@ -106,7 +106,7 @@ if exist "$(TargetDir)($(TargetName) Resources)\" del /f /s /q "$(TargetDir)($(T
 xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Command>
     </PreLinkEvent>
     <Link>
-      <AdditionalOptions>/IGNORE:4089 %(AdditionalOptions)</AdditionalOptions>
+      <AdditionalOptions>/IGNORE:4089 /PDBALTPATH:$(TargetName).pdb %(AdditionalOptions)</AdditionalOptions>
       <AdditionalDependencies>$(UI_PLUGIN_LINKLIST);%(AdditionalDependencies)</AdditionalDependencies>
       <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <!-- Kept inside this repository, unlike the SDK samples, which write these into the SDK. -->
@@ -120,6 +120,15 @@ xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Comma
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="$(IseSourceDir)\IseUIPanel.cpp" />
+    <ClCompile Include="$(IseSourceDir)\IseUIPanelView.cpp" />
+    <ClCompile Include="$(IseSourceDir)\IseUITip.cpp" />
+    <!-- The About window, plain Win32 shared with tools/AboutHarness: no SDK headers. -->
+    <ClCompile Include="$(IseSourceDir)\StrokeMasterAbout.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="$(IseSourceDir)\HostLook.cpp">
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="$(IseSourceDir)\IseUINoStrip.cpp" />
     <ClCompile Include="$(IseSourceDir)\IseUITriggerResourceDeps.cpp" />
     <ClCompile Include="$(IseSdkDir)\source\sdksamples\common\SDKPlugInEntrypoint.cpp" />
