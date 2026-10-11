@@ -36,6 +36,8 @@ Native builds require external Adobe SDKs and Visual Studio/MSVC dependencies. T
 
 [Validation instructions](tests/README.md) cover the executed pure suites and bounded host records. Python tools require *requirements.txt*; the script mocks require Node 24. Old fixture generators and output tables remain research evidence. Regenerate into fresh output directories and inspect restoration reports; do not overwrite the preserved corpus merely to update a measurement.
 
+The host-independent geometry cores also build and test with g++ or clang; see [portable geometry cores](tests/README.md#portable-geometry-cores).
+
 The render comparator accepts an independent fill-only mask. Without it, its eroded non-background mask includes stroke/effect ink and cannot measure glyph-fill compositing. Historical transparency interpretations based on the old mask were withdrawn and remeasured.
 
 | Document | Purpose |
