@@ -1,4 +1,4 @@
-// region-prep-13 target tests. No Illustrator or real SDK implementation.
+// region-prep-14 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.

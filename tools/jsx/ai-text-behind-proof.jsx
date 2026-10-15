@@ -21,6 +21,14 @@
     app.userInteractionLevel = UserInteractionLevel.DONTDISPLAYALERTS;
     try { return run(); } finally { app.userInteractionLevel = interaction; }
     function run() {
+    // documents.add failed with error 129 once Illustrator's recent new-document sizes had
+    // filled with scripted ones (2026-10-15); addDocument with a profile still works.
+    function newDocument(cs, w, h) {
+        try { return app.documents.add(cs, w, h); } catch (e) {
+            var pr = new DocumentPreset(); pr.colorMode = cs; pr.width = w; pr.height = h; pr.units = RulerUnits.Points;
+            return app.documents.addDocument(cs === DocumentColorSpace.CMYK ? 'Print' : 'Web', pr);
+        }
+    }
     var args = $.global.ISE_REGION_ARGS || {};
     if (!args.outDir || !args.runId) return 'FAIL|missing outDir or runId';
     var plugin = 'StrokeMasterRegionProbe';
@@ -68,7 +76,7 @@
     }
     try {
         note('build', /"build":"([^"]*)"/.exec(send('status'))[1]);
-        doc = app.documents.add(DocumentColorSpace.RGB, 200, 200);
+        doc = newDocument(DocumentColorSpace.RGB, 200, 200);
         doc.artboards[0].artboardRect = [0, 200, 200, 0];
 
         at = 'fill';

@@ -47,6 +47,9 @@ try { $extraArgs = $ArgJson | ConvertFrom-Json } catch { throw ('-ArgJson is not
 if (Get-Process Illustrator -ErrorAction SilentlyContinue) {
     throw 'Illustrator is already running; this runner only drives an instance it launched itself.'
 }
+$prefs = Get-ChildItem -LiteralPath (Join-Path $env:APPDATA 'Adobe\Adobe Illustrator 30 Settings') -Recurse -Filter 'Adobe Illustrator Prefs' -ErrorAction SilentlyContinue |
+    Select-Object -First 1 -ExpandProperty FullName
+$prefsCopy = Join-Path $env:TEMP ('ise-ai-prefs-' + $RunId + '.bak')
 $guard = Join-Path $PSScriptRoot '..\..\.workspace\tools\adobe-workspace-guard.ps1'
 $hasGuard = Test-Path -LiteralPath $guard
 
@@ -113,6 +116,10 @@ $launched = 0
 $failure = $null
 try {
     if ($hasGuard) { & $guard Save -App Illustrator | Out-Null }
+    # Illustrator files every new document in its preferences' recent sizes (File > New), and
+    # writes the file at quit; scripted documents filled the owner's list (2026-10-15). The
+    # preferences are copied before the launch and put back after the quit.
+    if ($prefs -and (Test-Path -LiteralPath $prefs)) { Copy-Item -LiteralPath $prefs -Destination $prefsCopy -Force }
     $launched = [SmAiLaunch]::Start($Exe, (Split-Path -Parent $Exe))
     if ($launched -le 0) { throw ('Illustrator could not be started: Win32 error {0}.' -f (-$launched)) }
 
@@ -158,6 +165,10 @@ try {
             if (-not $process.WaitForExit($QuitSeconds * 1000)) {
                 $failure = [string]$failure + ' Illustrator did not quit; it is left running and the workspace snapshot pending.'
             }
+        }
+        if (-not (Get-Process -Id $launched -ErrorAction SilentlyContinue) -and $prefs -and (Test-Path -LiteralPath $prefsCopy)) {
+            Copy-Item -LiteralPath $prefsCopy -Destination $prefs -Force
+            Remove-Item -LiteralPath $prefsCopy -Force
         }
         if ($hasGuard -and -not (Get-Process -Id $launched -ErrorAction SilentlyContinue)) {
             & $guard Restore -App Illustrator | Out-Null

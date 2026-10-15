@@ -1,4 +1,5 @@
 #include "../../plugin/illustrator-probe/IllustratorContour.h"
+#include "../../plugin/illustrator-probe/NativeMiter.h"
 #include "../../plugin/source/IseRegionCore.h"
 #include <cmath>
 #include <cstdio>
@@ -52,5 +53,86 @@ int main() {
     Check(!illustrator_contour::Convert({square[0], square[1]}, true, &contour),
           "closed path needs three anchors");
     Check(!illustrator_contour::Convert(square, true, nullptr), "null output refused");
+
+    // native_miter::ChooseLimit: the owner's rulings as one native limit.
+    {
+        // The census thorn: a 10-degree tip between straight 20 pt sides on a 30 pt square
+        // base. Outside 4 (h = 4): the tip (ratio 11.47) is a whole point, so the limit
+        // rises just past it; the base's corners keep their miters.
+        const double half = 5 * 3.14159265358979323846 / 180, side = 20, bw = side * std::sin(half),
+                     by = side * std::cos(half);
+        std::vector<Node> thorn = {
+            {{0, 0}, {0, 0}, {0, 0}}, {{bw, by}, {bw, by}, {bw, by}}, {{15, by}, {15, by}, {15, by}},
+            {{15, by + 30}, {15, by + 30}, {15, by + 30}}, {{-15, by + 30}, {-15, by + 30}, {-15, by + 30}},
+            {{-15, by}, {-15, by}, {-15, by}}, {{-bw, by}, {-bw, by}, {-bw, by}}};
+        Check(illustrator_contour::Convert(thorn, true, &contour), "thorn converts");
+        ise_miter::Options o; o.halfWidth = 4;
+        const auto stubs = ise_miter::ExteriorCorners({contour}, o);
+        const auto choice = native_miter::ChooseLimit(stubs, 4, 4);
+        Check(choice.limit > 11.47 && choice.limit < 11.5, "thorn: limit just past the whole point");
+        Check(choice.keptBeveled == 0 && choice.cutMitered == 0, "thorn: every ruling met");
+
+        // Synthetic corners: a glyph tip within the limit (ratio 3, a curve beside it) is cut,
+        // a serif corner (ratio 1.41, straight 1 pt edges) keeps its miter: the limit lies
+        // between them.
+        ise_miter::Stub tip; tip.ratio = 3; tip.inCurve = true; tip.edge = 10;
+        ise_miter::Stub serif; serif.ratio = 1.41; serif.edge = 1;
+        auto c2 = native_miter::ChooseLimit({tip, serif}, 4, 4);
+        Check(c2.limit > 1.41 && c2.limit < 3 && c2.keptBeveled == 0 && c2.cutMitered == 0, "tip cut, serif kept");
+
+        // Already satisfied: the limit stays.
+        ise_miter::Stub square90; square90.ratio = 1.414; square90.edge = 20;
+        auto c3 = native_miter::ChooseLimit({square90}, 4, 4);
+        Check(c3.limit == 4 && c3.kept == 1 && c3.cut == 0, "a satisfied limit is kept");
+
+        // A conflict: a straight-edged corner of ratio 3 (kept) and a glyph tip of ratio 2.5
+        // (cut) cannot both be met; one corner is wrong, and the limit nearest 4 wins.
+        ise_miter::Stub straight3; straight3.ratio = 3; straight3.edge = 20;
+        ise_miter::Stub tip25; tip25.ratio = 2.5; tip25.outCurve = true; tip25.edge = 10;
+        auto c4 = native_miter::ChooseLimit({straight3, tip25}, 4, 4);
+        Check(c4.keptBeveled + c4.cutMitered == 1 && c4.limit >= 3, "conflict: one corner wrong, nearest limit");
+
+        // A corner past the limit that is not a whole point (a curve beside it) stays beveled.
+        ise_miter::Stub needle; needle.ratio = 30; needle.inCurve = true; needle.edge = 50;
+        auto c5 = native_miter::ChooseLimit({needle, serif}, 4, 4);
+        Check(c5.limit < 30 && c5.cutMitered == 0, "a curved needle past the limit stays beveled");
+
+        // A v whose crotch miter runs through its thin bottom: the crotch (50, 25) turns 136
+        // degrees (ratio 2.69) into a bottom 25 deep. At h 20 its miter (53.8) reaches past
+        // the far side's band (25 + 20) and is cut; at h 5 (13.5 < 30) it stays inside and,
+        // hidden under a fill above, constrains nothing.
+        std::vector<Node> vee = {
+            {{0, 100}, {0, 100}, {0, 100}}, {{40, 0}, {40, 0}, {40, 0}}, {{60, 0}, {60, 0}, {60, 0}},
+            {{100, 100}, {100, 100}, {100, 100}}, {{80, 100}, {80, 100}, {80, 100}},
+            {{50, 25}, {50, 25}, {50, 25}}, {{20, 100}, {20, 100}, {20, 100}}};
+        Check(illustrator_contour::Convert(vee, true, &contour), "v converts");
+        auto c6 = native_miter::ChooseLimitForOutline({contour}, 20, 4, true, true);
+        Check(c6.cut >= 1 && c6.cutMitered == 0 && c6.keptBeveled == 0 && c6.limit < 2.69,
+              "v: the escaping crotch miter is cut, nothing kept is beveled");
+        auto c7 = native_miter::ChooseLimitForOutline({contour}, 5, 4, true, true);
+        Check(c7.limit == 4 && c7.cutMitered == 0, "v: a crotch miter inside the fill leaves the limit");
+        auto c8 = native_miter::ChooseLimitForOutline({contour}, 20, 4, false);
+        Check(c8.limit == 4, "v, Outside: interior joins are not drawn, the limit stays");
+
+        // A whole point and an escaping crotch sharper than the current limit (independent review,
+        // 2026-10-15): the thorn's tip (ratio 11.47) would raise the limit past a narrow v's crotch
+        // (ratio 8.45, 15 deep; at h 4 its miter, 33.8, runs out the bottom), whose spike the cut
+        // was meant to remove. Both cannot hold, so one ruling is reported unmet, not silently lost.
+        std::vector<Node> narrow = {
+            {{200, 100}, {200, 100}, {200, 100}}, {{245, 0}, {245, 0}, {245, 0}}, {{255, 0}, {255, 0}, {255, 0}},
+            {{300, 100}, {300, 100}, {300, 100}}, {{260, 100}, {260, 100}, {260, 100}},
+            {{250, 15}, {250, 15}, {250, 15}}, {{240, 100}, {240, 100}, {240, 100}}};
+        ise_miter::Contour narrowV, thornC;
+        Check(illustrator_contour::Convert(narrow, true, &narrowV) && illustrator_contour::Convert(thorn, true, &thornC),
+              "narrow v and thorn convert");
+        auto c9 = native_miter::ChooseLimitForOutline({thornC, narrowV}, 4, 4, true);
+        Check(c9.keptBeveled + c9.cutMitered == 1, "whole point vs escaping crotch: the conflict is counted");
+        auto c10 = native_miter::ChooseLimitForOutline({narrowV}, 4, 4, true, false, true);
+        Check(c10.cutMitered == 0 && c10.limit == 4, "Inside (clipped): the crotch does not escape, nothing changes");
+
+        // No usable half width: the current limit, clamped to Illustrator's range.
+        Check(native_miter::ChooseLimit({tip}, 0, 4).limit == 4, "no half width: limit unchanged");
+        Check(native_miter::ChooseLimit({}, 4, 900).limit == native_miter::kMaxLimit, "limit clamped to 500");
+    }
     std::printf("illustrator contour: %d checks passed\n", checks);
 }

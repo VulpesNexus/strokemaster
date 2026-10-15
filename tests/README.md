@@ -50,7 +50,7 @@ The native refusal test compiles the actual implementation against capability-fr
 .\.venv\Scripts\python.exe tests/native-repaint/run.py
 ```
 
-It also builds *IllustratorContourTests.cpp*, which converts Illustrator's anchor and handle form into the shared contour type and feeds it to the miter and region cores (14 checks, no Adobe SDK). Its passing checks establish refusal behavior against mocks. Actual host no-harm comes from the separate matched-render records. Topology tests likewise certify only their explicit linear-region contract; their native font integration is still pending.
+It also builds *IllustratorContourTests.cpp*, which converts Illustrator's anchor and handle form into the shared contour type and feeds it to the miter and region cores, and checks the native miter-limit choice of *plugin/illustrator-probe/NativeMiter.h* (30 checks, no Adobe SDK). Its passing checks establish refusal behavior against mocks. Actual host no-harm comes from the separate matched-render records. Topology tests likewise certify only their explicit linear-region contract; their native font integration is still pending.
 
 ## Portable geometry cores
 

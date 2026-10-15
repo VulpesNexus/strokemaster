@@ -1,0 +1,251 @@
+{
+ "schema": 1,
+ "date": "2026-10-15",
+ "host": {
+  "application": "Adobe Illustrator",
+  "version": "30.8.2",
+  "platform": "Windows x64"
+ },
+ "plugin": {
+  "name": "StrokeMasterRegionProbe",
+  "build": "region-prep-14",
+  "sha256": "eaa594b8073ce996d5f007526ae52bd31e79f4aedbe645 (see build/region-prep14-frozen.aip)"
+ },
+ "note": "The export-format runs (g2) used an earlier region-prep-14 candidate (5b1bbc16): native-route as in eaa594b8 except that it acted on every frame rather than the selection; the effect route there is the region-prep-13 text-kept effect.",
+ "scope": "The native route: stroke-behind and the miter rulings written as ordinary Illustrator attributes (bridge commands native-route and native-fix of the research plugin), so text edits are followed with or without the plugin. MuPDF at 600 dpi unless stated.",
+ "routeCensus": {
+  "probe": "tools/jsx/ai-native-route-census.jsx",
+  "raw": {
+   "host": "30.8.2",
+   "status": "DONE",
+   "build": "region-prep-14",
+   "strokes-fill.pdf": "233369",
+   "strokes-native.pdf": "234240",
+   "strokes.route": "{\"gate\":\"native\",\"frames\":1,\"styled\":1,\"fieldsBefore\":1,\"fieldsAfter\":0,\"contentsBefore\":0,\"contentsAfter\":0}",
+   "strokes-routed.pdf": "240266",
+   "strokes.edited": "HH/HHH",
+   "strokes-edited.pdf": "241641",
+   "fills-fill.pdf": "234806",
+   "fills-native.pdf": "232059",
+   "fills.route": "{\"gate\":\"native\",\"frames\":1,\"styled\":1,\"fieldsBefore\":0,\"fieldsAfter\":1,\"contentsBefore\":0,\"contentsAfter\":0}",
+   "fills-routed.pdf": "239030",
+   "fills.edited": "HH/HHH",
+   "fills-edited.pdf": "241526",
+   "both-fill.pdf": "234766",
+   "both-native.pdf": "234526",
+   "both.route": "{\"gate\":\"partial\",\"frames\":1,\"styled\":0,\"fieldsBefore\":0,\"fieldsAfter\":0,\"contentsBefore\":0,\"contentsAfter\":1000}",
+   "both-routed.pdf": "234521",
+   "both.edited": "HH/HHH",
+   "both-edited.pdf": "234798",
+   "plain-fill.pdf": "233787",
+   "plain-native.pdf": "234682",
+   "plain.route": "{\"gate\":\"native\",\"frames\":1,\"styled\":0,\"fieldsBefore\":0,\"fieldsAfter\":0,\"contentsBefore\":1,\"contentsAfter\":0}",
+   "plain-routed.pdf": "234669",
+   "plain.edited": "HH/HHH",
+   "plain-edited.pdf": "236323",
+   "styled-fill.pdf": "233772",
+   "styled-native.pdf": "234711",
+   "styled.pre": "{\"gate\":\"styled\",\"frames\":1,\"styled\":1,\"fieldsBefore\":2,\"fieldsAfter\":3,\"contentsBefore\":1,\"contentsAfter\":2}",
+   "styled.route": "{\"gate\":\"partial\",\"frames\":1,\"styled\":0,\"fieldsBefore\":0,\"fieldsAfter\":0,\"contentsBefore\":0,\"contentsAfter\":1}",
+   "styled-routed.pdf": "240619",
+   "styled.edited": "HH/HHH",
+   "styled-edited.pdf": "241940"
+  },
+  "strokes": {
+   "nc4-strokes-native.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 55568,
+    "ink_xor_px": 0,
+    "outside_changed_px": 0,
+    "text_chars": 8,
+    "fonts": 1
+   },
+   "nc4-strokes-routed.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 0,
+    "ink_xor_px": 0,
+    "outside_changed_px": 0,
+    "text_chars": 14,
+    "fonts": 1
+   },
+   "nc4-strokes-edited.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 0,
+    "ink_xor_px": 72900,
+    "outside_changed_px": 73242,
+    "text_chars": 17,
+    "fonts": 1
+   },
+   "nc4-strokes-noplugin-edit.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 0,
+    "ink_xor_px": 72900,
+    "outside_changed_px": 73242,
+    "text_chars": 17,
+    "fonts": 1
+   }
+  },
+  "fills": {
+   "nc4-fills-native.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 72080,
+    "ink_xor_px": 0,
+    "outside_changed_px": 0,
+    "text_chars": 5,
+    "fonts": 1
+   },
+   "nc4-fills-routed.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 0,
+    "ink_xor_px": 0,
+    "outside_changed_px": 0,
+    "text_chars": 11,
+    "fonts": 1
+   },
+   "nc4-fills-edited.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 0,
+    "ink_xor_px": 72900,
+    "outside_changed_px": 73242,
+    "text_chars": 13,
+    "fonts": 1
+   },
+   "nc4-fills-noplugin-edit.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 0,
+    "ink_xor_px": 72900,
+    "outside_changed_px": 73242,
+    "text_chars": 13,
+    "fonts": 1
+   }
+  },
+  "both": {
+   "nc4-both-native.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 16512,
+    "ink_xor_px": 0,
+    "outside_changed_px": 0,
+    "text_chars": 5,
+    "fonts": 1
+   },
+   "nc4-both-routed.pdf": {
+    "core_px": 72080,
+    "core_damaged_px": 16512,
+    "ink_xor_px": 0,
+    "outside_changed_px": 0,
+    "text_chars": 5,
+    "fonts": 1
+   }
+  },
+  "finding": "Mixed strokes get a fill above Characters, mixed fills a stroke below; both corrected to 0 damage, identical to native off the fills, text kept. Both mixed: left alone and reported. A frame already styled is refused. The *-noplugin-edit PDFs were exported after reopening the saved file with the plugin moved out of the folder and appending a character: the edit is drawn, damage 0."
+ },
+ "exports": {
+  "probe": "tools/jsx/ai-text-gaps.jsx",
+  "measure": "tools/measure_text_gaps.py",
+  "result": {
+   "dpi": 600,
+   "erode_px": 3,
+   "dark_level": 32,
+   "A": {
+    "native.pdf": {
+     "core_px": 70482,
+     "core_damaged_px": 54374,
+     "text": 6
+    },
+    "route.pdf": {
+     "core_px": 70482,
+     "core_damaged_px": 0,
+     "text": 10
+    },
+    "effect.pdf": {
+     "core_px": 70482,
+     "core_damaged_px": 0,
+     "text": 4
+    },
+    "native.svg": {
+     "core_px": 80100,
+     "core_damaged_px": 62940,
+     "text": 4
+    },
+    "route.svg": {
+     "core_px": 80100,
+     "core_damaged_px": 0,
+     "text": 8
+    },
+    "effect.svg": {
+     "core_px": 80100,
+     "core_damaged_px": 11648,
+     "text": 4
+    },
+    "native.eps": {
+     "core_px": 69596,
+     "core_damaged_px": 53653,
+     "text": 32
+    },
+    "route.eps": {
+     "core_px": 69596,
+     "core_damaged_px": 0,
+     "text": 34
+    },
+    "effect.eps": {
+     "core_px": 69596,
+     "core_damaged_px": 0,
+     "text": 31
+    },
+    "native.png": {
+     "core_px": 72080,
+     "core_damaged_px": 55568,
+     "text": null
+    },
+    "route.png": {
+     "core_px": 72080,
+     "core_damaged_px": 0,
+     "text": null
+    },
+    "effect.png": {
+     "core_px": 72080,
+     "core_damaged_px": 0,
+     "text": null
+    }
+   },
+   "B": {
+    "native": {
+     "core_px": 72420,
+     "core_damaged_px": 18303,
+     "text": 5
+    },
+    "route": {
+     "core_px": 72420,
+     "core_damaged_px": 0,
+     "text": 8
+    },
+    "effect": {
+     "core_px": 72420,
+     "core_damaged_px": 0,
+     "text": 5
+    }
+   },
+   "C": {
+    "effect": {
+     "core_px": 70482,
+     "core_damaged_px": 0,
+     "text": 4
+    }
+   }
+  },
+  "finding": "Native route 0 damage in PDF, EPS, PNG, and SVG; the effect route 0 except SVG (11,648), where a viewer substituting the font misaligns its outline strokes with its live text. Threaded frames and text with an existing object-level stroke: 0 under both routes."
+ },
+ "fixSelectionScript": {
+  "probe": "tools/jsx/ai-fix-selection-test.jsx",
+  "script": "tools/jsx/strokemaster-fix-selection.jsx",
+  "raw": {
+   "host": "30.8.2",
+   "status": "DONE",
+   "align": "true",
+   "selected": "5",
+   "message": "StrokeMaster: 1 text frame(s) given a native stroke-behind, 0 character and 2 path miter limit(s) set, 1 Outside fill(s) moved above the stroke. 1 frame(s) with both mixed fills and mixed strokes were left as they are.",
+   "textStillLive": "true",
+   "empty": "StrokeMaster: select the art to fix first."
+  }
+ }
+}

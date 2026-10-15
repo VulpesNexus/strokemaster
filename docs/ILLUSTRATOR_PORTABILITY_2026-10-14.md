@@ -28,6 +28,10 @@ region-prep-13 adds `org.strokemaster.proposed.stroke-behind-text.v1` ([TextBehi
 
 Record: *tests/audit/results/illustrator-text-kept-stroke-behind-2026-10-15.json*. Not yet covered: the miter and overlap geometry of step 3 (the strokes are still Illustrator's own outline strokes), text with an object-level stroke or fill in its appearance, area and path text, threaded frames, other fonts, and EPS and SVG exports. *TextBehindTests.cpp* checks the transform against an in-memory art tree with every SDK call failing once in turn (9,255 assertions, 186 runs): a failure leaves the input untouched, or, at the final disposal of the originals, reports a failed rollback. An independent read (on the API credit) found the in-place version's rollback defect that the staged copies fix; the installed build is region-prep-13 `71d273e3`.
 
+## The native route (2026-10-15, later)
+
+The owner then asked for corrections that follow every edit, as InDesign's do, the remaining fixtures tested, and parity with InDesign. The answer is the native route: the corrections written as ordinary Illustrator attributes (an object-level fill above or stroke below *Characters*, miter limits chosen per character and per path by InDesign's own rulings, and fill above stroke for Outside strokes on overlapping contours). It needs no plugin to draw, follows edits, keeps text in every export, and on a 71-row port of the InDesign coverage census removes the stray contour edges, the beveled whole points, and the escaping glyph miters. What it cannot express (text with both fills and strokes mixed, Inside strokes on overlapping contours, dashed points) is listed there: [ILLUSTRATOR_NATIVE_ROUTE_2026-10-15.md](ILLUSTRATOR_NATIVE_ROUTE_2026-10-15.md).
+
 ## Transfer map
 
 | Source | Reuse in Illustrator | Remaining integration |
