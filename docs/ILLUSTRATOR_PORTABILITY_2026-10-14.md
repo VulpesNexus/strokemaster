@@ -8,7 +8,11 @@ The Illustrator project now compiles and links `IseRegionCore.cpp` and `IseClipp
 
 The final **complete** hidden build passed 70 registration, bridge, and refusal mock assertions, 2,879 output-backend assertions, and 13,229 stroke-behind assertions; its candidate artifact hash was `1a56e1a90083e38d197a44fb14ade46283884d3c045bfbd33909ec8a078391d7`. The later attempt to link an additional standalone contour test stalled. A narrower attempt to link the real region core into the mock executable failed with **No space left on device** while writing an object. The project was returned to the passing mock-target structure and rebuilt successfully.
 
-**2026-10-15 follow-up:** with space restored, `IllustratorContourTests.cpp` was added to `tests/native-repaint/run.py` and passes its 14 checks under MSVC (/W4 /WX), alongside the existing suites (33 refusal, 65,585 stroke-behind, 43 cross-frame, 299 miter, 51 settings). `build_region_native.py` rebuilt region-prep-12 from the same source hashes and passed the same 70, 2,879, and 13,229 assertions; builds are not byte-reproducible, and the new candidate is `553b30b88b454f8070ed7233e3fb7603630c74c055095c93b1c5ea58ca858a39`. Gate 1 below is therefore met; nothing was installed.
+**2026-10-15 follow-up:** with space restored, `IllustratorContourTests.cpp` was added to `tests/native-repaint/run.py` and passes its 14 checks under MSVC (/W4 /WX), alongside the existing suites (33 refusal, 65,585 stroke-behind, 43 cross-frame, 299 miter, 51 settings). `build_region_native.py` rebuilt region-prep-12 from the same source hashes and passed the same 70, 2,879, and 13,229 assertions; builds are not byte-reproducible, and the new candidate is `553b30b88b454f8070ed7233e3fb7603630c74c055095c93b1c5ea58ca858a39`. Gate 1 below is therefore met.
+
+**2026-10-15 rebaseline (gate 2 met):** the four host probes on record for region-prep-11 (stroke-behind, region lifecycle, appearance, and region discriminator) ran on Illustrator 30.8.2, each in a fresh, quietly launched process (*tools/run-ai-fresh.ps1*). Every status field, gate, processing census, vertex deviation, and bound matches the 30.7.0 record, and the 600 dpi MuPDF measures are unchanged: fill-core damage 55,568 → 0 under stroke-behind, identical to the outlined control away from the fills, and 72,080 → 0 under the Appearance route, with the PDF text kept. region-prep-12 was then frozen, installed in place of region-prep-11 (kept frozen as *build/region-prep11-frozen.aip*), and reproduced every field and measure except its build name. Record: *tests/audit/results/illustrator-region-rebaseline-30.8.2.json*.
+
+The run found one host change: since Illustrator 2025 (29.8.11) was installed beside 2026, the ProgID `Illustrator.Application` names 2025. A running 2026 is not found under it, and activating it starts a second Illustrator, 2025. Both Illustrator runners now attach with `Illustrator.Application.30`; *plugin/illustrator-probe/capture-region.ps1* still uses the old name and `Start-Process`, and is kept only as the record of its 2026-09 runs.
 
 ## Transfer map
 
@@ -25,8 +29,8 @@ The first useful Illustrator product split remains: use a native object-level Ap
 
 ## Next Illustrator gates
 
-1. Restore build headroom, rerun the new contour CMake test and the region-probe build, and compare source and artifact identities. Do not replace the installed AIP as a side effect of compilation.
-2. Rebaseline on Illustrator 30.8.2 with fresh-process controls and the documented `ai-stroke-behind-proof.jsx` and `ai-region-lifecycle.jsx` specimens. Preserve other Adobe work and use the host coordination and quiet-launch procedures.
+1. **Met 2026-10-15.** Restore build headroom, rerun the new contour CMake test and the region-probe build, and compare source and artifact identities. Do not replace the installed AIP as a side effect of compilation.
+2. **Met 2026-10-15.** Rebaseline on Illustrator 30.8.2 with fresh-process controls and the documented `ai-stroke-behind-proof.jsx` and `ai-region-lifecycle.jsx` specimens. Preserve other Adobe work and use the host coordination and quiet-launch procedures.
 3. Feed actual outlined glyph contours through the new adapter and shared region core. Test nonzero/even-odd rules, touching contours, curves, transforms, miter limits, undo, save/reopen, screen, PDF, and missing-plugin edits. The current SDK output backend accepts only one shell and one hole, with straight segments; general curved multi-component output needs its own bounded ownership and rollback tests.
 4. Port page-item strokes and only then pattern/Appearance families, refusing brushes and variable-width profiles until a measured model exists.
 

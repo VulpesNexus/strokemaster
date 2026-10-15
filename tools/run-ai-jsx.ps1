@@ -1,7 +1,7 @@
 # run-ai-jsx.ps1 - run one script from tools\jsx in the running Adobe Illustrator.
 #
 # Usage:
-#   powershell -NoProfile -File tools\run-ai-jsx.ps1 ai-dump-paths.jsx -ArgJson '{"out":"C:/tmp/p.json"}'
+#   powershell -NoProfile -File tools\run-ai-jsx.ps1 ai-dump-paths.jsx -ArgJson '{"out":"build/p.json"}'
 #
 # The companion to run-jsx.ps1, which drives InDesign. Illustrator is a separate application with
 # a separate automation interface, so it needs its own runner: the ProgID is Illustrator's and
@@ -33,7 +33,7 @@ $argsLiteral = '{}'
 if ($ArgJson) {
     # Validate before sending: a malformed literal would fail inside the host, where the error is
     # far less legible than it is here. The overwhelmingly common cause is a Windows path pasted
-    # into the JSON by hand, because a backslash starts an escape sequence in JSON and "C:\Users"
+    # into the JSON by hand, because a backslash starts an escape sequence in JSON and "build\data"
     # is therefore invalid, so say so rather than leaving the caller with "Unrecognized escape
     # sequence" and no clue which of their arguments caused it.
     try {
@@ -42,7 +42,7 @@ if ($ArgJson) {
         throw ("-ArgJson is not valid JSON: " + $_.Exception.Message + [Environment]::NewLine +
                "If it contains a Windows path, use forward slashes, or build the argument with " +
                "ConvertTo-Json rather than writing it by hand, for example:" + [Environment]::NewLine +
-               '  $json = @{ out = ''C:/tmp/p.json'' } | ConvertTo-Json -Compress')
+               '  $json = @{ out = ''build/p.json'' } | ConvertTo-Json -Compress')
     }
     $argsLiteral = $ArgJson
 }
@@ -54,7 +54,9 @@ if ($PSVersionTable.PSEdition -ne 'Desktop') {
 }
 # Attach to the existing desktop instance. Creating a COM application can start another
 # Illustrator instance and gives no assurance that it contains the intended fixture.
-$ai = [Runtime.InteropServices.Marshal]::GetActiveObject('Illustrator.Application')
+# The versioned ProgID: with Illustrator 2025 installed beside 2026, the plain
+# Illustrator.Application names 2025 and finds no running 2026.
+$ai = [Runtime.InteropServices.Marshal]::GetActiveObject('Illustrator.Application.30')
 $result = $ai.DoJavaScript($js)
 if ([string]::IsNullOrEmpty($result)) {
     # An empty return and a script that never ran look identical, so say which is unknown rather

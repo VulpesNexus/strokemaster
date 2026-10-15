@@ -7,7 +7,7 @@ $null = $ArgJson | ConvertFrom-Json
 $target = Join-Path (Join-Path $PSScriptRoot 'jsx') $Script
 if (-not (Test-Path -LiteralPath $target -PathType Leaf)) { throw 'Probe script does not exist.' }
 $literal = ConvertTo-Json -InputObject ($target -replace '\\', '/') -Compress
-$ai = [Runtime.InteropServices.Marshal]::GetActiveObject('Illustrator.Application')
+$ai = [Runtime.InteropServices.Marshal]::GetActiveObject('Illustrator.Application.30')
 $js = 'var __iseResult; $.global.ISE_AI_ARGS=' + $ArgJson + '; try { __iseResult=$.evalFile(new File(' + $literal + ')); } finally { delete $.global.ISE_AI_ARGS; } __iseResult;'
 $result = [string]$ai.DoJavaScript($js)
 if (-not $result) { throw 'Illustrator returned no result; probe status is unknown.' }
