@@ -1,4 +1,4 @@
-// PROPOSED region-prep-16: real-core closed-region replacement for the marked
+// PROPOSED region-prep-17: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -19,6 +19,7 @@
 #include "AIATEPaint.h"
 #include "AIBeautifulStrokes.h"
 #include "AIEntry.h"
+#include "AIArray.h"
 #include "AITimer.h"
 #include "AIUndo.h"
 #include "../source/IseRegionCore.h"
@@ -32,7 +33,7 @@
 #include <string>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-16";
+constexpr char build[] = "region-prep-17";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -157,6 +158,12 @@ struct RefixState {
     int lastError = 0;
 };
 
+struct AlignStats {
+    const char* gate = "ready";
+    int native = 0, profiled = 0, doubled = 0, typeOutside = 0, restored = 0, refused = 0;
+    char reasons[208] = {};
+};
+
 struct State {
     AILiveEffectHandle effect = nullptr;
     AppearanceStats appearance{};
@@ -166,6 +173,7 @@ struct State {
     AILiveEffectHandle textBehind = nullptr;
     text_behind::Stats textBehindStats{};
     NativeFixStats nativeFix{};
+    AlignStats align{};
     RefixState refix{};
     CensusStats inputCensus{};
     unsigned long long fixtures = 0;
@@ -1045,6 +1053,102 @@ bool DashesOn(SPBasicSuite* basic, AIArtHandle art) {
     return on;
 }
 
+// What native-align made of an item where Illustrator draws no stroke alignment (2026-10-16),
+// kept in its dictionary: how (kAlignAs), the side a one-sided profile stands for (kAlignSide), and
+// the weight to restore (kAlignWeight).
+constexpr char kAlignAs[] = "StrokeMasterAlignAs";         // "profile", "doubled", "type-outside", "type-chars"
+constexpr char kAlignSide[] = "StrokeMasterAlignSide";     // 1 Outside, 2 Inside
+constexpr char kAlignWeight[] = "StrokeMasterAlignWeight";
+
+struct AlignRecord { std::string as; int side = 0; double weight = 0; };
+
+AlignRecord ReadAlignRecord(SPBasicSuite* basic, const AIArtSuite& art, AIArtHandle item) {
+    AlignRecord r;
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    if (dict.error || !art.HasDictionary(item)) return r;
+    AIDictionaryRef d = nullptr;
+    if (art.GetDictionary(item, &d) || !d) return r;
+    const char* as = nullptr;
+    if (!dict->GetStringEntry(d, dict->Key(kAlignAs), &as) && as) r.as = as;
+    ai::int32 side = 0;
+    if (!dict->GetIntegerEntry(d, dict->Key(kAlignSide), &side)) r.side = side;
+    AIReal w = 0;
+    if (!dict->GetRealEntry(d, dict->Key(kAlignWeight), &w)) r.weight = w;
+    dict->Release(d);
+    return r;
+}
+
+void WriteAlignRecord(SPBasicSuite* basic, const AIArtSuite& art, AIArtHandle item, const AlignRecord& r) {
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    if (dict.error) return;
+    AIDictionaryRef d = nullptr;
+    if (art.GetDictionary(item, &d) || !d) return;
+    if (r.as.empty()) {
+        for (const char* k : {kAlignAs, kAlignSide, kAlignWeight}) dict->DeleteEntry(d, dict->Key(k));
+    } else {
+        dict->SetStringEntry(d, dict->Key(kAlignAs), r.as.c_str());
+        dict->SetIntegerEntry(d, dict->Key(kAlignSide), r.side);
+        dict->SetRealEntry(d, dict->Key(kAlignWeight), static_cast<AIReal>(r.weight));
+    }
+    dict->Release(d);
+}
+
+// Whether a path's style paints its fill above its stroke: two fields, a painting fill first.
+bool FillOnTop(const FixSuites& s, AIArtHandle art) {
+    AIArtStyleHandle style = nullptr;
+    if (s.styles.GetArtStyle(art, &style) || !style) return false;
+    AIStyleParser p = nullptr;
+    if (s.parser.NewParser(&p) || !p) return false;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    if (s.parser.ParseStyle(p, style) || s.parser.CountPaintFields(p) != 2) return false;
+    AIParserPaintField first = nullptr, second = nullptr;
+    return !s.parser.GetNthPaintField(p, 0, &first) && first && PaintingFill(s.parser, first) &&
+           !s.parser.GetNthPaintField(p, 1, &second) && second && s.parser.IsStroke(second);
+}
+
+// What a fill (two fields, a painting fill and a stroke) allows: whether the style is that simple.
+bool SimpleFillAndStroke(const FixSuites& s, AIArtHandle art) {
+    AIArtStyleHandle style = nullptr;
+    if (s.styles.GetArtStyle(art, &style) || !style) return false;
+    AIStyleParser p = nullptr;
+    if (s.parser.NewParser(&p) || !p) return false;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    if (s.parser.ParseStyle(p, style) || s.parser.CountPaintFields(p) != 2 || s.parser.ContainsTransparency(p)) return false;
+    int fills = 0, strokes = 0;
+    for (ai::int32 i = 0; i < 2; ++i) {
+        AIParserPaintField f = nullptr;
+        if (s.parser.GetNthPaintField(p, i, &f) || !f) return false;
+        // A fill with an effect of its own is not moved (FillAboveStroke): refused here, first.
+        if (PaintingFill(s.parser, f) && s.parser.CountEffectsOfPaintField(f) == 0) ++fills;
+        else if (s.parser.IsStroke(f)) ++strokes;
+    }
+    return fills == 1 && strokes == 1;
+}
+
+// The stroke field moved back above the fill (FillAboveStroke undone).
+ASErr StrokeAboveFill(const FixSuites& s, AIArtHandle art) {
+    AIArtStyleHandle style = nullptr;
+    auto e = s.styles.GetArtStyle(art, &style);
+    if (e || !style) return e;
+    AIStyleParser p = nullptr;
+    e = s.parser.NewParser(&p);
+    if (e || !p) return e ? e : kOutOfMemoryErr;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    e = s.parser.ParseStyle(p, style);
+    if (e || s.parser.CountPaintFields(p) != 2) return e;
+    AIParserPaintField first = nullptr, second = nullptr;
+    if (s.parser.GetNthPaintField(p, 0, &first) || s.parser.GetNthPaintField(p, 1, &second)) return kNoErr;
+    if (!s.parser.IsFill(first) || !s.parser.IsStroke(second)) return kNoErr;
+    e = s.parser.RemovePaintField(p, second, false);
+    if (e) return e;
+    e = s.parser.InsertNthPaintField(p, 0, second);
+    if (e) { if (s.parser.InsertNthPaintField(p, -1, second)) s.parser.DisposePaintField(second); return e; }
+    AIArtStyleHandle created = nullptr;
+    e = s.parser.CreateNewStyle(p, &created);
+    if (e || !created) return e ? e : kBadParameterErr;
+    return s.styles.SetArtStyle(art, created);
+}
+
 // What the fix leaves on an item, kept in its dictionary beside the mark: the automatic re-fix
 // compares it with what the item carries before fixing again, and a difference is the user's own
 // change (a limit set by hand, Pathfinder or dash alignment removed), which it respects.
@@ -1054,9 +1158,15 @@ struct FixRecord {
     bool pathfinder = false;    // the fix's own Pathfinder Add present after the fix
     bool dashes = false;        // dashes aligned after the fix
     std::set<long> charLimits;  // every limit a frame's text runs carry after the fix, in thousandths
+    // The user's own limit, the one the rulings are judged against (within it a glyph tip is
+    // trimmed, past it only a whole point is kept): the limit before the fix first changed it.
+    // Without it, a later fix would take the limit it wrote for the user's and judge again.
+    double userLimit = 0;       // a path's (0: unknown)
+    double charUserLimit = 0;   // a frame's, when one limit ran through it (0: each character's own)
     bool operator==(const FixRecord& o) const {
         return hasLimit == o.hasLimit && (!hasLimit || std::fabs(limit - o.limit) <= 1e-4) && pathfinder == o.pathfinder &&
-               dashes == o.dashes && charLimits == o.charLimits;
+               dashes == o.dashes && charLimits == o.charLimits && std::fabs(userLimit - o.userLimit) <= 1e-4 &&
+               std::fabs(charUserLimit - o.charUserLimit) <= 1e-4;
     }
 };
 
@@ -1084,17 +1194,53 @@ ASErr FixPath(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, ai::uint
     if (!style.strokePaint || !(style.stroke.width > 0)) return kNoErr;
     std::vector<ise_miter::Contour> contours;
     if (!Contours(s, art, contours) || contours.empty()) return kNoErr;
+    // How the stroke is drawn, as against the alignment Illustrator holds: a Center stroke under
+    // its fill shows its outer half only (Outside at half the weight: native-align's doubled
+    // stroke, or the user's own order), and a one-sided profile (native-align on an open path)
+    // lies on its recorded side at the full weight.
+    double reachScale = align == kAIStrokeAlignmentCenter ? 0.5 : 1;
+    ai::uint32 drawn = align;
+    // A Center stroke under its fill still has its inner half: its interior miters are hidden
+    // while they stay in the fill, and cut where a thin part lets one out (as text under a fill).
+    bool underFill = false;
+    bool skipLimit = false;
+    if (basic && align == kAIStrokeAlignmentCenter) {
+        const AlignRecord ar = ReadAlignRecord(basic, s.art, art);
+        bool profiled = false;
+        if (ar.as == "profile") {
+            // Only while the one-sided profile is still there (the user may have reset it).
+            Suite<AIBeautifulStrokesSuite> bs(basic, kAIBeautifulStrokesSuite, kAIBeautifulStrokesVersion);
+            Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+            if (!bs.error && !dict.error) {
+                AIDictionaryRef params = nullptr;
+                const auto got = bs->GetArtStrokeParams(art, params, nullptr, nullptr, nullptr, nullptr);
+                profiled = !got && params && bs->GetWidthSource(params) == kUserProfile;
+                if (params) dict->Release(params);
+            }
+        }
+        if (profiled && ar.side == 1) { drawn = kAIStrokeAlignmentOutside; reachScale = 1; }
+        // An Inside profile draws only the joins on its inner side, which the corner rules here
+        // do not single out: its limit is left as it is.
+        else if (profiled && ar.side == 2) skipLimit = true;
+        // Under an even-odd fill an interior miter can point into a hole and show.
+        else if (FillOnTop(s, art) && !style.evenodd) underFill = true;
+    }
     // Inside on overlapping contours (any join): united first, by Illustrator's Pathfinder.
     const bool unite = align == kAIStrokeAlignmentInside && !style.evenodd && style.fillPaint &&
                        native_region::InternalEdges(contours, 0.01, style.stroke.width / 2);
-    if (style.stroke.join == kAIMiterJoin) {
+    if (style.stroke.join == kAIMiterJoin && !skipLimit) {
         // The miter's reach: half the width for Center, the whole width for Outside and Inside.
-        const double h = align == kAIStrokeAlignmentCenter ? style.stroke.width / 2 : style.stroke.width;
+        const double h = style.stroke.width * reachScale;
+        // Judged against the user's own limit while the limit is still the one the fix wrote.
+        double ruling = style.stroke.miterLimit;
+        if (prior && prior->hasLimit && prior->userLimit > 0 && std::fabs(style.stroke.miterLimit - prior->limit) <= 1e-3)
+            ruling = prior->userLimit;
+        rec.userLimit = ruling;
         // Center: interior miters over the fill are visible. Inside: clipped to the fill, so none
         // escapes. Outside: no interior miter on its side. United: the corners actually drawn.
         const auto choice = native_miter::ChooseLimitForOutline(unite ? UnitedOutline(contours) : contours, h,
-                                                                style.stroke.miterLimit, align != kAIStrokeAlignmentOutside,
-                                                                false, align == kAIStrokeAlignmentInside);
+                                                                ruling, drawn != kAIStrokeAlignmentOutside,
+                                                                underFill, align == kAIStrokeAlignmentInside);
         Tally(st, choice);
         rec.hasLimit = true;
         rec.limit = style.stroke.miterLimit;
@@ -1220,7 +1366,8 @@ ASErr FixObjectStrokes(const FixSuites& s, AIArtHandle frame, const std::vector<
 // One limit per character, from its glyph outline. Glyph outlines come from CreateOutline of
 // the frame (first child = last glyph); characters that draw no glyph are skipped. When the
 // counts disagree (ligatures, for one), each character is judged against the whole frame.
-ASErr FixCharacters(const FixSuites& s, AIArtHandle frame, NativeFixStats& st) {
+ASErr FixCharacters(const FixSuites& s, AIArtHandle frame, NativeFixStats& st, const FixRecord* prior = nullptr,
+                    double* userLimitOut = nullptr) {
     TextRangeRef whole = nullptr;
     auto e = s.text.GetATETextRange(frame, &whole);
     if (e || !whole) return e ? e : kBadParameterErr;
@@ -1281,6 +1428,18 @@ ASErr FixCharacters(const FixSuites& s, AIArtHandle frame, NativeFixStats& st) {
         if (f) s.features.Release(f);
         return !ate;
     };
+    // The user's own limit for the rulings: the frame's, recorded at the first fix when one limit
+    // ran through the frame, for every character still carrying a limit the fix left (typing
+    // copies one); otherwise the character's own.
+    double frameUser = prior ? prior->charUserLimit : 0;
+    if (!(frameUser > 0) && !prior) {
+        ATE::CharFeaturesRef u = nullptr;
+        ATE::ATEBool8 assigned = false;
+        ATETextDOM::Float l = 0;
+        if (!s.range.GetUniqueCharFeatures(whole, &u) && u && !s.features.GetMiterLimit(u, &assigned, &l) && assigned) frameUser = l;
+        if (u) s.features.Release(u);
+    }
+    if (userLimitOut) *userLimitOut = frameUser;
     // Frame-level limits, one per stroke width and limit, when the outlines are not mapped.
     std::vector<std::pair<std::pair<double, double>, double>> frameLimits;
     for (const auto& c : drawn) {
@@ -1304,6 +1463,9 @@ ASErr FixCharacters(const FixSuites& s, AIArtHandle frame, NativeFixStats& st) {
             s.features.Release(f);
         }
         double chosen = -1;
+        const ATETextDOM::Float current = limit;
+        if (frameUser > 0 && (!prior || prior->charLimits.count(std::lround(static_cast<double>(limit) * 1000))))
+            limit = static_cast<ATETextDOM::Float>(frameUser);
         if (on && width > 0 && join == ATE::kMiterJoin) {
             const double h = width / 2 * scale;
             if (mapped) {
@@ -1325,7 +1487,7 @@ ASErr FixCharacters(const FixSuites& s, AIArtHandle frame, NativeFixStats& st) {
                 }
             }
         }
-        if (chosen > 0 && std::fabs(chosen - limit) > 1e-4) {
+        if (chosen > 0 && std::fabs(chosen - current) > 1e-4) {
             if (setLimit(r, chosen)) ++st.charLimits;
         }
         s.range.Release(r);
@@ -1340,6 +1502,8 @@ constexpr char kRecordLimit[] = "StrokeMasterLimit";
 constexpr char kRecordPathfinder[] = "StrokeMasterPathfinder";
 constexpr char kRecordDashes[] = "StrokeMasterDashes";
 constexpr char kRecordCharLimits[] = "StrokeMasterCharLimits";
+constexpr char kRecordUserLimit[] = "StrokeMasterUserLimit";
+constexpr char kRecordCharUserLimit[] = "StrokeMasterCharUserLimit";
 
 void Mark(const AIArtSuite& art, const AIDictionarySuite& dict, AIArtHandle item, const FixRecord& rec) {
     AIDictionaryRef d = nullptr;
@@ -1352,13 +1516,18 @@ void Mark(const AIArtSuite& art, const AIDictionarySuite& dict, AIArtHandle item
     std::string limits;
     for (long v : rec.charLimits) { if (!limits.empty()) limits += ","; limits += std::to_string(v); }
     dict.SetStringEntry(d, dict.Key(kRecordCharLimits), limits.c_str());
+    if (rec.userLimit > 0) dict.SetRealEntry(d, dict.Key(kRecordUserLimit), static_cast<AIReal>(rec.userLimit));
+    else dict.DeleteEntry(d, dict.Key(kRecordUserLimit));
+    if (rec.charUserLimit > 0) dict.SetRealEntry(d, dict.Key(kRecordCharUserLimit), static_cast<AIReal>(rec.charUserLimit));
+    else dict.DeleteEntry(d, dict.Key(kRecordCharUserLimit));
     dict.Release(d);
 }
 
 void Unmark(const AIArtSuite& art, const AIDictionarySuite& dict, AIArtHandle item) {
     AIDictionaryRef d = nullptr;
     if (art.GetDictionary(item, &d) || !d) return;
-    for (const char* k : {kNativeMark, kRecordLimit, kRecordPathfinder, kRecordDashes, kRecordCharLimits})
+    for (const char* k : {kNativeMark, kRecordLimit, kRecordPathfinder, kRecordDashes, kRecordCharLimits, kRecordUserLimit,
+                          kRecordCharUserLimit})
         dict.DeleteEntry(d, dict.Key(k));
     dict.Release(d);
 }
@@ -1374,6 +1543,9 @@ bool Marked(const AIArtSuite& art, const AIDictionarySuite& dict, AIArtHandle it
         *rec = FixRecord{};
         AIReal limit = 0;
         if (!dict.GetRealEntry(d, dict.Key(kRecordLimit), &limit)) { rec->hasLimit = true; rec->limit = limit; }
+        AIReal user = 0;
+        if (!dict.GetRealEntry(d, dict.Key(kRecordUserLimit), &user)) rec->userLimit = user;
+        if (!dict.GetRealEntry(d, dict.Key(kRecordCharUserLimit), &user)) rec->charUserLimit = user;
         AIBoolean b = false;
         if (!dict.GetBooleanEntry(d, dict.Key(kRecordPathfinder), &b)) rec->pathfinder = b;
         if (!dict.GetBooleanEntry(d, dict.Key(kRecordDashes), &b)) rec->dashes = b;
@@ -1489,7 +1661,9 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
         ASErr err = kNoErr;
         if (type == kTextFrameArt) {
             ++st.frames;
-            err = FixCharacters(s, items[i], st);
+            double userLimit = 0;
+            err = FixCharacters(s, items[i], st, hasPrior ? &prior : nullptr, &userLimit);
+            rec.charUserLimit = userLimit;
             const auto limits = RunLimits(basic, s, items[i]);
             if (!limits.empty()) rec.charLimits = limits;
         } else {
@@ -1906,6 +2080,650 @@ ASErr StyleDump(SPMessageData& message, std::string& out) {
 
 // Research and tests: every character's miter limit in the selected text frames (every frame
 // when none is selected), comma-separated, frames separated by ';'. Scripting reads NaN.
+// Research (2026-10-16): stroke alignment per target. For each selected item whose parent is not
+// selected (a group, not its children), any art type: "center", "inside", or "outside" calls
+// AIPaintStyleSuite::SetStrokeAlignment and reports its error; "?" only reads. Then the alignment
+// read back from the style (ReadAlignment) and the style's paint fields. "add-stroke" (selector
+// align-survey, input "stroke") first adds an object-level 8 pt stroke below everything, as the
+// Appearance panel's Add New Stroke does on a group or a type object ("stroke-above": above
+// everything, Characters included).
+ASErr AlignSurvey(SPMessageData& message, const char* input, std::string& out) {
+    out.clear();
+    Suite<AIArtSuite> art(message.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathSuite> path(message.basic, kAIPathSuite, kAIPathVersion);
+    Suite<AIPathStyleSuite> paint(message.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    Suite<AIPaintStyleSuite> paintStyle(message.basic, kAIPaintStyleSuite, kAIPaintStyleVersion);
+    Suite<AIArtStyleSuite> styles(message.basic, kAIArtStyleSuite, kAIArtStyleVersion);
+    Suite<AIArtStyleParserSuite> parser(message.basic, kAIArtStyleParserSuite, kAIArtStyleParserVersion);
+    Suite<AITextFrameSuite> text(message.basic, kAITextFrameSuite, kAITextFrameVersion);
+    Suite<ATE::TextRangeSuite> range(message.basic, kTextRangeSuite, kTextRangeSuiteVersion);
+    Suite<ATE::CharFeaturesSuite> features(message.basic, kCharFeaturesSuite, kCharFeaturesSuiteVersion);
+    Suite<ATE::TextFrameSuite> textFrame(message.basic, kTextFrameSuite, kTextFrameSuiteVersion);
+    Suite<AIMatchingArtSuite> matching(message.basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
+    Suite<AIMdMemorySuite> memory(message.basic, kAIMdMemorySuite, kAIMdMemorySuiteVersion);
+    for (ASErr e : {art.error, path.error, paint.error, paintStyle.error, styles.error, parser.error, text.error,
+                    range.error, features.error, textFrame.error, matching.error, memory.error})
+        if (e) return e;
+    FixSuites s{*art.operator&(), *path.operator&(), *paint.operator&(), *paintStyle.operator&(), *styles.operator&(),
+                *parser.operator&(), *text.operator&(), *range.operator&(), *features.operator&(), *textFrame.operator&()};
+    ai::uint32 align = 99;
+    if (std::strcmp(input, "center") == 0) align = kAIStrokeAlignmentCenter;
+    else if (std::strcmp(input, "inside") == 0) align = kAIStrokeAlignmentInside;
+    else if (std::strcmp(input, "outside") == 0) align = kAIStrokeAlignmentOutside;
+    // "stroke" or "stroke-above", optionally ":<weight>" (8 pt by default).
+    const bool above = std::strncmp(input, "stroke-above", 12) == 0;
+    const bool addStroke = above || std::strncmp(input, "stroke", 6) == 0;
+    double addWeight = 8;
+    if (const char* colon = std::strchr(input, ':')) addWeight = std::atof(colon + 1);
+    if (addStroke && !(addWeight > 0 && addWeight <= 1000)) return kBadParameterErr;
+    AIArtHandle** matches = nullptr;
+    ai::int32 count = 0;
+    auto err = matching->GetSelectedArt(&matches, &count);
+    if (err) return err;
+    struct Release {
+        const AIMdMemorySuite& memory; AIArtHandle** matches;
+        ~Release() { if (matches) memory.MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(matches)); }
+    } release{*memory.operator&(), matches};
+    char buf[160]{};
+    for (ai::int32 i = 0; i < count; ++i) {
+        AIArtHandle a = (*matches)[i], parent = nullptr;
+        ai::int32 attr = 0;
+        short ptype = kUnknownArt;
+        AIBoolean layerGroup = false;
+        if (!art->IsArtLayerGroup(a, &layerGroup) && layerGroup) continue;   // a layer, not an item
+        if (!art->GetArtParent(a, &parent) && parent && !art->GetArtType(parent, &ptype)) {
+            // Skip children of a selected parent (layers' groups excepted).
+            AIBoolean isLayerGroup = false;
+            art->IsArtLayerGroup(parent, &isLayerGroup);
+            if (!isLayerGroup && !art->GetArtUserAttr(parent, kArtSelected, &attr) && (attr & kArtSelected)) continue;
+        }
+        short type = kUnknownArt;
+        art->GetArtType(a, &type);
+        std::snprintf(buf, sizeof buf, "%stype %d", out.empty() ? "" : "; ", static_cast<int>(type));
+        out += buf;
+        if (addStroke) {
+            AIArtStyleHandle style = nullptr;
+            AIStyleParser p = nullptr;
+            ASErr e = styles->GetArtStyle(a, &style);
+            if (!e && !parser->NewParser(&p) && p) {
+                if (style) e = parser->ParseStyle(p, style);
+                AIPathStyle base{};
+                base.Init();
+                AIStrokeStyle stroke = base.stroke;
+                stroke.color.kind = kGrayColor;
+                stroke.color.c.g.gray = static_cast<AIReal>(0.6);
+                stroke.width = static_cast<AIReal>(addWeight);
+                stroke.join = kAIMiterJoin;
+                stroke.miterLimit = 4;
+                AIParserPaintField field = nullptr;
+                if (!e) e = parser->NewPaintFieldStroke(&stroke, nullptr, &field);
+                if (!e && field) e = parser->InsertNthPaintField(p, above ? 0 : -1, field);
+                AIArtStyleHandle created = nullptr;
+                if (!e) e = parser->CreateNewStyle(p, &created);
+                if (!e && created) e = styles->SetArtStyle(a, created);
+                parser->DisposeParser(p);
+            }
+            std::snprintf(buf, sizeof buf, " add-stroke %d", static_cast<int>(e));
+            out += buf;
+        }
+        if (align != 99) {
+            const ASErr e = paintStyle->SetStrokeAlignment(a, align);
+            std::snprintf(buf, sizeof buf, " set %d", static_cast<int>(e));
+            out += buf;
+        }
+        std::snprintf(buf, sizeof buf, " read %u", static_cast<unsigned>(ReadAlignment(message.basic, s, a)));
+        out += buf;
+        AIArtStyleHandle style = nullptr;
+        AIStyleParser p = nullptr;
+        if (!styles->GetArtStyle(a, &style) && style && !parser->NewParser(&p) && p) {
+            if (!parser->ParseStyle(p, style)) {
+                std::snprintf(buf, sizeof buf, " fields %d contents %d", parser->CountPaintFields(p), parser->GetGroupContentsPosition(p));
+                out += buf;
+            }
+            parser->DisposeParser(p);
+        }
+    }
+    return kNoErr;
+}
+
+// A constant uncentered width profile on every stroke field of an item's style: `left` and `right`
+// are the side widths as Beautiful Strokes takes them (sides seen along the path's direction),
+// written as the Width tool writes a profile, beside the field's StrokeStyle. With one side 0,
+// the stroke lies on the other side only.
+ASErr SetSideProfile(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, double left, double right, int& fields,
+                     bool clear = false) {
+    fields = 0;
+    Suite<AIBeautifulStrokesSuite> bs(basic, kAIBeautifulStrokesSuite, kAIBeautifulStrokesVersion);
+    Suite<AILiveEffectSuite> live(basic, kAILiveEffectSuite, kAILiveEffectVersion);
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    Suite<AIEntrySuite> entry(basic, kAIEntrySuite, kAIEntryVersion);
+    Suite<AIArraySuite> array(basic, kAIArraySuite, kAIArrayVersion);
+    for (ASErr e : {bs.error, live.error, dict.error, entry.error, array.error}) if (e) return e;
+    AIArtStyleHandle style = nullptr;
+    auto e = s.styles.GetArtStyle(art, &style);
+    if (e || !style) return e ? e : kBadParameterErr;
+    AIStyleParser p = nullptr;
+    e = s.parser.NewParser(&p);
+    if (e || !p) return e ? e : kOutOfMemoryErr;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    e = s.parser.ParseStyle(p, style);
+    if (e) return e;
+    auto realArray = [&](double a, double b) -> AIArrayRef {
+        AIArrayRef arr = nullptr;
+        if (array->CreateArray(&arr) || !arr) return nullptr;
+        array->AppendEntry(arr, entry->FromReal(static_cast<AIReal>(a)));
+        array->AppendEntry(arr, entry->FromReal(static_cast<AIReal>(b)));
+        return arr;
+    };
+    for (ai::int32 i = 0; i < s.parser.CountPaintFields(p); ++i) {
+        AIParserPaintField field = nullptr;
+        if (s.parser.GetNthPaintField(p, i, &field) || !field || !s.parser.IsStroke(field)) continue;
+        AILiveEffectHandle handle = nullptr;
+        AILiveEffectParameters params = nullptr;
+        if (s.parser.GetPaintLiveEffectInfo(field, &handle, &params) || handle) continue;   // brushes, Inside/Outside
+        AIStrokeStyle strokeStyle{};
+        AIArtStylePaintData data;
+        if (s.parser.GetStroke(field, &strokeStyle, &data)) continue;
+        AILiveEffectParameters mine = nullptr;
+        if (params ? dict->Clone(params, &mine) : live->CreateLiveEffectParameters(&mine)) continue;
+        if (!mine) continue;
+        AIDictionaryRef inner = nullptr;
+        e = bs->CreateParamsDict(mine, inner);
+        AIArrayRef ts = realArray(0, 1), ls = realArray(left, left), rs = realArray(right, right);
+        if (!e && (!inner || (!clear && !(ts && ls && rs)))) e = kOutOfMemoryErr;   // nothing would be written
+        if (!e) e = bs->SetWidthSource(inner, clear ? kConstantWidth : kUserProfile);
+        if (!e && !clear) e = bs->SetUncenteredWidthProfile(inner, ts, ls, rs);
+        for (AIArrayRef a : {ts, ls, rs}) if (a) array->Release(a);
+        if (inner) dict->Release(inner);
+        if (!e && !dict->IsKnown(mine, dict->Key("StrokeStyle"))) {
+            AIEntryRef se = entry->FromStrokeStyle(&strokeStyle);
+            if (se) e = dict->Set(mine, dict->Key("StrokeStyle"), se);
+        }
+        if (!e) e = s.parser.SetPaintLiveEffectInfo(field, nullptr, mine);
+        dict->Release(mine);
+        if (e) return e;
+        ++fields;
+    }
+    if (!fields) return kNoErr;
+    AIArtStyleHandle created = nullptr;
+    e = s.parser.CreateNewStyle(p, &created);
+    if (e || !created) return e ? e : kBadParameterErr;
+    return s.styles.SetArtStyle(art, created);
+}
+
+// Research (2026-10-16): "width-side" with "<left>,<right>" (for example "0,1") puts that constant
+// uncentered width profile on the selected items (whose parent is not selected; any type), to learn
+// whether a one-sided profile stands in for Inside and Outside where Illustrator draws no alignment.
+ASErr WidthSide(SPMessageData& message, const char* input, std::string& out) {
+    out.clear();
+    double left = -1, right = -1;
+    if (std::sscanf(input, "%lf,%lf", &left, &right) != 2 || left < 0 || right < 0 || left > 2 || right > 2) return kBadParameterErr;
+    Suite<AIArtSuite> art(message.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathSuite> path(message.basic, kAIPathSuite, kAIPathVersion);
+    Suite<AIPathStyleSuite> paint(message.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    Suite<AIPaintStyleSuite> paintStyle(message.basic, kAIPaintStyleSuite, kAIPaintStyleVersion);
+    Suite<AIArtStyleSuite> styles(message.basic, kAIArtStyleSuite, kAIArtStyleVersion);
+    Suite<AIArtStyleParserSuite> parser(message.basic, kAIArtStyleParserSuite, kAIArtStyleParserVersion);
+    Suite<AITextFrameSuite> text(message.basic, kAITextFrameSuite, kAITextFrameVersion);
+    Suite<ATE::TextRangeSuite> range(message.basic, kTextRangeSuite, kTextRangeSuiteVersion);
+    Suite<ATE::CharFeaturesSuite> features(message.basic, kCharFeaturesSuite, kCharFeaturesSuiteVersion);
+    Suite<ATE::TextFrameSuite> textFrame(message.basic, kTextFrameSuite, kTextFrameSuiteVersion);
+    Suite<AIMatchingArtSuite> matching(message.basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
+    Suite<AIMdMemorySuite> memory(message.basic, kAIMdMemorySuite, kAIMdMemorySuiteVersion);
+    for (ASErr e : {art.error, path.error, paint.error, paintStyle.error, styles.error, parser.error, text.error,
+                    range.error, features.error, textFrame.error, matching.error, memory.error})
+        if (e) return e;
+    FixSuites s{*art.operator&(), *path.operator&(), *paint.operator&(), *paintStyle.operator&(), *styles.operator&(),
+                *parser.operator&(), *text.operator&(), *range.operator&(), *features.operator&(), *textFrame.operator&()};
+    AIArtHandle** matches = nullptr;
+    ai::int32 count = 0;
+    auto err = matching->GetSelectedArt(&matches, &count);
+    if (err) return err;
+    struct Release {
+        const AIMdMemorySuite& memory; AIArtHandle** matches;
+        ~Release() { if (matches) memory.MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(matches)); }
+    } release{*memory.operator&(), matches};
+    char buf[96]{};
+    for (ai::int32 i = 0; i < count; ++i) {
+        AIArtHandle a = (*matches)[i], parent = nullptr;
+        AIBoolean layerGroup = false;
+        if (!art->IsArtLayerGroup(a, &layerGroup) && layerGroup) continue;
+        ai::int32 attr = 0;
+        AIBoolean parentLayer = false;
+        if (!art->GetArtParent(a, &parent) && parent && !art->IsArtLayerGroup(parent, &parentLayer) && !parentLayer &&
+            !art->GetArtUserAttr(parent, kArtSelected, &attr) && (attr & kArtSelected)) continue;
+        short type = kUnknownArt;
+        art->GetArtType(a, &type);
+        int fields = 0;
+        const ASErr e = SetSideProfile(message.basic, s, a, left, right, fields);
+        std::snprintf(buf, sizeof buf, "%stype %d err %d fields %d", out.empty() ? "" : "; ", static_cast<int>(type),
+                      static_cast<int>(e), fields);
+        out += buf;
+    }
+    return kNoErr;
+}
+
+// native-align (2026-10-16), the opt-in for strokes Illustrator cannot align, on the selected items
+// (whose parent is not selected):
+//   "outside", "inside"  where Illustrator draws the alignment (closed paths, compound paths of
+//       closed contours, groups with their own stroke), its own SetStrokeAlignment; otherwise:
+//       - an open path: a one-sided width profile of the full weight on that side (the side the
+//         path's implicit closing encloses is Inside), so the Stroke panel keeps the weight;
+//       - a compound path with an open contour (Illustrator drops alignment for all its contours),
+//         Outside only: Center at twice the weight under its fill;
+//       - type (Illustrator stores but never draws a type object's alignment), Outside only: one
+//         stroke, an object-level stroke of twice the weight below Characters, the characters'
+//         strokes cleared; mixed strokes, every character's weight doubled and its stroke painted
+//         before its own fill (FillFirst off).
+//     Inside on type and on a compound path with an open contour has no faithful native form
+//     and is refused (a one-sided profile there measured 1,333 pt2 off Illustrator's own Inside).
+//   "dashes"  the opt-in for dashed Outside strokes, which Illustrator cannot fit to corners:
+//       Center at twice the weight under the fill, then Align Dashes to Corners.
+//   "restore"  what native-align made of the selected items, put back as it was.
+// The Center-under-fill forms need a simple style (one painting fill, one stroke): the fill hides
+// the inner half. What each item became is kept in its dictionary (AlignRecord).
+struct NativeAlignStats {
+    int native = 0, profiled = 0, doubled = 0, typeOutside = 0, restored = 0, refused = 0;
+    std::string reasons;
+};
+
+ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, const char* mode, NativeAlignStats& st) {
+    auto refuse = [&](const char* why) { ++st.refused; if (st.reasons.size() < 200) { st.reasons += why; st.reasons += ' '; } return kNoErr; };
+    Suite<AIPaintStyleSuite> paintStyle(basic, kAIPaintStyleSuite, kAIPaintStyleVersion);
+    if (paintStyle.error) return paintStyle.error;
+    short type = kUnknownArt;
+    if (s.art.GetArtType(art, &type)) return refuse("type?");
+    const bool outside = std::strcmp(mode, "outside") == 0, inside = std::strcmp(mode, "inside") == 0;
+    const bool dashes = std::strcmp(mode, "dashes") == 0, restore = std::strcmp(mode, "restore") == 0;
+    AlignRecord ar = ReadAlignRecord(basic, s.art, art);
+
+    // Center at twice the weight under the fill (from Outside or Center at weight w).
+    // Side in a "doubled" record: 1, the stroke was above the fill before (the fill was moved up);
+    // 3, the fill was above it already.
+    auto doubleUnderFill = [&](bool alignDashes) -> ASErr {
+        // Checked before any change: one painting fill with no effect of its own, one stroke.
+        if (!SimpleFillAndStroke(s, art)) return refuse("needs-one-fill-one-stroke");
+        AIPathStyle style{};
+        AIBoolean adv = false;
+        if (s.paint.GetPathStyle(art, &style, &adv) || !style.strokePaint || !(style.stroke.width > 0)) return refuse("no-stroke");
+        const double w = style.stroke.width;
+        const ai::uint32 wasAlign = ReadAlignment(basic, s, art);
+        const bool fillWasOnTop = FillOnTop(s, art);
+        // Rolled back if a later step fails, so the item is never left half rewritten.
+        auto rollback = [&](ASErr e) {
+            AIPathStyle back{};
+            AIBoolean a2 = false;
+            if (!s.paint.GetPathStyle(art, &back, &a2)) { back.stroke.width = static_cast<AIReal>(w); AIPathStyle partial = back; s.paint.SetPathStyle(art, &partial); }
+            if (!fillWasOnTop && FillOnTop(s, art)) StrokeAboveFill(s, art);
+            paintStyle->SetStrokeAlignment(art, wasAlign);
+            Trace("align.rollback", e, "");
+            return e;
+        };
+        if (paintStyle->SetStrokeAlignment(art, kAIStrokeAlignmentCenter)) return refuse("center");
+        if (s.paint.GetPathStyle(art, &style, &adv)) return rollback(kBadParameterErr);
+        style.stroke.width = static_cast<AIReal>(2 * w);
+        AIPathStyle partial = style;
+        auto e = s.paint.SetPathStyle(art, &partial);
+        if (e) return rollback(e);
+        bool changed = false;
+        e = FillAboveStroke(s, art, changed);
+        if (e) return rollback(e);
+        if (!FillOnTop(s, art)) return rollback(kBadParameterErr);
+        WriteAlignRecord(basic, s.art, art, AlignRecord{"doubled", fillWasOnTop ? 3 : 1, w});
+        ++st.doubled;
+        if (alignDashes && style.stroke.dash.length > 0) {
+            bool aligned = false, refusedDash = false;
+            e = AlignDashes(basic, s, art, aligned, refusedDash);
+            if (e) return e;   // the doubled stroke stands, recorded; its dashes stay as they were
+        }
+        return kNoErr;
+    };
+
+    if (restore) {
+        if (ar.as.empty()) return kNoErr;
+        if (ar.as == "profile") {
+            int fields = 0;
+            auto e = SetSideProfile(basic, s, art, 1, 1, fields, true);
+            if (e) return e;
+        } else if (ar.as == "doubled") {
+            // The stroke back above the fill only when it was there before.
+            ASErr e = kNoErr;
+            if (ar.side != 3 && (e = StrokeAboveFill(s, art)) != kNoErr) return e;
+            AIPathStyle style{};
+            AIBoolean adv = false;
+            // Half the weight it has now, so a weight the user changed since is kept.
+            if (!s.paint.GetPathStyle(art, &style, &adv) && style.stroke.width > 0) {
+                style.stroke.width = static_cast<AIReal>(style.stroke.width / 2);
+                AIPathStyle partial = style;
+                e = s.paint.SetPathStyle(art, &partial);
+                if (e) return e;
+            }
+            paintStyle->SetStrokeAlignment(art, kAIStrokeAlignmentOutside);   // refused on an open contour: Center
+        } else if (ar.as == "type-outside") {
+            // The bottom stroke field back onto the characters at half its weight.
+            AIArtStyleHandle style = nullptr;
+            AIStyleParser p = nullptr;
+            auto e = s.styles.GetArtStyle(art, &style);
+            if (e || !style || s.parser.NewParser(&p) || !p) return e ? e : kBadParameterErr;
+            struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+            if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+            // The stroke field native-align added: below Characters, at twice the recorded weight.
+            const ai::int32 n = s.parser.CountPaintFields(p), contents = s.parser.GetGroupContentsPosition(p);
+            AIParserPaintField last = nullptr;
+            AIStrokeStyle stroke{};
+            AIArtStylePaintData data;
+            for (ai::int32 k = n - 1; k >= contents && k >= 0 && !last; --k) {
+                AIParserPaintField fk = nullptr;
+                AIStrokeStyle sk{};
+                AIArtStylePaintData dk;
+                if (!s.parser.GetNthPaintField(p, k, &fk) && fk && s.parser.IsStroke(fk) && !s.parser.GetStroke(fk, &sk, &dk) &&
+                    std::fabs(sk.width - 2 * ar.weight) <= 1e-3 * (std::max)(1.0, ar.weight)) {
+                    last = fk; stroke = sk; data = dk;
+                }
+            }
+            if (!last) return refuse("restore-field-changed");
+            stroke.width = static_cast<AIReal>(stroke.width / 2);   // half its weight now
+            Suite<AIATEPaintSuite> atePaint(basic, kAIATEPaintSuite, kAIATEPaintVersion);
+            if (atePaint.error) return atePaint.error;
+            AIPathStyle ps{};
+            ps.Init();
+            ps.strokePaint = true;
+            ps.stroke = stroke;
+            // Every part of the stroke given: the color's kind and components, width, join, cap,
+            // limit, overprint, and dashes (a map naming the kind alone gave no stroke).
+            AIPathStyleMap map{};
+            map.strokePaint = true;
+            std::memset(&map.stroke, 1, sizeof map.stroke);
+            TextRangeRef r = nullptr;
+            if (s.text.GetATETextRange(art, &r) || !r) return kBadParameterErr;
+            ATE::CharFeaturesRef f = nullptr;
+            ATE::ATEErr ate = s.features.Initialize(&f);
+            if (!ate && f) e = atePaint->GetCharFeatures(&ps, &map, f);
+            if (!ate && f && !e) ate = s.features.SetStroke(f, true);
+            if (!ate && f && !e) ate = s.range.ReplaceOrAddLocalCharFeatures(r, f);
+            if (f) s.features.Release(f);
+            s.range.Release(r);
+            if (ate || e) return e ? e : kBadParameterErr;
+            if ((e = s.parser.RemovePaintField(p, last, true)) != kNoErr) return e;
+            AIArtStyleHandle created = nullptr;
+            if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+            if ((e = s.styles.SetArtStyle(art, created)) != kNoErr) return e;
+        } else if (ar.as == "type-chars") {
+            // Every character's stroke weight halved, and FillFirst back on when it was on before.
+            Suite<ATE::TextRunsIteratorSuite> iter(basic, kTextRunsIteratorSuite, kTextRunsIteratorSuiteVersion);
+            if (iter.error) return iter.error;
+            TextRangeRef whole = nullptr;
+            if (s.text.GetATETextRange(art, &whole) || !whole) return kBadParameterErr;
+            std::vector<std::pair<std::pair<ATETextDOM::Int32, ATETextDOM::Int32>, double>> runsOut;
+            ATE::TextRunsIteratorRef runs = nullptr;
+            if (!s.range.GetTextRunsIterator(whole, &runs) && runs) {
+                for (ATE::ATEBool8 done = false; !iter->IsDone(runs, &done) && !done; iter->Next(runs)) {
+                    TextRangeRef run = nullptr;
+                    if (iter->Item(runs, &run) || !run) break;
+                    ATE::CharFeaturesRef f = nullptr;
+                    ATETextDOM::Int32 a = 0, b = 0;
+                    s.range.GetStart(run, &a);
+                    s.range.GetEnd(run, &b);
+                    if (!s.range.GetUniqueCharFeatures(run, &f) && f) {
+                        ATE::ATEBool8 assigned = false, on = false;
+                        ATETextDOM::Float wdt = 0;
+                        s.features.GetStroke(f, &assigned, &on);
+                        if (on && !s.features.GetLineWidth(f, &assigned, &wdt) && wdt > 0) runsOut.push_back({{a, b}, wdt / 2});
+                    }
+                    if (f) s.features.Release(f);
+                    s.range.Release(run);
+                }
+                iter->Release(runs);
+            }
+            for (const auto& ro : runsOut) {
+                TextRangeRef r = nullptr;
+                if (s.range.Clone(whole, &r) || !r) continue;
+                ATE::CharFeaturesRef f = nullptr;
+                if (!s.range.SetStart(r, ro.first.first) && !s.range.SetEnd(r, ro.first.second) && !s.features.Initialize(&f) && f &&
+                    !s.features.SetLineWidth(f, static_cast<ATETextDOM::Float>(ro.second)))
+                    s.range.ReplaceOrAddLocalCharFeatures(r, f);
+                if (f) s.features.Release(f);
+                s.range.Release(r);
+            }
+            if (ar.weight == 1) {
+                ATE::CharFeaturesRef f = nullptr;
+                if (!s.features.Initialize(&f) && f && !s.features.SetFillFirst(f, true)) s.range.ReplaceOrAddLocalCharFeatures(whole, f);
+                if (f) s.features.Release(f);
+            }
+            s.range.Release(whole);
+        }
+        WriteAlignRecord(basic, s.art, art, AlignRecord{});
+        ++st.restored;
+        return kNoErr;
+    }
+    if (!ar.as.empty()) return refuse("already-aligned");   // restore first
+
+    if (type == kTextFrameArt) {
+        if (dashes) return kNoErr;
+        if (inside) return refuse("type-inside");
+        if (!outside) return kNoErr;
+        // The characters' paint across the frame.
+        Suite<AIATEPaintSuite> atePaint(basic, kAIATEPaintSuite, kAIATEPaintVersion);
+        if (atePaint.error) return atePaint.error;
+        AIPathStyle paint{};
+        AIPathStyleMap map{};
+        {
+            TextRangeRef r = nullptr;
+            if (s.text.GetATETextRange(art, &r) || !r) return kBadParameterErr;
+            ATE::CharFeaturesRef unique = nullptr;
+            ATE::ATEErr ate = s.range.GetUniqueCharFeatures(r, &unique);
+            ASErr e = kNoErr;
+            if (!ate && unique) e = atePaint->GetAIPathStyleAndMap(unique, &paint, &map);
+            if (unique) s.features.Release(unique);
+            s.range.Release(r);
+            if (ate || !unique || e) return e ? e : kBadParameterErr;
+        }
+        if (map.strokePaint && !paint.strokePaint) return refuse("type-no-stroke");
+        const bool oneStroke = map.strokePaint && paint.strokePaint && map.stroke.overprint && map.stroke.width &&
+                               map.stroke.join && map.stroke.miterLimit && map.stroke.cap && map.stroke.dash.length &&
+                               UniformSolid(paint.stroke.color, map.stroke.color);
+        AIArtStyleHandle style = nullptr;
+        AIStyleParser p = nullptr;
+        auto e = s.styles.GetArtStyle(art, &style);
+        if (e || s.parser.NewParser(&p) || !p) return e ? e : kOutOfMemoryErr;
+        struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+        if (style && (e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+        if (oneStroke) {
+            if (s.parser.ContainsEffects(p) || s.parser.CountPaintFields(p) > 2 || s.parser.ContainsTransparency(p)) return refuse("type-styled");
+            AIStrokeStyle stroke = paint.stroke;
+            const double w = stroke.width;
+            stroke.width = static_cast<AIReal>(2 * w);
+            AIParserPaintField field = nullptr;
+            if ((e = s.parser.NewPaintFieldStroke(&stroke, nullptr, &field)) != kNoErr || !field) return e ? e : kOutOfMemoryErr;
+            if ((e = s.parser.InsertNthPaintField(p, -1, field)) != kNoErr) { s.parser.DisposePaintField(field); return e; }
+            AIArtStyleHandle created = nullptr;
+            if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+            TextRangeRef r = nullptr;
+            if (s.text.GetATETextRange(art, &r) || !r) return kBadParameterErr;
+            ATE::CharFeaturesRef f = nullptr;
+            ATE::ATEErr ate = s.features.Initialize(&f);
+            if (!ate && f) ate = s.features.SetStroke(f, false);
+            if (!ate && f) ate = s.range.ReplaceOrAddLocalCharFeatures(r, f);
+            if (f) s.features.Release(f);
+            s.range.Release(r);
+            if (ate) return kBadParameterErr;
+            if ((e = s.styles.SetArtStyle(art, created)) != kNoErr) {
+                // The stroke was one throughout, so turning it back on restores it.
+                TextRangeRef r2 = nullptr;
+                if (!s.text.GetATETextRange(art, &r2) && r2) {
+                    ATE::CharFeaturesRef f2 = nullptr;
+                    if (!s.features.Initialize(&f2) && f2 && !s.features.SetStroke(f2, true)) s.range.ReplaceOrAddLocalCharFeatures(r2, f2);
+                    if (f2) s.features.Release(f2);
+                    s.range.Release(r2);
+                }
+                return e;
+            }
+            WriteAlignRecord(basic, s.art, art, AlignRecord{"type-outside", 1, w});
+            ++st.typeOutside;
+            return kNoErr;
+        }
+        // Mixed strokes: every stroked run's weight doubled, each character's stroke before its fill.
+        Suite<ATE::TextRunsIteratorSuite> iter(basic, kTextRunsIteratorSuite, kTextRunsIteratorSuiteVersion);
+        if (iter.error) return iter.error;
+        TextRangeRef whole = nullptr;
+        if (s.text.GetATETextRange(art, &whole) || !whole) return kBadParameterErr;
+        std::vector<std::pair<std::pair<ATETextDOM::Int32, ATETextDOM::Int32>, double>> runsOut;
+        ATE::TextRunsIteratorRef runs = nullptr;
+        if (!s.range.GetTextRunsIterator(whole, &runs) && runs) {
+            for (ATE::ATEBool8 done = false; !iter->IsDone(runs, &done) && !done; iter->Next(runs)) {
+                TextRangeRef run = nullptr;
+                if (iter->Item(runs, &run) || !run) break;
+                ATE::CharFeaturesRef f = nullptr;
+                ATETextDOM::Int32 a = 0, b = 0;
+                s.range.GetStart(run, &a);
+                s.range.GetEnd(run, &b);
+                if (!s.range.GetUniqueCharFeatures(run, &f) && f) {
+                    ATE::ATEBool8 assigned = false, on = false;
+                    ATETextDOM::Float wdt = 0;
+                    s.features.GetStroke(f, &assigned, &on);
+                    if (on && !s.features.GetLineWidth(f, &assigned, &wdt) && wdt > 0) runsOut.push_back({{a, b}, wdt * 2});
+                }
+                if (f) s.features.Release(f);
+                s.range.Release(run);
+            }
+            iter->Release(runs);
+        }
+        for (const auto& ro : runsOut) {
+            TextRangeRef r = nullptr;
+            if (s.range.Clone(whole, &r) || !r) continue;
+            ATE::CharFeaturesRef f = nullptr;
+            if (!s.range.SetStart(r, ro.first.first) && !s.range.SetEnd(r, ro.first.second) && !s.features.Initialize(&f) && f &&
+                !s.features.SetLineWidth(f, static_cast<ATETextDOM::Float>(ro.second)))
+                s.range.ReplaceOrAddLocalCharFeatures(r, f);
+            if (f) s.features.Release(f);
+            s.range.Release(r);
+        }
+        // FillFirst before: on everywhere (the default) is recorded, to be put back on restore.
+        bool fillFirstWasOn = false;
+        {
+            ATE::CharFeaturesRef u = nullptr;
+            ATE::ATEBool8 assigned = false, ff = false;
+            if (!s.range.GetUniqueCharFeatures(whole, &u) && u && !s.features.GetFillFirst(u, &assigned, &ff)) fillFirstWasOn = assigned && ff;
+            if (u) s.features.Release(u);
+        }
+        {
+            ATE::CharFeaturesRef f = nullptr;
+            if (!s.features.Initialize(&f) && f && !s.features.SetFillFirst(f, false)) s.range.ReplaceOrAddLocalCharFeatures(whole, f);
+            if (f) s.features.Release(f);
+        }
+        s.range.Release(whole);
+        WriteAlignRecord(basic, s.art, art, AlignRecord{"type-chars", 1, fillFirstWasOn ? 1.0 : 0.0});
+        ++st.typeOutside;
+        return kNoErr;
+    }
+    if (type != kPathArt && type != kCompoundPathArt) {
+        if (dashes || !(outside || inside)) return kNoErr;
+        // A group with its own stroke takes Illustrator's own alignment.
+        if (paintStyle->SetStrokeAlignment(art, outside ? kAIStrokeAlignmentOutside : kAIStrokeAlignmentInside)) return refuse("not-a-path");
+        if (ReadAlignment(basic, s, art) != (outside ? kAIStrokeAlignmentOutside : kAIStrokeAlignmentInside)) return refuse("not-a-path");
+        ++st.native;
+        return kNoErr;
+    }
+    AIPathStyle style{};
+    AIBoolean adv = false;
+    if (s.paint.GetPathStyle(art, &style, &adv) || !style.strokePaint || !(style.stroke.width > 0)) return refuse("no-stroke");
+    std::vector<ise_miter::Contour> contours;
+    if (!Contours(s, art, contours) || contours.empty()) return refuse("outline");
+    bool anyOpen = false;
+    for (const auto& c : contours) anyOpen = anyOpen || !c.closed;
+    if (dashes) {
+        if (style.stroke.dash.length <= 0 || ReadAlignment(basic, s, art) != kAIStrokeAlignmentOutside) return kNoErr;
+        return doubleUnderFill(true);
+    }
+    if (!(outside || inside)) return refuse("mode");
+    if (!anyOpen) {
+        const ai::uint32 want = outside ? kAIStrokeAlignmentOutside : kAIStrokeAlignmentInside;
+        if (paintStyle->SetStrokeAlignment(art, want) || ReadAlignment(basic, s, art) != want) return refuse("native-refused");
+        ++st.native;
+        return kNoErr;
+    }
+    if (type == kCompoundPathArt) {
+        if (inside) return refuse("compound-open-inside");
+        return doubleUnderFill(false);
+    }
+    // An open path: the side its implicit closing encloses is Inside. Beautiful Strokes sides are
+    // left and right of travel; with y up, a counterclockwise closing (positive area) encloses its
+    // left side.
+    double area = 0;
+    for (const auto& r : ise_miter::Flatten(contours, 0.01, 1e-9))
+        for (size_t i = 0; i < r.points.size(); ++i) {
+            const auto a = r.points[i], b = r.points[(i + 1) % r.points.size()];
+            area += a.x * b.y - b.x * a.y;
+        }
+    area /= 2;
+    if (std::fabs(area) < 1e-3 * style.stroke.width * style.stroke.width) return refuse("open-no-side");
+    {
+        // A width profile of the user's own is not replaced.
+        Suite<AIBeautifulStrokesSuite> bs(basic, kAIBeautifulStrokesSuite, kAIBeautifulStrokesVersion);
+        Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+        if (bs.error || dict.error) return kBadParameterErr;
+        AIDictionaryRef params = nullptr;
+        const auto got = bs->GetArtStrokeParams(art, params, nullptr, nullptr, nullptr, nullptr);
+        const bool profiled = !got && params && bs->GetWidthSource(params) == kUserProfile;
+        if (params) dict->Release(params);
+        if (profiled) return refuse("own-width-profile");
+    }
+    const bool leftIsInside = area > 0;
+    const bool left = outside ? !leftIsInside : leftIsInside;
+    // The empty side gets a thousandth of the weight: exactly 0 drew a star at the joins.
+    int fields = 0;
+    auto e = SetSideProfile(basic, s, art, left ? 1 : 0.001, left ? 0.001 : 1, fields);
+    if (e) return e;
+    if (!fields) return refuse("profile");
+    WriteAlignRecord(basic, s.art, art, AlignRecord{"profile", outside ? 1 : 2, style.stroke.width});
+    ++st.profiled;
+    return kNoErr;
+}
+
+ASErr NativeAlign(SPMessageData& message, const char* mode, NativeAlignStats& st) {
+    st = NativeAlignStats{};
+    if (std::strcmp(mode, "outside") != 0 && std::strcmp(mode, "inside") != 0 && std::strcmp(mode, "dashes") != 0 &&
+        std::strcmp(mode, "restore") != 0)
+        return kBadParameterErr;
+    Suite<AIArtSuite> art(message.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathSuite> path(message.basic, kAIPathSuite, kAIPathVersion);
+    Suite<AIPathStyleSuite> paint(message.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    Suite<AIPaintStyleSuite> paintStyle(message.basic, kAIPaintStyleSuite, kAIPaintStyleVersion);
+    Suite<AIArtStyleSuite> styles(message.basic, kAIArtStyleSuite, kAIArtStyleVersion);
+    Suite<AIArtStyleParserSuite> parser(message.basic, kAIArtStyleParserSuite, kAIArtStyleParserVersion);
+    Suite<AITextFrameSuite> text(message.basic, kAITextFrameSuite, kAITextFrameVersion);
+    Suite<ATE::TextRangeSuite> range(message.basic, kTextRangeSuite, kTextRangeSuiteVersion);
+    Suite<ATE::CharFeaturesSuite> features(message.basic, kCharFeaturesSuite, kCharFeaturesSuiteVersion);
+    Suite<ATE::TextFrameSuite> textFrame(message.basic, kTextFrameSuite, kTextFrameSuiteVersion);
+    Suite<AIMatchingArtSuite> matching(message.basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
+    Suite<AIMdMemorySuite> memory(message.basic, kAIMdMemorySuite, kAIMdMemorySuiteVersion);
+    for (ASErr e : {art.error, path.error, paint.error, paintStyle.error, styles.error, parser.error, text.error,
+                    range.error, features.error, textFrame.error, matching.error, memory.error})
+        if (e) return e;
+    FixSuites s{*art.operator&(), *path.operator&(), *paint.operator&(), *paintStyle.operator&(), *styles.operator&(),
+                *parser.operator&(), *text.operator&(), *range.operator&(), *features.operator&(), *textFrame.operator&()};
+    AIArtHandle** matches = nullptr;
+    ai::int32 count = 0;
+    auto err = matching->GetSelectedArt(&matches, &count);
+    if (err) return err;
+    struct Release {
+        const AIMdMemorySuite& memory; AIArtHandle** matches;
+        ~Release() { if (matches) memory.MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(matches)); }
+    } release{*memory.operator&(), matches};
+    ASErr first = kNoErr;
+    for (ai::int32 i = 0; i < count; ++i) {
+        AIArtHandle a = (*matches)[i], parent = nullptr;
+        AIBoolean layerGroup = false, parentLayer = false;
+        ai::int32 attr = 0;
+        if (!art->IsArtLayerGroup(a, &layerGroup) && layerGroup) continue;
+        if (!art->GetArtParent(a, &parent) && parent && !art->IsArtLayerGroup(parent, &parentLayer) && !parentLayer &&
+            !art->GetArtUserAttr(parent, kArtSelected, &attr) && (attr & kArtSelected)) continue;
+        const ASErr e = NativeAlignItem(message.basic, s, a, mode, st);
+        if (e) { ++st.refused; st.reasons += "error "; if (!first) first = e; Trace("align.item", e, mode); }
+    }
+    return first;
+}
+
 ASErr CharLimits(SPMessageData& message, std::string& out) {
     out.clear();
     Suite<AIMatchingArtSuite> matching(message.basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
@@ -2010,6 +2828,8 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"nativeFix\":{\"gate\":\"%s\",\"paths\":%d,\"pathLimits\":%d,\"reordered\":%d,\"frames\":%d,\"chars\":%d,"
         "\"charLimits\":%d,\"mapped\":%d,\"corners\":%d,\"keptBeveled\":%d,\"cutMitered\":%d,\"dashes\":%d,"
         "\"dashRefused\":%d,\"pathfinder\":%d,\"failed\":%d},"
+        "\"align\":{\"gate\":\"%s\",\"native\":%d,\"profiled\":%d,\"doubled\":%d,\"typeOutside\":%d,"
+        "\"restored\":%d,\"refused\":%d,\"reasons\":\"%s\"},"
         "\"refix\":{\"timer\":%s,\"scans\":%llu,\"runs\":%llu,\"items\":%llu,\"deferred\":%llu,\"lastError\":%d,"
         "\"released\":%llu,\"overflow\":%llu,"
         "\"undoPast\":%d,\"undoFuture\":%d},"
@@ -2039,6 +2859,8 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         state.nativeFix.frames, state.nativeFix.chars, state.nativeFix.charLimits, state.nativeFix.mapped,
         state.nativeFix.corners, state.nativeFix.keptBeveled, state.nativeFix.cutMitered, state.nativeFix.dashes,
         state.nativeFix.dashRefused, state.nativeFix.pathfinder, state.nativeFix.failed,
+        state.align.gate, state.align.native, state.align.profiled, state.align.doubled, state.align.typeOutside,
+        state.align.restored, state.align.refused, state.align.reasons,
         state.refix.timer ? "true" : "false", state.refix.scans, state.refix.runs, state.refix.items,
         state.refix.deferred, state.refix.lastError, state.refix.released, state.refix.overflow, undoPast, undoFuture,
         state.appearance.gate, state.appearance.frames, state.appearance.styled, state.appearance.fieldsBefore,
@@ -2067,6 +2889,20 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
         if (auto err2 = unicode->Destroy(message.outParam)) return err2;
         return unicode->Initialize(message.outParam, payload,
             static_cast<ai::UnicodeString::offset_type>(std::strlen(payload)), kAIUTF8CharacterEncoding);
+    }
+    if (std::strcmp(selector, "width-side") == 0) {
+        std::string text;
+        if (WidthSide(message.d, input, text)) text = "width-side failed";
+        if (auto err2 = unicode->Destroy(message.outParam)) return err2;
+        return unicode->Initialize(message.outParam, text.c_str(),
+            static_cast<ai::UnicodeString::offset_type>(text.size()), kAIUTF8CharacterEncoding);
+    }
+    if (std::strcmp(selector, "align-survey") == 0) {
+        std::string text;
+        if (AlignSurvey(message.d, input, text)) text = "align-survey failed";
+        if (auto err2 = unicode->Destroy(message.outParam)) return err2;
+        return unicode->Initialize(message.outParam, text.c_str(),
+            static_cast<ai::UnicodeString::offset_type>(text.size()), kAIUTF8CharacterEncoding);
     }
     if (std::strcmp(selector, "char-limits") == 0) {
         std::string text;
@@ -2102,6 +2938,15 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
     }
     else if (std::strcmp(selector, "native-route") == 0 && input[0] == '\0')
         actionError = NativeRoute(message.d, state);
+    else if (std::strcmp(selector, "native-align") == 0) {
+        NativeAlignStats st;
+        actionError = NativeAlign(message.d, input, st);
+        auto& a = state.align;
+        a.gate = actionError ? "partial" : "aligned";
+        a.native = st.native; a.profiled = st.profiled; a.doubled = st.doubled; a.typeOutside = st.typeOutside;
+        a.restored = st.restored; a.refused = st.refused;
+        std::snprintf(a.reasons, sizeof a.reasons, "%s", st.reasons.c_str());
+    }
     else if (std::strcmp(selector, "native-fix") == 0 && input[0] == '\0')
         actionError = NativeFix(message.d, state);
     else if (std::strcmp(selector, "stroke-align") == 0) {

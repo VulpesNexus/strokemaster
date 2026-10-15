@@ -450,6 +450,22 @@
     deselect();
     app.redraw();
     exportPdf('corrected', false);
+    // With ISE_REGION_ARGS.optin: the opt-in for dashed Outside strokes (native-align "dashes":
+    // Center at twice the weight under the fill, dashes aligned), then native-fix again, as the
+    // user script does; exported as coverage-census-optin.pdf.
+    if (args.optin) {
+        baseLayer.visible = true; geoLayer.visible = false;
+        deselect();
+        for (var s3 = 0; s3 < baseLayer.pageItems.length; s3++) {
+            var it3 = baseLayer.pageItems[s3];
+            if (it3 !== backdrop) { it3.selected = true; }
+        }
+        note('native-align dashes', /"align":(\{[^}]*\})/.exec(send('native-align', 'dashes'))[1]);
+        note('native-fix after opt-in', /"nativeFix":(\{[^}]*\})/.exec(send('native-fix'))[1]);
+        deselect();
+        app.redraw();
+        exportPdf('optin', false);
+    }
     exportPdf('geometry', true);
     doc.close(SaveOptions.DONOTSAVECHANGES);
     return 'DONE|rows=' + row + '|' + log.join('|');

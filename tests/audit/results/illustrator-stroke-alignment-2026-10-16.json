@@ -1,0 +1,197 @@
+{
+ "schema": 1,
+ "date": "2026-10-16",
+ "host": {
+  "application": "Adobe Illustrator",
+  "version": "30.8.2",
+  "platform": "Windows x64"
+ },
+ "plugin": {
+  "name": "StrokeMasterRegionProbe",
+  "build": "region-prep-17",
+  "sha256": "7ce361cf1158176ed191e080e0e82ff12dfd1fdd55e75be6b0b1328cc8350a5f"
+ },
+ "scope": "Which Illustrator targets draw which stroke alignment (census item AI-03), the native stand-ins where none is drawn (native-align), and the opt-in for dashed Outside strokes. MuPDF; areas in pt2.",
+ "survey": {
+  "probe": "tools/jsx/ai-align-survey.jsx",
+  "measure": "tools/measure_align_survey.py",
+  "cells": [
+   "0  cen paint    6121 black    3834  ins paint    4928 black    2916  out paint    7424 black    4911",
+   " 1  cen paint    3147 black    1851  ins paint    3147 black    1851  out paint    3147 black    1851   SAME (not drawn)",
+   " 2  cen paint    5540 black    2038  ins paint    4108 black    1146  out paint    7044 black    3203",
+   " 3  cen paint    4708 black    1924  ins paint    4708 black    1924  out paint    4708 black    1924   SAME (not drawn)",
+   " 4  cen paint     817 black       0  ins paint     359 black       0  out paint    1278 black     341",
+   " 5  cen paint    4654 black    2038  ins paint    4654 black    2038  out paint    4654 black    2038   SAME (not drawn)",
+   " 6  cen paint    4654 black    3213  ins paint    3213 black    3194  out paint    6184 black    3174",
+   " 7  cen paint    1287 black       0  ins paint    1287 black       0  out paint    1287 black       0   SAME (not drawn)",
+   " 8  cen paint    1287 black     473  ins paint    1287 black     473  out paint    1287 black     473   SAME (not drawn)",
+   " 9  cen paint    2170 black       0  ins paint    2170 black       0  out paint    2170 black       0   SAME (not drawn)",
+   "10  cen paint    6000 black    3119  ins paint    6000 black    3119  out paint    6000 black    3119   SAME (not drawn)",
+   "11  cen paint    5979 black    3131  ins paint    5979 black    3131  out paint    5979 black    3131   SAME (not drawn)",
+   "12  cen paint    5081 black    4744  ins paint    4928 black    4613  out paint    5219 black    4894",
+   "13  cen paint    3614 black    3614  ins paint    3614 black    3614  out paint    3614 black    3614   SAME (not drawn)",
+   "14  cen paint    4809 black    3016  ins paint    3875 black    2285  out paint    5838 black    3845",
+   "15  cen paint    1703 black       0  ins paint    1703 black       0  out paint    1703 black       0   SAME (not drawn)"
+  ]
+ },
+ "type": {
+  "probe": "tools/jsx/ai-text-align.jsx",
+  "measure": "tools/measure_text_align.py",
+  "lines": [
+   "glyph area 901 pt2, perimeter 431 pt",
+   "chars  center   out  4.17 pt  in  2.09 pt  fill  0.0%",
+   "chars  inside   out  4.17 pt  in  2.09 pt  fill  0.0%",
+   "chars  outside  out  4.17 pt  in  2.09 pt  fill  0.0%",
+   "below  center   out  4.14 pt  in  0.00 pt  fill 100.0%",
+   "below  inside   out  4.14 pt  in  0.00 pt  fill 100.0%",
+   "below  outside  out  4.14 pt  in  0.00 pt  fill 100.0%",
+   "above  center   out  4.22 pt  in  2.09 pt  fill  0.0%",
+   "above  inside   out  4.22 pt  in  2.09 pt  fill  0.0%",
+   "above  outside  out  5.14 pt  in  2.09 pt  fill  0.0%"
+  ]
+ },
+ "oneSidedProfile": {
+  "probe": "tools/jsx/ai-width-side.jsx",
+  "measure": "tools/measure_width_side.py",
+  "lines": [
+   "sq-center    out  4.16 pt  in  3.80 pt  vs outside  2733.1 pt2  vs inside  2481.3 pt2",
+   "sq-inside    out  0.00 pt  in  7.24 pt  vs outside  5148.1 pt2  vs inside     0.0 pt2",
+   "sq-outside   out  8.82 pt  in  0.00 pt  vs outside     0.0 pt2  vs inside  5148.1 pt2",
+   "sq-w01       out  0.00 pt  in  8.34 pt  vs outside  5514.8 pt2  vs inside  1325.4 pt2",
+   "sq-w10       out  8.36 pt  in  4.04 pt  vs outside  1479.1 pt2  vs inside  5375.2 pt2",
+   "sq-w02       out  0.00 pt  in 12.05 pt  vs outside  6701.0 pt2  vs inside  2495.9 pt2",
+   "sq-w20       out 18.24 pt  in  4.04 pt  vs outside  4352.6 pt2  vs inside  8525.2 pt2",
+   "th-outside   out  8.92 pt  in  0.00 pt  vs outside     0.0 pt2",
+   "th-w01       out  0.03 pt  in  6.02 pt  vs outside  6114.8 pt2",
+   "th-w10       out  7.83 pt  in  0.03 pt  vs outside   505.9 pt2",
+   "open-center  out   inf pt  in   nan pt",
+   "open-w01     out   inf pt  in   nan pt",
+   "open-w10     out   inf pt  in   nan pt",
+   "cmp-center   out  8.34 pt  in  0.00 pt",
+   "cmp-w01      out  3.72 pt  in  4.25 pt",
+   "cmp-w10      out  9.60 pt  in  1.55 pt",
+   "tx-center    out  4.22 pt  in  0.00 pt",
+   "tx-w01       out  2.25 pt  in  0.00 pt",
+   "tx-w10       out  7.96 pt  in  0.00 pt"
+  ],
+  "closedSeam": "square, 1 and 0.001: 230.7 pt2 from Illustrator Outside at the start corner, any cap; thorn 572.7 (curved short tip)"
+ },
+ "workarounds": {
+  "probe": "tools/jsx/ai-align-workarounds.jsx",
+  "measure": "tools/measure_align_workarounds.py",
+  "lines": [
+   "tx-ref-out  out  8.01 pt  in  0.03 pt  vs ref-out     0.0 pt2  vs ref-in  6247.3 pt2",
+   "tx-ref-in   out  0.04 pt  in  2.79 pt  vs ref-out  6247.3 pt2  vs ref-in     0.0 pt2",
+   "tx-below2w  out  8.02 pt  in  0.00 pt  vs ref-out    70.7 pt2  vs ref-in  6265.9 pt2",
+   "tx-above-a  out  7.98 pt  in  0.20 pt  vs ref-out   212.0 pt2  vs ref-in  6113.8 pt2",
+   "tx-above-b  out  2.28 pt  in  2.79 pt  vs ref-out  5003.9 pt2  vs ref-in  1333.3 pt2",
+   "op-center   left  1107.3 pt2  right  1052.7 pt2  beyond 8.5 pt    0.1 pt2",
+   "op-a        left  2249.2 pt2  right    31.5 pt2  beyond 8.5 pt   50.7 pt2",
+   "op-b        left    37.1 pt2  right  2016.6 pt2  beyond 8.5 pt    0.0 pt2"
+  ]
+ },
+ "nativeAlign": {
+  "probe": "tools/jsx/ai-native-align.jsx",
+  "measure": "tools/measure_native_align.py",
+  "lines": [
+   "op-out   changed   2254.9 pt2   restored vs orig     0.0 pt2",
+   "op-in    changed   2077.8 pt2   restored vs orig     0.0 pt2",
+   "cmp-out  changed   4403.4 pt2   restored vs orig     0.0 pt2",
+   "cmp-in   changed      0.0 pt2   restored vs orig     0.0 pt2",
+   "tx-out   changed   3871.5 pt2   restored vs orig     0.0 pt2",
+   "tx-in    changed      0.0 pt2   restored vs orig     0.0 pt2",
+   "txm-out  changed   3587.1 pt2   restored vs orig     0.0 pt2",
+   "txs-out  changed   6493.1 pt2   restored vs orig     0.0 pt2",
+   "sq-out   changed   2415.7 pt2   restored vs orig  2415.7 pt2",
+   "th-dash  changed    803.4 pt2   restored vs orig     0.0 pt2",
+   "op-out      left (Outside)  2249.5  right (Inside)    31.2",
+   "op-in       left (Outside)    41.7  right (Inside)  2012.0",
+   "op-out-orig left (Outside)  1112.1  right (Inside)  1047.9",
+   "cmp-out square part vs Illustrator Outside 8.4 pt2",
+   "tx-out vs outlined Outside 70.7 pt2; txm-out vs outlined Outside 521.3 pt2 (x is 6 pt there)",
+   "txs-out stroke outside the letters 7075.5 pt2 against 3725.0 for the Center stroke as drawn: ratio 1.9 (2 = Outside of the drawn weight)",
+   "thref        tip drawn 1235.4 pt2",
+   "th-dash-orig tip drawn  973.1 pt2",
+   "th-dash      tip drawn 1048.4 pt2"
+  ]
+ },
+ "censusOptIn": {
+  "builder": "tools/jsx/ai-coverage-census.jsx with ISE_REGION_ARGS.optin",
+  "measure": "tools/measure_coverage_census.py --corrected optin",
+  "rowsChanged": [
+   {
+    "row": 8,
+    "case": "outside 4 miter dashed 12/4",
+    "corrected": {
+     "escaping": 0.12,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 163.3,
+     "spill": 0.0
+    },
+    "optin": {
+     "escaping": 0.12,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 6.22,
+     "spill": 0.0
+    }
+   },
+   {
+    "row": 11,
+    "case": "outside 4 round dashed 12/4",
+    "corrected": {
+     "escaping": 0.0,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 163.09,
+     "spill": 0.0
+    },
+    "optin": {
+     "escaping": 0.0,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 162.34,
+     "spill": 0.0
+    }
+   },
+   {
+    "row": 43,
+    "case": "GB outside 4 miter dashed 12/4",
+    "corrected": {
+     "escaping": 0.06,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 163.3,
+     "spill": 0.0
+    },
+    "optin": {
+     "escaping": 8.14,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 6.31,
+     "spill": 0.0
+    }
+   },
+   {
+    "row": 48,
+    "case": "script outside 4 miter dashed 12/4",
+    "corrected": {
+     "escaping": 3.11,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 163.3,
+     "spill": 0.0
+    },
+    "optin": {
+     "escaping": 0.0,
+     "stray": 0.0,
+     "holes": 0.0,
+     "points_missing": 6.27,
+     "spill": 0.0
+    }
+   }
+  ]
+ },
+ "indesign": "Not re-run (the only InDesign was the owner's session). From earlier runs: text Center and Outside only (TextStrokeAlign has no Inside); open paths keep Outside, side from direction; compound paths take all three."
+}
