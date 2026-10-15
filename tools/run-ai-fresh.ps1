@@ -12,7 +12,8 @@
 #   Illustrator saves the quietly launched window as the owner's layout when it quits.
 # - Crash prompt: after an earlier crash Illustrator starts on a "Launch Illustrator" prompt and
 #   runs no script until it is answered; a posted BM_CLICK answers it without input or focus.
-# - Arguments: the probe reads $.global.ISE_REGION_ARGS = {outDir, runId}; it is deleted after.
+# - Arguments: the probe reads $.global.ISE_REGION_ARGS = {outDir, runId} plus -ArgJson's fields
+#   (forward-slash paths); it is deleted after.
 # - Result: the probe's raw return string goes to <OutDir>\<RunId>-host.txt, and is printed.
 # - Quit: every document left open belongs to this launch and is closed without saving, then
 #   app.executeMenuCommand('quit'), which quits where Application.Quit sometimes does nothing.
@@ -22,6 +23,8 @@ param(
     [Parameter(Mandatory = $true)][string]$OutDir,
     [Parameter(Mandatory = $true)][ValidatePattern('^[A-Za-z0-9][A-Za-z0-9_-]{0,63}$')][string]$RunId,
     [Parameter(Mandatory = $true)][ValidatePattern('^ai-[A-Za-z0-9_-]+\.jsx$')][string]$Script,
+    # Further probe arguments, merged into ISE_REGION_ARGS beside outDir and runId.
+    [string]$ArgJson = '{}',
     [string]$Exe = (Join-Path $env:ProgramFiles 'Adobe\Adobe Illustrator 2026\Support Files\Contents\Windows\Illustrator.exe'),
     # The versioned ProgID: since Illustrator 2025 was installed beside 2026, the plain
     # Illustrator.Application names 2025, which starts a second Illustrator instead of attaching.
@@ -38,6 +41,9 @@ if (-not (Test-Path -LiteralPath $Exe -PathType Leaf)) { throw "Illustrator not 
 $out = (Resolve-Path -LiteralPath $OutDir).ProviderPath
 $resultFile = Join-Path $out ($RunId + '-host.txt')
 if (Test-Path -LiteralPath $resultFile) { throw "refusing to overwrite $resultFile" }
+# Parsed before any launch. Windows PowerShell strips the double quotes from a JSON argument
+# passed through powershell -File, so pass -ArgJson from an in-process call (& script.ps1).
+try { $extraArgs = $ArgJson | ConvertFrom-Json } catch { throw ('-ArgJson is not valid JSON: ' + $_.Exception.Message) }
 if (Get-Process Illustrator -ErrorAction SilentlyContinue) {
     throw 'Illustrator is already running; this runner only drives an instance it launched itself.'
 }
@@ -126,7 +132,11 @@ try {
     if (-not $ai) { throw 'Illustrator started but never became ready to run a script.' }
     $version = [string]$ai.DoJavaScript('app.version + "";')
 
-    $probeArgs = @{ outDir = ($out -replace '\\', '/'); runId = $RunId } | ConvertTo-Json -Compress
+    $probeTable = [ordered]@{}
+    $extraArgs.PSObject.Properties | ForEach-Object { $probeTable[$_.Name] = $_.Value }
+    $probeTable['outDir'] = ($out -replace '\\', '/')
+    $probeTable['runId'] = $RunId
+    $probeArgs = $probeTable | ConvertTo-Json -Compress
     $literal = ConvertTo-Json -InputObject ($target -replace '\\', '/') -Compress
     $js = '(function(){var had=Object.prototype.hasOwnProperty.call($.global,"ISE_REGION_ARGS"),previous=$.global.ISE_REGION_ARGS;' +
           'try{$.global.ISE_REGION_ARGS=' + $probeArgs + ';return String($.evalFile(new File(' + $literal + ')));}' +

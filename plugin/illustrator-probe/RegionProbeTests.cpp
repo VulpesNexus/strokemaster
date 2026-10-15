@@ -1,4 +1,4 @@
-// region-prep-12 target tests. No Illustrator or real SDK implementation.
+// region-prep-13 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.
@@ -61,9 +61,13 @@ void Setup(){
         }else if(registered==1){
             Check(std::strcmp(d->name,region_probe::censusIdentity)==0&&d->prefersAsInput==region_probe::censusInput&&
                   !(d->prefersAsInput&kTextFrameInputArt),"census effect second, path/compound/group input, no text");
-        }else{
+        }else if(registered==2){
             Check(std::strcmp(d->name,region_probe::strokeBehindIdentity)==0&&
                   d->prefersAsInput==region_probe::censusInput,"stroke-behind third, same input as the census");
+        }else{
+            Check(std::strcmp(d->name,region_probe::textBehindIdentity)==0&&
+                  (d->prefersAsInput&kTextFrameInputArt)&&!(d->prefersAsInput&kPathInputArt),
+                  "text-kept stroke-behind fourth, text-frame input and no path input");
         }
         ++registered;*h=reinterpret_cast<AILiveEffectHandle>(static_cast<std::intptr_t>(registered));return kNoErr;
     };
@@ -118,11 +122,12 @@ int main(){
     }
     Setup();{
         auto m=Startup();
-        Check(registered==3&&m.globals!=nullptr,"all three effects registered and globals allocated");
+        Check(registered==4&&m.globals!=nullptr,"all four effects registered and globals allocated");
         auto* state=static_cast<region_probe::State*>(m.globals);
         Check(state->effect==reinterpret_cast<AILiveEffectHandle>(1)&&
               state->census==reinterpret_cast<AILiveEffectHandle>(2)&&
-              state->strokeBehind==reinterpret_cast<AILiveEffectHandle>(3),"persisted effect handles");
+              state->strokeBehind==reinterpret_cast<AILiveEffectHandle>(3)&&
+              state->textBehind==reinterpret_cast<AILiveEffectHandle>(4),"persisted effect handles");
         char payload[4096]{};
         Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr,"status payload");
         Check(std::strstr(payload,"\"plugin\":\"StrokeMasterRegionProbe\"")&&

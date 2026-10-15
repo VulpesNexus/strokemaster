@@ -1,4 +1,4 @@
-// PROPOSED region-prep-12: real-core closed-region replacement for the marked
+// PROPOSED region-prep-13: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -9,6 +9,7 @@
 #include "AIUnicodeString.h"
 #include "RegionNative.h"
 #include "StrokeBehind.h"
+#include "TextBehind.h"
 #include "AIMatchingArt.h"
 #include "AIMdMemory.h"
 #include <Windows.h>
@@ -18,7 +19,7 @@
 #include <cstring>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-12";
+constexpr char build[] = "region-prep-13";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -103,6 +104,11 @@ struct CensusStats {
 // outlines while the source stays editable.
 constexpr char strokeBehindIdentity[] = "org.strokemaster.proposed.stroke-behind.v1";
 
+// Fourth effect: stroke-behind that keeps live text as text (TextBehind.h). It
+// declares text-frame input, so the host hands it the text frame itself.
+constexpr char textBehindIdentity[] = "org.strokemaster.proposed.stroke-behind-text.v1";
+constexpr ai::int32 textBehindInput = kGroupInputArt | kTextFrameInputArt;
+
 // Result of the last "appearance" bridge command: a native, effect-free object-level
 // stroke added beneath the contents of every text frame in the document.
 struct AppearanceStats {
@@ -116,6 +122,8 @@ struct State {
     AILiveEffectHandle census = nullptr;
     AILiveEffectHandle strokeBehind = nullptr;
     stroke_behind::Stats strokeBehindStats{};
+    AILiveEffectHandle textBehind = nullptr;
+    text_behind::Stats textBehindStats{};
     CensusStats inputCensus{};
     unsigned long long fixtures = 0;
     Metrics metrics{};
@@ -201,8 +209,52 @@ ASErr Register(SPMessageData& message, State& state) {
     err = RegisterOne(message, *live.operator&(), censusIdentity, censusTitle, censusInput, state.census);
     if (err) return err;
     char strokeBehindTitle[] = "StrokeMaster PROPOSED stroke behind";
-    return RegisterOne(message, *live.operator&(), strokeBehindIdentity, strokeBehindTitle, censusInput,
-                       state.strokeBehind);
+    err = RegisterOne(message, *live.operator&(), strokeBehindIdentity, strokeBehindTitle, censusInput,
+                      state.strokeBehind);
+    if (err) return err;
+    char textBehindTitle[] = "StrokeMaster PROPOSED stroke behind, text kept";
+    return RegisterOne(message, *live.operator&(), textBehindIdentity, textBehindTitle, textBehindInput,
+                       state.textBehind);
+}
+
+ASErr TextBehindGo(AILiveEffectGoMessage& go, State& state) {
+    auto& stats = state.textBehindStats;
+    ++stats.calls;
+    Suite<AIArtSuite> art(go.d.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathStyleSuite> paint(go.d.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    Suite<AIBlendStyleSuite> blend(go.d.basic, kAIBlendStyleSuite, kAIBlendStyleVersion);
+    Suite<AIMaskSuite> mask(go.d.basic, kAIMaskSuite, kAIMaskVersion);
+    Suite<AIArtStyleSuite> styles(go.d.basic, kAIArtStyleSuite, kAIArtStyleVersion);
+    Suite<AIArtStyleParserSuite> parser(go.d.basic, kAIArtStyleParserSuite, kAIArtStyleParserVersion);
+    Suite<AITextFrameSuite> text(go.d.basic, kAITextFrameSuite, kAITextFrameVersion);
+    Suite<ATE::TextRangeSuite> range(go.d.basic, kTextRangeSuite, kTextRangeSuiteVersion);
+    Suite<ATE::CharFeaturesSuite> features(go.d.basic, kCharFeaturesSuite, kCharFeaturesSuiteVersion);
+    ASErr err = kNoErr;
+    for (ASErr e : {art.error, paint.error, blend.error, mask.error, styles.error, parser.error, text.error,
+                    range.error, features.error}) if (!err && e) err = e;
+    if (err) stats.gate = "suites";
+    if (!err && !go.art) { stats.gate = "input.null"; err = kBadParameterErr; }
+    if (!err) {
+        text_behind::Suites suites{*art.operator&(), *paint.operator&(), *blend.operator&(), *mask.operator&(),
+                                   *styles.operator&(), *parser.operator&(), *text.operator&(),
+                                   *range.operator&(), *features.operator&()};
+        text_behind::Transform transform(suites, stats);
+        AIArtHandle result = go.art;
+        int mode = text_behind::kFull;
+        Suite<AIDictionarySuite> dict(go.d.basic, kAIDictionarySuite, kAIDictionaryVersion);
+        if (!dict.error && go.parameters) {
+            ai::int32 value = 0;
+            if (!dict->GetIntegerEntry(go.parameters, dict->Key("StrokeMasterTextMode"), &value) &&
+                value >= text_behind::kFull && value <= text_behind::kClearOnly)
+                mode = value;
+        }
+        err = transform.Apply(result, mode);
+        if (!err) go.art = result;
+    }
+    Trace("text-behind.result", err, stats.gate);
+    if (!err) { ++stats.published; return kNoErr; }
+    ++stats.refused;
+    return std::strcmp(stats.gate, "output.rollback-failed") == 0 ? err : kNoErr;
 }
 
 ASErr StrokeBehindGo(AILiveEffectGoMessage& go, State& state) {
@@ -448,6 +500,8 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"fillAndStroke\":%d,\"unpainted\":%d,\"truncated\":%s,\"tree\":\"%s\"},"
         "\"strokeBehind\":{\"registered\":%s,\"calls\":%llu,\"published\":%llu,\"refused\":%llu,"
         "\"leaves\":%d,\"stroked\":%d,\"gate\":\"%s\"},"
+        "\"textBehind\":{\"registered\":%s,\"calls\":%llu,\"published\":%llu,\"refused\":%llu,"
+        "\"rootType\":%d,\"frames\":%d,\"outlineLeaves\":%d,\"stroked\":%d,\"mode\":%d,\"census\":\"%s\",\"gate\":\"%s\"},"
         "\"appearance\":{\"gate\":\"%s\",\"frames\":%d,\"styled\":%d,\"fieldsBefore\":%d,\"fieldsAfter\":%d,"
         "\"contentsBefore\":%d,\"contentsAfter\":%d},"
         "\"supportedGate\":\"MARKED_ANALYTIC_FIXTURE_ONLY\"}",
@@ -466,6 +520,10 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         state.strokeBehind ? "true" : "false", state.strokeBehindStats.calls, state.strokeBehindStats.published,
         state.strokeBehindStats.refused, state.strokeBehindStats.leaves, state.strokeBehindStats.stroked,
         state.strokeBehindStats.gate,
+        state.textBehind ? "true" : "false", state.textBehindStats.calls, state.textBehindStats.published,
+        state.textBehindStats.refused, state.textBehindStats.rootType, state.textBehindStats.frames,
+        state.textBehindStats.outlineLeaves, state.textBehindStats.stroked, state.textBehindStats.mode,
+        state.textBehindStats.census, state.textBehindStats.gate,
         state.appearance.gate, state.appearance.frames, state.appearance.styled, state.appearance.fieldsBefore,
         state.appearance.fieldsAfter, state.appearance.contentsBefore, state.appearance.contentsAfter);
     return n < 0 || static_cast<size_t>(n) >= capacity ? kBadParameterErr : kNoErr;
@@ -538,6 +596,7 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
                     state->effect = startupState.effect;
                     state->census = startupState.census;
                     state->strokeBehind = startupState.strokeBehind;
+                    state->textBehind = startupState.textBehind;
                     region_probe::Trace("globals.allocated");
                 }
                 return kNoErr;
@@ -579,6 +638,10 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
                 if (state->strokeBehind && go.effect == state->strokeBehind) {
                     region_probe::TelemetryScope telemetry(&state->telemetry);
                     return finish(region_probe::StrokeBehindGo(go, *state));
+                }
+                if (state->textBehind && go.effect == state->textBehind) {
+                    region_probe::TelemetryScope telemetry(&state->telemetry);
+                    return finish(region_probe::TextBehindGo(go, *state));
                 }
                 if (state->census && go.effect == state->census) {
                     region_probe::TelemetryScope telemetry(&state->telemetry);

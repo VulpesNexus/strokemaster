@@ -1,0 +1,366 @@
+{
+ "schema": 1,
+ "date": "2026-10-15",
+ "host": {
+  "application": "Adobe Illustrator",
+  "version": "30.8.2",
+  "platform": "Windows x64"
+ },
+ "plugin": {
+  "name": "StrokeMasterRegionProbe",
+  "build": "region-prep-13",
+  "sha256": "71d273e35e8c30386a4b4094abeaf18cadb4d84c5dedb573426f5674ac692cb8",
+  "effect": "org.strokemaster.proposed.stroke-behind-text.v1",
+  "input": "kGroupInputArt | kTextFrameInputArt",
+  "source": "plugin/illustrator-probe/TextBehind.h",
+  "mockSuite": "TextBehindTests.cpp: 9,255 assertions, 186 injected SDK failure runs (every call fails once in turn; the art is untouched, or the three commit-stage disposals report output.rollback-failed)",
+  "history": "The hostEffectControl, inputCensus, missingPlugin, and first proof runs used candidate 9365085d (retired), which cleared the strokes of each original frame in place; an independent review and this session found that a failure on a later frame left earlier frames without strokes. 71d273e3 stages a stroke-cleared copy of each frame and disposes the originals only after every frame is staged; its proof and reopen runs below reproduce every 9365085d number."
+ },
+ "question": "Can mixed per-character text strokes be put behind every fill while the text stays text in exports (owner request, 2026-10-15)?",
+ "verdict": "YES on the fixture: fill-core damage 55,568 -> 0, PDF text and font kept, identical to the outlined stroke-behind control off the fills (130 edge pixels on the fills: text vs outline rasterization); republishes after edit, undo, save, and fresh-process reopen; without the plugin the cached corrected result exports, but an edit made without the plugin is not drawn (stale).",
+ "hostEffectControl": {
+  "probe": "tools/jsx/ai-text-pdf-control2.jsx",
+  "result": {
+   "none": {
+    "text": "HH\nHH",
+    "fonts": 1,
+    "images": 0
+   },
+   "offset": {
+    "text": "",
+    "fonts": 0,
+    "images": 0
+   },
+   "shadow": {
+    "text": "HH\nHH",
+    "fonts": 1,
+    "images": 1
+   },
+   "transform": {
+    "text": "HH\nHH",
+    "fonts": 1,
+    "images": 0
+   },
+   "glow": {
+    "text": "HH\nHH",
+    "fonts": 1,
+    "images": 1
+   }
+  },
+  "finding": "Only the path-input effect (Offset Path) exports the text as outlines; Drop Shadow, Transform, and Outer Glow keep PDF text. Claim 8 holds for path-input effects only."
+ },
+ "inputCensus": {
+  "probe": "tools/jsx/ai-text-behind-modes.jsx",
+  "raw": {
+   "host": "30.8.2",
+   "status": "DONE",
+   "build": "region-prep-13",
+   "native.pdf": "233304",
+   "mode1.status": "{\"registered\":true,\"calls\":1,\"published\":0,\"refused\":1,\"rootType\":1,\"frames\":3,\"outlineLeaves\":0,\"stroked\":0,\"mode\":1,\"census\":\"T(5,48,0)T(5,48,-2)T(5,48,0)\",\"gate\":\"mode.census-only\"}",
+   "mode1.liveText": "true",
+   "mode1.pdf": "235758",
+   "mode2.status": "{\"registered\":true,\"calls\":2,\"published\":1,\"refused\":1,\"rootType\":1,\"frames\":3,\"outlineLeaves\":12,\"stroked\":3,\"mode\":2,\"census\":\"T(5,48,0)T(5,48,-2)T(5,48,0)\",\"gate\":\"published\"}",
+   "mode2.liveText": "true",
+   "mode2.pdf": "236963",
+   "mode3.status": "{\"registered\":true,\"calls\":3,\"published\":2,\"refused\":1,\"rootType\":1,\"frames\":3,\"outlineLeaves\":0,\"stroked\":0,\"mode\":3,\"census\":\"T(5,48,0)T(5,48,-2)T(5,48,0)\",\"gate\":\"published\"}",
+   "mode3.liveText": "true",
+   "mode3.pdf": "236989",
+   "mode0.status": "{\"registered\":true,\"calls\":4,\"published\":3,\"refused\":1,\"rootType\":1,\"frames\":3,\"outlineLeaves\":12,\"stroked\":3,\"mode\":0,\"census\":\"T(5,48,0)T(5,48,-2)T(5,48,0)\",\"gate\":\"published\"}",
+   "mode0.liveText": "true",
+   "mode0.pdf": "239109"
+  },
+  "finding": "With text-frame input the effect receives a group of three copies of the whole text frame, one per row of the appearance (object stroke, Characters, object fill); only the Characters copy carries the per-character strokes. SetLocalCharFeatures replaced every local override (the text fell back to 12 pt default type); ReplaceOrAddLocalCharFeatures merges and is used."
+ },
+ "proof": {
+  "probe": "tools/jsx/ai-text-behind-proof.jsx",
+  "build": "71d273e3",
+  "raw": {
+   "host": "30.8.2",
+   "status": "DONE",
+   "build": "region-prep-13",
+   "fill.pdf": "233472",
+   "native.pdf": "234633",
+   "outlined.pdf": "233018",
+   "behind.status": "{\"registered\":true,\"calls\":1,\"published\":1,\"refused\":0,\"rootType\":1,\"frames\":3,\"outlineLeaves\":12,\"stroked\":3,\"mode\":0,\"census\":\"T(5,48,0)T(5,48,-2)T(5,48,0)\",\"gate\":\"published\"}",
+   "behind.liveText": "true",
+   "behind.pdf": "239472",
+   "edited.contents": "HH/HHH",
+   "edited.status": "{\"registered\":true,\"calls\":2,\"published\":2,\"refused\":0,\"rootType\":1,\"frames\":3,\"outlineLeaves\":15,\"stroked\":4,\"mode\":0,\"census\":\"T(6,48,0)T(6,48,-2)T(6,48,0)\",\"gate\":\"published\"}",
+   "edited.pdf": "241612",
+   "undo.contents": "HH/HH",
+   "undo.status": "{\"registered\":true,\"calls\":3,\"published\":3,\"refused\":0,\"rootType\":1,\"frames\":3,\"outlineLeaves\":12,\"stroked\":3,\"mode\":0,\"census\":\"T(5,48,0)T(5,48,-2)T(5,48,0)\",\"gate\":\"published\"}",
+   "undo.pdf": "239054",
+   "save.ai": "239708"
+  },
+  "measurements": {
+   "schema": 1,
+   "renderer": "MuPDF 1.28.2",
+   "dpi": 600,
+   "thresholds": {
+    "erode_px": 3,
+    "dark_level": 32,
+    "ink_level": 250,
+    "tolerance_levels": 8
+   },
+   "files": {
+    "tb4-outlined.pdf": {
+     "sha256": "fb6c09ea02c2c87c3d197f1fd45d32464f0133ab7e3029d5603377c456deb6ee",
+     "core_px": 72080,
+     "core_damaged_px": 55568,
+     "core_mean_level": 76.22827413984461,
+     "ink_xor_px": 0,
+     "outside_changed_px": 0,
+     "paint_sequence": [
+      "q",
+      "f",
+      "Q",
+      "q",
+      "f",
+      "Q",
+      "q",
+      "q",
+      "S",
+      "Q",
+      "Q",
+      "q",
+      "f",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "f",
+      "Q",
+      "q",
+      "S",
+      "Q"
+     ],
+     "strokes_before_fills": false,
+     "text_chars": 0,
+     "fonts": 0
+    },
+    "tb4-behind.pdf": {
+     "sha256": "13c475028fbeac3a6b66b157582bc9a41a4762ae7bd1ed87c6741db01caf3049",
+     "core_px": 72080,
+     "core_damaged_px": 0,
+     "core_mean_level": 0.0,
+     "ink_xor_px": 130,
+     "outside_changed_px": 0,
+     "paint_sequence": [
+      "q",
+      "q",
+      "S",
+      "Q",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "BT",
+      "Tj",
+      "Tj",
+      "ET",
+      "Q",
+      "BT",
+      "Tj",
+      "ET"
+     ],
+     "strokes_before_fills": true,
+     "text_chars": 5,
+     "fonts": 1
+    },
+    "tb4-undo.pdf": {
+     "sha256": "85327c839afc3f1df106f325c7ad87f2595a55e808912b514a99bcf87e13a9fa",
+     "core_px": 72080,
+     "core_damaged_px": 0,
+     "core_mean_level": 0.0,
+     "ink_xor_px": 130,
+     "outside_changed_px": 0,
+     "paint_sequence": [
+      "q",
+      "q",
+      "S",
+      "Q",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "BT",
+      "Tj",
+      "Tj",
+      "ET",
+      "Q",
+      "BT",
+      "Tj",
+      "ET"
+     ],
+     "strokes_before_fills": true,
+     "text_chars": 5,
+     "fonts": 1
+    },
+    "tb4-reopen.pdf": {
+     "sha256": "6afd28388a15585100f73b6b808ce1e826991c64bc8d45c29c2159e79f11d5a4",
+     "core_px": 72080,
+     "core_damaged_px": 0,
+     "core_mean_level": 0.0,
+     "ink_xor_px": 130,
+     "outside_changed_px": 0,
+     "paint_sequence": [
+      "q",
+      "q",
+      "S",
+      "Q",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "BT",
+      "Tj",
+      "Tj",
+      "ET",
+      "Q",
+      "BT",
+      "Tj",
+      "ET"
+     ],
+     "strokes_before_fills": true,
+     "text_chars": 5,
+     "fonts": 1
+    }
+   },
+   "fill_sha256": "2dd25a5397af50f725c427039c3229b46a891cfab5c90a41db340570352acb89"
+  },
+  "measurementsVsNative": {
+   "schema": 1,
+   "renderer": "MuPDF 1.28.2",
+   "dpi": 600,
+   "thresholds": {
+    "erode_px": 3,
+    "dark_level": 32,
+    "ink_level": 250,
+    "tolerance_levels": 8
+   },
+   "files": {
+    "tb4-native.pdf": {
+     "sha256": "6ca1d5a6f9245e5637420002f61d5cc3e1ff40dd20fcf01bed1b55efe1a87a74",
+     "core_px": 72080,
+     "core_damaged_px": 55568,
+     "core_mean_level": 76.22827413984461,
+     "ink_xor_px": 0,
+     "outside_changed_px": 0,
+     "paint_sequence": [
+      "q",
+      "BT",
+      "Tj",
+      "Tj",
+      "Tr1",
+      "Tj",
+      "ET",
+      "Q",
+      "BT",
+      "Tj",
+      "ET",
+      "q",
+      "BT",
+      "Tr1",
+      "Tj",
+      "ET",
+      "Q"
+     ],
+     "strokes_before_fills": false,
+     "text_chars": 8,
+     "fonts": 1
+    },
+    "tb4-behind.pdf": {
+     "sha256": "13c475028fbeac3a6b66b157582bc9a41a4762ae7bd1ed87c6741db01caf3049",
+     "core_px": 72080,
+     "core_damaged_px": 0,
+     "core_mean_level": 0.0,
+     "ink_xor_px": 1229,
+     "outside_changed_px": 4122,
+     "paint_sequence": [
+      "q",
+      "q",
+      "S",
+      "Q",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "S",
+      "Q",
+      "q",
+      "BT",
+      "Tj",
+      "Tj",
+      "ET",
+      "Q",
+      "BT",
+      "Tj",
+      "ET"
+     ],
+     "strokes_before_fills": true,
+     "text_chars": 5,
+     "fonts": 1
+    }
+   },
+   "fill_sha256": "2dd25a5397af50f725c427039c3229b46a891cfab5c90a41db340570352acb89"
+  }
+ },
+ "reopen": {
+  "probe": "tools/jsx/ai-open-export.jsx",
+  "build": "71d273e3",
+  "raw": {
+   "host": "30.8.2",
+   "status": "DONE",
+   "textFrames": "1",
+   "contents": "HH/HH",
+   "pdf": "239147"
+  }
+ },
+ "missingPlugin": {
+  "open": {
+   "raw": {
+    "host": "30.8.2",
+    "status": "DONE",
+    "textFrames": "1",
+    "contents": "HH/HH",
+    "pdf": "238997"
+   },
+   "pdf": {
+    "text": "HH\nHH",
+    "fonts": 1,
+    "images": 0
+   }
+  },
+  "edit": {
+   "probe": "tools/jsx/ai-open-edit-export.jsx",
+   "raw": {
+    "host": "30.8.2",
+    "status": "DONE",
+    "contents": "HH/HHH",
+    "visibleBounds": "19.6484375,210.1318359375,82.994140625,123.9560546875",
+    "pdf": "239619"
+   },
+   "pdf": {
+    "text": "HH\nHH",
+    "fonts": 1,
+    "images": 0
+   },
+   "finding": "Document text HH/HHH, exported text HH/HH: without the plugin the effect cannot rerun, so the cached result is drawn."
+  },
+  "build": "9365085d"
+ }
+}

@@ -14,6 +14,20 @@ The final **complete** hidden build passed 70 registration, bridge, and refusal 
 
 The run found one host change: since Illustrator 2025 (29.8.11) was installed beside 2026, the ProgID `Illustrator.Application` names 2025. A running 2026 is not found under it, and activating it starts a second Illustrator, 2025. Both Illustrator runners now attach with `Illustrator.Application.30`; *plugin/illustrator-probe/capture-region.ps1* still uses the old name and `Start-Process`, and is kept only as the record of its 2026-09 runs.
 
+## Owner decisions and the text-kept effect (2026-10-15)
+
+The owner ruled: uniform text strokes are left to Illustrator for now (its own object-level Appearance stroke beneath the characters), until findings show the plugin should take them too; and effects must keep text live and editable, in the document and in every export, unless the user outlines it beforehand.
+
+The second ruling was out of reach under claim 8, which turned out to be narrower than recorded. A control (*tools/jsx/ai-text-pdf-control2.jsx*) exported the same text under five host effects: only Offset Path, which declares path input, wrote outlines; Drop Shadow, Transform, and Outer Glow kept the PDF text and its font. Illustrator converts text to outlines only for an effect that cannot take text.
+
+region-prep-13 adds `org.strokemaster.proposed.stroke-behind-text.v1` ([TextBehind.h](../plugin/illustrator-probe/TextBehind.h)), which declares text-frame input. Illustrator hands it one copy of the text frame per appearance row (object stroke, Characters, object fill); for each, it puts a stroke-only outline copy beneath and a copy of the frame above with its character strokes cleared (the originals are disposed only once every frame is staged, so a failure leaves the input as it was) through ATE `ReplaceOrAddLocalCharFeatures` (`SetLocalCharFeatures` replaced every override and dropped the text to 12 pt default type). On the mixed-stroke fixture, on Illustrator 30.8.2:
+
+- fill-core damage 55,568 → 0, with the PDF text and font kept, identical to the outlined stroke-behind control away from the fills (130 pixels differ at fill edges: text against outline rasterization);
+- it republishes after a live edit (PDF text follows), undo, and save, and after a fresh-process reopen;
+- without the plugin the corrected result cached in the file exports unchanged, but an edit made without the plugin is not drawn: the document reads *HH/HHH* and the PDF *HH/HH*. That is a limit of every live effect, not of this one.
+
+Record: *tests/audit/results/illustrator-text-kept-stroke-behind-2026-10-15.json*. Not yet covered: the miter and overlap geometry of step 3 (the strokes are still Illustrator's own outline strokes), text with an object-level stroke or fill in its appearance, area and path text, threaded frames, other fonts, and EPS and SVG exports. *TextBehindTests.cpp* checks the transform against an in-memory art tree with every SDK call failing once in turn (9,255 assertions, 186 runs): a failure leaves the input untouched, or, at the final disposal of the originals, reports a failed rollback. An independent read (on the API credit) found the in-place version's rollback defect that the staged copies fix; the installed build is region-prep-13 `71d273e3`.
+
 ## Transfer map
 
 | Source | Reuse in Illustrator | Remaining integration |
