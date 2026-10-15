@@ -1,0 +1,148 @@
+{
+ "schema": 1,
+ "date": "2026-10-16",
+ "host": {
+  "application": "Adobe Illustrator",
+  "version": "30.8.2",
+  "platform": "Windows x64"
+ },
+ "plugin": {
+  "name": "StrokeMasterRegionProbe",
+  "build": "region-prep-18",
+  "sha256": "4695d7b6d5032cae5b8061c04f3af6cae367dbfc5a5a5fb980a7a8b211a9b872",
+  "frozen": "plugin/illustrator-probe/build/region-prep18-frozen.aip"
+ },
+ "scope": "Inside where Illustrator draws none (a compound path with an open contour; type with one fill and one stroke), drawn as two fills: a band fill in the stroke color beneath the item's own fill shrunk by the weight with Illustrator's live Offset Path. Also the InDesign alignment survey. MuPDF; areas in pt2.",
+ "offsetPath": {
+  "probe": "tools/jsx/ai-offset-type.jsx",
+  "run": "build/ai-offset-6",
+  "method": "black area (gray < 128) of the whole page at 150 dpi",
+  "areas": {
+   "plain": 1614.0,
+   "minus1": 996.5,
+   "minus2": 459.9,
+   "minus4": 8.5,
+   "minus": 1602.2,
+   "outlined-minus": 1602.2,
+   "bar": 4061.7,
+   "bar-minus4": 2687.4
+  },
+  "reading": "Minion \"Ax\" 96 pt: insets of 1, 2, and 4 shrink it (plain, minus1, minus2, minus4); an inset of 8 (minus) gives the shape back unshrunk, live type and outlined alike. A 60 pt square with a 6 pt bar, inset 4: the bar goes and a 52 pt square (2,704) is left. So native_region::InsetEmpty decides, and the shrunk fill is hidden when the inset leaves nothing."
+ },
+ "nativeAlign": {
+  "probe": "tools/jsx/ai-native-align.jsx",
+  "measure": "tools/measure_native_align.py",
+  "run": "build/ai-nalign-16",
+  "notes": [
+   "op-out={\"gate\":\"aligned\",\"native\":0,\"profiled\":1,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "op-out restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "op-in={\"gate\":\"aligned\",\"native\":0,\"profiled\":1,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "op-in restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-out={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":1,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-out restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-in={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":1,\"reasons\":\"\"}",
+   "cmp-in restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-open-in={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":1,\"offset\":0,\"reasons\":\"inside-open-closing \"}",
+   "tx-out={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":1,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "tx-out restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "tx-in={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":1,\"reasons\":\"\"}",
+   "tx-in restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "txm-out={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":1,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "txm-out restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "sq-out={\"gate\":\"aligned\",\"native\":1,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "sq-out restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "txs-out={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":1,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "txs-out restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "txh-in={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":1,\"reasons\":\"\"}",
+   "txh-in restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-edit={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":1,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-edit weight set=20",
+   "cmp-edit restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-edit weight after=10",
+   "th-dash={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":1,\"typeOutside\":0,\"restored\":0,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "th-dash restore={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":1,\"refused\":0,\"offset\":0,\"reasons\":\"\"}",
+   "cmp-dash-in={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":1,\"offset\":0,\"reasons\":\"inside-dashed \"}",
+   "cmp-dash-in dashes after=12,4",
+   "cmp-grad-in={\"gate\":\"aligned\",\"native\":0,\"profiled\":0,\"doubled\":0,\"typeOutside\":0,\"restored\":0,\"refused\":1,\"offset\":0,\"reasons\":\"inside-stroke-paint \"}"
+  ],
+  "lines": [
+   "op-out   changed   2254.9 pt2   restored vs orig     0.0 pt2",
+   "op-in    changed   2077.8 pt2   restored vs orig     0.0 pt2",
+   "cmp-out  changed   4403.4 pt2   restored vs orig     0.0 pt2",
+   "cmp-in   changed   4235.6 pt2   restored vs orig     0.0 pt2",
+   "tx-out   changed   3871.5 pt2   restored vs orig     0.0 pt2",
+   "tx-in    changed   2488.6 pt2   restored vs orig     0.0 pt2",
+   "txm-out  changed   3587.1 pt2   restored vs orig     0.0 pt2",
+   "txs-out  changed   6493.1 pt2   restored vs orig     0.0 pt2",
+   "txh-in   changed    630.5 pt2   restored vs orig     0.0 pt2",
+   "sq-out   changed   2415.7 pt2   restored vs orig  2415.7 pt2",
+   "th-dash  changed    803.4 pt2   restored vs orig     0.0 pt2",
+   "op-out      left (Outside)  2249.5  right (Inside)    31.2",
+   "op-in       left (Outside)    41.7  right (Inside)  2012.0",
+   "op-out-orig left (Outside)  1112.1  right (Inside)  1047.9",
+   "cmp-out square part vs Illustrator Outside 8.4 pt2",
+   "cmp-in square part vs Illustrator Inside 16.8 pt2; tx-in vs outlined Inside 49.0 pt2",
+   "cmp-in triangle part (open by 4 pt) vs Illustrator Inside on it closed 30.2 pt2",
+   "tx-out vs outlined Outside 70.7 pt2; txm-out vs outlined Outside 521.3 pt2 (x is 6 pt there)",
+   "txs-out stroke outside the letters 7075.5 pt2 against 3725.0 for the Center stroke as drawn: ratio 1.9 (2 = Outside of the drawn weight)",
+   "txh-in (frame at 50%) vs outlined Inside at the drawn weight 29.8 pt2",
+   "thref        tip drawn 1235.4 pt2",
+   "th-dash-orig tip drawn  973.1 pt2",
+   "th-dash      tip drawn 1048.4 pt2"
+  ]
+ },
+ "userScripts": {
+  "probe": "tools/jsx/ai-user-align-test.jsx",
+  "run": "build/ai-ualign-8",
+  "notes": [
+   "align outside=StrokeMaster: 0 with Illustrator's own alignment, 1 open path(s) one-sided, 0 compound path(s) doubled beneath the fill, 1 type object(s) stroked beneath the characters, 0 drawn Inside with two fills.",
+   "dashes=StrokeMaster: 1 dashed Outside stroke(s) rewritten as Center beneath the fill, dashes aligned to corners; 1 miter limit(s) set.",
+   "restore=StrokeMaster: 3 item(s) put back as they were.",
+   "thorn after restore=4 pt",
+   "align inside=StrokeMaster: 0 with Illustrator's own alignment, 0 open path(s) one-sided, 0 compound path(s) doubled beneath the fill, 0 type object(s) stroked beneath the characters, 2 drawn Inside with two fills. 1 left as they were (inside-open-closing ). An open contour in a compound path would get Inside along its closing too. Object > Path > Join closes it, and Illustrator then aligns the compound path itself.",
+   "fix after edit={\"gate\":\"fixed\",\"paths\":0,\"pathLimits\":0,\"reordered\":0,\"frames\":1,\"chars\":2,\"charLimits\":0,\"mapped\":1,\"corners\":0,\"keptBeveled\":0,\"cutMitered\":0,\"dashes\":0,\"dashRefused\":0,\"pathfinder\":0,\"failed\":0,\"offsetSynced\":1}",
+   "empty=StrokeMaster: select the art first."
+  ]
+ },
+ "fixSelection": {
+  "probe": "tools/jsx/ai-fix-selection-test.jsx",
+  "run": "build/ai-fixsel-18c",
+  "notes": [
+   "align=true",
+   "alignInside=true",
+   "selected=6",
+   "message=StrokeMaster: 1 text frame(s) given an object-level stroke-behind, 1 a per-character one; 0 character and 2 path miter limit(s) set; 1 Outside fill(s) moved above the stroke, 1 Inside path(s) united by Pathfinder Add; 1 dashed stroke(s) aligned to corners.",
+   "textStillLive=true",
+   "empty=StrokeMaster: select the art to fix first."
+  ]
+ },
+ "pathfinderTwice": {
+  "probe": "tools/jsx/ai-pathfinder-twice.jsx",
+  "run": "build/ai-fixsel-18c",
+  "notes": [
+   "align=true",
+   "fix1={\"gate\":\"fixed\",\"paths\":1,\"pathLimits\":0,\"reordered\":0,\"frames\":0,\"chars\":0,\"charLimits\":0,\"mapped\":0,\"corners\":8,\"keptBeveled\":0,\"cutMitered\":0,\"dashes\":0,\"dashRefused\":0,\"pathfinder\":1,\"failed\":0,\"offsetSynced\":0}",
+   "pathfinders1=1",
+   "fix2={\"gate\":\"fixed\",\"paths\":1,\"pathLimits\":0,\"reordered\":0,\"frames\":0,\"chars\":0,\"charLimits\":0,\"mapped\":0,\"corners\":8,\"keptBeveled\":0,\"cutMitered\":0,\"dashes\":0,\"dashRefused\":0,\"pathfinder\":0,\"failed\":0,\"offsetSynced\":0}",
+   "pathfinders2=1"
+  ]
+ },
+ "openClosing": {
+  "probe": "tools/jsx/ai-native-align.jsx before the rule (cmp-in with the triangle open along its whole 60 pt base)",
+  "run": "build/ai-nalign-13",
+  "method": "stroke-gray pixels (64..200) at 600 dpi in the 30 x 8 pt strip above the closing, x 135..165, y 40..48",
+  "grayAfter": 237.6,
+  "grayBefore": 0.0,
+  "reading": "The band ran along the open contour's closing, where no stroke runs. Inside is now refused (\"inside-open-closing\") when a closing is longer than the weight; cmp-in is now open by 4 pt."
+ },
+ "effectHandle": {
+  "probe": "tools/jsx/ai-native-align.jsx with ISE_REGION_ARGS.dump \"cmp-in\" (region-prep-17 build with a temporary trace)",
+  "finding": "In the full probe (the document saved as PDF between steps, after earlier rounds), the parsed Offset Path effect on cmp-in reported a handle other than GetLiveEffectHandleByName(\"Adobe Offset Path\"), though its name and tagged parameters were intact, so restore refused (\"restore-fills-changed\"). The same steps alone (tools/jsx/ai-offset-tag.jsx, with and without a PDF save and an Outside round first) matched. The fix's own effects (Offset Path, Pathfinder Add) are now found by name and tag."
+ },
+ "indesign": {
+  "probe": "tools/jsx/id-align-survey.jsx (tools/run-id-probe.ps1)",
+  "measure": "tools/measure_align_survey.py",
+  "run": "build/id-align-4",
+  "summary": "InDesign 2026 draws Center, Inside, and Outside on closed paths, open paths (side from direction), compound paths including one with an open contour, groups, and a frame's own stroke. Text: Center and Outside only (TextStrokeAlign has CENTER_ALIGNMENT and OUTSIDE_ALIGNMENT; reading INSIDE_ALIGNMENT raises an error try does not catch). The outlined-text cell lost its stroke in the conversion. Run in a windowless document of its own, closed unsaved; the owner's documents checked unchanged."
+ }
+}

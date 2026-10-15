@@ -33,4 +33,18 @@ inline bool InternalEdges(const std::vector<ise_miter::Contour>& contours, doubl
     return Perimeter(contours, tol) - Perimeter(region, tol) > slack;
 }
 
+// Whether shrinking the contours' nonzero fill by `w` leaves nothing: every part is thinner than
+// 2w. Illustrator's Offset Path returns the shape unshrunk then (measured 2026-10-16: Minion
+// "Ax" at 96 pt, -1, -2, -4 shrink it to 997, 460, 9 pt2; -8 gives back 1,602 of 1,614), so an
+// Inside drawn as two fills shows the band color alone in that case. False when the contours
+// fill nothing. (WordPath reports an inset that leaves nothing as a failure, so the region is
+// checked first.)
+inline bool InsetEmpty(const std::vector<ise_miter::Contour>& contours, double w, double tol = 0.01)
+{
+    if (contours.empty() || !(w > 0) || ise_region::NonzeroRegion(contours, tol).empty()) return false;
+    bool ok = false;
+    const auto inset = ise_region::WordPath(contours, -w, ise_region::BandJoin::Miter, 4, false, tol, &ok);
+    return !ok || inset.empty();
+}
+
 } // namespace native_region

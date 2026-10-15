@@ -161,6 +161,11 @@ int main() {
         Check(native_region::InternalEdges({box(0, 0, 100, 100, false), box(30, 30, 70, 70, false)}, .01, 2),
               "a same-wound inner square is inside the fill");
         Check(!native_region::InternalEdges({a}, .01, 2), "one contour has none");
+        // InsetEmpty: an 80 pt square shrinks to nothing only past 40; a 6 pt bar past 3.
+        Check(!native_region::InsetEmpty({a}, 8) && !native_region::InsetEmpty({a}, 39), "square inset leaves a square");
+        Check(native_region::InsetEmpty({a}, 41), "square inset past half its side is empty");
+        Check(native_region::InsetEmpty({box(0, 0, 80, 6, false)}, 4) && !native_region::InsetEmpty({box(0, 0, 80, 6, false)}, 2),
+              "a thin bar empties at half its width");
     }
     std::printf("illustrator contour: %d checks passed\n", checks);
 }

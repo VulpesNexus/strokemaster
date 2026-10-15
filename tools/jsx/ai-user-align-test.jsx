@@ -38,6 +38,28 @@
         $.global.ISE_REGION_ARGS.align = 'restore';
         note('restore', $.evalFile(alignScript));
         note('thorn after restore', th.strokeWidth + ' pt');
+        // Inside where Illustrator has none: a compound path with a contour left open by 4 pt, and
+        // type, both in one run of the script (native-align then native-fix in one call, as a user
+        // runs it). A second compound path, open along a whole side, is refused with the hint to join.
+        function openCompound(y, points) {
+            var c = doc.compoundPathItems.add();
+            doc.pathItems.rectangle(y, 20, 70, 70).move(c, ElementPlacement.PLACEATEND);
+            var oc = doc.pathItems.add(); oc.setEntirePath(points); oc.move(c, ElementPlacement.PLACEATEND);
+            c.pathItems[0].filled = true; c.pathItems[0].fillColor = gray(100); c.pathItems[0].stroked = true;
+            c.pathItems[0].strokeColor = gray(60); c.pathItems[0].strokeWidth = 8;
+            return c;
+        }
+        var cp = openCompound(160, [[110, 40], [140, 150], [170, 40], [114, 40]]);
+        var cq = openCompound(380, [[110, 260], [140, 370], [170, 260]]);
+        var t2 = doc.textFrames.add(); t2.contents = 'Ax'; t2.position = [200, 160]; t2.name = 'inside type';
+        var c2 = t2.textRange.characterAttributes; c2.size = 72; c2.fillColor = gray(100); c2.strokeColor = gray(60); c2.strokeWeight = 8;
+        doc.selection = null; cp.selected = true; cq.selected = true; t2.selected = true;
+        $.global.ISE_REGION_ARGS.align = 'inside';
+        note('align inside', $.evalFile(alignScript));
+        // An edit that gives the letters room for an inset, then the fix again (as the re-fix would).
+        t2.textRange.characterAttributes.size = 300;
+        doc.selection = null; t2.selected = true;
+        note('fix after edit', /"nativeFix":(\{[^}]*\})/.exec(String(app.sendScriptMessage('StrokeMasterRegionProbe', 'native-fix', '')))[1]);
         doc.selection = null;
         note('empty', $.evalFile(alignScript));
         return 'DONE|' + out.join('|');

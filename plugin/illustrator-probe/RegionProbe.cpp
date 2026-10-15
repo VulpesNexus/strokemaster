@@ -1,4 +1,4 @@
-// PROPOSED region-prep-17: real-core closed-region replacement for the marked
+// PROPOSED region-prep-18: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -33,7 +33,7 @@
 #include <string>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-17";
+constexpr char build[] = "region-prep-18";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -140,6 +140,7 @@ struct NativeFixStats {
     int pathfinder = 0;    // Inside strokes on overlapping contours given Pathfinder Add
     int dashRefused = 0;   // dashed strokes Illustrator's dash alignment does not accept
     int released = 0;      // re-fix: items the user had changed by hand, unmarked and left alone
+    int offsetSynced = 0;  // Insets drawn as two fills whose shrunk fill was shown or hidden again
     int failed = 0;        // items whose fix failed (the others were still fixed)
 };
 
@@ -160,7 +161,7 @@ struct RefixState {
 
 struct AlignStats {
     const char* gate = "ready";
-    int native = 0, profiled = 0, doubled = 0, typeOutside = 0, restored = 0, refused = 0;
+    int native = 0, profiled = 0, doubled = 0, typeOutside = 0, restored = 0, refused = 0, offset = 0;
     char reasons[208] = {};
 };
 
@@ -965,6 +966,15 @@ ASErr AlignDashes(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, bool
 // whether the fix's own is there on return.
 constexpr char kOwnedKey[] = "StrokeMasterNativeFix";
 
+// Whether a parsed style's effect is the one named. By name, not by handle: in a document saved
+// as PDF and then edited (ai-native-align, 2026-10-16), a parsed Offset Path effect reported a
+// handle other than GetLiveEffectHandleByName's, which made restore refuse.
+bool EffectNamed(const AIArtStyleParserSuite& parser, AIParserLiveEffect fx, const char* want) {
+    const char* name = nullptr;
+    ai::int32 major = 0, minor = 0;
+    return fx && !parser.GetLiveEffectNameAndVersion(fx, &name, &major, &minor) && name && std::strcmp(name, want) == 0;
+}
+
 ASErr SetPathfinder(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, bool want, bool& owned, bool& changed) {
     changed = owned = false;
     Suite<AILiveEffectSuite> live(basic, kAILiveEffectSuite, kAILiveEffectVersion);
@@ -991,10 +1001,9 @@ ASErr SetPathfinder(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, bo
         bool users = false;
         for (ai::int32 i = 0; i < s.parser.CountPreEffects(p); ++i) {
             AIParserLiveEffect fx = nullptr;
-            AILiveEffectHandle h = nullptr;
             ai::int32 command = -1, tag = 0;
             AILiveEffectParameters fxParams = nullptr;
-            if (s.parser.GetNthPreEffect(p, i, &fx) || !fx || s.parser.GetLiveEffectHandle(fx, &h) || h != pathfinder ||
+            if (s.parser.GetNthPreEffect(p, i, &fx) || !EffectNamed(s.parser, fx, "Adobe Pathfinder") ||
                 s.parser.GetLiveEffectParams(fx, &fxParams) || !fxParams ||
                 dict->GetIntegerEntry(fxParams, dict->Key("Command"), &command) || command != 0)
                 continue;
@@ -1078,11 +1087,11 @@ AlignRecord ReadAlignRecord(SPBasicSuite* basic, const AIArtSuite& art, AIArtHan
     return r;
 }
 
-void WriteAlignRecord(SPBasicSuite* basic, const AIArtSuite& art, AIArtHandle item, const AlignRecord& r) {
+bool WriteAlignRecord(SPBasicSuite* basic, const AIArtSuite& art, AIArtHandle item, const AlignRecord& r) {
     Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
-    if (dict.error) return;
+    if (dict.error) return false;
     AIDictionaryRef d = nullptr;
-    if (art.GetDictionary(item, &d) || !d) return;
+    if (art.GetDictionary(item, &d) || !d) return false;
     if (r.as.empty()) {
         for (const char* k : {kAlignAs, kAlignSide, kAlignWeight}) dict->DeleteEntry(d, dict->Key(k));
     } else {
@@ -1091,6 +1100,7 @@ void WriteAlignRecord(SPBasicSuite* basic, const AIArtSuite& art, AIArtHandle it
         dict->SetRealEntry(d, dict->Key(kAlignWeight), static_cast<AIReal>(r.weight));
     }
     dict->Release(d);
+    return ReadAlignRecord(basic, art, item).as == r.as;
 }
 
 // Whether a path's style paints its fill above its stroke: two fields, a painting fill first.
@@ -1192,6 +1202,9 @@ ASErr FixPath(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, ai::uint
     auto e = s.paint.GetPathStyle(art, &style, &advanced);
     if (e) return e;
     if (!style.strokePaint || !(style.stroke.width > 0)) return kNoErr;
+    // Inside drawn as two fills (native-align): its stroke is hidden, and Offset Path carries the
+    // join and limit; nothing here applies.
+    if (basic && ReadAlignRecord(basic, s.art, art).as == "offset") return kNoErr;
     std::vector<ise_miter::Contour> contours;
     if (!Contours(s, art, contours) || contours.empty()) return kNoErr;
     // How the stroke is drawn, as against the alignment Illustrator holds: a Center stroke under
@@ -1342,7 +1355,9 @@ ASErr FixObjectStrokes(const FixSuites& s, AIArtHandle frame, const std::vector<
     // fields from index `contents` on paint below it.
     for (ai::int32 i = contents; contents >= 0 && i < fields; ++i) {
         AIParserPaintField field = nullptr;
-        if (s.parser.GetNthPaintField(p, i, &field) || !field || !s.parser.IsStroke(field)) continue;
+        AIBoolean visible = true;
+        if (s.parser.GetNthPaintField(p, i, &field) || !field || !s.parser.IsStroke(field) ||
+            (!s.parser.GetPaintFieldVisible(field, &visible) && !visible)) continue;   // a hidden copy (native-align)
         AIStrokeStyle stroke{};
         AIArtStylePaintData data;
         if (s.parser.GetStroke(field, &stroke, &data)) continue;
@@ -1614,10 +1629,9 @@ bool Overridden(SPBasicSuite* basic, const FixSuites& s, AIArtHandle item, const
             if (!s.parser.ParseStyle(p, st))
                 for (ai::int32 i = 0; i < s.parser.CountPreEffects(p); ++i) {
                     AIParserLiveEffect fx = nullptr;
-                    AILiveEffectHandle h = nullptr;
                     AILiveEffectParameters fxParams = nullptr;
                     ai::int32 tag = 0;
-                    if (!s.parser.GetNthPreEffect(p, i, &fx) && fx && !s.parser.GetLiveEffectHandle(fx, &h) && h == pathfinder &&
+                    if (!s.parser.GetNthPreEffect(p, i, &fx) && EffectNamed(s.parser, fx, "Adobe Pathfinder") &&
                         !s.parser.GetLiveEffectParams(fx, &fxParams) && fxParams &&
                         !dict->GetIntegerEntry(fxParams, dict->Key(kOwnedKey), &tag) && tag == 1)
                         present = true;
@@ -1630,6 +1644,9 @@ bool Overridden(SPBasicSuite* basic, const FixSuites& s, AIArtHandle item, const
     if (rec.dashes && style.stroke.dash.length > 0 && !DashesOn(basic, item)) return true;
     return false;
 }
+
+// Defined with native-align below.
+ASErr SyncOffset(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, double weight, bool& changed);
 
 // The native fix on a list of paths, compound paths, and text frames. One item's failure is
 // counted and traced, and the others are still fixed. `refix`: the automatic re-fix, which first
@@ -1650,6 +1667,15 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
     for (size_t i = 0; i < items.size(); ++i) {
         short type = kUnknownArt;
         if (s.art.GetArtType(items[i], &type)) { ++failed; continue; }
+        // An Inside drawn as two fills (native-align): the shrunk fill shown or hidden for the outline
+        // as it is now.
+        {
+            const AlignRecord ar = ReadAlignRecord(basic, s.art, items[i]);
+            if ((ar.as == "offset" || ar.as == "type-offset") && ar.weight > 0) {
+                bool synced = false;
+                if (!SyncOffset(basic, s, items[i], ar.weight, synced) && synced) ++st.offsetSynced;
+            }
+        }
         FixRecord prior;
         const bool hasPrior = Marked(s.art, *dict.operator&(), items[i], &prior);
         if (refix && hasPrior && Overridden(basic, s, items[i], prior)) {
@@ -2309,32 +2335,277 @@ ASErr WidthSide(SPMessageData& message, const char* input, std::string& out) {
 //       closed contours, groups with their own stroke), its own SetStrokeAlignment; otherwise:
 //       - an open path: a one-sided width profile of the full weight on that side (the side the
 //         path's implicit closing encloses is Inside), so the Stroke panel keeps the weight;
-//       - a compound path with an open contour (Illustrator drops alignment for all its contours),
-//         Outside only: Center at twice the weight under its fill;
-//       - type (Illustrator stores but never draws a type object's alignment), Outside only: one
+//       - a compound path with an open contour (Illustrator drops alignment for all its contours):
+//         Outside, Center at twice the weight under its fill; Inside, two fills (AddOffsetFills)
+//         where each open contour is open by no more than the weight and BandRefusal allows;
+//       - type (Illustrator stores but never draws a type object's alignment): Outside, with one
 //         stroke, an object-level stroke of twice the weight below Characters, the characters'
-//         strokes cleared; mixed strokes, every character's weight doubled and its stroke painted
-//         before its own fill (FillFirst off).
-//     Inside on type and on a compound path with an open contour has no faithful native form
-//     and is refused (a one-sided profile there measured 1,333 pt2 off Illustrator's own Inside).
+//         strokes cleared, and with mixed strokes, every character's weight doubled and its
+//         stroke painted before its own fill (FillFirst off); Inside, with one fill and one
+//         stroke, two fills above Characters (AddOffsetFills).
 //   "dashes"  the opt-in for dashed Outside strokes, which Illustrator cannot fit to corners:
 //       Center at twice the weight under the fill, then Align Dashes to Corners.
 //   "restore"  what native-align made of the selected items, put back as it was.
 // The Center-under-fill forms need a simple style (one painting fill, one stroke): the fill hides
 // the inner half. What each item became is kept in its dictionary (AlignRecord).
 struct NativeAlignStats {
-    int native = 0, profiled = 0, doubled = 0, typeOutside = 0, restored = 0, refused = 0;
+    int native = 0, profiled = 0, doubled = 0, typeOutside = 0, restored = 0, refused = 0, offset = 0;
     std::string reasons;
 };
 
+// Inside drawn with two fills (2026-10-16), where Illustrator draws no Inside alignment (a
+// compound path with an open contour, type): a fill of the stroke's color beneath, and the item's
+// own fill on top, shrunk by the stroke weight with Illustrator's live Effect > Path > Offset Path
+// (offset -w, the stroke's join and miter limit; parameters as Illustrator writes them). What shows
+// between them is the Inside band, and both follow every edit of the outline. The stroke itself is
+// kept in the style, hidden, so restore can bring it back as it was. Offset Path joins: 0 round,
+// 1 bevel, 2 miter.
+int OffsetJoin(AILineJoin join) { return join == kAIRoundJoin ? 0 : (join == kAIBevelJoin ? 1 : 2); }
+
+// Why a stroke cannot be drawn as the band of two fills, or nullptr. The band is one flat fill in
+// the stroke's color, so dashes, a gradient or pattern along the stroke, effects of the stroke's
+// own (Roughen, Zig Zag), a brush, a width profile, and arrowheads would all be lost: refused.
+// `art` null (type, whose character strokes carry none of these, its object-level effects refused
+// before) checks the stroke style only.
+const char* BandRefusal(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, const AIStrokeStyle& stroke) {
+    if (stroke.dash.length > 0) return "inside-dashed";
+    if (stroke.color.kind == kGradient || stroke.color.kind == kPattern) return "inside-stroke-paint";
+    if (!art) return nullptr;
+    {
+        AIArtStyleHandle style = nullptr;
+        AIStyleParser p = nullptr;
+        if (s.styles.GetArtStyle(art, &style) || !style || s.parser.NewParser(&p) || !p) return "inside-stroke-params";
+        struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+        if (s.parser.ParseStyle(p, style)) return "inside-stroke-params";
+        for (ai::int32 i = 0; i < s.parser.CountPaintFields(p); ++i) {
+            AIParserPaintField f = nullptr;
+            if (!s.parser.GetNthPaintField(p, i, &f) && f && s.parser.IsStroke(f) && s.parser.CountEffectsOfPaintField(f) > 0)
+                return "inside-stroke-effects";
+        }
+    }
+    Suite<AIBeautifulStrokesSuite> bs(basic, kAIBeautifulStrokesSuite, kAIBeautifulStrokesVersion);
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    if (bs.error || dict.error) return "inside-stroke-params";
+    AIDictionaryRef params = nullptr;
+    AIBoolean brush = false;
+    const AIErr got = bs->GetArtStrokeParams(art, params, nullptr, &brush, nullptr, nullptr);
+    struct Release { const AIDictionarySuite& d; AIDictionaryRef p; ~Release() { if (p) d.Release(p); } } release{*dict.operator&(), params};
+    if (got) return "inside-stroke-params";
+    if (brush) return "inside-brush";
+    // The getters give their defaults (constant width, no arrowheads) on a dictionary without them.
+    if (!params) return nullptr;
+    if (bs->GetWidthSource(params) != kConstantWidth) return "inside-width-profile";
+    AIPatternHandle begin = nullptr, end = nullptr;
+    AIReal beginScale = 0, endScale = 0;
+    ArrowTipAlignment tip{};
+    AIBoolean mixedBegin = false, mixedEnd = false;
+    if (bs->GetArrowheadOptions(params, &begin, &end, &beginScale, &endScale, &tip, &mixedBegin, &mixedEnd)) return "inside-stroke-params";
+    if (begin || end) return "inside-arrowheads";
+    return nullptr;
+}
+
+// The two fills, inserted at the top of the style (above Characters for type).
+ASErr AddOffsetFills(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, const AIFillStyle& fill, bool evenodd,
+                     const AIStrokeStyle& stroke) {
+    Suite<AILiveEffectSuite> live(basic, kAILiveEffectSuite, kAILiveEffectVersion);
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    if (live.error || dict.error) return kBadParameterErr;
+    AILiveEffectHandle offset = nullptr;
+    if (live->GetLiveEffectHandleByName("Adobe Offset Path", &offset) || !offset) return kBadParameterErr;
+    AIArtStyleHandle style = nullptr;
+    auto e = s.styles.GetArtStyle(art, &style);
+    if (e || !style) return e ? e : kBadParameterErr;
+    AILiveEffectParameters params = nullptr;
+    if (live->CreateLiveEffectParameters(&params) || !params) return kOutOfMemoryErr;
+    struct ReleaseParams { const AIDictionarySuite& d; AILiveEffectParameters p; ~ReleaseParams() { d.Release(p); } }
+        releaseParams{*dict.operator&(), params};
+    dict->SetRealEntry(params, dict->Key("ofst"), static_cast<AIReal>(-stroke.width));
+    dict->SetIntegerEntry(params, dict->Key("jntp"), OffsetJoin(stroke.join));
+    dict->SetRealEntry(params, dict->Key("mlim"), stroke.miterLimit);
+    dict->SetIntegerEntry(params, dict->Key(kOwnedKey), 1);   // the fix's own: a user's Offset Path fills are left alone
+    AIStyleParser p = nullptr;
+    e = s.parser.NewParser(&p);
+    if (e || !p) return e ? e : kOutOfMemoryErr;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+    AIFillStyle band{};
+    band.color = stroke.color;
+    band.overprint = stroke.overprint;
+    AIParserPaintField under = nullptr, top = nullptr;
+    if ((e = s.parser.NewPaintFieldFill(&band, evenodd, nullptr, &under)) != kNoErr || !under) return e ? e : kOutOfMemoryErr;
+    if ((e = s.parser.InsertNthPaintField(p, 0, under)) != kNoErr) { s.parser.DisposePaintField(under); return e; }
+    if ((e = s.parser.NewPaintFieldFill(&fill, evenodd, nullptr, &top)) != kNoErr || !top) return e ? e : kOutOfMemoryErr;
+    AIParserLiveEffect fx = nullptr;
+    if ((e = s.parser.NewParserLiveEffect(offset, params, &fx)) != kNoErr || !fx) { s.parser.DisposePaintField(top); return e ? e : kOutOfMemoryErr; }
+    if ((e = s.parser.InsertNthPaintField(p, 0, top)) != kNoErr) { s.parser.DisposeParserLiveEffect(fx); s.parser.DisposePaintField(top); return e; }
+    if ((e = s.parser.InsertNthEffectOfPaintField(p, top, 0, fx)) != kNoErr) { s.parser.DisposeParserLiveEffect(fx); return e; }
+    AIArtStyleHandle created = nullptr;
+    if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+    return s.styles.SetArtStyle(art, created);
+}
+
+// Shows or hides the first stroke field that is `fromVisible` (on a fresh parse, as the SDK asks).
+ASErr SetStrokeFieldVisible(const FixSuites& s, AIArtHandle art, bool fromVisible, bool visible, bool lastOne = false) {
+    AIArtStyleHandle style = nullptr;
+    auto e = s.styles.GetArtStyle(art, &style);
+    if (e || !style) return e ? e : kBadParameterErr;
+    AIStyleParser p = nullptr;
+    e = s.parser.NewParser(&p);
+    if (e || !p) return e ? e : kOutOfMemoryErr;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+    AIParserPaintField target = nullptr;
+    const ai::int32 n = s.parser.CountPaintFields(p);
+    for (ai::int32 k = 0; k < n; ++k) {
+        const ai::int32 i = lastOne ? n - 1 - k : k;
+        AIParserPaintField f = nullptr;
+        AIBoolean vis = true;
+        if (s.parser.GetNthPaintField(p, i, &f) || !f || !s.parser.IsStroke(f) || s.parser.GetPaintFieldVisible(f, &vis)) continue;
+        if ((vis != 0) == fromVisible) { target = f; break; }
+    }
+    if (!target) return kBadParameterErr;
+    if ((e = s.parser.SetParserPaintFieldVisible(target, visible)) != kNoErr) return e;
+    AIArtStyleHandle created = nullptr;
+    if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+    return s.styles.SetArtStyle(art, created);
+}
+
+// The fix's own shrunk fill in a parsed style: a fill whose one effect is Adobe Offset Path tagged
+// kOwnedKey, with `under` the plain fill right below it (the band) when there is one, and `inset`
+// the effect's own offset (its magnitude: the weight as the effect has it now, after any Scale
+// Strokes & Effects or a change in the Appearance panel).
+bool FindOwnOffsetFill(SPBasicSuite* basic, const FixSuites& s, AIStyleParser p, AIParserPaintField& top,
+                       AIParserPaintField* under, double* inset) {
+    top = nullptr;
+    if (under) *under = nullptr;
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    if (dict.error) return false;
+    const ai::int32 n = s.parser.CountPaintFields(p);
+    for (ai::int32 i = 0; i < n; ++i) {
+        AIParserPaintField f = nullptr;
+        AIParserLiveEffect fx = nullptr;
+        AILiveEffectParameters params = nullptr;   // the style's own: read only
+        ai::int32 tag = 0;
+        if (s.parser.GetNthPaintField(p, i, &f) || !f || !s.parser.IsFill(f) || s.parser.CountEffectsOfPaintField(f) != 1 ||
+            s.parser.GetNthEffectOfPaintField(f, 0, &fx) || !EffectNamed(s.parser, fx, "Adobe Offset Path") ||
+            s.parser.GetLiveEffectParams(fx, &params) || !params || dict->GetIntegerEntry(params, dict->Key(kOwnedKey), &tag) || tag != 1)
+            continue;
+        top = f;
+        if (inset) {
+            AIReal o = 0;
+            *inset = dict->GetRealEntry(params, dict->Key("ofst"), &o) ? 0 : std::fabs(o);
+        }
+        AIParserPaintField b = nullptr;
+        if (under && i + 1 < n && !s.parser.GetNthPaintField(p, i + 1, &b) && b && s.parser.IsFill(b) && s.parser.CountEffectsOfPaintField(b) == 0)
+            *under = b;
+        return true;
+    }
+    return false;
+}
+
+// Shows or hides the fix's shrunk fill; `changed` says whether it had to change. Hidden when the
+// inset leaves nothing (native_region::InsetEmpty), since Offset Path then gives the shape back
+// unshrunk and would cover the band.
+ASErr SetOffsetFillVisible(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, bool visible, bool& changed) {
+    changed = false;
+    AIArtStyleHandle style = nullptr;
+    auto e = s.styles.GetArtStyle(art, &style);
+    if (e || !style) return e ? e : kBadParameterErr;
+    AIStyleParser p = nullptr;
+    e = s.parser.NewParser(&p);
+    if (e || !p) return e ? e : kOutOfMemoryErr;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+    AIParserPaintField f = nullptr;
+    AIBoolean vis = true;
+    if (!FindOwnOffsetFill(basic, s, p, f, nullptr, nullptr) || s.parser.GetPaintFieldVisible(f, &vis)) return kBadParameterErr;
+    if ((vis != 0) == visible) return kNoErr;
+    if ((e = s.parser.SetParserPaintFieldVisible(f, visible)) != kNoErr) return e;
+    AIArtStyleHandle created = nullptr;
+    if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+    if ((e = s.styles.SetArtStyle(art, created)) != kNoErr) return e;
+    changed = true;
+    return kNoErr;
+}
+
+// The outline an Inside drawn as two fills follows: a path's contours, or type's glyph outlines;
+// false when any part cannot be read.
+bool OffsetOutline(const FixSuites& s, AIArtHandle art, std::vector<ise_miter::Contour>& out) {
+    out.clear();
+    short type = kUnknownArt;
+    if (s.art.GetArtType(art, &type)) return false;
+    if (type != kTextFrameArt) return Contours(s, art, out);
+    AIArtHandle outline = nullptr;
+    if (s.text.CreateOutline(art, &outline) || !outline) return false;
+    struct DisposeArt { const AIArtSuite& api; AIArtHandle a; ~DisposeArt() { if (a) api.DisposeArt(a); } } dispose{s.art, outline};
+    AIArtHandle child = nullptr;
+    if (s.art.GetArtFirstChild(outline, &child)) return false;
+    while (child) {
+        if (!Contours(s, child, out)) return false;
+        if (s.art.GetArtSibling(child, &child)) return false;
+    }
+    return !out.empty();
+}
+
+// Keeps an Inside drawn as two fills right after an edit: the shrunk fill shown where the inset
+// leaves something, hidden where it leaves nothing. The inset is the effect's own; for type it is
+// in the frame's own space, as the characters' weight is, and the outline in page space.
+ASErr SyncOffset(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, double /*recorded*/, bool& changed) {
+    changed = false;
+    double inset = 0;
+    {
+        AIArtStyleHandle style = nullptr;
+        AIStyleParser p = nullptr;
+        if (s.styles.GetArtStyle(art, &style) || !style || s.parser.NewParser(&p) || !p) return kNoErr;
+        AIParserPaintField f = nullptr;
+        const bool found = !s.parser.ParseStyle(p, style) && FindOwnOffsetFill(basic, s, p, f, nullptr, &inset);
+        s.parser.DisposeParser(p);
+        if (!found || !(inset > 0)) return kNoErr;
+    }
+    std::vector<ise_miter::Contour> contours;
+    if (!OffsetOutline(s, art, contours)) return kNoErr;
+    short type = kUnknownArt;
+    if (!s.art.GetArtType(art, &type) && type == kTextFrameArt) inset *= FrameScale(s, art);
+    return SetOffsetFillVisible(basic, s, art, !native_region::InsetEmpty(contours, inset), changed);
+}
+
+// Removes the two fills AddOffsetFills made (the fix's tagged shrunk fill and the band right below
+// it). `found` false leaves the style as it is.
+ASErr RemoveOffsetFills(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, bool& found) {
+    found = false;
+    AIArtStyleHandle style = nullptr;
+    auto e = s.styles.GetArtStyle(art, &style);
+    if (e || !style) return e ? e : kBadParameterErr;
+    AIStyleParser p = nullptr;
+    e = s.parser.NewParser(&p);
+    if (e || !p) return e ? e : kOutOfMemoryErr;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+    AIParserPaintField top = nullptr, under = nullptr;
+    if (!FindOwnOffsetFill(basic, s, p, top, &under, nullptr) || !under) return kNoErr;
+    if ((e = s.parser.RemovePaintField(p, top, true)) != kNoErr) return e;
+    if ((e = s.parser.RemovePaintField(p, under, true)) != kNoErr) return e;
+    found = true;
+    AIArtStyleHandle created = nullptr;
+    if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+    return s.styles.SetArtStyle(art, created);
+}
+
 ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, const char* mode, NativeAlignStats& st) {
-    auto refuse = [&](const char* why) { ++st.refused; if (st.reasons.size() < 200) { st.reasons += why; st.reasons += ' '; } return kNoErr; };
+    auto refuse = [&](const char* why) {
+        ++st.refused;
+        const std::string token = std::string(why) + ' ';
+        if (st.reasons.size() + token.size() <= 200 && (' ' + st.reasons).find(' ' + token) == std::string::npos) st.reasons += token;
+        return kNoErr;
+    };
     Suite<AIPaintStyleSuite> paintStyle(basic, kAIPaintStyleSuite, kAIPaintStyleVersion);
     if (paintStyle.error) return paintStyle.error;
     short type = kUnknownArt;
     if (s.art.GetArtType(art, &type)) return refuse("type?");
     const bool outside = std::strcmp(mode, "outside") == 0, inside = std::strcmp(mode, "inside") == 0;
-    const bool dashes = std::strcmp(mode, "dashes") == 0, restore = std::strcmp(mode, "restore") == 0;
+    // "rollback": restore after a failure part-way, which goes on where a step had not run yet.
+    const bool rollback = std::strcmp(mode, "rollback") == 0;
+    const bool dashes = std::strcmp(mode, "dashes") == 0, restore = rollback || std::strcmp(mode, "restore") == 0;
     AlignRecord ar = ReadAlignRecord(basic, s.art, art);
 
     // Center at twice the weight under the fill (from Outside or Center at weight w).
@@ -2448,6 +2719,56 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
             AIArtStyleHandle created = nullptr;
             if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
             if ((e = s.styles.SetArtStyle(art, created)) != kNoErr) return e;
+        } else if (ar.as == "offset" || ar.as == "type-offset") {
+            bool found = false;
+            auto e = RemoveOffsetFills(basic, s, art, found);
+            if (e) return e;
+            // Changed since (the shrunk fill or the band removed or reordered): left as it is.
+            if (!found && !rollback) return refuse("restore-fills-changed");
+            if (ar.as == "offset") {
+                if ((e = SetStrokeFieldVisible(s, art, false, true)) != kNoErr) return refuse("restore-hidden-stroke");
+            } else {
+                // The hidden stroke field back onto the characters, then removed.
+                AIArtStyleHandle style = nullptr;
+                AIStyleParser p = nullptr;
+                if ((e = s.styles.GetArtStyle(art, &style)) != kNoErr || !style || s.parser.NewParser(&p) || !p) return e ? e : kBadParameterErr;
+                struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+                if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+                AIParserPaintField hidden = nullptr;
+                AIStrokeStyle stroke{};
+                AIArtStylePaintData data;
+                for (ai::int32 k = s.parser.CountPaintFields(p) - 1; k >= 0 && !hidden; --k) {
+                    AIParserPaintField f = nullptr;
+                    AIBoolean vis = true;
+                    if (!s.parser.GetNthPaintField(p, k, &f) && f && s.parser.IsStroke(f) && !s.parser.GetPaintFieldVisible(f, &vis) && !vis &&
+                        !s.parser.GetStroke(f, &stroke, &data))
+                        hidden = f;
+                }
+                if (!hidden) return refuse("restore-hidden-stroke");
+                Suite<AIATEPaintSuite> atePaint(basic, kAIATEPaintSuite, kAIATEPaintVersion);
+                if (atePaint.error) return atePaint.error;
+                AIPathStyle ps{};
+                ps.Init();
+                ps.strokePaint = true;
+                ps.stroke = stroke;
+                AIPathStyleMap map{};
+                map.strokePaint = true;
+                std::memset(&map.stroke, 1, sizeof map.stroke);
+                TextRangeRef r = nullptr;
+                if (s.text.GetATETextRange(art, &r) || !r) return kBadParameterErr;
+                ATE::CharFeaturesRef f = nullptr;
+                ATE::ATEErr ate = s.features.Initialize(&f);
+                if (!ate && f) e = atePaint->GetCharFeatures(&ps, &map, f);
+                if (!ate && f && !e) ate = s.features.SetStroke(f, true);
+                if (!ate && f && !e) ate = s.range.ReplaceOrAddLocalCharFeatures(r, f);
+                if (f) s.features.Release(f);
+                s.range.Release(r);
+                if (ate || e) return e ? e : kBadParameterErr;
+                if ((e = s.parser.RemovePaintField(p, hidden, true)) != kNoErr) return e;
+                AIArtStyleHandle created = nullptr;
+                if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+                if ((e = s.styles.SetArtStyle(art, created)) != kNoErr) return e;
+            }
         } else if (ar.as == "type-chars") {
             // Every character's stroke weight halved, and FillFirst back on when it was on before.
             Suite<ATE::TextRunsIteratorSuite> iter(basic, kTextRunsIteratorSuite, kTextRunsIteratorSuiteVersion);
@@ -2500,8 +2821,7 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
 
     if (type == kTextFrameArt) {
         if (dashes) return kNoErr;
-        if (inside) return refuse("type-inside");
-        if (!outside) return kNoErr;
+        if (!outside && !inside) return kNoErr;
         // The characters' paint across the frame.
         Suite<AIATEPaintSuite> atePaint(basic, kAIATEPaintSuite, kAIATEPaintVersion);
         if (atePaint.error) return atePaint.error;
@@ -2528,6 +2848,59 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
         if (e || s.parser.NewParser(&p) || !p) return e ? e : kOutOfMemoryErr;
         struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
         if (style && (e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+        if (inside) {
+            // Two fills above Characters, which need one fill and one stroke across the frame.
+            const bool oneFill = map.fillPaint && paint.fillPaint && map.fill.overprint && UniformSolid(paint.fill.color, map.fill.color);
+            if (!oneStroke || !oneFill) return refuse("type-inside-needs-one-fill-one-stroke");
+            if (s.parser.ContainsEffects(p) || s.parser.CountPaintFields(p) > 2 || s.parser.ContainsTransparency(p)) return refuse("type-styled");
+            const AIStrokeStyle stroke = paint.stroke;
+            if (const char* why = BandRefusal(basic, s, nullptr, stroke)) return refuse(why);
+            // The stroke kept below Characters, hidden, for restore; the characters' strokes cleared.
+            AIParserPaintField keep = nullptr;
+            if ((e = s.parser.NewPaintFieldStroke(&stroke, nullptr, &keep)) != kNoErr || !keep) return e ? e : kOutOfMemoryErr;
+            if ((e = s.parser.InsertNthPaintField(p, -1, keep)) != kNoErr) { s.parser.DisposePaintField(keep); return e; }
+            AIArtStyleHandle created = nullptr;
+            if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+            if ((e = s.styles.SetArtStyle(art, created)) != kNoErr) return e;
+            // The copy (the last field) taken off again if it cannot be hidden or recorded.
+            auto dropCopy = [&](ASErr err) {
+                AIArtStyleHandle st1 = nullptr;
+                AIStyleParser q = nullptr;
+                if (!s.styles.GetArtStyle(art, &st1) && st1 && !s.parser.NewParser(&q) && q) {
+                    AIParserPaintField last = nullptr;
+                    AIArtStyleHandle made = nullptr;
+                    const ai::int32 n = !s.parser.ParseStyle(q, st1) ? s.parser.CountPaintFields(q) : 0;
+                    if (n > 0 && !s.parser.GetNthPaintField(q, n - 1, &last) && last && s.parser.IsStroke(last) &&
+                        !s.parser.RemovePaintField(q, last, true) && !s.parser.CreateNewStyle(q, &made) && made)
+                        s.styles.SetArtStyle(art, made);
+                    s.parser.DisposeParser(q);
+                }
+                return err;
+            };
+            if ((e = SetStrokeFieldVisible(s, art, true, false, true)) != kNoErr) return dropCopy(e);
+            if (!WriteAlignRecord(basic, s.art, art, AlignRecord{"type-offset", 2, stroke.width})) {
+                SetStrokeFieldVisible(s, art, false, true, true);
+                dropCopy(kNoErr);
+                return refuse("record");
+            }
+            auto fail = [&](ASErr err) { NativeAlignStats ignored; NativeAlignItem(basic, s, art, "rollback", ignored); return err; };
+            {
+                TextRangeRef r = nullptr;
+                if (s.text.GetATETextRange(art, &r) || !r) return fail(kBadParameterErr);
+                ATE::CharFeaturesRef f = nullptr;
+                ATE::ATEErr ate = s.features.Initialize(&f);
+                if (!ate && f) ate = s.features.SetStroke(f, false);
+                if (!ate && f) ate = s.range.ReplaceOrAddLocalCharFeatures(r, f);
+                if (f) s.features.Release(f);
+                s.range.Release(r);
+                if (ate) return fail(kBadParameterErr);
+            }
+            if ((e = AddOffsetFills(basic, s, art, paint.fill, paint.evenodd, stroke)) != kNoErr) return fail(e);
+            bool synced = false;
+            if ((e = SyncOffset(basic, s, art, stroke.width, synced)) != kNoErr) return fail(e);
+            ++st.offset;
+            return kNoErr;
+        }
         if (oneStroke) {
             if (s.parser.ContainsEffects(p) || s.parser.CountPaintFields(p) > 2 || s.parser.ContainsTransparency(p)) return refuse("type-styled");
             AIStrokeStyle stroke = paint.stroke;
@@ -2643,7 +3016,47 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
         return kNoErr;
     }
     if (type == kCompoundPathArt) {
-        if (inside) return refuse("compound-open-inside");
+        if (inside) {
+            if (!SimpleFillAndStroke(s, art)) return refuse("needs-one-fill-one-stroke");
+            AIArtStyleHandle st0 = nullptr;
+            AIStyleParser p = nullptr;
+            AIFillStyle fill{};
+            AIStrokeStyle stroke{};
+            bool haveFill = false, haveStroke = false;
+            if (!s.styles.GetArtStyle(art, &st0) && st0 && !s.parser.NewParser(&p) && p) {
+                if (!s.parser.ParseStyle(p, st0))
+                    for (ai::int32 k = 0; k < s.parser.CountPaintFields(p); ++k) {
+                        AIParserPaintField f = nullptr;
+                        AIArtStylePaintData data;
+                        if (s.parser.GetNthPaintField(p, k, &f) || !f) continue;
+                        if (s.parser.IsFill(f) && !s.parser.GetFill(f, &fill, &data)) haveFill = true;
+                        else if (s.parser.IsStroke(f) && !s.parser.GetStroke(f, &stroke, &data)) haveStroke = true;
+                    }
+                s.parser.DisposeParser(p);
+            }
+            if (!haveFill || !haveStroke) return refuse("needs-one-fill-one-stroke");
+            if (const char* why = BandRefusal(basic, s, art, stroke)) return refuse(why);
+            // An open contour's fill ends along its closing, where no stroke runs, and the band would
+            // run there too (measured: 237.6 of a 240 pt2 strip along a 60 pt closing). Allowed only
+            // where each closing is no longer than the weight, a contour left open by a hair; a longer
+            // one is refused, and joining it gives Illustrator's own Inside.
+            for (const auto& c : contours)
+                if (!c.closed && !c.segments.empty() && ise_miter::Len(c.segments.back().p - c.start) > stroke.width + 1e-6)
+                    return refuse("inside-open-closing");
+            // The record first, so a failure part-way can always be rolled back.
+            if (!WriteAlignRecord(basic, s.art, art, AlignRecord{"offset", 2, stroke.width})) return refuse("record");
+            auto e = SetStrokeFieldVisible(s, art, true, false);
+            if (e) { WriteAlignRecord(basic, s.art, art, AlignRecord{}); return e; }
+            bool synced = false;
+            if ((e = AddOffsetFills(basic, s, art, fill, style.evenodd, stroke)) != kNoErr ||
+                (e = SyncOffset(basic, s, art, stroke.width, synced)) != kNoErr) {
+                NativeAlignStats ignored;
+                NativeAlignItem(basic, s, art, "rollback", ignored);
+                return e;
+            }
+            ++st.offset;
+            return kNoErr;
+        }
         return doubleUnderFill(false);
     }
     // An open path: the side its implicit closing encloses is Inside. Beautiful Strokes sides are
@@ -2827,9 +3240,9 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"rootType\":%d,\"frames\":%d,\"outlineLeaves\":%d,\"stroked\":%d,\"mode\":%d,\"census\":\"%s\",\"gate\":\"%s\"},"
         "\"nativeFix\":{\"gate\":\"%s\",\"paths\":%d,\"pathLimits\":%d,\"reordered\":%d,\"frames\":%d,\"chars\":%d,"
         "\"charLimits\":%d,\"mapped\":%d,\"corners\":%d,\"keptBeveled\":%d,\"cutMitered\":%d,\"dashes\":%d,"
-        "\"dashRefused\":%d,\"pathfinder\":%d,\"failed\":%d},"
+        "\"dashRefused\":%d,\"pathfinder\":%d,\"failed\":%d,\"offsetSynced\":%d},"
         "\"align\":{\"gate\":\"%s\",\"native\":%d,\"profiled\":%d,\"doubled\":%d,\"typeOutside\":%d,"
-        "\"restored\":%d,\"refused\":%d,\"reasons\":\"%s\"},"
+        "\"restored\":%d,\"refused\":%d,\"offset\":%d,\"reasons\":\"%s\"},"
         "\"refix\":{\"timer\":%s,\"scans\":%llu,\"runs\":%llu,\"items\":%llu,\"deferred\":%llu,\"lastError\":%d,"
         "\"released\":%llu,\"overflow\":%llu,"
         "\"undoPast\":%d,\"undoFuture\":%d},"
@@ -2858,9 +3271,9 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         state.nativeFix.gate, state.nativeFix.paths, state.nativeFix.pathLimits, state.nativeFix.reordered,
         state.nativeFix.frames, state.nativeFix.chars, state.nativeFix.charLimits, state.nativeFix.mapped,
         state.nativeFix.corners, state.nativeFix.keptBeveled, state.nativeFix.cutMitered, state.nativeFix.dashes,
-        state.nativeFix.dashRefused, state.nativeFix.pathfinder, state.nativeFix.failed,
+        state.nativeFix.dashRefused, state.nativeFix.pathfinder, state.nativeFix.failed, state.nativeFix.offsetSynced,
         state.align.gate, state.align.native, state.align.profiled, state.align.doubled, state.align.typeOutside,
-        state.align.restored, state.align.refused, state.align.reasons,
+        state.align.restored, state.align.refused, state.align.offset, state.align.reasons,
         state.refix.timer ? "true" : "false", state.refix.scans, state.refix.runs, state.refix.items,
         state.refix.deferred, state.refix.lastError, state.refix.released, state.refix.overflow, undoPast, undoFuture,
         state.appearance.gate, state.appearance.frames, state.appearance.styled, state.appearance.fieldsBefore,
@@ -2944,7 +3357,7 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
         auto& a = state.align;
         a.gate = actionError ? "partial" : "aligned";
         a.native = st.native; a.profiled = st.profiled; a.doubled = st.doubled; a.typeOutside = st.typeOutside;
-        a.restored = st.restored; a.refused = st.refused;
+        a.restored = st.restored; a.refused = st.refused; a.offset = st.offset;
         std::snprintf(a.reasons, sizeof a.reasons, "%s", st.reasons.c_str());
     }
     else if (std::strcmp(selector, "native-fix") == 0 && input[0] == '\0')

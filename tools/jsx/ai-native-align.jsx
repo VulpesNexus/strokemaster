@@ -2,17 +2,24 @@
 // alone on the page: N-<case>-orig.pdf before, N-<case>.pdf after, N-<case>-restored.pdf after
 // "restore", plus exact references, for tools/measure_native_align.py. Cases:
 //   op-out, op-in     an open path (40,40)-(100,160)-(160,40), 8 pt
-//   cmp-out, cmp-in   a compound path: a 70 pt square and an open triangle; reference cmpref-out
-//                     (the square alone, Illustrator's own Outside)
-//   tx-out, tx-in     type "Ax", Minion Pro 96 pt, one 8 pt stroke; reference txref-out (outlined,
-//                     Illustrator's own Outside)
+//   cmp-out, cmp-in   a compound path: a 70 pt square and an open triangle (for cmp-in, open by
+//                     4 pt, less than the weight); references cmpref-out and cmpref-in (the square
+//                     alone, Illustrator's own Outside and Inside), and cmpref-tri-in (the triangle
+//                     closed, Illustrator's own Inside)
+//   cmp-open-in       Inside with the triangle open along its whole base: refused
+//   tx-out, tx-in     type "Ax", Minion Pro 96 pt, one 8 pt stroke; references txref-out and
+//                     txref-in (outlined, Illustrator's own Outside and Inside)
 //   txm-out           the same with mixed strokes (8 pt on A, 6 pt on x)
 //   txs-out           the type in a frame scaled 150% (its strokes not scaled)
 //   cmp-edit          a doubled compound path whose weight is then set to 20: restore gives 10
 //   sq-out            a closed square (Illustrator's own alignment)
 //   th-dash           the 10-degree thorn, Outside 4, dashed 12/4, through "dashes"; reference
 //                     thref (the same, solid)
-// Needs StrokeMasterRegionProbe region-prep-17 and $.global.ISE_REGION_ARGS outDir and runId.
+//   cmp-dash-in       the compound path dashed, and cmp-grad-in with a gradient stroke: Inside
+//                     refused (the band of two fills is one flat fill)
+// Needs StrokeMasterRegionProbe region-prep-18 and $.global.ISE_REGION_ARGS outDir and runId;
+// args.dump names a case whose style (style-dump) and the plugin's trace (diagnostics) around its
+// restore are reported too.
 (function () {
     var interaction = app.userInteractionLevel;
     app.userInteractionLevel = UserInteractionLevel.DONTDISPLAYALERTS;
@@ -47,11 +54,12 @@
     }
     function openPath() { clear(); var p = doc.pathItems.add(); p.setEntirePath([[40, 40], [100, 160], [160, 40]]); p.filled = false; stroke(p); return p; }
     function square(x, y) { var r = doc.pathItems.rectangle(y, x, 70, 70); r.filled = true; r.fillColor = gray(100); stroke(r); return r; }
-    function compound() {
+    function compound(nearlyClosed) {
         clear();
         var cp = doc.compoundPathItems.add();
         doc.pathItems.rectangle(160, 20, 70, 70).move(cp, ElementPlacement.PLACEATEND);
-        var o = doc.pathItems.add(); o.setEntirePath([[120, 40], [150, 150], [180, 40]]); o.move(cp, ElementPlacement.PLACEATEND);
+        var o = doc.pathItems.add(); o.setEntirePath(nearlyClosed ? [[120, 40], [150, 150], [180, 40], [124, 40]] : [[120, 40], [150, 150], [180, 40]]);
+        o.move(cp, ElementPlacement.PLACEATEND);
         var p = cp.pathItems[0]; p.filled = true; p.fillColor = gray(100); stroke(p);
         return cp;
     }
@@ -81,7 +89,10 @@
         at = name;
         var it = make(); pdf(name + '-orig');
         note(name, align(it, mode)); pdf(name);
-        note(name + ' restore', align(it, 'restore')); pdf(name + '-restored');
+        if (args.dump && name === args.dump) { select(it); note(name + ' style', send('style-dump')); }
+        if (args.dump && name === args.dump) { select(it); note(name + ' restore', block(send('native-align', 'restore'), 'align')); note(name + ' trace', send('diagnostics')); }
+        else note(name + ' restore', align(it, 'restore'));
+        pdf(name + '-restored');
     }
     try {
         doc = newDocument(DocumentColorSpace.RGB, 240, 200);
@@ -89,8 +100,12 @@
         round('op-out', openPath, 'outside');
         round('op-in', openPath, 'inside');
         round('cmp-out', compound, 'outside');
-        round('cmp-in', compound, 'inside');
+        round('cmp-in', function () { return compound(true); }, 'inside');
+        at = 'cmp-open-in'; var co = compound(); note(at, align(co, 'inside'));
         at = 'cmpref'; clear(); var r = square(20, 160); select(r); send('stroke-align', 'outside'); pdf('cmpref-out');
+        clear(); r = square(20, 160); select(r); send('stroke-align', 'inside'); pdf('cmpref-in');
+        clear(); var tri = doc.pathItems.add(); tri.setEntirePath([[120, 40], [150, 150], [180, 40]]); tri.closed = true;
+        tri.filled = true; tri.fillColor = gray(100); stroke(tri); select(tri); send('stroke-align', 'inside'); pdf('cmpref-tri-in');
         round('tx-out', function () { return type(false); }, 'outside');
         round('tx-in', function () { return type(false); }, 'inside');
         round('txm-out', function () { return type(true); }, 'outside');
@@ -103,16 +118,44 @@
             select(it); send('stroke-align', 'outside');
         }
         walk(g); pdf('txref-out');
+        at = 'txref-in';
+        g = type(false).createOutline();
+        function walkIn(it) {
+            if (it.typename === 'GroupItem') { for (var i = 0; i < it.pageItems.length; i++) walkIn(it.pageItems[i]); return; }
+            var p = it.typename === 'CompoundPathItem' ? it.pathItems[0] : it;
+            p.filled = true; p.fillColor = gray(100); stroke(p);
+            select(it); send('stroke-align', 'inside');
+        }
+        walkIn(g); pdf('txref-in');
         round('sq-out', function () { clear(); return square(60, 140); }, 'outside');
         // A type frame scaled 150% (its strokes not scaled): Outside must reach twice what the
         // character stroke reaches outside the letters as drawn (txs-orig against txs-out).
         round('txs-out', function () { var s = type(false); s.resize(150, 150, true, true, true, true, 100, Transformation.CENTER); return s; }, 'outside');
+        // Inside on type in a frame scaled 50% (strokes not scaled), 4 pt: drawn at 2 pt on letters
+        // whose stems are about 5 pt, so the inset leaves something only if judged at the drawn 2.
+        function half() { var s = type(false); s.textRange.characterAttributes.strokeWeight = 4; s.resize(50, 50, true, true, true, true, 100, Transformation.CENTER); return s; }
+        round('txh-in', half, 'inside');
+        at = 'txhref';
+        var gh = half().createOutline();
+        function walkHalf(it) {
+            if (it.typename === 'GroupItem') { for (var i = 0; i < it.pageItems.length; i++) walkHalf(it.pageItems[i]); return; }
+            var q = it.typename === 'CompoundPathItem' ? it.pathItems[0] : it;
+            q.filled = true; q.fillColor = gray(100); stroke(q, 2);
+            select(it); send('stroke-align', 'inside');
+        }
+        walkHalf(gh); pdf('txhref-in');
         // A doubled stroke whose weight the user changes afterward: restore halves what it has then.
         at = 'cmp-edit'; var ce = compound(); note(at, align(ce, 'outside'));
         ce.pathItems[0].strokeWidth = 20; note(at + ' weight set', ce.pathItems[0].strokeWidth);
         note(at + ' restore', align(ce, 'restore')); note(at + ' weight after', ce.pathItems[0].strokeWidth);
         at = 'thref'; thorn(false); pdf('thref');
         round('th-dash', function () { return thorn(true); }, 'dashes');
+        // Strokes the band of two fills cannot carry: refused, the item left as it is.
+        at = 'cmp-dash-in'; var cd = compound(); cd.pathItems[0].strokeDashes = [12, 4];
+        note(at, align(cd, 'inside')); note(at + ' dashes after', cd.pathItems[0].strokeDashes.join(','));
+        at = 'cmp-grad-in'; var cg = compound(), gr = doc.gradients.add(); gr.type = GradientType.LINEAR;
+        var gc = new GradientColor(); gc.gradient = gr; cg.pathItems[0].strokeColor = gc; cg.pathItems[0].strokeDashes = [];
+        note(at, align(cg, 'inside'));
         doc = null;
         return 'DONE|' + out.join('|');
     } catch (error) {

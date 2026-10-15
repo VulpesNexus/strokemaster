@@ -6,8 +6,9 @@ MuPDF at 600 dpi, gray levels quantized to eighths, areas in square points.
 - restore: each case's restored render against its original (0 means put back exactly);
 - open path: the stroke on each side of the path (the path turns clockwise, so its left side is
   Outside);
-- compound path: the square's part against Illustrator's own Outside on the square alone;
-- type: against Illustrator's own Outside on the outlined type;
+- compound path: the square's part against Illustrator's own Outside and Inside on the square alone,
+  and on Inside, the triangle's part (open by 4 pt) against Illustrator's own Inside on it closed;
+- type: against Illustrator's own Outside and Inside on the outlined type;
 - dashed thorn: the tip (the top 40 pt above the base) drawn, against the solid Outside thorn.
 """
 import sys
@@ -34,7 +35,7 @@ def main():
     folder, run = Path(sys.argv[1]), sys.argv[2]
     f = lambda n: folder / f'{run}-N-{n}.pdf'
     k = DPI / 72
-    for case in ('op-out', 'op-in', 'cmp-out', 'cmp-in', 'tx-out', 'tx-in', 'txm-out', 'txs-out', 'sq-out', 'th-dash'):
+    for case in ('op-out', 'op-in', 'cmp-out', 'cmp-in', 'tx-out', 'tx-in', 'txm-out', 'txs-out', 'txh-in', 'sq-out', 'th-dash'):
         if f(case).exists():
             print(f'{case:8} changed {diff(render(f(case)), render(f(case + "-orig"))):8} pt2   restored vs orig '
                   f'{diff(render(f(case + "-restored")), render(f(case + "-orig"))):7} pt2')
@@ -53,6 +54,13 @@ def main():
         print(f'{case:11} left (Outside) {(s & left).sum() * A2:7.1f}  right (Inside) {(s & ~left).sum() * A2:7.1f}')
     sl = (slice(0, int(110 * k)), slice(0, int(105 * k)))   # the square's part of the page
     print('cmp-out square part vs Illustrator Outside', diff(render(f('cmp-out'))[sl], render(f('cmpref-out'))[sl]), 'pt2')
+    if f('cmpref-in').exists():
+        print('cmp-in square part vs Illustrator Inside', diff(render(f('cmp-in'))[sl], render(f('cmpref-in'))[sl]), 'pt2;',
+              'tx-in vs outlined Inside', diff(render(f('tx-in')), render(f('txref-in'))), 'pt2')
+    if f('cmpref-tri-in').exists():
+        tri = (slice(None), slice(int(105 * k), int(200 * k)))   # the triangle's part of the page
+        print('cmp-in triangle part (open by 4 pt) vs Illustrator Inside on it closed',
+              diff(render(f('cmp-in'))[tri], render(f('cmpref-tri-in'))[tri]), 'pt2')
     print('tx-out vs outlined Outside', diff(render(f('tx-out')), render(f('txref-out'))), 'pt2;',
           'txm-out vs outlined Outside', diff(render(f('txm-out')), render(f('txref-out'))), 'pt2 (x is 6 pt there)')
     if f('txs-out').exists():
@@ -63,6 +71,8 @@ def main():
             return (s & ~g).sum() * A2
         print('txs-out stroke outside the letters', round(reach('txs-out'), 1), 'pt2 against', round(reach('txs-out-orig'), 1),
               'for the Center stroke as drawn: ratio', round(reach('txs-out') / max(reach('txs-out-orig'), 1e-9), 2), '(2 = Outside of the drawn weight)')
+    if f('txhref-in').exists():
+        print('txh-in (frame at 50%) vs outlined Inside at the drawn weight', diff(render(f('txh-in')), render(f('txhref-in'))), 'pt2')
     tip = (slice(0, int((200 - 125) * k)), slice(None))
     for case in ('thref', 'th-dash-orig', 'th-dash'):
         s = render(f(case))[tip] < 200

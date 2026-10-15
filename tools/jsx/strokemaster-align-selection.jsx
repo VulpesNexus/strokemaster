@@ -7,13 +7,14 @@
 // Script with art selected, and choose:
 //   Outside or Inside  closed shapes get Illustrator's own alignment; open paths a one-sided width
 //                      profile at the full weight (the side the path's closing would enclose is
-//                      Inside); a compound path with an open contour, Outside only, a Center
-//                      stroke at twice the weight beneath its fill; type, Outside only, a stroke
-//                      of twice the weight beneath the characters. Inside on those two has no
-//                      faithful native form and is left as it is.
+//                      Inside). A compound path with an open contour and type get, for Outside,
+//                      a stroke of twice the weight beneath the fill or the characters, and for
+//                      Inside, two fills: the stroke's color beneath, the fill on top shrunk by
+//                      the weight with Effect > Path > Offset Path (the stroke is kept, hidden).
+//                      Type needs one fill and one stroke throughout for Inside.
 //   Restore            what this script or strokemaster-outside-dashes.jsx made of the selection,
 //                      put back as it was.
-// Needs the research plugin StrokeMasterRegionProbe (region-prep-17 or later).
+// Needs the research plugin StrokeMasterRegionProbe (region-prep-18 or later).
 (function () {
     var plugin = 'StrokeMasterRegionProbe';
     var args = $.global.ISE_REGION_ARGS;
@@ -53,7 +54,11 @@
         ? 'StrokeMaster: ' + field(align, 'align', 'restored') + ' item(s) put back as they were.'
         : 'StrokeMaster: ' + field(align, 'align', 'native') + ' with Illustrator\'s own alignment, ' +
           field(align, 'align', 'profiled') + ' open path(s) one-sided, ' + field(align, 'align', 'doubled') +
-          ' compound path(s) doubled beneath the fill, ' + field(align, 'align', 'typeOutside') + ' type object(s) stroked beneath the characters.';
+          ' compound path(s) doubled beneath the fill, ' + field(align, 'align', 'typeOutside') + ' type object(s) stroked beneath the characters, ' +
+          field(align, 'align', 'offset') + ' drawn Inside with two fills.';
     if (refused > 0) { msg += '\n' + refused + ' left as they were (' + field(align, 'align', 'reasons') + ').'; }
+    if (/inside-open-closing/.test(field(align, 'align', 'reasons'))) {
+        msg += '\nAn open contour in a compound path would get Inside along its closing too. Object > Path > Join closes it, and Illustrator then aligns the compound path itself.';
+    }
     return tell(msg);
 })();
