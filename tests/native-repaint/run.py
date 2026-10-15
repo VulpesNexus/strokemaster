@@ -1,4 +1,4 @@
-"""Build/run the native refusal, stroke-behind core, cross-frame core, miter core, and settings tests with MSVC; never load Adobe or write to its SDK."""
+"""Build/run the native refusal, stroke-behind core, cross-frame core, miter core, Illustrator contour, and settings tests with MSVC; never load Adobe or write to its SDK."""
 import os
 from pathlib import Path
 import subprocess
@@ -50,6 +50,11 @@ def main():
         'plugin\\source\\IseClipper2.cpp '
         '/Febuild\\native-refusal\\MiterCoreTests.exe /Fobuild\\native-refusal\\ && '
         'build\\native-refusal\\MiterCoreTests.exe && '
+        'cl /nologo /EHsc /std:c++17 /W4 /WX /Iplugin\\third_party\\clipper2\\include '
+        'tests\\native-repaint\\IllustratorContourTests.cpp plugin\\source\\IseRegionCore.cpp '
+        'plugin\\source\\IseClipper2.cpp '
+        '/Febuild\\native-refusal\\IllustratorContourTests.exe /Fobuild\\native-refusal\\ && '
+        'build\\native-refusal\\IllustratorContourTests.exe && '
         'cl /nologo /EHsc /std:c++17 /W4 /WX tests\\native-repaint\\SettingsTests.cpp '
         '/Febuild\\native-refusal\\SettingsTests.exe /Fobuild\\native-refusal\\SettingsTests.obj && '
         'build\\native-refusal\\SettingsTests.exe'

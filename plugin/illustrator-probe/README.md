@@ -28,6 +28,8 @@ The isolated [closed-region scaffold](TOPOLOGY_ADAPTER_PLAN.md) now has candidat
 
 ## Region probe: region-prep-9
 
+The current source candidate is region-prep-12. It links the InDesign miter and region cores and validates Illustrator path segments with `IllustratorSdkContour.h`, including the curved closing segment. Its user-visible correction still covers only the marked analytic fixture. The portable adapter test is `tests/native-repaint/IllustratorContourTests.cpp`, run by `tests/native-repaint/run.py` (14 checks). The SDK mock suites and candidate build passed; see `docs/ILLUSTRATOR_PORTABILITY_2026-10-14.md` for the exact boundary and hash.
+
 *build_region_native.py* builds *build/region-native/StrokeMasterRegionProbe.aip* and runs three mock suites: the plugin's registration, bridge, and refusals (67 assertions); the owned-output backend (2,879 assertions, 95 fault-injection runs); and the stroke-behind transform (13,229 assertions, 117 fault-injection runs). It links the reviewed topology core and checks the frozen prep-4, prep-5, and region-prep-2 binaries are unchanged. The current tested binary is region-prep-11 (`29835908…`). Builds are not byte-reproducible, so each tested binary is frozen read-only as *build/region-prepN-frozen.aip*, and *record_region_evidence.py --binary* records the frozen copy.
 
 The plugin registers three post-effects. None edits art unless every gate passes; a refusal passes the processing copy through and returns no error, because an error raises a modal alert on every redraw. Only a failed rollback is reported to the host.

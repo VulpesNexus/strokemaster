@@ -49,6 +49,16 @@
       <PreprocessorDefinitions>ISE_TOPOLOGY_CORE_ONLY;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AdditionalIncludeDirectories>$(RegionBoostRoot);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
+    <ClCompile Include="..\source\IseRegionCore.cpp">
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\third_party\clipper2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="..\source\IseClipper2.cpp">
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\third_party\clipper2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
     <ResourceCompile Include="Probe.rc" />
   </ItemGroup>
   <ItemGroup Condition="'$(RegionProbeTests)' == 'true'"><ClCompile Include="RegionProbeTests.cpp" /></ItemGroup>

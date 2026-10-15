@@ -1,6 +1,7 @@
 // Bounded generated-fixture integration. External SDK declarations only.
 #pragma once
 #include "RegionSdkOutput.h"
+#include "IllustratorSdkContour.h"
 #include <cstdio>
 #include <cstring>
 #include "RegionFixture.h"
@@ -100,6 +101,11 @@ struct Native {
         e=path.GetPathClosed(object,&closed);if(e)return e;
         if(count!=expected||!closed)return Reject("source.contour-count-or-closure");
         std::array<AIPathSegment,4> segments{};e=path.GetPathSegments(object,0,count,segments.data());if(e)return e;
+        // Exercise the same curved-contour admission that a general region
+        // effect will use. The marked fixture still follows its older oracle.
+        ise_miter::Contour sharedContour;
+        if(!illustrator_contour::ConvertSdk(segments.data(),count,true,&sharedContour))
+            return Reject("source.shared-contour");
         result.closed=true;
         for(int i=0;i<count;++i){auto s=segments[i];result.segments.push_back({{s.p.h,s.p.v},{s.in.h,s.in.v},{s.out.h,s.out.v}});}
         return kNoErr;

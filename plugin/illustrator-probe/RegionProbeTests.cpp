@@ -1,4 +1,4 @@
-// region-prep-11 target tests. No Illustrator or real SDK implementation.
+// region-prep-12 target tests. No Illustrator or real SDK implementation.
 // The real core, adapter conversion, admission oracle, and SDK output backend
 // carry their own suites; these tests cover registration, globals lifetime,
 // bridge payloads, and bounded Go refusals against mocked suites.
@@ -6,6 +6,7 @@
 #include <cstdint>
 #include <cstdlib>
 #include <iostream>
+#include <limits>
 namespace {
 SPBasicSuite basic{};AILiveEffectSuite live{};AIArtSuite art{};AIPathSuite path{};
 AIPathStyleSuite paint{};AIArtStyleSuite styles{};AIArtStyleParserSuite parser{};
@@ -87,6 +88,26 @@ namespace ise { namespace topology {
 Result process(Request const&) noexcept { Result r{};r.status=Status::Refused;return r; }
 }}
 int main(){
+    {
+        std::array<AIPathSegment,4> square{};
+        const double x[4]={0,10,10,0},y[4]={0,0,10,10};
+        for(int i=0;i<4;++i){
+            square[i].p.h=x[i];square[i].p.v=y[i];
+            square[i].in=square[i].out=square[i].p;
+        }
+        ise_miter::Contour converted;
+        Check(illustrator_contour::ConvertSdk(square.data(),square.size(),true,&converted)&&
+              converted.closed&&converted.segments.size()==4,
+              "SDK square converts with an explicit closing edge");
+        square[3].out.h=-2;square[3].out.v=8;
+        square[0].in.h=-2;square[0].in.v=2;
+        Check(illustrator_contour::ConvertSdk(square.data(),square.size(),true,&converted)&&
+              converted.segments.back().curve&&converted.segments.back().c1.x==-2&&
+              converted.segments.back().c2.y==2,"SDK closing cubic keeps handles");
+        square[1].out.h=std::numeric_limits<double>::quiet_NaN();
+        Check(!illustrator_contour::ConvertSdk(square.data(),square.size(),true,&converted),
+              "SDK nonfinite handle refused");
+    }
     for(int fault=0;fault<=2;++fault){
         Setup();failAt=fault;SPMessageData m{};m.basic=&basic;
         char caller[]=kSPInterfaceCaller,start[]=kSPInterfaceStartupSelector;

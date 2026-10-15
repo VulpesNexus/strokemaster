@@ -50,7 +50,7 @@ The native refusal test compiles the actual implementation against capability-fr
 .\.venv\Scripts\python.exe tests/native-repaint/run.py
 ```
 
-Its passing checks establish refusal behavior against mocks. Actual host no-harm comes from the separate matched-render records. Topology tests likewise certify only their explicit linear-region contract; their native font integration is still pending.
+It also builds *IllustratorContourTests.cpp*, which converts Illustrator's anchor and handle form into the shared contour type and feeds it to the miter and region cores (14 checks, no Adobe SDK). Its passing checks establish refusal behavior against mocks. Actual host no-harm comes from the separate matched-render records. Topology tests likewise certify only their explicit linear-region contract; their native font integration is still pending.
 
 ## Portable geometry cores
 
@@ -62,6 +62,6 @@ cmake --build build/portable-cores
 ctest --test-dir build/portable-cores --output-on-failure
 ```
 
-Set `CXX=clang++` before the first command to build with clang. The build compiles *MiterCoreTests.cpp* and *StrokeBehindCoreTests.cpp* with `-Wall -Wextra -Werror`, the counterpart of *run.py*'s `/W4 /WX`; pass `-DISE_WERROR=OFF` to keep warnings nonfatal. Under clang, `-Wunused-lambda-capture` is disabled, because *IseRegionCore.cpp* captures a constant that clang deems unneeded; the source keeps the capture so the MSVC build is unchanged. A passing run prints `miter core: 299 checks passed` and `PASS: 65585 stroke-behind core checks`, the same counts the MSVC build records. *MiterCoreTests* stops at its first failing check, so a failure names only that check. This build covers the pure cores only: the refusal, cross-frame, and settings tests still run through *run.py*, and none of these checks exercises InDesign.
+Set `CXX=clang++` before the first command to build with clang. The build compiles *MiterCoreTests.cpp*, *StrokeBehindCoreTests.cpp*, and *IllustratorContourTests.cpp* with `-Wall -Wextra -Werror`, the counterpart of *run.py*'s `/W4 /WX`; pass `-DISE_WERROR=OFF` to keep warnings nonfatal. Under clang, `-Wunused-lambda-capture` is disabled, because *IseRegionCore.cpp* captures a constant that clang deems unneeded; the source keeps the capture so the MSVC build is unchanged. A passing run prints `miter core: 299 checks passed` and `PASS: 65585 stroke-behind core checks`, the same counts the MSVC build records. *MiterCoreTests* stops at its first failing check, so a failure names only that check. This build covers the pure cores only: the refusal, cross-frame, and settings tests still run through *run.py*, and none of these checks exercises InDesign.
 
 Native load-route testing must respect the no-UAC constraint. The SDK-documented per-user folder is present and empty, but host loading from it remains UNEXECUTED. [Deployment evidence](../fixtures/FIXTURE_INDEX.md#per-user-load-route).

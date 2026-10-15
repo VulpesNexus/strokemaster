@@ -1,4 +1,4 @@
-// PROPOSED region-prep-11: real-core closed-region replacement for the marked
+// PROPOSED region-prep-12: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -18,7 +18,7 @@
 #include <cstring>
 
 namespace region_probe {
-constexpr char build[] = "region-prep-11";
+constexpr char build[] = "region-prep-12";
 
 struct Event {
     unsigned long long sequence = 0;

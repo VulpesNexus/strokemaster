@@ -40,6 +40,16 @@ target_compile_options(MiterCoreTests PRIVATE ${ISE_WARNINGS})
 add_executable(StrokeBehindCoreTests StrokeBehindCoreTests.cpp)
 target_compile_options(StrokeBehindCoreTests PRIVATE ${ISE_WARNINGS})
 
+# Illustrator's anchor/in/out representation converted to the same curved
+# contours used by the InDesign geometry cores. No Adobe SDK is needed.
+add_executable(IllustratorContourTests
+    IllustratorContourTests.cpp
+    ${ISE_SOURCE}/IseRegionCore.cpp
+    ${ISE_SOURCE}/IseClipper2.cpp)
+target_include_directories(IllustratorContourTests PRIVATE ${ISE_REPO}/plugin/third_party/clipper2/include)
+target_compile_options(IllustratorContourTests PRIVATE ${ISE_WARNINGS})
+
 enable_testing()
 add_test(NAME MiterCoreTests COMMAND MiterCoreTests)
 add_test(NAME StrokeBehindCoreTests COMMAND StrokeBehindCoreTests)
+add_test(NAME IllustratorContourTests COMMAND IllustratorContourTests)
