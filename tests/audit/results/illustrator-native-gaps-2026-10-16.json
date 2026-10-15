@@ -1,0 +1,132 @@
+{
+ "schema": 1,
+ "date": "2026-10-16",
+ "host": {
+  "application": "Adobe Illustrator",
+  "version": "30.8.2",
+  "platform": "Windows x64"
+ },
+ "plugin": {
+  "name": "StrokeMasterRegionProbe",
+  "build": "region-prep-16",
+  "sha256": "4b462039db2ac6cbe083b09daf427c4b2dc292b3b744d36dae6dcb40316bc23e"
+ },
+ "scope": "The native route's remaining gaps after 2026-10-15, each closed natively where Illustrator has the means, and the automatic re-fix. MuPDF at 600 dpi.",
+ "bothMixedText": {
+  "probe": "tools/jsx/ai-gap-research.jsx part T, measured by tools/measure_gap_research.py",
+  "fixture": "\"HH\" / \"HH\", 48 pt, leading 34, fills Black and 85% Black, strokes 40% and 70% gray 8 pt",
+  "route": "native-route: ATE FillFirst off on every character",
+  "coreDamagedPx": {
+   "native": 19142,
+   "fillFirst": 896,
+   "reopened": 896,
+   "edited": 896
+  },
+  "corePx": 35250,
+  "textCharacters": {
+   "native": 4,
+   "fillFirst": 4,
+   "edited": 7
+  },
+  "remaining": "896 px: the second line's strokes over the first line's fills (leading 34 on 48 pt). FillFirst orders each character's own stroke and fill; a later character's stroke still paints over an earlier one's fill."
+ },
+ "insideOverlapping": {
+  "probe": "tools/jsx/ai-gap-research.jsx part I",
+  "fixture": "two 80 pt squares overlapping by 40, one compound path, Inside 8 miter",
+  "strayPt2": {
+   "native": 1146.2,
+   "menuPathfinderAdd": 60.8,
+   "nativeFix": 60.8,
+   "menuOnGroup": 7543.4
+  },
+  "bandMissingPx": {
+   "native": 3904,
+   "nativeFix": 0
+  },
+  "note": "The 60.8 pt2 left is the miter join at the united outline's two concave corners, which this measure erodes as round; the census (which allows miter wedges at anchors only) reads 4.6 pt2 there at Inside 4 and 0 with round or bevel joins. Pathfinder Add on a group holding the path fills the interior."
+ },
+ "dashes": {
+  "probe": "tools/jsx/ai-gap-research.jsx part D, tools/jsx/ai-dash-corner.jsx",
+  "storage": "the stroke paint field's live-effect parameters, no live effect, with kAIBeautifulStrokesParamsDictKey {BSAdvStrokeDictionaryVersion 1, BSDashAdj true} beside a StrokeStyle entry",
+  "thornDarkPx": {
+   "native": 83159,
+   "aligned": 85391
+  },
+  "cornerThresholdDegrees": {
+   "notAnchored": [
+    0,
+    10,
+    30,
+    40,
+    45
+   ],
+   "anchored": [
+    46,
+    50,
+    90,
+    150
+   ]
+  },
+  "insideOutside": "refused by Beautiful Strokes (canAccept false); written into Adobe Stroke Offset's parameters it changed nothing (census 17)"
+ },
+ "refix": {
+  "probes": [
+   "tools/jsx/ai-refix-phase1.jsx",
+   "tools/jsx/ai-refix-edit.jsx",
+   "tools/jsx/ai-refix-phase2.jsx",
+   "tools/jsx/ai-refix-select.jsx",
+   "tools/jsx/ai-refix-override.jsx",
+   "tools/jsx/ai-refix-final.jsx"
+  ],
+  "undoScenario": {
+   "host": "30.8.2",
+   "build": "region-prep-16",
+   "user.style": "PRE 'Adobe Pathfinder' ",
+   "route": "{\"gate\":\"native\",\"frames\":1,\"styled\":1,\"fieldsBefore\":1,\"fieldsAfter\":0,\"contentsBefore\":0,\"contentsAfter\":0,\"fillFirst\":0}",
+   "fix": "{\"gate\":\"fixed\",\"paths\":2,\"pathLimits\":1,\"reordered\":0,\"frames\":1,\"chars\":5,\"charLimits\":2,\"mapped\":1,\"corners\":86,\"keptBeveled\":0,\"cutMitered\":0,\"dashes\":0,\"dashRefused\":0,\"pathfinder\":0,\"failed\":0}",
+   "fixed.thorn": "11.4851869589161",
+   "fixed.text": "4.00,4.00,4.00,1.58,1.91,4.00",
+   "refix": "{\"timer\":true,\"scans\":0,\"runs\":0,\"items\":0,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"undoPast\":0,\"undoFuture\":0}",
+   "refix.before": "{\"timer\":true,\"scans\":2,\"runs\":0,\"items\":0,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"undoPast\":1,\"undoFuture\":0}",
+   "user.center": "{\"gate\":\"aligned\",\"frames\":3,\"styled\":0,\"fieldsBefore\":-1,\"fieldsAfter\":-1,\"contentsBefore\":-1,\"contentsAfter\":-1,\"fillFirst\":0}",
+   "edited.text": "VW AMKvw",
+   "edited.thorn": "11.4851869589161",
+   "edited.limits": "4.00,4.00,4.00,1.58,1.91,4.00,4.00,4.00",
+   "after.thorn": "19.1264299319041",
+   "after.text": "VW AMKvw 4.00,4.00,4.00,1.58,1.91,4.00,2.02,2.10",
+   "undo.before": "past 2 future 0",
+   "undo1": "ok",
+   "undo1.counts": "past 2 future 0",
+   "undo1.thorn": "11.4851869589161 tip 105.23",
+   "undo1.text": "VW AMK 4.00,4.00,4.00,1.58,1.91,4.00",
+   "refix.end": "{\"timer\":true,\"scans\":4,\"runs\":1,\"items\":3,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"undoPast\":2,\"undoFuture\":0}"
+  },
+  "selectionOverrideScenario": {
+   "host": "30.8.2",
+   "build": "region-prep-16",
+   "user.style": "PRE 'Adobe Pathfinder' ",
+   "route": "{\"gate\":\"native\",\"frames\":1,\"styled\":1,\"fieldsBefore\":1,\"fieldsAfter\":0,\"contentsBefore\":0,\"contentsAfter\":0,\"fillFirst\":0}",
+   "fix": "{\"gate\":\"fixed\",\"paths\":2,\"pathLimits\":1,\"reordered\":0,\"frames\":1,\"chars\":5,\"charLimits\":2,\"mapped\":1,\"corners\":86,\"keptBeveled\":0,\"cutMitered\":0,\"dashes\":0,\"dashRefused\":0,\"pathfinder\":0,\"failed\":0}",
+   "fixed.thorn": "11.4851869589161",
+   "fixed.text": "4.00,4.00,4.00,1.58,1.91,4.00",
+   "refix": "{\"timer\":true,\"scans\":0,\"runs\":0,\"items\":0,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"undoPast\":0,\"undoFuture\":0}",
+   "refix.before": "{\"timer\":true,\"scans\":1,\"runs\":0,\"items\":0,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"undoPast\":1,\"undoFuture\":0}",
+   "user.center": "{\"gate\":\"aligned\",\"frames\":3,\"styled\":0,\"fieldsBefore\":-1,\"fieldsAfter\":-1,\"contentsBefore\":-1,\"contentsAfter\":-1,\"fillFirst\":0}",
+   "edited.text": "VW AMKvw",
+   "edited.thorn": "11.4851869589161",
+   "edited.limits": "4.00,4.00,4.00,1.58,1.91,4.00,4.00,4.00",
+   "refix.before-select": "{\"timer\":true,\"scans\":3,\"runs\":1,\"items\":3,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"undoPast\":2,\"undoFuture\":0}",
+   "refix.after-select": "{\"timer\":true,\"scans\":3,\"runs\":1,\"items\":3,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"undoPast\":3,\"undoFuture\":0}",
+   "override.thorn": "7",
+   "refix.after-override": "{\"timer\":true,\"scans\":4,\"runs\":2,\"items\":3,\"deferred\":0,\"lastError\":0,\"released\":1,\"overflow\":0,\"undoPast\":4,\"undoFuture\":0}",
+   "final.thorn": "7",
+   "final.text": "VW AMKvw 4.00,4.00,4.00,1.58,1.91,4.00,2.02,2.10",
+   "final.user": "user Pathfinder kept"
+  },
+  "notTestable": "a user's Redo: a script run is one undo step, so app.undo() and app.redo() in scripts lose the redo list with or without the plugin (re-fix paused: same result)."
+ },
+ "preferences": {
+  "probe": "tools/jsx/ai-prefs-check.jsx",
+  "result": "File > New recent entries made by the 2026-10-15 probes (ten, all dated that day) removed after a backup outside the repository, the six older entries renumbered; documents.add works again (error 129 before)."
+ }
+}

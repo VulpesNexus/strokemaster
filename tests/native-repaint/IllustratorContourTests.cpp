@@ -1,6 +1,8 @@
 #include "../../plugin/illustrator-probe/IllustratorContour.h"
 #include "../../plugin/illustrator-probe/NativeMiter.h"
+#include "../../plugin/illustrator-probe/NativeRegion.h"
 #include "../../plugin/source/IseRegionCore.h"
+#include <algorithm>
 #include <cmath>
 #include <cstdio>
 #include <cstdlib>
@@ -133,6 +135,32 @@ int main() {
         // No usable half width: the current limit, clamped to Illustrator's range.
         Check(native_miter::ChooseLimit({tip}, 0, 4).limit == 4, "no half width: limit unchanged");
         Check(native_miter::ChooseLimit({}, 4, 900).limit == native_miter::kMaxLimit, "limit clamped to 500");
+    }
+
+    // native_region::InternalEdges: which paths need Pathfinder Add under an Inside stroke.
+    {
+        auto box = [](double x0, double y0, double x1, double y1, bool reversed) {
+            std::vector<Node> n = {{{x0, y0}, {x0, y0}, {x0, y0}}, {{x1, y0}, {x1, y0}, {x1, y0}},
+                                   {{x1, y1}, {x1, y1}, {x1, y1}}, {{x0, y1}, {x0, y1}, {x0, y1}}};
+            if (reversed) std::reverse(n.begin(), n.end());
+            Contour c;
+            illustrator_contour::Convert(n, true, &c);
+            return c;
+        };
+        // The census squares: 80 pt, overlapping by 40 each way; 80 pt of each inside the other.
+        const auto a = box(0, 0, 80, 80, false), b = box(40, 40, 120, 120, false);
+        Check(native_region::InternalEdges({a, b}, .01, 2), "overlapping squares have inner edges");
+        Check(native_region::InternalEdges({a, b}, .01, 159) && !native_region::InternalEdges({a, b}, .01, 161), "inner edges: 160 pt");
+        // A counter wound the other way is a hole: boundary, no inner edge (a letter's outline).
+        Check(!native_region::InternalEdges({box(0, 0, 100, 100, false), box(30, 30, 70, 70, true)}, .01, 2),
+              "a counter is boundary");
+        // Apart, or touching only at a corner: no inner edges.
+        Check(!native_region::InternalEdges({a, box(200, 0, 280, 80, false)}, .01, 2), "disjoint squares");
+        Check(!native_region::InternalEdges({a, box(80, 80, 160, 160, false)}, .01, 2), "corner-touching squares");
+        // A square inside another, wound the same way: its edges are all inside the fill.
+        Check(native_region::InternalEdges({box(0, 0, 100, 100, false), box(30, 30, 70, 70, false)}, .01, 2),
+              "a same-wound inner square is inside the fill");
+        Check(!native_region::InternalEdges({a}, .01, 2), "one contour has none");
     }
     std::printf("illustrator contour: %d checks passed\n", checks);
 }

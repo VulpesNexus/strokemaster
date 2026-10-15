@@ -61,6 +61,18 @@
     </ClCompile>
     <ResourceCompile Include="Probe.rc" />
   </ItemGroup>
-  <ItemGroup Condition="'$(RegionProbeTests)' == 'true'"><ClCompile Include="RegionProbeTests.cpp" /></ItemGroup>
+  <ItemGroup Condition="'$(RegionProbeTests)' == 'true'">
+    <ClCompile Include="RegionProbeTests.cpp" />
+    <ClCompile Include="..\source\IseRegionCore.cpp">
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\third_party\clipper2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <ClCompile Include="..\source\IseClipper2.cpp">
+      <WarningLevel>Level3</WarningLevel>
+      <Optimization>MaxSpeed</Optimization>
+      <AdditionalIncludeDirectories>$(MSBuildProjectDirectory)\..\third_party\clipper2\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
 </Project>

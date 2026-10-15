@@ -58,6 +58,9 @@ Several defects the InDesign plugin exists to remove do not occur in Illustrator
 
 ## What remains
 
+Update 2026-10-16: most of this list is closed natively, and the rest is explained, in [the gaps record](ILLUSTRATOR_NATIVE_GAPS_2026-10-16.md). As of 2026-10-15:
+
+
 - **Text with both fills and strokes mixed** (rare: a recolored word that also has its own stroke): no native attribute expresses it. The text-kept effect corrects it and keeps the text, but needs the plugin for an edit to be drawn.
 - **Inside strokes on overlapping contours** (247 pt² of stroke along inner contour edges on the squares): no native paint order confines an Inside stroke to the region's boundary. Correcting it means drawing the stroke, with the effect's trade-off.
 - **Dashed whole points**: a dash gap can fall on a point. Illustrator's own *Align Dashes to Corners* option fixes it by hand; writing that option as Beautiful Strokes parameters made a Center stroke vanish, so `native-fix` leaves dashes alone.

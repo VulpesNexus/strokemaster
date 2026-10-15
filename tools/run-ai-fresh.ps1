@@ -14,6 +14,12 @@
 #   runs no script until it is answered; a posted BM_CLICK answers it without input or focus.
 # - Arguments: the probe reads $.global.ISE_REGION_ARGS = {outDir, runId} plus -ArgJson's fields
 #   (forward-slash paths); it is deleted after.
+# - Later phases: -Script2 runs further probes, in order, in the same Illustrator, each after
+#   -IdleSeconds of idle time, for what Illustrator does only between scripts (timers, deferred
+#   redraws). Each result is appended after '|PHASE<n>|'. Each script run is one undo step, so a
+#   script's app.undo() and a later app.redo() cannot test a user's undo and redo. Pass the list
+#   from an in-process call (& tools\run-ai-fresh.ps1 ... -Script2 a.jsx,b.jsx): powershell -File
+#   hands it over as one string, which the pattern refuses.
 # - Result: the probe's raw return string goes to <OutDir>\<RunId>-host.txt, and is printed.
 # - Quit: every document left open belongs to this launch and is closed without saving, then
 #   app.executeMenuCommand('quit'), which quits where Application.Quit sometimes does nothing.
@@ -25,6 +31,8 @@ param(
     [Parameter(Mandatory = $true)][ValidatePattern('^ai-[A-Za-z0-9_-]+\.jsx$')][string]$Script,
     # Further probe arguments, merged into ISE_REGION_ARGS beside outDir and runId.
     [string]$ArgJson = '{}',
+    [ValidatePattern('^ai-[A-Za-z0-9_-]+\.jsx$')][string[]]$Script2 = @(),
+    [ValidateRange(0, 600)][int]$IdleSeconds = 5,
     [string]$Exe = (Join-Path $env:ProgramFiles 'Adobe\Adobe Illustrator 2026\Support Files\Contents\Windows\Illustrator.exe'),
     # The versioned ProgID: since Illustrator 2025 was installed beside 2026, the plain
     # Illustrator.Application names 2025, which starts a second Illustrator instead of attaching.
@@ -37,6 +45,8 @@ if ($PSVersionTable.PSEdition -ne 'Desktop') { throw 'Run with Windows PowerShel
 
 $target = Join-Path (Join-Path $PSScriptRoot 'jsx') $Script
 if (-not (Test-Path -LiteralPath $target -PathType Leaf)) { throw "probe not found: $target" }
+$later = @($Script2 | ForEach-Object { Join-Path (Join-Path $PSScriptRoot 'jsx') $_ })
+foreach ($path in $later) { if (-not (Test-Path -LiteralPath $path -PathType Leaf)) { throw "probe not found: $path" } }
 if (-not (Test-Path -LiteralPath $Exe -PathType Leaf)) { throw "Illustrator not found: $Exe" }
 $out = (Resolve-Path -LiteralPath $OutDir).ProviderPath
 $resultFile = Join-Path $out ($RunId + '-host.txt')
@@ -144,14 +154,24 @@ try {
     $probeTable['outDir'] = ($out -replace '\\', '/')
     $probeTable['runId'] = $RunId
     $probeArgs = $probeTable | ConvertTo-Json -Compress
-    $literal = ConvertTo-Json -InputObject ($target -replace '\\', '/') -Compress
-    $js = '(function(){var had=Object.prototype.hasOwnProperty.call($.global,"ISE_REGION_ARGS"),previous=$.global.ISE_REGION_ARGS;' +
-          'try{$.global.ISE_REGION_ARGS=' + $probeArgs + ';return String($.evalFile(new File(' + $literal + ')));}' +
-          'catch(e){return "WRAPPER ERROR "+e.message+" line "+e.line;}' +
-          'finally{if(had){$.global.ISE_REGION_ARGS=previous;}else{delete $.global.ISE_REGION_ARGS;}}})();'
-    $raw = [string]$ai.DoJavaScript($js)
-    [IO.File]::WriteAllText($resultFile, ('host=' + $version + '|' + $raw), (New-Object Text.UTF8Encoding($false)))
-    Write-Output ('host=' + $version + '|' + $raw)
+    function Get-ProbeJs([string]$path) {
+        $literal = ConvertTo-Json -InputObject ($path -replace '\\', '/') -Compress
+        return '(function(){var had=Object.prototype.hasOwnProperty.call($.global,"ISE_REGION_ARGS"),previous=$.global.ISE_REGION_ARGS;' +
+               'try{$.global.ISE_REGION_ARGS=' + $probeArgs + ';return String($.evalFile(new File(' + $literal + ')));}' +
+               'catch(e){return "WRAPPER ERROR "+e.message+" line "+e.line;}' +
+               'finally{if(had){$.global.ISE_REGION_ARGS=previous;}else{delete $.global.ISE_REGION_ARGS;}}})();'
+    }
+    # Written after every phase, so a later phase's failure keeps the earlier results.
+    $raw = 'host=' + $version + '|' + [string]$ai.DoJavaScript((Get-ProbeJs $target))
+    [IO.File]::WriteAllText($resultFile, $raw, (New-Object Text.UTF8Encoding($false)))
+    $phase = 1
+    foreach ($next in $later) {
+        Start-Sleep -Seconds $IdleSeconds
+        $phase++
+        $raw = $raw + '|PHASE' + $phase + '|' + [string]$ai.DoJavaScript((Get-ProbeJs $next))
+        [IO.File]::WriteAllText($resultFile, $raw, (New-Object Text.UTF8Encoding($false)))
+    }
+    Write-Output $raw
 } catch {
     $failure = $_
 } finally {

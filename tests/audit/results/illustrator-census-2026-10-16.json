@@ -1,0 +1,4563 @@
+{
+ "schema": 1,
+ "date": "2026-10-16",
+ "host": {
+  "application": "Adobe Illustrator",
+  "version": "30.8.2",
+  "platform": "Windows x64"
+ },
+ "plugin": {
+  "name": "StrokeMasterRegionProbe",
+  "build": "region-prep-16",
+  "sha256": "4b462039db2ac6cbe083b09daf427c4b2dc292b3b744d36dae6dcb40316bc23e"
+ },
+ "builder": "tools/jsx/ai-coverage-census.jsx",
+ "measure": "tools/measure_coverage_census.py (unchanged), zoom 8, native vs corrected",
+ "corrected": "native-route then native-fix on every census item; native-route={\"gate\":\"native\",\"frames\":20,\"styled\":4,\"fieldsBefore\":4,\"fieldsAfter\":0,\"contentsBefore\":0,\"contentsAfter\":16,\"fillFirst\":3} native-fix={\"gate\":\"fixed\",\"paths\":153,\"pathLimits\":47,\"reordered\":50,\"frames\":20,\"chars\":206,\"charLimits\":76,\"mapped\":20,\"corners\":6311,\"keptBeveled\":24,\"cutMitered\":31,\"dashes\":3,\"dashRefused\":15,\"pathfinder\":13,\"failed\":0}",
+ "note": "Row 28 (center 8 miter, open, unfilled) is drawn differently from run to run by the census builder: its native and corrected renders change together (census 19: stray 0, holes 4,423, spill 45; census 20: stray 186, holes 3,997, spill 0), and the fix leaves the row as drawn (native vs corrected 0) in both.",
+ "rows": [
+  {
+   "row": 0,
+   "kind": "page item",
+   "case": "center 8 miter",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.14,
+    "stray": 475.59,
+    "holes": 24.5,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.14,
+    "stray": 475.59,
+    "holes": 24.5,
+    "points_missing": 6.34,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 179.92,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 6.34,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 1,
+   "kind": "page item",
+   "case": "outside 4 miter",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.16,
+    "stray": 251.94,
+    "holes": 7.94,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.16,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 440.5,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.16,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.16,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 2,
+   "kind": "page item",
+   "case": "inside 4 miter",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 247.08,
+    "holes": 39.38,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 4.62,
+    "holes": 23.97,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 325.75,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 247.08,
+      "holes": 28.41,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 4.62,
+      "holes": 13.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 3,
+   "kind": "page item",
+   "case": "inside 8 miter",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 8,
+   "native": {
+    "escaping": 0.0,
+    "stray": 371.08,
+    "holes": 51.41,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 22.39,
+    "holes": 14.5,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 645.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 371.08,
+      "holes": 47.91,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 22.39,
+      "holes": 11.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 3.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 3.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 4,
+   "kind": "page item",
+   "case": "outside 4 round",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 255.91,
+    "holes": 0.0,
+    "points_missing": 162.16,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 162.16,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 256.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 255.91,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 162.16,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 162.16,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 5,
+   "kind": "page item",
+   "case": "outside 4 bevel",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 255.91,
+    "holes": 0.0,
+    "points_missing": 163.28,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.28,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 256.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 255.91,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.28,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.28,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 6,
+   "kind": "page item",
+   "case": "center 8 round",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.0,
+    "stray": 479.05,
+    "holes": 6.09,
+    "points_missing": 162.34,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 479.05,
+    "holes": 6.09,
+    "points_missing": 162.34,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 0.8,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 0.8,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.3,
+      "points_missing": 162.34,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.3,
+      "points_missing": 162.34,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 7,
+   "kind": "page item",
+   "case": "center 8 bevel",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.0,
+    "stray": 479.06,
+    "holes": 1.3,
+    "points_missing": 162.12,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 479.06,
+    "holes": 1.3,
+    "points_missing": 162.12,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 479.06,
+      "holes": 1.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 479.06,
+      "holes": 1.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.3,
+      "points_missing": 162.12,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.3,
+      "points_missing": 162.12,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 8,
+   "kind": "page item",
+   "case": "outside 4 miter dashed 12/4",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.12,
+    "stray": 187.94,
+    "holes": 7.94,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.12,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 196.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 187.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.12,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.12,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 9,
+   "kind": "page item",
+   "case": "center 8 miter dashed 12/4",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.12,
+    "stray": 381.22,
+    "holes": 38.38,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.12,
+    "stray": 375.38,
+    "holes": 37.39,
+    "points_missing": 6.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 2551.38,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 381.22,
+      "holes": 25.62,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 375.38,
+      "holes": 25.95,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.12,
+      "stray": 0.0,
+      "holes": 4.48,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.12,
+      "stray": 0.0,
+      "holes": 2.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 8.27,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 8.47,
+      "points_missing": 6.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 10,
+   "kind": "page item",
+   "case": "inside 4 miter dashed 12/4",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 183.08,
+    "holes": 44.5,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 2.47,
+    "holes": 35.53,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 440.5,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 183.08,
+      "holes": 24.56,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 2.47,
+      "holes": 15.59,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.92,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.92,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 14.02,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 14.02,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 11,
+   "kind": "page item",
+   "case": "outside 4 round dashed 12/4",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 191.91,
+    "holes": 0.0,
+    "points_missing": 163.09,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.09,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 192.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 191.91,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.09,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.09,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 12,
+   "kind": "page item",
+   "case": "outside 4 miter round corners effect 4",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 18.84,
+    "stray": 296.34,
+    "holes": 11.73,
+    "points_missing": 163.3,
+    "spill": 34.47
+   },
+   "corrected": {
+    "escaping": 18.84,
+    "stray": 26.05,
+    "holes": 6.81,
+    "points_missing": 6.83,
+    "spill": 29.44
+   },
+   "native_vs_corrected": 503.03,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 3.95,
+      "stray": 281.3,
+      "holes": 8.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 3.95,
+      "stray": 11.25,
+      "holes": 0.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 10.97,
+      "stray": 7.52,
+      "holes": 2.41,
+      "points_missing": 0.0,
+      "spill": 30.62
+     },
+     "corrected": {
+      "escaping": 10.97,
+      "stray": 7.27,
+      "holes": 5.05,
+      "points_missing": 0.0,
+      "spill": 25.58
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 3.92,
+      "stray": 7.53,
+      "holes": 0.83,
+      "points_missing": 163.3,
+      "spill": 3.84
+     },
+     "corrected": {
+      "escaping": 3.92,
+      "stray": 7.53,
+      "holes": 0.83,
+      "points_missing": 6.83,
+      "spill": 3.86
+     }
+    }
+   }
+  },
+  {
+   "row": 13,
+   "kind": "page item",
+   "case": "center 8 miter round corners effect 4",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 1.92,
+    "stray": 470.3,
+    "holes": 24.81,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 1.92,
+    "stray": 470.3,
+    "holes": 24.81,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.02,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 470.3,
+      "holes": 18.61,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 470.3,
+      "holes": 18.61,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 1.92,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 1.92,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 6.2,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 6.2,
+      "points_missing": 162.83,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 14,
+   "kind": "page item",
+   "case": "outside 4 miter opacity 50",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.14,
+    "stray": 251.94,
+    "holes": 7.94,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.14,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.31,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 252.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.31,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 15,
+   "kind": "page item",
+   "case": "center 8 miter opacity 50",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.14,
+    "stray": 475.59,
+    "holes": 24.5,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.14,
+    "stray": 475.59,
+    "holes": 24.5,
+    "points_missing": 6.34,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 6.34,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 16,
+   "kind": "page item",
+   "case": "inside 4 miter opacity 50",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 247.08,
+    "holes": 39.38,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 4.62,
+    "holes": 23.97,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 307.25,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 247.08,
+      "holes": 28.41,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 4.62,
+      "holes": 13.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 17,
+   "kind": "page item",
+   "case": "outside 4 miter drop shadow",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.09,
+    "stray": 251.94,
+    "holes": 7.94,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.09,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 440.5,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.09,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.09,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 18,
+   "kind": "page item",
+   "case": "outside 4 miter gradient fill",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.16,
+    "stray": 251.94,
+    "holes": 229.14,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.16,
+    "stray": 0.0,
+    "holes": 301.83,
+    "points_missing": 6.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 439.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 141.25,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 197.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.16,
+      "stray": 0.0,
+      "holes": 65.77,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.16,
+      "stray": 0.0,
+      "holes": 82.2,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 22.12,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 22.12,
+      "points_missing": 6.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 19,
+   "kind": "page item",
+   "case": "outside 4 miter gradient stroke",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.22,
+    "stray": 251.94,
+    "holes": 7.94,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.22,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 5.78,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 437.8,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.22,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.22,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 5.78,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 20,
+   "kind": "page item",
+   "case": "inside 4 miter gradient fill",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 247.08,
+    "holes": 128.27,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 4.62,
+    "holes": 60.61,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 323.25,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 247.08,
+      "holes": 116.66,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 4.62,
+      "holes": 49.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 11.61,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 11.61,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 21,
+   "kind": "page item",
+   "case": "outside 4 miter scaled 50%, strokes scaled",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.14,
+    "stray": 95.91,
+    "holes": 0.0,
+    "points_missing": 164.28,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.14,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.25,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 291.12,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 95.91,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 164.28,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.25,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 22,
+   "kind": "page item",
+   "case": "outside 4 miter sheared 20",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.06,
+    "stray": 260.11,
+    "holes": 4.34,
+    "points_missing": 187.11,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.02,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.09,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 672.47,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 260.11,
+      "holes": 4.34,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.05,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.02,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 187.11,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.02,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.09,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 23,
+   "kind": "page item",
+   "case": "center 8 miter sheared 20",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.03,
+    "stray": 512.83,
+    "holes": 18.7,
+    "points_missing": 189.66,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 512.83,
+    "holes": 18.7,
+    "points_missing": 8.03,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 398.33,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 512.83,
+      "holes": 10.36,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 512.83,
+      "holes": 10.36,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.03,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 8.34,
+      "points_missing": 189.66,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 8.34,
+      "points_missing": 8.03,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 24,
+   "kind": "page item",
+   "case": "inside 4 miter sheared 20",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 266.98,
+    "holes": 22.67,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 12.0,
+    "holes": 10.11,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 333.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 266.98,
+      "holes": 19.67,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 12.0,
+      "holes": 7.11,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 3.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 3.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 25,
+   "kind": "page item",
+   "case": "outside 4 miter rotated 10",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.72,
+    "stray": 251.78,
+    "holes": 8.73,
+    "points_missing": 164.7,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.72,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.36,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 440.17,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.08,
+      "stray": 251.78,
+      "holes": 8.73,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.08,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.59,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.59,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.05,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 164.7,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.05,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.36,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 26,
+   "kind": "page item",
+   "case": "outside 4 miter flipped",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.19,
+    "stray": 251.94,
+    "holes": 7.94,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.19,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 440.5,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.19,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.19,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 27,
+   "kind": "page item",
+   "case": "center 8 miter open, filled",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.14,
+    "stray": 368.78,
+    "holes": 0.02,
+    "points_missing": 162.12,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.14,
+    "stray": 368.78,
+    "holes": 0.02,
+    "points_missing": 162.12,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 368.78,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 368.78,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.02,
+      "points_missing": 162.12,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.02,
+      "points_missing": 162.12,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 28,
+   "kind": "page item",
+   "case": "center 8 miter open, unfilled",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.0,
+    "stray": 185.86,
+    "holes": 3997.03,
+    "points_missing": 162.12,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 185.86,
+    "holes": 3997.03,
+    "points_missing": 162.12,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 185.86,
+      "holes": 2211.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 185.86,
+      "holes": 2211.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 1302.03,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 1302.03,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 484.0,
+      "points_missing": 162.12,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 484.0,
+      "points_missing": 162.12,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 29,
+   "kind": "page item",
+   "case": "outside 4 miter open (alignment as Illustrator keeps it)",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 1982.56,
+    "holes": 22.66,
+    "points_missing": 163.28,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 209.31,
+    "holes": 6.89,
+    "points_missing": 163.28,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 2178.59,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 529.28,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 1243.97,
+      "holes": 15.77,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 209.31,
+      "holes": 6.89,
+      "points_missing": 163.28,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 209.31,
+      "holes": 6.89,
+      "points_missing": 163.28,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 30,
+   "kind": "page item",
+   "case": "center 8 miter open, round caps",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.14,
+    "stray": 380.58,
+    "holes": 0.78,
+    "points_missing": 161.81,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.14,
+    "stray": 380.58,
+    "holes": 0.78,
+    "points_missing": 161.81,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 380.58,
+      "holes": 0.77,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 380.58,
+      "holes": 0.77,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.02,
+      "points_missing": 161.81,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.02,
+      "points_missing": 161.81,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 31,
+   "kind": "page item",
+   "case": "inside 4 round",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 251.0,
+    "holes": 12.31,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 6.05,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 307.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.0,
+      "holes": 6.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.7,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.34,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.34,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 32,
+   "kind": "page item",
+   "case": "inside 4 bevel",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 251.0,
+    "holes": 10.53,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 6.38,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 289.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.0,
+      "holes": 5.16,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 1.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.38,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.38,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 33,
+   "kind": "page item",
+   "case": "inside 4 miter limit 2",
+   "font": "Minion Pro",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 247.08,
+    "holes": 39.38,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 4.62,
+    "holes": 23.97,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 325.75,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 247.08,
+      "holes": 28.41,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 4.62,
+      "holes": 13.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 34,
+   "kind": "page item",
+   "case": "outside 4 bevel limit 2",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 255.91,
+    "holes": 0.0,
+    "points_missing": 163.28,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.28,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 256.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 255.91,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.28,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.28,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 35,
+   "kind": "page item",
+   "case": "outside 4 miter limit 2",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.16,
+    "stray": 251.94,
+    "holes": 7.94,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.16,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 440.5,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.16,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.16,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 36,
+   "kind": "page item",
+   "case": "center 8 miter limit 2",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.14,
+    "stray": 475.59,
+    "holes": 24.5,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.14,
+    "stray": 475.59,
+    "holes": 24.5,
+    "points_missing": 6.34,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 179.92,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.14,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 6.34,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 37,
+   "kind": "page item",
+   "case": "GB outside 4 miter",
+   "font": "German Beauty",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.09,
+    "stray": 257.03,
+    "holes": 8.64,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.09,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 446.34,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.09,
+      "stray": 5.09,
+      "holes": 0.7,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.09,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 38,
+   "kind": "page item",
+   "case": "GB center 8 miter",
+   "font": "German Beauty",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 7.39,
+    "stray": 479.05,
+    "holes": 16.12,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 7.39,
+    "stray": 479.05,
+    "holes": 16.12,
+    "points_missing": 6.19,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 180.06,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 9.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 9.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 7.39,
+      "stray": 0.0,
+      "holes": 3.88,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 7.39,
+      "stray": 0.0,
+      "holes": 3.88,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 2.75,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 2.75,
+      "points_missing": 6.19,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 39,
+   "kind": "page item",
+   "case": "GB inside 4 miter",
+   "font": "German Beauty",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 247.08,
+    "holes": 48.92,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 4.62,
+    "holes": 28.08,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 330.89,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 247.08,
+      "holes": 28.41,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 4.62,
+      "holes": 13.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 9.55,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 4.11,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.97,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 40,
+   "kind": "page item",
+   "case": "GB outside 4 round",
+   "font": "German Beauty",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 257.03,
+    "holes": 8.64,
+    "points_missing": 163.81,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.81,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 265.84,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 5.09,
+      "holes": 0.7,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.81,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.81,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 41,
+   "kind": "page item",
+   "case": "GB outside 4 bevel",
+   "font": "German Beauty",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 257.03,
+    "holes": 8.64,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 265.84,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 5.09,
+      "holes": 0.7,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 42,
+   "kind": "page item",
+   "case": "GB inside 4 round",
+   "font": "German Beauty",
+   "align": "inside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 247.08,
+    "holes": 45.16,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 28.03,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 316.5,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 247.08,
+      "holes": 26.44,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 12.72,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 4.53,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.78,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 10.78,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 43,
+   "kind": "page item",
+   "case": "GB outside 4 miter dashed 12/4",
+   "font": "German Beauty",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.06,
+    "stray": 193.02,
+    "holes": 8.66,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.06,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 201.83,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 187.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.06,
+      "stray": 5.08,
+      "holes": 0.72,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.06,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 44,
+   "kind": "page item",
+   "case": "GB outside 4 miter opacity 50",
+   "font": "German Beauty",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.09,
+    "stray": 257.03,
+    "holes": 8.67,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.09,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.31,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 257.27,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.09,
+      "stray": 5.09,
+      "holes": 0.73,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.09,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.31,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 45,
+   "kind": "page item",
+   "case": "GB center 8 miter opacity 50",
+   "font": "German Beauty",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 5.61,
+    "stray": 479.05,
+    "holes": 16.25,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 5.61,
+    "stray": 479.05,
+    "holes": 16.25,
+    "points_missing": 6.19,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 9.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 9.5,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 5.61,
+      "stray": 0.0,
+      "holes": 4.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 5.61,
+      "stray": 0.0,
+      "holes": 4.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 2.75,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 2.75,
+      "points_missing": 6.19,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 46,
+   "kind": "page item",
+   "case": "script outside 4 miter",
+   "font": "Segoe Script",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 3.09,
+    "stray": 293.97,
+    "holes": 11.69,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 3.09,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 6.23,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 487.25,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 251.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 3.09,
+      "stray": 42.03,
+      "holes": 3.75,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 3.09,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 6.23,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 47,
+   "kind": "page item",
+   "case": "script center 8 miter",
+   "font": "Segoe Script",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.0,
+    "stray": 475.59,
+    "holes": 24.7,
+    "points_missing": 162.83,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 475.59,
+    "holes": 24.7,
+    "points_missing": 6.19,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 180.12,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 475.59,
+      "holes": 19.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.2,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.2,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 162.83,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 5.5,
+      "points_missing": 6.19,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 48,
+   "kind": "page item",
+   "case": "script outside 4 miter dashed 12/4",
+   "font": "Segoe Script",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 3.11,
+    "stray": 228.36,
+    "holes": 11.89,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 3.11,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 163.3,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 241.36,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 187.94,
+      "holes": 7.94,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 3.11,
+      "stray": 40.42,
+      "holes": 3.95,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 3.11,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 163.3,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 49,
+   "kind": "page item",
+   "case": "vibes outside 4 miter",
+   "font": "Great Vibes",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 266.16,
+    "holes": 2.12,
+    "points_missing": 162.58,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 3.59,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 461.88,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 255.91,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 10.25,
+      "holes": 2.12,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 162.58,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 3.59,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 50,
+   "kind": "page item",
+   "case": "vibes center 8 miter",
+   "font": "Great Vibes",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.0,
+    "stray": 479.05,
+    "holes": 0.0,
+    "points_missing": 162.12,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 479.05,
+    "holes": 0.0,
+    "points_missing": 3.7,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 182.92,
+   "parts": {
+    "squares": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 479.05,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    },
+    "thorn": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 162.12,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 3.7,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 51,
+   "kind": "text",
+   "case": "text center 8 miter, native",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 3.84,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.34,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 1595.36,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 3.84,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.34,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 52,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above (stroked 8)",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 3.84,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.34,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 4.08,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 3.84,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.34,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 53,
+   "kind": "text",
+   "case": "text outside 4 miter, effect (stroked 8)",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 3.8,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.31,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 4.06,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 3.8,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.31,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 54,
+   "kind": "text",
+   "case": "text center 8 miter limit 2, native",
+   "font": "Minion Pro",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 0.34,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.34,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 1591.22,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 0.34,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.34,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 55,
+   "kind": "text",
+   "case": "text outside 4 miter limit 2, fill above (stroked 8)",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.34,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.34,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 0.34,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.34,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 56,
+   "kind": "text",
+   "case": "text outside 2 miter, fill above (stroked 4)",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 2,
+   "native": {
+    "escaping": 0.69,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.69,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 0.69,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.69,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 57,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above, frame opacity 50",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 3.83,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.33,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 3.83,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.33,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 58,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above, drop shadow",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 3.83,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.33,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 4.09,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 3.83,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.33,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 59,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above, rotated 10",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 5.61,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 1.98,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 4.14,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 5.61,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 1.98,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 60,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above, scaled 150% x 100%",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 1.05,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.98,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 7.47,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 1.05,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.98,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 61,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above, type on a path",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 5.44,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 1.89,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 4.08,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 5.44,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 1.89,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 62,
+   "kind": "text",
+   "case": "text outside 4 miter, effect, type on a path",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 4.28,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.78,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 4.02,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 4.28,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.78,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 63,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above, area text",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 3.98,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.33,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 4.08,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 3.98,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.33,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 64,
+   "kind": "text",
+   "case": "text outside 4 miter, fill above, gradient stroke",
+   "font": "Minion Pro",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 4948.41
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 4944.08
+   },
+   "native_vs_corrected": 4.27,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 4948.41
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 4944.08
+     }
+    }
+   }
+  },
+  {
+   "row": 65,
+   "kind": "text",
+   "case": "text GB center 8 miter, native",
+   "font": "German Beauty",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 1.61,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 1.61,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 2908.47,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 1.61,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 1.61,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 66,
+   "kind": "text",
+   "case": "text GB outside 4 miter, fill above (stroked 8)",
+   "font": "German Beauty",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 1.61,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 1.61,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 1.61,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 1.61,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 67,
+   "kind": "text",
+   "case": "text GB outside 4 miter, effect (stroked 8)",
+   "font": "German Beauty",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 10.42,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 10.42,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 0.0,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 10.42,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 10.42,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 68,
+   "kind": "text",
+   "case": "text script center 8 miter, native",
+   "font": "Segoe Script",
+   "align": "center",
+   "weight": 8,
+   "native": {
+    "escaping": 2.69,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.02,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 1082.0,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 2.69,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.02,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 69,
+   "kind": "text",
+   "case": "text script outside 4 miter, fill above (stroked 8)",
+   "font": "Segoe Script",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 2.69,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.02,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 3.31,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 2.69,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.02,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  },
+  {
+   "row": 70,
+   "kind": "text",
+   "case": "text vibes outside 4 miter, fill above (stroked 8)",
+   "font": "Great Vibes",
+   "align": "outside",
+   "weight": 4,
+   "native": {
+    "escaping": 0.27,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "corrected": {
+    "escaping": 0.0,
+    "stray": 0.0,
+    "holes": 0.0,
+    "points_missing": 0.0,
+    "spill": 0.0
+   },
+   "native_vs_corrected": 13.89,
+   "parts": {
+    "text": {
+     "native": {
+      "escaping": 0.27,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     },
+     "corrected": {
+      "escaping": 0.0,
+      "stray": 0.0,
+      "holes": 0.0,
+      "points_missing": 0.0,
+      "spill": 0.0
+     }
+    }
+   }
+  }
+ ]
+}

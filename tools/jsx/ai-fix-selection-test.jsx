@@ -1,6 +1,6 @@
 // Test of tools/jsx/strokemaster-fix-selection.jsx as shipped: a scene with mixed-stroke text,
-// text with both fills and strokes mixed, an Outside 4 thorn and overlapping squares, and a
-// dashed Center 8 thorn; everything selected; the script evaluated; its message returned; a
+// text with both fills and strokes mixed, an Outside 4 thorn and overlapping squares, a dashed
+// Center 8 thorn, and Inside 4 overlapping squares; everything selected; the script evaluated; its message returned; a
 // flat PDF before and after. Then the script again with nothing selected. Needs
 // $.global.ISE_REGION_ARGS outDir and runId.
 (function () {
@@ -47,6 +47,13 @@
         doc.selection = null; doc.selection.length; th.selected = true; sq.selected = true;
         note('align', /"ok":(true|false)/.exec(send('stroke-align', 'outside'))[1]);
         var dt = thorn(260, 200); dt.strokeWidth = 8; dt.strokeDashes = [12, 4];
+        // Inside 4 on overlapping squares (Pathfinder Add expected).
+        var iq = doc.compoundPathItems.add();
+        var i1 = iq.pathItems.add(); i1.setEntirePath([[220, 120], [260, 120], [260, 80], [220, 80]]); i1.closed = true;
+        var i2 = iq.pathItems.add(); i2.setEntirePath([[240, 100], [280, 100], [280, 60], [240, 60]]); i2.closed = true;
+        i1.filled = true; i1.fillColor = gray(100); i1.stroked = true; i1.strokeColor = gray(40); i1.strokeWidth = 4;
+        doc.selection = null; doc.selection.length; iq.selected = true;
+        note('alignInside', /"ok":(true|false)/.exec(send('stroke-align', 'inside'))[1]);
         app.redraw();
         pdf(doc, 'before');
         doc.selection = null; doc.selection.length;
