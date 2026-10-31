@@ -1,2 +1,10 @@
 // Generated PiPL stays in the local build directory.
 plugin pipl "plugin.pipl"
+// The About window, the file InDesign's panel uses (plugin/ui).
+#include <windows.h>
+#include "StrokeMasterAboutRes.h"
+#include "StrokeMasterAbout.rc"
+// The panel's crown, the files InDesign's panel uses (plugin/ui/icons): dark art for light
+// interfaces, light art for dark ones.
+16200 SVG "..\ui\icons\StrokeMaster_N.svg"
+16201 SVG "..\ui\icons\StrokeMaster_D.svg"

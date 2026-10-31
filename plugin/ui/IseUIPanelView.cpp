@@ -11,7 +11,7 @@ public:
     {
         PMPoint size(desired);
         if (size.X() < 270) size.X(270);
-        if (size.Y() < 418) size.Y(418);
+        if (size.Y() < 520) size.Y(520);
         return size;
     }
 };

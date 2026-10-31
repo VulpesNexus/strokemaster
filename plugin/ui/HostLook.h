@@ -8,8 +8,8 @@
 // <https://www.gnu.org/licenses/>, for the full text.
 //
 // Additional permission under GPL-3.0 section 7: this file may be combined with
-// the Adobe InDesign SDK, whose sample framework sources are compiled into
-// every plugin built from it. See LICENSE-EXCEPTION.
+// the Adobe InDesign SDK or the Adobe Illustrator SDK, whose sources are
+// compiled into every plugin built with them. See LICENSE-EXCEPTION.
 
 //  HostLook.h -- Illustrator's own look for this plugin's plain Win32 windows:
 //  its interface typeface, its icons, and the shape of its buttons.

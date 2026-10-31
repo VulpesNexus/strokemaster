@@ -73,6 +73,11 @@ int main() {
         const auto choice = native_miter::ChooseLimit(stubs, 4, 4);
         Check(choice.limit > 11.47 && choice.limit < 11.5, "thorn: limit just past the whole point");
         Check(choice.keptBeveled == 0 && choice.cutMitered == 0, "thorn: every ruling met");
+        // Live text keeps no whole point past the run's limit, as InDesign (2026-10-30).
+        const auto live = native_miter::ChooseLimitForOutline({contour}, 4, 4, true, true, false, false);
+        Check(live.limit < 11.47 && live.cutMitered == 0, "thorn as live text: the tip stays beveled");
+        const auto shape = native_miter::ChooseLimitForOutline({contour}, 4, 4, true, true);
+        Check(shape.limit > 11.47, "thorn as a shape: the whole point is kept");
 
         // Synthetic corners: a glyph tip within the limit (ratio 3, a curve beside it) is cut,
         // a serif corner (ratio 1.41, straight 1 pt edges) keeps its miter: the limit lies

@@ -68,6 +68,12 @@ DECLARE_PMID(kWidgetIDSpace, kIseUINoteWidgetID, kIseUIPrefix + 0x53)
 DECLARE_PMID(kWidgetIDSpace, kIseUIMasterSeparatorWidgetID, kIseUIPrefix + 0x54)
 DECLARE_PMID(kWidgetIDSpace, kIseUIShapesSeparatorWidgetID, kIseUIPrefix + 0x55)
 DECLARE_PMID(kWidgetIDSpace, kIseUIFooterSeparatorWidgetID, kIseUIPrefix + 0x56)
+DECLARE_PMID(kWidgetIDSpace, kIseUICornersSeparatorWidgetID, kIseUIPrefix + 0x57)
+DECLARE_PMID(kWidgetIDSpace, kIseUICornersHeadWidgetID, kIseUIPrefix + 0x58)
+DECLARE_PMID(kWidgetIDSpace, kIseUIContoursSeparatorWidgetID, kIseUIPrefix + 0x59)
+DECLARE_PMID(kWidgetIDSpace, kIseUIContoursHeadWidgetID, kIseUIPrefix + 0x5A)
+DECLARE_PMID(kWidgetIDSpace, kIseUICloseHolesWidgetID, kIseUIPrefix + 0x5B)
+DECLARE_PMID(kWidgetIDSpace, kIseUIShapeMiterWidgetID, kIseUIPrefix + 0x5C)
 
 // Strings (StringTable in IseUI.fr):
 #define kIseUIPanelTitleKey          kIseUIStringPrefix "kIseUIPanelTitleKey"
@@ -81,6 +87,8 @@ DECLARE_PMID(kWidgetIDSpace, kIseUIFooterSeparatorWidgetID, kIseUIPrefix + 0x56)
 #define kIseUITextMiterKey           kIseUIStringPrefix "kIseUITextMiterKey"
 #define kIseUIShapesHeadKey          kIseUIStringPrefix "kIseUIShapesHeadKey"
 #define kIseUIShapesKey              kIseUIStringPrefix "kIseUIShapesKey"
+#define kIseUICornersHeadKey         kIseUIStringPrefix "kIseUICornersHeadKey"
+#define kIseUIContoursHeadKey        kIseUIStringPrefix "kIseUIContoursHeadKey"
 #define kIseUIWholePointsKey         kIseUIStringPrefix "kIseUIWholePointsKey"
 #define kIseUIPatternPointsKey       kIseUIStringPrefix "kIseUIPatternPointsKey"
 #define kIseUIGlyphTipsKey           kIseUIStringPrefix "kIseUIGlyphTipsKey"
@@ -90,6 +98,8 @@ DECLARE_PMID(kWidgetIDSpace, kIseUIFooterSeparatorWidgetID, kIseUIPrefix + 0x56)
 #define kIseUIInsideKey              kIseUIStringPrefix "kIseUIInsideKey"
 #define kIseUIOpenPathsKey           kIseUIStringPrefix "kIseUIOpenPathsKey"
 #define kIseUITransparencyKey        kIseUIStringPrefix "kIseUITransparencyKey"
+#define kIseUICloseHolesKey          kIseUIStringPrefix "kIseUICloseHolesKey"
+#define kIseUIShapeMiterKey          kIseUIStringPrefix "kIseUIShapeMiterKey"
 #define kIseUIRestoreKey             kIseUIStringPrefix "kIseUIRestoreKey"
 #define kIseUINoteKey                kIseUIStringPrefix "kIseUINoteKey"
 #define kIseUIEngineMissingKey       kIseUIStringPrefix "kIseUIEngineMissingKey"
@@ -111,6 +121,9 @@ DECLARE_PMID(kWidgetIDSpace, kIseUIFooterSeparatorWidgetID, kIseUIPrefix + 0x56)
 #define kIseUIInsideTipKey             kIseUIStringPrefix "kIseUIInsideTipKey"
 #define kIseUIOpenPathsTipKey          kIseUIStringPrefix "kIseUIOpenPathsTipKey"
 #define kIseUITransparencyTipKey       kIseUIStringPrefix "kIseUITransparencyTipKey"
+#define kIseUICloseHolesTipKey         kIseUIStringPrefix "kIseUICloseHolesTipKey"
+#define kIseUIShapeMiterTipKey         kIseUIStringPrefix "kIseUIShapeMiterTipKey"
+#define kIseUINoteTipKey               kIseUIStringPrefix "kIseUINoteTipKey"
 #define kIseUIRestoreTipKey            kIseUIStringPrefix "kIseUIRestoreTipKey"
 
 // The panel's icon (plugin/ui/icons, from tools/make_panel_icons.py): 23 px, its 2x copy

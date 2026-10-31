@@ -1,5 +1,7 @@
 # Using StrokeMaster
 
+Before relying on either plugin, read [what to know](WHAT_TO_KNOW.md): one page on what each does to your files, and its limits.
+
 Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`e2c96147`, certified and installed with the StrokeMaster panel `5f4f5bab` on 2026-10-06; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). The limits below describe that revision. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
@@ -43,15 +45,15 @@ Which correction to use depends on one question: **does the file have to look ri
 | *StrokeMaster* | Every correction below | InDesign draws everything itself |
 | *Strokes behind other letters' fills* | Text strokes drawn beneath the fills of their frame | InDesign's order |
 | *Across a story's threaded frames* | Also across the frames and columns of one story | Within each frame only |
-| *Across separate stories (experimental)* | Also across separate stories that overlap; off by default, because it also removes a deliberate halo over another frame | Separate stories keep InDesign's stacking |
-| *No miter spikes* | Text miter tips that escape the letter removed | InDesign's miters |
+| *Across separate stories* | Also across separate stories that overlap; off by default, because it also removes a deliberate halo over another frame | Separate stories keep InDesign's stacking |
+| *No miter spikes* | Miters at live text's inner corners that would poke out through a letter's thin parts removed | InDesign's miters |
 | *Draw their strokes* | The plugin draws the strokes of shapes, frames, and outlined text | InDesign does, with all the defects below |
 | *Whole points past the miter limit* | A shape's own sharp points kept whole | Beveled, as InDesign bevels them |
 | *Also on dashed and striped strokes* | Dashes and dots: a solid whole point beyond InDesign's patterned bevel. Stripes along one outline per word: each stripe follows the point | The patterned bevel |
-| *Trim glyph tips* | Sharp glyph tips (beside a curve or a short edge) cut flush with the stroke's edge, within the miter limit and past it | Whole miters within the limit, spikes included; InDesign's bevel past it |
+| *Trim glyph tips* | Sharp glyph tips (beside a curve or a short edge) cut flush with the stroke's edge, within the miter limit, and past it on outside and center strokes | Whole miters within the limit, spikes included; InDesign's bevel past it |
 | *Trim corner-effect corners* | Corners a corner effect adds beveled past the limit and trimmed within it | Treated like the outline's own corners |
 | *One outline per word (dashes, stripes)* | Outside patterns follow one outline around touching letters, and keep their pattern in the letters' counters: dashes, dots, and hashes laid between its real corners (dashes with the notches between letters filled); Wavy laid as whole waves round each outline, lower round small counters and tight bends; White Diamond drawn by InDesign's own stroker along it, with InDesign's corner diamonds; built-in stripes, with or without a gap color, filled as regions by distance from the letters; custom stripes, measured from their own stroker, filled as built-in stripes are | InDesign's pattern on each contour, clipped outside the fill |
-| *Overlapping contours: one outline* | Outside and Inside strokes go around the filled shape | Such outlines are left to InDesign |
+| *Overlapping contours get one outline* | Outside and Inside strokes go around the filled shape | Such outlines are left to InDesign |
 | *Inside strokes*, *Open paths* | Drawn by the plugin | Left to InDesign |
 | *Objects with opacity or effects* | Opacity and blend modes (object, stroke, fill) and object-level effects covered | Such objects are left to InDesign |
 

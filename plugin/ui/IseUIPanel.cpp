@@ -55,15 +55,18 @@ const Box kBoxes[] = {
     {kIseUITextStoriesWidgetID, &Settings::textStories, &Settings::textBehind, &Settings::textStory},
     {kIseUITextMiterWidgetID, &Settings::textMiter, &Settings::textBehind, nullptr},
     {kIseUIShapesWidgetID, &Settings::shapes, nullptr, nullptr},
+    {kIseUIShapeMiterWidgetID, &Settings::shapeMiter, &Settings::shapes, nullptr},
     {kIseUIWholePointsWidgetID, &Settings::wholePoints, &Settings::shapes, nullptr},
     {kIseUIPatternPointsWidgetID, &Settings::patternPoints, &Settings::shapes, &Settings::wholePoints},
-    {kIseUIGlyphTipsWidgetID, &Settings::glyphTips, &Settings::shapes, nullptr},
+    // Live text too (the owner, 2026-10-31), so only the master switch grays it.
+    {kIseUIGlyphTipsWidgetID, &Settings::glyphTips, nullptr, nullptr},
     {kIseUIEffectCornersWidgetID, &Settings::effectCorners, &Settings::shapes, nullptr},
     {kIseUIWordOutlineWidgetID, &Settings::wordOutline, &Settings::shapes, nullptr},
     {kIseUIOverlapsWidgetID, &Settings::overlaps, &Settings::shapes, nullptr},
     {kIseUIInsideWidgetID, &Settings::inside, &Settings::shapes, nullptr},
     {kIseUIOpenPathsWidgetID, &Settings::openPaths, &Settings::shapes, nullptr},
     {kIseUITransparencyWidgetID, &Settings::transparency, &Settings::shapes, nullptr},
+    {kIseUICloseHolesWidgetID, &Settings::closeHoles, &Settings::textBehind, nullptr},
 };
 
 void SetChecked(IPanelControlData* panel, const WidgetID& id, bool on, bool enabled)

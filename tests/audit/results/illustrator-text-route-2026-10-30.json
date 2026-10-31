@@ -1,0 +1,2922 @@
+{
+  "schema": 1,
+  "date": "2026-10-30",
+  "host": {
+    "application": "Adobe Illustrator",
+    "version": "30.8.2",
+    "platform": "Windows x64",
+    "access": "Illustrator.Application.30, fresh processes on the isolated hidden desktop"
+  },
+  "plugin": {
+    "name": "StrokeMasterRegionProbe",
+    "build": "region-prep-22",
+    "sha256": "197da1dac9944a04caa4adbced1207cf830a82446de69e89f892094aef0c938e",
+    "frozen": "plugin/illustrator-probe/build/region-prep22-frozen.aip",
+    "sourceSha256": {
+      "RegionProbe.cpp": "5eb607636ef00531c85d6109b1a9dc1f7e95dcd8efd305f997c6439b889f2226",
+      "RegionProbeTests.cpp": "00cd296b40abd63200c01915c5ee08dbba972c507bf275a33fcd7c76e11701b6",
+      "NativeMiter.h": "e8ddfa38751344ba29988531c99a5c58b7038278071d207386981316f626496c",
+      "NativeRegion.h": "d17d2fa0a8fcfe9868f41015e9ee7ae65593aae954bfabacb9d6323c92198d10"
+    },
+    "note": "Builds are not byte-reproducible. Runs minion1/minion2/refix1/refix2 and the sw-* sweep used intermediate prep-22 builds (sw-*: c1304a0c, before the review fixes, equivalent for those cases since no native-fix ran); refix3, sep1, ai-census-24, and fix-* used the frozen build. Source hashes are of the committed source; after the frozen build, only comments changed (spelling)."
+  },
+  "withdrawn": {
+    "record": "tests/audit/results/illustrator-native-story-2026-10-29.json",
+    "reason": "region-prep-21's story fill drew no strokes (no explicit Contents in the group style)"
+  },
+  "metric": {
+    "tool": "tools/measure_story_route.py",
+    "dpi": 600,
+    "erodePixels": 3,
+    "inkBelow": 160,
+    "tolerance": 48,
+    "units": "pt2"
+  },
+  "sweep": {
+    "sw-MinionPr": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "MinionPro-Regular",
+      "build": "region-prep-22",
+      "run": "sw-MinionPr",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 191988,
+          "nativeDamagePt2": 1824.94,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 688.29,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "cmyk",
+          "corePixels": 191132,
+          "nativeDamagePt2": 1816.83,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 689.66,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "spot",
+          "corePixels": 191132,
+          "nativeDamagePt2": 1816.83,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 689.66,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 193125,
+          "nativeDamagePt2": 2781.0,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 191988,
+          "nativeDamagePt2": 2764.63,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "mixboth",
+          "corePixels": 193125,
+          "nativeDamagePt2": 1836.72,
+          "routeDamagePt2": 1836.72,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1835.11,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "gate": "story.refused-restored",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "perframe",
+          "corePixels": 191988,
+          "nativeDamagePt2": 1824.94,
+          "routeDamagePt2": 54.71,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 688.09,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "native",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        }
+      ]
+    },
+    "sw-SegoeScr": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "SegoeScript",
+      "build": "region-prep-22",
+      "run": "sw-SegoeScr",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 278622,
+          "nativeDamagePt2": 2668.58,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 998.6,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "cmyk",
+          "corePixels": 277670,
+          "nativeDamagePt2": 2659.35,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1000.07,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "spot",
+          "corePixels": 277670,
+          "nativeDamagePt2": 2659.35,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1000.07,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 279606,
+          "nativeDamagePt2": 4026.33,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 278622,
+          "nativeDamagePt2": 4012.16,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 10.84,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "mixboth",
+          "corePixels": 279606,
+          "nativeDamagePt2": 2677.55,
+          "routeDamagePt2": 2677.55,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 2675.85,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "gate": "story.refused-restored",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "perframe",
+          "corePixels": 278622,
+          "nativeDamagePt2": 2668.58,
+          "routeDamagePt2": 86.46,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 998.37,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "native",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        }
+      ]
+    },
+    "sw-Kerberos": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "KerberosFang",
+      "build": "region-prep-22",
+      "run": "sw-Kerberos",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 533804,
+          "nativeDamagePt2": 5343.44,
+          "routeDamagePt2": 6.13,
+          "haloChangedPt2": 1.24,
+          "recolorDamagePt2": 1864.47,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "cmyk",
+          "corePixels": 531378,
+          "nativeDamagePt2": 5319.03,
+          "routeDamagePt2": 2.71,
+          "haloChangedPt2": 1.54,
+          "recolorDamagePt2": 1866.14,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "spot",
+          "corePixels": 531378,
+          "nativeDamagePt2": 5319.03,
+          "routeDamagePt2": 2.71,
+          "haloChangedPt2": 1.54,
+          "recolorDamagePt2": 1866.14,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 536761,
+          "nativeDamagePt2": 7714.74,
+          "routeDamagePt2": 3.86,
+          "haloChangedPt2": 1.21,
+          "recolorDamagePt2": 3.6,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 533804,
+          "nativeDamagePt2": 7676.88,
+          "routeDamagePt2": 2.28,
+          "haloChangedPt2": 0.91,
+          "recolorDamagePt2": 2.48,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "mixboth",
+          "corePixels": 536761,
+          "nativeDamagePt2": 5358.27,
+          "routeDamagePt2": 5358.27,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 5356.6,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "gate": "story.refused-restored",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "perframe",
+          "corePixels": 533804,
+          "nativeDamagePt2": 5343.44,
+          "routeDamagePt2": 438.41,
+          "haloChangedPt2": 1.11,
+          "recolorDamagePt2": 1860.22,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "native",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        }
+      ]
+    },
+    "sw-GermanBe": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "GermanBeauty",
+      "build": "region-prep-22",
+      "run": "sw-GermanBe",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 439054,
+          "nativeDamagePt2": 4298.44,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1523.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "cmyk",
+          "corePixels": 438147,
+          "nativeDamagePt2": 4289.07,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1524.11,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "spot",
+          "corePixels": 438147,
+          "nativeDamagePt2": 4289.07,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1524.11,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 439847,
+          "nativeDamagePt2": 6322.68,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 7.04,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 439054,
+          "nativeDamagePt2": 6310.61,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 7.04,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "mixboth",
+          "corePixels": 439847,
+          "nativeDamagePt2": 4305.51,
+          "routeDamagePt2": 4305.51,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 4304.15,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "gate": "story.refused-restored",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "perframe",
+          "corePixels": 439054,
+          "nativeDamagePt2": 4298.44,
+          "routeDamagePt2": 185.69,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1521.71,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "native",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        }
+      ]
+    },
+    "sw-GreatVib": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "GreatVibes-Regular",
+      "build": "region-prep-22",
+      "run": "sw-GreatVib",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 213818,
+          "nativeDamagePt2": 2096.71,
+          "routeDamagePt2": 0.01,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 764.68,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "cmyk",
+          "corePixels": 212096,
+          "nativeDamagePt2": 2078.99,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 766.86,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "spot",
+          "corePixels": 212096,
+          "nativeDamagePt2": 2078.99,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 766.86,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 215613,
+          "nativeDamagePt2": 3104.83,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 213818,
+          "nativeDamagePt2": 3078.98,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "mixboth",
+          "corePixels": 215613,
+          "nativeDamagePt2": 2113.91,
+          "routeDamagePt2": 2113.91,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 2110.82,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "gate": "story.refused-restored",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "perframe",
+          "corePixels": 213818,
+          "nativeDamagePt2": 2096.71,
+          "routeDamagePt2": 0.01,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 764.68,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "gate": "native",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        }
+      ]
+    }
+  },
+  "sweepWithNativeFix": {
+    "fix-Segoe": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "SegoeScript",
+      "build": "region-prep-22",
+      "run": "fix-Segoe",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 278622,
+          "nativeDamagePt2": 2668.58,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 998.6,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 3.86,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 279606,
+          "nativeDamagePt2": 4026.33,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 2.56,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 278622,
+          "nativeDamagePt2": 4012.16,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 10.84,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 13.41,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        }
+      ]
+    },
+    "fix-German": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "GermanBeauty",
+      "build": "region-prep-22",
+      "run": "fix-German",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 439054,
+          "nativeDamagePt2": 4298.44,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 1523.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 0.0,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 439847,
+          "nativeDamagePt2": 6322.68,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 7.04,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 7.04,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 439054,
+          "nativeDamagePt2": 6310.61,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 7.04,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 7.04,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        }
+      ]
+    },
+    "fix-Vibes": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "GreatVibes-Regular",
+      "build": "region-prep-22",
+      "run": "fix-Vibes",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 213818,
+          "nativeDamagePt2": 2096.71,
+          "routeDamagePt2": 0.01,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 764.68,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.01,
+          "fixedHaloChangedPt2": 116.27,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "cmyk",
+          "corePixels": 212096,
+          "nativeDamagePt2": 2078.99,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 766.86,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 115.72,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "spot",
+          "corePixels": 212096,
+          "nativeDamagePt2": 2078.99,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 766.86,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 115.72,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "mixfill",
+          "corePixels": 215613,
+          "nativeDamagePt2": 3104.83,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 153.5,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 213818,
+          "nativeDamagePt2": 3078.98,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 153.5,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "mixboth",
+          "corePixels": 215613,
+          "nativeDamagePt2": 2113.91,
+          "routeDamagePt2": 2113.91,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 2110.23,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "fixedDamagePt2": 2113.32,
+          "fixedHaloChangedPt2": 116.27,
+          "gate": "story.refused-restored",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "perframe",
+          "corePixels": 213818,
+          "nativeDamagePt2": 2096.71,
+          "routeDamagePt2": 0.01,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 764.68,
+          "sourceCharacters": 24,
+          "routeCharacters": 48,
+          "recolorCharacters": 48,
+          "textExact": false,
+          "fixedDamagePt2": 0.01,
+          "fixedHaloChangedPt2": 116.27,
+          "gate": "native",
+          "frames": [
+            [
+              2,
+              0
+            ],
+            [
+              2,
+              27
+            ]
+          ],
+          "groups": 0,
+          "stylesPreserved": true
+        }
+      ]
+    }
+  },
+  "separateStories": {
+    "schema": 1,
+    "host": "30.8.2",
+    "font": "MinionPro-Regular",
+    "build": "region-prep-22",
+    "run": "sep1",
+    "dpi": 600,
+    "erodePixels": 3,
+    "inkBelow": 160,
+    "tolerance": 48,
+    "cases": [
+      {
+        "kind": "separate",
+        "corePixels": 191988,
+        "nativeDamagePt2": 2764.63,
+        "routeDamagePt2": 0.0,
+        "haloChangedPt2": 0.0,
+        "recolorDamagePt2": 0.0,
+        "sourceCharacters": 24,
+        "routeCharacters": 48,
+        "recolorCharacters": 48,
+        "textExact": false,
+        "gate": "story.stroked",
+        "frames": [
+          [
+            1,
+            20
+          ],
+          [
+            1,
+            6
+          ]
+        ],
+        "groups": 1,
+        "stylesPreserved": false
+      },
+      {
+        "kind": "separate-off",
+        "corePixels": 191988,
+        "nativeDamagePt2": 2764.63,
+        "routeDamagePt2": 2764.63,
+        "haloChangedPt2": 0.0,
+        "recolorDamagePt2": 2766.34,
+        "sourceCharacters": 24,
+        "routeCharacters": 48,
+        "recolorCharacters": 48,
+        "textExact": false,
+        "gate": "story.separate",
+        "frames": [
+          [
+            1,
+            20
+          ],
+          [
+            1,
+            6
+          ]
+        ],
+        "groups": 0,
+        "stylesPreserved": true
+      },
+      {
+        "kind": "uniform",
+        "corePixels": 191988,
+        "nativeDamagePt2": 2764.63,
+        "routeDamagePt2": 0.0,
+        "haloChangedPt2": 0.0,
+        "recolorDamagePt2": 0.0,
+        "sourceCharacters": 24,
+        "routeCharacters": 48,
+        "recolorCharacters": 48,
+        "textExact": false,
+        "gate": "story.stroked",
+        "frames": [
+          [
+            2,
+            20
+          ],
+          [
+            2,
+            7
+          ]
+        ],
+        "groups": 1,
+        "stylesPreserved": false
+      },
+      {
+        "kind": "rgb",
+        "corePixels": 191988,
+        "nativeDamagePt2": 1824.94,
+        "routeDamagePt2": 0.0,
+        "haloChangedPt2": 0.0,
+        "recolorDamagePt2": 688.29,
+        "sourceCharacters": 24,
+        "routeCharacters": 48,
+        "recolorCharacters": 48,
+        "textExact": false,
+        "gate": "story.filled",
+        "frames": [
+          [
+            2,
+            20
+          ],
+          [
+            2,
+            7
+          ]
+        ],
+        "groups": 1,
+        "stylesPreserved": true
+      },
+      {
+        "kind": "perframe",
+        "corePixels": 191988,
+        "nativeDamagePt2": 1824.94,
+        "routeDamagePt2": 54.71,
+        "haloChangedPt2": 0.0,
+        "recolorDamagePt2": 688.09,
+        "sourceCharacters": 24,
+        "routeCharacters": 48,
+        "recolorCharacters": 48,
+        "textExact": false,
+        "gate": "native",
+        "frames": [
+          [
+            2,
+            20
+          ],
+          [
+            2,
+            7
+          ]
+        ],
+        "groups": 0,
+        "stylesPreserved": true
+      }
+    ]
+  },
+  "refix": {
+    "run": "refix3",
+    "font": "MinionPro-Regular",
+    "phases": "build+route / recolor / export after idle (5 s)",
+    "timer": "\"refix\":{\"timer\":true,\"scans\":5,\"runs\":1,\"items\":5,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"rerouted\":3,\"routeReleased\":0,\"undoPast\":6,\"undoFuture\":0}",
+    "damagePt2": {
+      "A_story_fill_to_fillfirst": {
+        "native": 1826.1,
+        "routed": 0.0,
+        "afterRecolor": 64.8,
+        "beforeStoryFix": 690.8
+      },
+      "B_story_stroke": {
+        "native": 2757.8,
+        "routed": 0.0,
+        "afterRecolor": 0.0
+      },
+      "C_frame_stroke": {
+        "native": 2763.3,
+        "routed": 0.0,
+        "afterRecolor": 0.0
+      },
+      "D_frame_fill_to_fillfirst": {
+        "native": 1809.6,
+        "routed": 0.0,
+        "afterRecolor": 13.2
+      },
+      "E_frame_fill_recolored_whole": {
+        "native": 1802.1,
+        "routed": 0.0,
+        "afterRecolor": 0.0
+      }
+    },
+    "extractedCharacters": {
+      "source": 120,
+      "routed": 240,
+      "afterRecolor": 192
+    }
+  },
+  "census": {
+    "run": "build/ai-census-24",
+    "comparedWith": "tests/audit/results/illustrator-census-2026-10-16.json",
+    "rowsIdentical": 70,
+    "rows": 71,
+    "changed": [
+      {
+        "row": 68,
+        "case": "text script center 8 miter, native, Segoe Script",
+        "part": "text",
+        "corrected.escaping": [
+          0.0,
+          1.3
+        ],
+        "cause": "stroke route first: one miter limit for the frame's object stroke"
+      }
+    ],
+    "nativeRoute": {
+      "styled": 4,
+      "fillsAbove": 0,
+      "strokesBelow": 4,
+      "fillFirst": 3
+    }
+  },
+  "knownLimits": [
+    "prep-22 only: Appearance-paint routes wrote the text once per paint pass (48 for 24); prep-23's outline pass writes it once",
+    "fills and strokes both mixed: FillFirst only (cross-character and cross-frame overlap remains)",
+    "fill route: a recolor shows the old color until StrokeMaster re-fixes (needs the plugin); the stroke route needs none",
+    "stroke route: one miter limit per frame or story group",
+    "SVG: the outlined pass carries the font's glyphs; a viewer without the font draws the live text in another shape"
+  ],
+  "independentReview": {
+    "date": "2026-10-30",
+    "by": "credits.py agent (Opus, read-only)",
+    "fixed": [
+      "miter limit removed from routing comparisons",
+      "FillFirst frames with the user's own style stay so",
+      "story frames' own records cleared; frames of routed stories never rerouted alone",
+      "Contents position restored after removing the route's field",
+      "no-characters early return",
+      "story group stroke gets its miter limit (FixStoryStroke)"
+    ],
+    "notFixed": [
+      "width change drops the stroke route's record (signature includes width)",
+      "FindRouteField takes the first matching duplicate",
+      "dictionary write errors ignored",
+      "a failed reroute of a group is counted in items"
+    ]
+  },
+  "rawEvidenceDirectory": "build/ai-story-route-2026-10-30 (ignored)",
+  "scripts": {
+    "tools/jsx/ai-story-route.jsx": "197efbdf09c16bdc9f8fbbddeb9bd87ecf4616a9ee10d2a9ce9ef1f041bb7c4c",
+    "tools/jsx/ai-route-refix-start.jsx": "77e2ee8ac5ac6abea71a537578f1ba7a0a25ddf47dc94747298e6beec10dc9d7",
+    "tools/jsx/ai-route-refix-edit.jsx": "c353ff2a7d92d14889557c4929f93c0c8be42f0d0bea7ab97af36164dbdb9746",
+    "tools/jsx/ai-route-refix-final.jsx": "9303347a8f5f3383d2d44546a3f9cef0f992604b5b2fcb027649ba890d65aa65",
+    "tools/jsx/ai-route-refix-lib.jsx": "9d0f4be76a034e75c8ae9377a0005f114cf5e3f8d2072a26156b821c2c052c25",
+    "tools/jsx/strokemaster-fix-story.jsx": "1d587aedecd1e87bd21b973c8fae459ec4ad33b03e2e1393502ecc3c8f715859",
+    "tools/run-ai-story-route.ps1": "dd45ec9dfee3aada62951d857447e764258c9545ce73ce3e1c0248a7e4429e39",
+    "tools/run-ai-route-refix.ps1": "a88bc1121deb47e1bae45ec24094fb7e1ecb7a96ffe24421b68da1dce1608a6e",
+    "tools/measure_story_route.py": "6c06a0a9e655f458490a25d14799d83180508169d3d5d44090945d2452a9fa9c",
+    "tools/jsx/ai-story-runs.jsx": "bb7bc02dc1e6b82092a4f80d260041eba413d6018158005568848f71ef54e35b",
+    "tools/run-ai-story-runs.ps1": "3aad6684df472564730d21f617d7322aef9dd8e103e86ec95b79fe1cf256afff",
+    "tools/certify_illustrator.py": "9a6ab485540080e56f5c91a45b9fad200cd70318f798cf04c8a85d73d3583d38",
+    "tools/jsx/ai-route-exports.jsx": "cc58b6619bcb6b5340acdb33bd462626a28d551952a369c1d497e07e79e984a9",
+    "tools/run-ai-route-exports.ps1": "e6f488c40b29cc2392e4219aa1f04d8cef43c8bf1b7b6aadab7b9cbfe7405532",
+    "tools/compose_illustrator_showcase.py": "c9292f9c6735528c2d27053753544e0317a33966352b6fe2a128a1da24d4cf50",
+    "tools/jsx/ai-route-pass-miter.jsx": "b80d06340ae966adcb0f40005b2d784abbb5b9fe4d9d7e37cb23fdaa45c71873",
+    "tools/jsx/ai-panel-start.jsx": "87417bd59fac189fd795c73aeb9f6374d0a575fa4e612ad48f4c64e0303974a1",
+    "tools/jsx/ai-panel-final.jsx": "08f4952db19bdc8e610eae4b5fdf8022494a3ef6d042fda2581de6d48f22e578",
+    "tools/jsx/ai-panel-shot.jsx": "a273e52e21fa4dce8a1f24dc54413d58165e2714e8b43aff25b6c560eee5df4f",
+    "tools/jsx/ai-align-menu-start.jsx": "b363b4379b0f86437171524919ed024fc31002eb4e0b14acf640385f88d3a5da",
+    "tools/jsx/ai-align-menu-final.jsx": "9532e75460c617adeea295adb4d93c38dfb2c745a9c3b1cdfb4c8247f3a81fa2",
+    "tools/jsx/ai-align-direct.jsx": "459d226622e708bce7d24812c40d254365ffda4930bffd81da7e4e78e5208fc2",
+    "tools/jsx/ai-hand-tests.jsx": "82fcdbc7e6317c656c9d74ed5a5349f3a1f9e5ea32610e821ac6e058f352ea01",
+    "tools/run-ai-panel.ps1": "bb68154197f8634a5079c4875011bbc51ff29f86ac3a9266013bbe39e68ded87",
+    "tools/run-ai-align-menu.ps1": "fc2057374d0ae3ab06402ebcba5724f2e6f44c898b28675f7c48d3fed746f5d2",
+    "tools/measure_correct_switches.py": "23fb4010284eed3baa1d10fb609675169c8112fe87b2b7e0f4961389ba947018",
+    "tools/run-ai-correct-switches.ps1": "9d46a6a7098d5b70623506e5c98787ecc20471840b48556b4eff31baa183a5d9",
+    "tools/jsx/ai-correct-switches.jsx": "c2c2c8ad35944a4c7b41ad0ddb64569b66cc585e67e2cf9e149bb67264e7d6f5",
+    "tools/jsx/ai-correct-switches-final.jsx": "5c1b3315d2f96fa49afd9a77413227de1bcd7e29789412a58a7486ce14dd31b4",
+    "tools/run-ai-wedges.ps1": "aaeb5f3191cba735937a82f60707d19206c1b21ee28283514f13ec8b9fe03e35",
+    "tools/jsx/ai-wedges.jsx": "25cb9ea0bd4fc5f5daddcaa5b52d8503b551551cb2bbde481044e3f69fc8863d",
+    "tools/run-ai-owner-retests.ps1": "2a0130b0b9a9566b90ee9455b5ee4345c839fb90b65da1cf885ed675d37b46cc",
+    "tools/jsx/ai-owner-retests.jsx": "618bb8e600ed167c4b34cefb926a5e7ef4f53a4bcd4f75e0d67e7ca08fa9180f",
+    "tools/jsx/ai-owner-retests-align.jsx": "76cfc74f1ac63526128d5c49aec86cf0812a418de4401d9d6f8e4f50361bf6a1",
+    "tools/jsx/ai-owner-retests-final.jsx": "20ead0759dd726efe1aa4c68abc6792da47e7d235ff5a1b97d1c8227ada59b16",
+    "tools/run-ai-auto.ps1": "d607d8cf076a27ac0f333db4a5a816f10ce4b1fb4a973e841d15de944f62bf0c",
+    "tools/jsx/ai-auto-lib.jsx": "f666a55473884fa1bc1dbfe3932cb00a1603706858fcc90cdf8bd3d2ae5471ff",
+    "tools/jsx/ai-auto-start.jsx": "af255f3c3808104c60695097b8729fb7ee235e5513cac277572d9aa44998b4e1",
+    "tools/jsx/ai-auto-edit.jsx": "f906cfcc2cb6800c515978b8363a627b8b06c40fe086f855fafe82fcbc46db01",
+    "tools/jsx/ai-auto-read.jsx": "06f995e45253d696b854cc089e1259a917dcfe764e62d922cb9ed73bf18f199d",
+    "tools/jsx/ai-auto-move.jsx": "879d0d5145658435204c417c22e02e6c1bc4c37cc845469c44717a80d651b828",
+    "tools/jsx/ai-auto-final.jsx": "7cb591dfe1a635d4b38b55eda72ff75044b90c961a06c61be02c840d9ace4eea",
+    "tools/run-ai-p32.ps1": "ac2fa57d926662215c2e8ee3729572ac77d10443af106a96fe54b6a0f60eee2e",
+    "tools/run-ai-owner-file.ps1": "c19f0de44b47ac221e0803f36727bd8d79af93ddd15f66b83482ad1a272b44e3",
+    "tools/jsx/ai-p32-start.jsx": "c00578e5c9a20ce9223a4985bd24a1e7b41c01432173de2d582d9345f5650aed",
+    "tools/jsx/ai-p32-edit.jsx": "211446fd2eb42eba0920dafcc7c4e47e6d116678148d3c92cce13e9a37a4e68e",
+    "tools/jsx/ai-p32-read.jsx": "945bb43dc2b2b59558004883aecedd25cef9574e16ac32c3bccd2d8d6ce4182f",
+    "tools/jsx/ai-p32-final.jsx": "540b3bb6981838860faaa5a6b154087d8d7431ac01f3a1308941b9a83ecdb024",
+    "tools/jsx/ai-owner-file-inspect.jsx": "23800cf86e8e0b100e727f4a91499c9aad0da59f052c1a16bb8750df5b762944",
+    "tools/jsx/ai-owner-file-touch.jsx": "a2fa8a64934ea56e79e963c0c970ae9acff5ca142649c670eaffe5a204ea5472",
+    "tools/jsx/ai-trim-fonts.jsx": "1482a6d5642312aef037817629a29c6fd7b6421464b64402626da4726fa2858a",
+    "tools/jsx/ai-holes.jsx": "b0b3e06a7d5809d75bae7d86a605b7dffe250dbd948ecdae8abcff2a0ddd4af9",
+    "tools/jsx/ai-holes-cert.json": "e153a9ac02e8a021d8c36187d6bdba849660dedc58308cb7f40cc50267355b10",
+    "tools/run-id-tips.ps1": "d7e8f616b7b944e59f4d75595ffd530c70ec41219ee1f75d61a32497c68c90ac",
+    "tools/jsx/id-text-tips.jsx": "8dc21f7549f8bb1b139b10b0fe8b51709e8ad8cf0932b84697def42eb2c38ef5"
+  },
+  "mockChecks": {
+    "registrationBridgeRefusal": 108,
+    "sdkOutput": 2879,
+    "strokeBehind": 13229,
+    "textBehind": 9255
+  },
+  "prep23": {
+    "build": "region-prep-23",
+    "sha256": "7c299b5272fa9e72edab44e55d7c0013f9d042efe9f11494e2bd0d8768d523e9",
+    "frozen": "plugin/illustrator-probe/build/region-prep23-frozen.aip",
+    "sourceSha256": {
+      "RegionProbe.cpp": "45716e69f77094fcdd210e2f4d7f6ba87ff113b8d2163db33013886b29c38a64",
+      "RegionProbeTests.cpp": "00cd296b40abd63200c01915c5ee08dbba972c507bf275a33fcd7c76e11701b6",
+      "NativeMiter.h": "ab0c7a721f886f7e3eaa33bc2a916f3d4534e61e2f341ef7a8d33ffdf9718ea3",
+      "NativeRegion.h": "d17d2fa0a8fcfe9868f41015e9ee7ae65593aae954bfabacb9d6323c92198d10"
+    },
+    "changes": [
+      "route's paint field gets Illustrator's Outline Object (Adobe Outline Type, {-DefaultApplyEffectsKey=F} + StrokeMasterRoutePass tag)",
+      "dashed Center/Outside strokes on overlapping filled contours united by the tagged Pathfinder Add pre-effect",
+      "research: effects-list, route-pass (outline-object|outline-stroke|-), style-dump prints stroke width/join/limit"
+    ],
+    "sweepMinion": {
+      "p23a": {
+        "schema": 1,
+        "host": "30.8.2",
+        "font": "MinionPro-Regular",
+        "build": "region-prep-23",
+        "run": "p23a",
+        "dpi": 600,
+        "erodePixels": 3,
+        "inkBelow": 160,
+        "tolerance": 48,
+        "cases": [
+          {
+            "kind": "rgb",
+            "corePixels": 191988,
+            "nativeDamagePt2": 1824.94,
+            "routeDamagePt2": 0.0,
+            "haloChangedPt2": 0.0,
+            "recolorDamagePt2": 688.29,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "story.filled",
+            "frames": [
+              [
+                2,
+                20
+              ],
+              [
+                2,
+                7
+              ]
+            ],
+            "groups": 1,
+            "stylesPreserved": true
+          },
+          {
+            "kind": "cmyk",
+            "corePixels": 191132,
+            "nativeDamagePt2": 1816.83,
+            "routeDamagePt2": 0.0,
+            "haloChangedPt2": 0.0,
+            "recolorDamagePt2": 689.66,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "story.filled",
+            "frames": [
+              [
+                2,
+                20
+              ],
+              [
+                2,
+                7
+              ]
+            ],
+            "groups": 1,
+            "stylesPreserved": true
+          },
+          {
+            "kind": "spot",
+            "corePixels": 191132,
+            "nativeDamagePt2": 1816.83,
+            "routeDamagePt2": 0.0,
+            "haloChangedPt2": 0.0,
+            "recolorDamagePt2": 689.66,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "story.filled",
+            "frames": [
+              [
+                2,
+                20
+              ],
+              [
+                2,
+                7
+              ]
+            ],
+            "groups": 1,
+            "stylesPreserved": true
+          },
+          {
+            "kind": "mixfill",
+            "corePixels": 193125,
+            "nativeDamagePt2": 2781.0,
+            "routeDamagePt2": 0.0,
+            "haloChangedPt2": 14.89,
+            "recolorDamagePt2": 0.0,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "story.stroked",
+            "frames": [
+              [
+                2,
+                20
+              ],
+              [
+                2,
+                7
+              ]
+            ],
+            "groups": 1,
+            "stylesPreserved": false
+          }
+        ]
+      },
+      "p23c": {
+        "schema": 1,
+        "host": "30.8.2",
+        "font": "MinionPro-Regular",
+        "build": "region-prep-23",
+        "run": "p23c",
+        "dpi": 600,
+        "erodePixels": 3,
+        "inkBelow": 160,
+        "tolerance": 48,
+        "cases": [
+          {
+            "kind": "perframe",
+            "corePixels": 191988,
+            "nativeDamagePt2": 1824.94,
+            "routeDamagePt2": 54.71,
+            "haloChangedPt2": 0.0,
+            "recolorDamagePt2": 688.09,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "native",
+            "frames": [
+              [
+                2,
+                20
+              ],
+              [
+                2,
+                7
+              ]
+            ],
+            "groups": 0,
+            "stylesPreserved": true
+          }
+        ]
+      },
+      "p23d": {
+        "schema": 1,
+        "host": "30.8.2",
+        "font": "MinionPro-Regular",
+        "build": "region-prep-23",
+        "run": "p23d",
+        "dpi": 600,
+        "erodePixels": 3,
+        "inkBelow": 160,
+        "tolerance": 48,
+        "cases": [
+          {
+            "kind": "uniform",
+            "corePixels": 191988,
+            "nativeDamagePt2": 2764.63,
+            "routeDamagePt2": 0.0,
+            "haloChangedPt2": 14.89,
+            "recolorDamagePt2": 0.0,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "story.stroked",
+            "frames": [
+              [
+                2,
+                20
+              ],
+              [
+                2,
+                7
+              ]
+            ],
+            "groups": 1,
+            "stylesPreserved": false
+          },
+          {
+            "kind": "mixboth",
+            "corePixels": 193125,
+            "nativeDamagePt2": 1836.72,
+            "routeDamagePt2": 1836.72,
+            "haloChangedPt2": 0.0,
+            "recolorDamagePt2": 1835.11,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "story.refused-restored",
+            "frames": [
+              [
+                2,
+                20
+              ],
+              [
+                2,
+                7
+              ]
+            ],
+            "groups": 0,
+            "stylesPreserved": true
+          },
+          {
+            "kind": "separate",
+            "corePixels": 191988,
+            "nativeDamagePt2": 2764.63,
+            "routeDamagePt2": 0.0,
+            "haloChangedPt2": 14.89,
+            "recolorDamagePt2": 0.0,
+            "sourceCharacters": 24,
+            "routeCharacters": 24,
+            "recolorCharacters": 24,
+            "textExact": true,
+            "gate": "story.stroked",
+            "frames": [
+              [
+                1,
+                20
+              ],
+              [
+                1,
+                6
+              ]
+            ],
+            "groups": 1,
+            "stylesPreserved": false
+          },
+          {
+            "kind": "separate-off",
+            "corePixels": 191988,
+            "nativeDamagePt2": 2764.63,
+            "routeDamagePt2": 2764.63,
+            "haloChangedPt2": 0.0,
+            "recolorDamagePt2": 2766.34,
+            "sourceCharacters": 24,
+            "routeCharacters": 48,
+            "recolorCharacters": 48,
+            "textExact": false,
+            "gate": "story.separate",
+            "frames": [
+              [
+                1,
+                20
+              ],
+              [
+                1,
+                6
+              ]
+            ],
+            "groups": 0,
+            "stylesPreserved": true
+          }
+        ]
+      }
+    },
+    "sanitySegoeWithFix": {
+      "schema": 1,
+      "host": "30.8.2",
+      "font": "SegoeScript",
+      "build": "region-prep-23",
+      "run": "p23final",
+      "dpi": 600,
+      "erodePixels": 3,
+      "inkBelow": 160,
+      "tolerance": 48,
+      "cases": [
+        {
+          "kind": "rgb",
+          "corePixels": 278622,
+          "nativeDamagePt2": 2668.58,
+          "routeDamagePt2": 0.01,
+          "haloChangedPt2": 0.0,
+          "recolorDamagePt2": 998.6,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "fixedDamagePt2": 0.01,
+          "fixedHaloChangedPt2": 3.86,
+          "gate": "story.filled",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": true
+        },
+        {
+          "kind": "uniform",
+          "corePixels": 278622,
+          "nativeDamagePt2": 4012.16,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 33.61,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 36.0,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              2,
+              20
+            ],
+            [
+              2,
+              7
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        },
+        {
+          "kind": "separate",
+          "corePixels": 278622,
+          "nativeDamagePt2": 4012.16,
+          "routeDamagePt2": 0.0,
+          "haloChangedPt2": 33.61,
+          "recolorDamagePt2": 0.0,
+          "sourceCharacters": 24,
+          "routeCharacters": 24,
+          "recolorCharacters": 24,
+          "textExact": true,
+          "fixedDamagePt2": 0.0,
+          "fixedHaloChangedPt2": 36.0,
+          "gate": "story.stroked",
+          "frames": [
+            [
+              1,
+              20
+            ],
+            [
+              1,
+              6
+            ]
+          ],
+          "groups": 1,
+          "stylesPreserved": false
+        }
+      ]
+    },
+    "refix": {
+      "run": "refix4",
+      "damageAfterRecolorPt2": {
+        "A": 64.8,
+        "B": 0.0,
+        "C": 0.0,
+        "D": 13.2,
+        "E": 0.0
+      },
+      "extractedCharacters": {
+        "source": 120,
+        "routed": 120,
+        "afterRecolor": 120
+      }
+    },
+    "routePass": {
+      "runs": [
+        "pass2 (with)",
+        "ctrl1 (control without)",
+        "edit-whole",
+        "edit-insert",
+        "edit-insert3"
+      ],
+      "pass2": {
+        "extracted": {
+          "fill": 48,
+          "native": 72,
+          "route": 96,
+          "pass": 48
+        },
+        "damagePt2": {
+          "story": 0.0,
+          "frame": 0.0
+        },
+        "passVsRouteChangedPt2": {
+          "story": 14.33,
+          "frame": 0.0
+        }
+      },
+      "openIssue": "scripted insertion at the end of a stroked run in a fill-route frame draws that run's stroke over the route fill and extracts it twice, with or without the pass; the DOM then reports 'illegal text range' for every character; typing needs a manual check"
+    },
+    "miters": {
+      "runs": [
+        "miter1",
+        "miter3",
+        "miter4"
+      ],
+      "font": "GermanBeauty",
+      "finding": "Illustrator's own PNG raster identical with and without the outline pass (6 px at 600 ppi); MuPDF's PDF render of the plain text-stroke pass bevels joins Illustrator draws as miters. Object stroke and characters carried limit 4."
+    },
+    "exports": {
+      "run": "exp2",
+      "font": "MinionPro-Regular",
+      "damagePt2": {
+        "pdf": {
+          "native": 3957.9,
+          "route": 0.0
+        },
+        "png": {
+          "native": 4210.9,
+          "route": 6.2
+        },
+        "eps": {
+          "native": 3987.0,
+          "route": 0.3,
+          "alignment": "art-cropped EPS; reference shifted by the best red-ink overlap (-15, 15 px at 300 ppi)"
+        }
+      },
+      "svg": "headless Edge render corrected (viewer font differs); MuPDF SVG renders the fill-route frame uncorrected",
+      "text": {
+        "pdf": "48/48",
+        "eps": "48/48 (gs txtwrite)",
+        "svg": "48/48"
+      }
+    },
+    "census": {
+      "run": "build/ai-census-25",
+      "comparedWith": "build/ai-census-24",
+      "unchanged": 67,
+      "rows": 71,
+      "changed": [
+        {
+          "row": 9,
+          "case": "center 8 miter dashed 12/4, squares",
+          "stray": [
+            375.4,
+            4.6
+          ],
+          "holes": [
+            25.9,
+            16.1
+          ]
+        },
+        {
+          "row": 48,
+          "case": "script outside 4 miter dashed 12/4",
+          "escaping": [
+            3.1,
+            0.0
+          ]
+        },
+        {
+          "row": 65,
+          "case": "text GB center 8 miter",
+          "escaping": [
+            1.6,
+            10.4
+          ],
+          "cause": "outlined pass: PDF now matches Illustrator's own drawing"
+        },
+        {
+          "row": 68,
+          "case": "text script center 8 miter",
+          "escaping": [
+            1.3,
+            0.2
+          ]
+        }
+      ],
+      "pathfinder": [
+        13,
+        20
+      ]
+    },
+    "hostStability": "one five-case run stopped in its fourth document (doc churn); the case passed alone"
+  },
+  "prep24": {
+    "build": "region-prep-24",
+    "sha256": "83d3830b3486ecb4b455c093be980eef344441cfccefb2654320bb405e76495f",
+    "frozen": "plugin/illustrator-probe/build/region-prep24-frozen.aip",
+    "sourceSha256": {
+      "RegionProbe.cpp": "9c591eb2c8aba9053794b121af60e38c7651625af72106648fb6639a9e4e26d5",
+      "RegionProbeTests.cpp": "00cd296b40abd63200c01915c5ee08dbba972c507bf275a33fcd7c76e11701b6",
+      "NativeMiter.h": "ab0c7a721f886f7e3eaa33bc2a916f3d4534e61e2f341ef7a8d33ffdf9718ea3",
+      "NativeRegion.h": "d17d2fa0a8fcfe9868f41015e9ee7ae65593aae954bfabacb9d6323c92198d10"
+    },
+    "changes": [
+      "story-route part: a group with an adjacent run of one story's frames",
+      "strokemaster-fix-story.jsx: invisible items between frames moved below; visible artwork splits runs; a frame alone gets native-route; full rollback"
+    ],
+    "storyRuns": {
+      "runs": [
+        "runs4hidden",
+        "runs4split3",
+        "runs4split4"
+      ],
+      "damagePt2": {
+        "hidden": [
+          5499.6,
+          0.0
+        ],
+        "split3": [
+          8260.2,
+          141.8
+        ],
+        "split4": [
+          11013.9,
+          141.8
+        ]
+      },
+      "text": {
+        "hidden": "48/48",
+        "split3": "72/72",
+        "split4": "96/96"
+      },
+      "order": {
+        "hidden": "TRT->TTR",
+        "split3": "TRTT->TRTT",
+        "split4": "TTRTT->TTRTT"
+      }
+    },
+    "certification": {
+      "tool": "tools/certify_illustrator.py",
+      "run": "build/ai-cert-2 (ai-cert-1 with the Great Vibes jobs rerun on the fixed fixture and the exports job extended)",
+      "jobs": 27,
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep24.json",
+      "selfCompare": "PASS (27 jobs)",
+      "negativeCheck": "5 injected regressions failed, 1 in-tolerance change passed",
+      "greatVibes": {
+        "story-greatv-rgb": {
+          "gate": "story.filled",
+          "damage": 0.09,
+          "native": 4402.38,
+          "halo": 0.0,
+          "recolor": 741.4,
+          "text": [
+            48,
+            48
+          ],
+          "host": "host=30.8.2"
+        },
+        "story-greatv-mixfill": {
+          "gate": "story.stroked",
+          "damage": 0.0,
+          "native": 6159.59,
+          "halo": 43.4,
+          "recolor": 0.0,
+          "text": [
+            48,
+            48
+          ],
+          "host": "host=30.8.2"
+        },
+        "story-greatv-uniform": {
+          "gate": "story.stroked",
+          "damage": 0.0,
+          "native": 6102.6,
+          "halo": 43.4,
+          "recolor": 0.0,
+          "text": [
+            48,
+            48
+          ],
+          "host": "host=30.8.2"
+        }
+      },
+      "exports": {
+        "pdf": {
+          "damage": 0.0,
+          "native": 3957.93
+        },
+        "png": {
+          "damage": 6.22,
+          "native": 4210.91
+        },
+        "pdfx4.pdf.text": 48,
+        "pdfx4.pdf": {
+          "damage": 0.0,
+          "native": 3957.93
+        },
+        "pdfx1a.pdf.text": 48,
+        "pdfx1a.pdf": {
+          "damage": 0.0,
+          "native": 3957.93
+        },
+        "jpg": {
+          "damage": 6.22,
+          "native": 4210.91
+        },
+        "text": [
+          48,
+          48
+        ],
+        "host": "host=30.8.2"
+      }
+    },
+    "kerberosHalo": {
+      "run": "miterKF",
+      "pdfMuPDFChangedPt2": 557.5,
+      "illustratorPngChangedPt2": 4.97
+    },
+    "hostStability": "two scripted documents in one process crashed once (runs3); the certification runs one case per process: 27/27 completed",
+    "showcase": {
+      "tool": "tools/compose_illustrator_showcase.py",
+      "output": "build/look/illustrator-showcase-2026-10-30/showcase.pdf",
+      "pages": 9
+    }
+  },
+  "prep25": {
+    "build": "region-prep-25",
+    "sha256": "e6d3fc28fe1ffad26aca29791910a64f2f67451dc2721c1a986b039bab0c5653",
+    "frozen": "plugin/illustrator-probe/build/region-prep25-frozen.aip",
+    "sourceSha256": {
+      "RegionProbe.cpp": "a62cbf734a20c071583ea4e3a16a9b873117aa23d983f589e733aa4de63b278c",
+      "RegionProbeTests.cpp": "00cd296b40abd63200c01915c5ee08dbba972c507bf275a33fcd7c76e11701b6",
+      "NativeMiter.h": "43f4d592a38e48df4e9f1e9a2cfd668def55ebdbbfc941b41ee507634d36bffc",
+      "NativeRegion.h": "d17d2fa0a8fcfe9868f41015e9ee7ae65593aae954bfabacb9d6323c92198d10"
+    },
+    "change": "live text keeps no whole point past the run's limit (InDesign's live-text rule), for per-character limits and object/story strokes",
+    "certification": {
+      "run": "build/ai-cert-3",
+      "jobs": 27,
+      "storyJobsWithNativeFix": true,
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep25.json",
+      "againstPrep24": "PASS",
+      "censusChanged": 0
+    },
+    "ownerNotes": {
+      "kerberosRings": "MuPDF and Ghostscript draw hollow rings for tiny stroked contours; Illustrator's raster draws solid discs; native PDF shows the same",
+      "outlineStrokeRejected": {
+        "kerberosIllustratorRasterChangedPt2": 339.4,
+        "germanIllustratorRasterChangedPt2": 30.1
+      },
+      "germanBevels": "same as InDesign (live text keeps the run's limit)",
+      "greatVibesSpikes": "trimmed by native-fix (glyph tips)",
+      "refixOverlap": "both mixed after recolor: FillFirst only (known limit)"
+    },
+    "rotatedText": {
+      "row59": {
+        "native": 5.61,
+        "corrected": 1.98,
+        "specks": 74,
+        "maxSpeckPx": 5,
+        "medianBeyondBandPt": 0.39
+      },
+      "row52unrotated": {
+        "native": 3.84,
+        "corrected": 0.34
+      },
+      "registrationShiftPx": 0,
+      "conclusion": "rotation adds the same amount natively; not a correction gap"
+    }
+  },
+  "prep27": {
+    "build": "region-prep-27",
+    "sha256": "6ba4185c6a0e56e23a29b56f39499cfe0abc51c0a9465243f8a3c930c99bb1be",
+    "frozen": "plugin/illustrator-probe/build/region-prep27-frozen.aip",
+    "sourceSha256": {
+      "RegionProbe.cpp": "3cfaa6999054c556743d83758caabd22b8c2df29ceaa98fbd09d86bd8d91d767",
+      "RegionProbeTests.cpp": "c0f346f95cd8fc13a2e0c14160c1b381df8667a32225818f08cbc1a73f7346d2",
+      "NativeMiter.h": "46af8d6e0ba4ce4c236a488d2a61cb349ae780130590bbc01335ceb9837cb0ae",
+      "NativeRegion.h": "d17d2fa0a8fcfe9868f41015e9ee7ae65593aae954bfabacb9d6323c92198d10",
+      "IllustratorSettings.h": "50310362c9d34a3328eea7b51c660188a0ef4928775b626695811be88af21feb",
+      "StrokeMasterPanel.h": "b292d667e6ef34556a583ac11f5a3b7bb0d217ac78a6a460fcd7313439461230"
+    },
+    "sharedUiSha256": {
+      "StrokeMasterAbout.cpp": "22d40c668fbfdc5211ee9ab4e4b0c9be270b7035364b8bc0248f7cee8498b577",
+      "HostLook.cpp": "6f9bf31f046a7a729ba5e8560a96bf715b4348f8b20be2af3bfb8f37769f9703"
+    },
+    "interface": "docs/ILLUSTRATOR_PANEL_2026-10-30.md",
+    "handTests": "docs/ILLUSTRATOR_HAND_TESTS_2026-10-30.md",
+    "handTestDocument": "build/look/hand-tests-2026-10-30/StrokeMaster hand tests.ai (generated by tools/jsx/ai-hand-tests.jsx)",
+    "certification": {
+      "run": "build/ai-cert-4",
+      "jobs": 29,
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep27.json",
+      "againstPrep25": "PASS (27 shared jobs)",
+      "panel": {
+        "panel": "true",
+        "menu": "true",
+        "rows": "14",
+        "storiesToggled": true,
+        "restored": true,
+        "masterOffEnabled": "4",
+        "masterOffCorrect": "false",
+        "groups": 1,
+        "framesInGroup": 2,
+        "groupsAfterUndo": 0,
+        "settingsLeft": false,
+        "damage": 0.0,
+        "text": [
+          24,
+          24
+        ],
+        "host": "host=30.8.2"
+      },
+      "correctSplit4": {
+        "gate": null,
+        "order": [
+          "TTRTT",
+          "TTRTT"
+        ],
+        "groups": 2,
+        "damage": 141.78,
+        "native": 11013.88,
+        "halo": 52.85,
+        "text": [
+          96,
+          96
+        ],
+        "host": "host=30.8.2"
+      }
+    },
+    "alignOptIn": {
+      "switchTest": "align1: nothing aligned on an open path (no readable stored alignment)",
+      "menuTest": "alignmenu2: open U aligned Outside through the menu handler (6388.9 pt2 changed); zigzag refused open-no-side",
+      "scriptedUndo": "did not revert the alignment (hand test 16)"
+    },
+    "review": "credits agent (Opus, read-only): 4 serious + 6 medium + low findings, fixed in prep-27"
+  },
+  "prep28": {
+    "build": "region-prep-28",
+    "sha256": "ee19c6f68b0b04085ff70bdb142d61c5229265593f1befc0d0b12620edc1571d",
+    "frozen": "plugin/illustrator-probe/build/region-prep28-frozen.aip",
+    "change": "license: the Illustrator About names the Adobe Illustrator SDK linking exception (LICENSE-EXCEPTION, owner 2026-10-30); shared UI file notices name both SDKs",
+    "licenseExceptionSha256": "476255100b664b0cd52a94b4a9c3618f9eaf193751866a6c74ab32038ea11bfd",
+    "certification": {
+      "run": "build/ai-cert-5",
+      "jobs": 29,
+      "againstPrep27": "PASS (after isolating settings per job)",
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep28.json",
+      "isolation": "a first pass read the owner's settings file (master switch off after the hand tests) and failed 6 lines (correct-split4, refix A/D/E); the runner now gives each job STROKEMASTER_SETTINGS"
+    },
+    "sourceSha256": {
+      "RegionProbe.cpp": "343b32993b04a00441e0a7edabcc42c0f36785eb723df5ba7071ee336b4a442f",
+      "StrokeMasterPanel.h": "b292d667e6ef34556a583ac11f5a3b7bb0d217ac78a6a460fcd7313439461230",
+      "IllustratorSettings.h": "50310362c9d34a3328eea7b51c660188a0ef4928775b626695811be88af21feb"
+    },
+    "sharedUiSha256": {
+      "StrokeMasterAbout.cpp": "47e7a4a6671216728fb896e8f9e154e6f7d874f392b3c9a7070d501fde28be00",
+      "HostLook.cpp": "eb29a164b7d0a2495eece6a8cbe29fb430cecf045e82c3cc38d0c064ad102f4e",
+      "HostLook.h": "daa8b1e46bed6b5210e30d0e10e5be7b99730668bba5a1b7523245a963cb8ea1",
+      "DialogPlacement.h": "fe92a9050dd3a54466e270cd54b18063983fa4d9abac2e5460c53f53b568e616"
+    }
+  },
+  "prep29": {
+    "build": "region-prep-29",
+    "sha256": "e4384dbf22d7141ca1051a3ba605692af6356554ff6c55c52997ace42586cf4a",
+    "frozen": "plugin/illustrator-probe/build/region-prep29-frozen.aip",
+    "change": "the owner's hand tests (docs/ILLUSTRATOR_HAND_TESTS_2026-10-30.md): 12 of 18 passed on prep-27; prep-29 answers 3 (tooltips destroyed with the panel's first host window: now unowned, remade if gone), 4 (Correct Selection takes off what a switch that is off corrects), 5 (switches not repainted after Restore Defaults), 7 (Tab: thread message hook), 14 (one-frame stories never counted complete for Across separate stories); 11 explained (Illustrator writes a stroked character as fill and stroke text passes; the fill route keeps the letters' strokes); 17 answered (one miter limit per stroke-route frame with Trim glyph tips)",
+    "sourceSha256": {
+      "RegionProbe.cpp": "bf39ce897e64ca96fe1f8debe5acc7b01351f99948753497548542858ba07446",
+      "StrokeMasterPanel.h": "04fb5d557b1092538689c52a5f5026980a6f463e103e6d4181d4b44eaa390fec",
+      "IllustratorSettings.h": "50310362c9d34a3328eea7b51c660188a0ef4928775b626695811be88af21feb",
+      "NativeMiter.h": "46af8d6e0ba4ce4c236a488d2a61cb349ae780130590bbc01335ceb9837cb0ae"
+    },
+    "switchesTest": {
+      "run": "build/ai-switches/sw3",
+      "measure": {
+        "tips": 13,
+        "tabTo": 4102,
+        "square": [
+          8,
+          16,
+          8
+        ],
+        "routeLimit": [
+          1.906,
+          4.0
+        ],
+        "glyphs": [
+          59,
+          59
+        ],
+        "stages": {
+          "story-on": {
+            "damage": {
+              "story": 223.5,
+              "separate": 2526.68,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 1,
+            "frames": 0,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "story-behind-off": {
+            "damage": {
+              "story": 2988.49,
+              "separate": 2526.68,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 0,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 2,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 1,
+            "undashed": 0
+          },
+          "story-behind-on": {
+            "damage": {
+              "story": 223.5,
+              "separate": 2526.68,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 1,
+            "frames": 0,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "story-frames": {
+            "damage": {
+              "story": 281.74,
+              "separate": 2526.68,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 0,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 2,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 1,
+            "undashed": 0
+          },
+          "story-again": {
+            "damage": {
+              "story": 223.5,
+              "separate": 2526.68,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 1,
+            "frames": 0,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "separate-on": {
+            "damage": {
+              "story": 0.0,
+              "separate": 0.0,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 2,
+            "gate": "corrected",
+            "stories": 2,
+            "frames": 0,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "separate-off": {
+            "damage": {
+              "story": 0.0,
+              "separate": 133.44,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 2,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 1,
+            "undashed": 0
+          },
+          "frames-behind-off": {
+            "damage": {
+              "story": 223.5,
+              "separate": 2526.68,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 2,
+            "paths": 0,
+            "unrouted": 2,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "frames-behind-on": {
+            "damage": {
+              "story": 0.0,
+              "separate": 133.44,
+              "miter": 688.1,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 2,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "miter-on": {
+            "damage": {
+              "story": 0.0,
+              "separate": 133.44,
+              "miter": 0.0,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 1,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "miter-off": {
+            "damage": {
+              "story": 0.0,
+              "separate": 133.44,
+              "miter": 0.0,
+              "dashes": 1531.01
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 1,
+            "paths": 0,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "dashes-on": {
+            "damage": {
+              "story": 0.0,
+              "separate": 133.44,
+              "miter": 0.0,
+              "dashes": 0.0
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 0,
+            "paths": 1,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 0
+          },
+          "dashes-off": {
+            "damage": {
+              "story": 0.0,
+              "separate": 133.44,
+              "miter": 0.0,
+              "dashes": 0.0
+            },
+            "groups": 1,
+            "gate": "corrected",
+            "stories": 0,
+            "frames": 0,
+            "paths": 1,
+            "unrouted": 0,
+            "dissolved": 0,
+            "undashed": 1
+          }
+        },
+        "host": "host=30.8.2"
+      },
+      "uiStatusAfterTab": "{\"iconError\":0,\"panel\":true,\"shown\":true,\"menu\":true,\"rows\":14,\"checked\":9,\"enabled\":14,\"correctEnabled\":true,\"pressed\":0,\"tips\":13,\"tipsAdded\":13,\"tipsMade\":1,\"keyHook\":true,\"tabs\":1,\"tabTo\":4102,\"focus\":0}"
+    },
+    "wedges": {
+      "run": "build/ai-wedges/wd1",
+      "font": "KerberosFang 72 pt, 14 pt stroke",
+      "strokeRouteLimit": 1.938,
+      "tipsOffLimit": 3.995,
+      "note": "corners beveled with Trim glyph tips on are all ones the tip rule trims (keptBeveled 0)"
+    },
+    "certification": {
+      "run": "build/ai-cert-6",
+      "jobs": 30,
+      "againstPrep28": "PASS (29 shared jobs)",
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep29.json",
+      "censusRerun": "the first census run drew row 28's squares with Illustrator's default 1 pt black stroke in both exports (a fixture glitch, uncorrected too); the rerun drew them as specified and is measured; the first is kept in build/ai-cert-6/census-fixture-glitch/",
+      "glyphsDrawn": "fill-route cases draw stroked letters twice (43 for 27), as Illustrator's own export; stroke-route cases once (27 for 27)"
+    }
+  },
+  "prep30": {
+    "build": "region-prep-30",
+    "sha256": "7b8edbb6702c30c20a5648dec6ca2f43d1ba0aff8740abbabc66aa9b2e0b5aba",
+    "frozen": "plugin/illustrator-probe/build/region-prep30-frozen.aip",
+    "change": "the owner's retests of prep-29 (R3, R4, R5, R14 passed; R7 without a focus mark; R17 failed) and notes: the route stroke judged against the frame's own limit, not the one the fix wrote (R17); focus marks shown once the keyboard moves the focus (R7); the re-fix applies the dashed outside opt-in to a corrected dashed path set Outside; panel wording (Dashed outside strokes, Across threaded text frames, Across other text objects, the note), separator rules, a resizable panel; style-dump 'parent' for a story group",
+    "sourceSha256": {
+      "RegionProbe.cpp": "a76aefddf506437e52f59d673589d762e18c201380ab4310ec021a37d96028db",
+      "NativeMiter.h": "46af8d6e0ba4ce4c236a488d2a61cb349ae780130590bbc01335ceb9837cb0ae",
+      "StrokeMasterPanel.h": "eace15f7e44a5e23fb021dfe80448b803283c9a32df5e11d9a5ec6232bba70ae",
+      "IllustratorSettings.h": "50310362c9d34a3328eea7b51c660188a0ef4928775b626695811be88af21feb"
+    },
+    "retests": {
+      "run": "build/ai-retests/rt3",
+      "tipsRouteLimit": [
+        1.938,
+        3.995,
+        1.938
+      ],
+      "storiesOnLimit": 2.397,
+      "storiesOffLimits": [
+        1.906,
+        1.906
+      ],
+      "squareOutsideAfterRefix": {
+        "width": 32,
+        "refix": "\"refix\":{\"timer\":true,\"scans\":4,\"runs\":1,\"items\":1,\"deferred\":0,\"lastError\":0,\"released\":0,\"overflow\":0,\"rerouted\":0,\"routeReleased\":0,\"dashed\":1,\"undoPast\":5,\"undoFuture\":0}"
+      },
+      "note": "rt1 and rt2 changed the alignment in the same script as the correction, so the re-fix first saw the square already changed; rt3 makes the change in a phase of its own"
+    },
+    "panelShot": {
+      "run": "build/ai-panel-30/ps1",
+      "rules": 4,
+      "width": 270,
+      "height": 387,
+      "note": "the hidden desktop gives the panel no keyboard focus: the focus mark is the owner's to see"
+    },
+    "certification": {
+      "run": "build/ai-cert-7",
+      "jobs": 30,
+      "againstPrep29": "PASS (30 jobs, 0 failed lines)",
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep30.json",
+      "interrupted": "the first run was stopped by Claude Code under low memory after 22 jobs; the 23rd (runs-split3) was set aside in build/ai-cert-7-runs-split3-killed and rerun"
+    }
+  },
+  "prep31": {
+    "build": "region-prep-31",
+    "sha256": "2ce07480df0ebb78c32f395c74de91d5638d75865d9c29d67fbc5f60d699e5af",
+    "frozen": "plugin/illustrator-probe/build/region-prep31-frozen.aip",
+    "change": "the owner's answers (2026-10-30): Illustrator corrects automatically as InDesign does (new and edited art, in the undo step of the edit; documents only opened left alone; art taken back by hand marked released), the row renamed Correct automatically; Trim glyph tips off by default; native-route's explicit list no longer dropped when the selection holds no text frame",
+    "sourceSha256": {
+      "RegionProbe.cpp": "b9f156b9295f2250c97628b7fdce4ca254f8bda13a02cfd5b8545805784998f1",
+      "StrokeMasterPanel.h": "7ec3b8bc9a717469ac0a8a2140fa4bfa7b33bc43adc388563204f4130d6ee974",
+      "IllustratorSettings.h": "6d2b41c835f0a6cfc3cb10f106ff180093104494de3529fd94288be749e8f8c8",
+      "NativeMiter.h": "46af8d6e0ba4ce4c236a488d2a61cb349ae780130590bbc01335ceb9837cb0ae"
+    },
+    "auto": {
+      "run": "build/ai-auto/au3",
+      "measure": {
+        "afterEdit": {
+          "old-text": {
+            "routed": true
+          },
+          "old-path": {
+            "limit": "4"
+          },
+          "locked-path": {
+            "limit": "4"
+          },
+          "new-text": {
+            "routed": true
+          },
+          "new-path": {
+            "limit": "5.76"
+          },
+          "bare-path": {
+            "limit": "10"
+          }
+        },
+        "afterMoves": {
+          "old-text": {
+            "routed": true
+          },
+          "old-path": {
+            "limit": "5.76"
+          },
+          "locked-path": {
+            "limit": "4"
+          },
+          "new-text": {
+            "routed": true
+          },
+          "new-path": {
+            "limit": "3"
+          },
+          "bare-path": {
+            "limit": "10"
+          }
+        },
+        "takenBack": "3",
+        "refix": {
+          "automatic": 4,
+          "released": 1,
+          "skipped": 0
+        },
+        "host": "host=30.8.2"
+      },
+      "note": "a script's app.undo() reverted nothing (au1, au2): the undo of an automatic correction is hand test Q2"
+    },
+    "certification": {
+      "run": "build/ai-cert-8",
+      "jobs": 31,
+      "againstPrep30": "PASS (30 shared jobs, 0 failed lines)",
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep31.json",
+      "changedFromPrep30": "halo with Trim glyph tips off by default: story-kerber-rgb 492.02 -> 1.09, story-kerber-uniform 2042.7 -> 940.2, story-greatv-rgb 192.64 -> 2.2; census escaping up by at most 0.27 pt2 (rows 22, 23, 60, 70), within tolerance"
+    }
+  },
+  "prep32": {
+    "build": "region-prep-32",
+    "sha256": "3f258065bc02766ba8815baea79572527675c11461bfa82ce30646ad6b751380",
+    "frozen": "plugin/illustrator-probe/build/region-prep32-frozen.aip",
+    "change": "the owner's prep-31 retests (2026-10-31): strokes of the Appearance panel managed (a text object's own strokes moved below its fills and Characters, every Appearance stroke given a miter limit, a limit set there by hand or a reordering releases the item); the document redrawn after the timer's corrections (Illustrator does not redraw after a timer, so each correction showed late); the dashed Outside opt-in undone for the alignment the user sets; threaded text grouped automatically; the opt-in Also documents as they open; the panel grouped by correction (Stacking, Corners, Contours, Edits), separators as child windows, a measured minimum width, room for the focus ring",
+    "sourceSha256": "not recorded: the sources had moved on to region-prep-33 (Close holes) when this record was written; the frozen binary stands for the build",
+    "ownerFile": {
+      "runs": [
+        "build/ai-owner-31/t3",
+        "build/ai-owner-31/t4",
+        "build/ai-owner-31/t5"
+      ],
+      "note": "a copy of the owner's Tests.ai: three of four objects carried their strokes in the Appearance panel; after a move both such texts were corrected (order FCS, limits recorded), and with open_documents=1 as the copy opened; the triangle's sharpest corner (about 32 degrees) is within its limit of 4, so it needed none"
+    },
+    "p32": {
+      "run": "build/ai-p32/p2",
+      "measure": {
+        "squareDoubledWidth": "12",
+        "objectStrokeOrder": "sCFS",
+        "objectStrokeLimit": "2.092",
+        "threadParents": [
+          "GroupItem",
+          "GroupItem",
+          "True"
+        ],
+        "squareInside": true,
+        "squareWidth": "6",
+        "takenBackLimit": "9",
+        "takenBackReleased": "1",
+        "refix": {
+          "automatic": 3,
+          "released": 1,
+          "threaded": 1
+        },
+        "host": "host=30.8.2"
+      }
+    },
+    "trimFonts": {
+      "runs": [
+        "build/ai-trim/tr1",
+        "build/ai-trim/tr2",
+        "build/ai-trim/tr3",
+        "build/ai-trim/tr4"
+      ],
+      "routeLimits": {
+        "AB-chalk": "1.414 off and on (14 pt), 1.321 (36 pt)",
+        "EagleLake-Regular": "4 off, 1.666 on",
+        "Facon": "3.428 off, 2.212 on",
+        "GoreFontII": "2.934 off, 1.678 on",
+        "GermanBeauty": "4 both",
+        "KerberosFang": "4 both"
+      },
+      "note": "the owner's AB-Chalk spikes did not reproduce: No miter spikes already bevels its jagged corners"
+    },
+    "certification": {
+      "run": "build/ai-cert-9",
+      "jobs": 32,
+      "againstPrep31": "PASS except 3 intended panel lines (rows 14 -> 16, masterOffEnabled 4 -> 5, tips 13 -> 14: the regrouped sections and the open-documents row); 31 shared jobs, plus p32",
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep32.json"
+    }
+  },
+  "prep33": {
+    "build": "region-prep-33",
+    "sha256": "45b3b6b073f16abd706e38f2f7aa07954356c1919177a4f1cc9ae077edced422",
+    "frozen": "plugin/illustrator-probe/build/region-prep33-frozen.aip",
+    "change": "Close holes inside the outline (the owner, 2026-10-31: close all holes): a fill of the stroke's color beneath the strokes, its live effect org.strokemaster.close-holes.v1 drawing the silhouette (ise_region::Silhouette); the panel row under Contours",
+    "holes": {
+      "runs": [
+        "build/ai-holes/h5",
+        "build/ai-holes/h6"
+      ],
+      "note": "h5 filled the counters black (an effect's new art is not painted by its field); h6, with the replaced art's paint: Minion red pixels 16,968 off, 20,310 on, 16,969 off again; GoreFont 25,518, 27,811, 25,517"
+    },
+    "certification": "not certified: its run (build/ai-cert-10-prep33-stopped) was stopped when the owner turned Trim glyph tips back on by default"
+  },
+  "prep34": {
+    "build": "region-prep-34",
+    "sha256": "0bb10c83ce7e2d8e1cef449679a0abb39cc82cb0be3dde3c2fcf3c1c6c760af3",
+    "frozen": "plugin/illustrator-probe/build/region-prep34-frozen.aip",
+    "change": "Trim glyph tips on by default again, in both applications (the owner, 2026-10-31), now that it trims live text in both",
+    "sourceSha256": {
+      "RegionProbe.cpp": "1517e6016fc212edafefcb468cac62fa7d0f1843019b0f85c42995ad85133b55",
+      "StrokeMasterPanel.h": "7565bf65c5516e11cc4ae2312eea0f69f5d7e27f940f9e784059b28204ddbc30",
+      "IllustratorSettings.h": "66ea098ea0e9a122edfe9cfa05e61199999026af374b44afeb9c2fe79a5fb4fb",
+      "NativeMiter.h": "46af8d6e0ba4ce4c236a488d2a61cb349ae780130590bbc01335ceb9837cb0ae"
+    },
+    "sharedSourceSha256": {
+      "plugin/source/IseRegionCore.cpp": "e90cabdce7b39e0a79e4b0a27a9aef6580f0e4753abe8b9a6c8abf0622cfded5",
+      "plugin/source/IseRegionCore.h": "78cf5a4e4219cd7bec2ea2649f5ef9a781743d5a8fe5fa6c4a88787696b4d4d4"
+    },
+    "certification": {
+      "run": "build/ai-cert-11",
+      "jobs": 33,
+      "againstPrep32": "6 lines, all intended: the four story halo lines back to their prep-30 values with Trim glyph tips on (story-kerber-rgb 1.09 -> 492.02, -mixfill 940.06 -> 2042.28, -uniform 940.2 -> 2042.7, story-greatv-rgb 2.2 -> 192.64); panel rows 16 -> 17 and tips 14 -> 15 (Close holes); plus the new job holes",
+      "baseline": "tests/audit/results/illustrator-certification-baseline-prep34.json",
+      "holes": {
+        "fonts": [
+          "GoreFontII",
+          "MinionPro-Regular"
+        ],
+        "GoreFontII": {
+          "off": false,
+          "on": true,
+          "off-again": false
+        },
+        "MinionPro-Regular": {
+          "off": false,
+          "on": true,
+          "off-again": false
+        },
+        "effect": {
+          "passed": 0,
+          "gate": "published"
+        },
+        "host": "host=30.8.2"
+      }
+    }
+  }
+}

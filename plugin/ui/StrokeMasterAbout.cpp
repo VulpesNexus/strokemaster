@@ -8,8 +8,8 @@
 // <https://www.gnu.org/licenses/>, for the full text.
 //
 // Additional permission under GPL-3.0 section 7: this file may be combined with
-// the Adobe InDesign SDK, whose sample framework sources are compiled into
-// every plugin built from it. See LICENSE-EXCEPTION.
+// the Adobe InDesign SDK or the Adobe Illustrator SDK, whose sources are
+// compiled into every plugin built with them. See LICENSE-EXCEPTION.
 
 /* The About dialog: the house template every plugin of this publisher wears
  * (.workspace/ADOBE_PLUGIN_ABOUT.md), ported from Subgroup's SubgroupAbout.cpp with only
@@ -58,6 +58,26 @@ namespace {
  * \fs18 is 9pt: RTF measures in half-points. The face and size are the
  * template's; with the host's own typeface they become Adobe Clean UX at
  * 10pt, the nearest half-point to the 13 pixels its dialogs use. */
+#ifdef STROKEMASTER_ABOUT_ILLUSTRATOR
+/* The Illustrator plugin's prose (2026-10-30): the same window, its corrections written into the
+   document instead of drawn, so the third paragraph says the opposite of InDesign's. */
+const char* const kBodyRtf =
+    "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0\\fnil Segoe UI;}}"
+    "\\fs18\\sa140 "
+
+    "{\\b What it corrects}\\line "
+    "Strokes Illustrator draws over other letters and across threaded "
+    "frames, miter spikes, and strokes on overlapping contours.\\par "
+
+    "{\\b The panel}\\line "
+    "Correct Selection writes what the switches allow, and edits are "
+    "followed. Hover a switch to see what it does.\\par "
+
+    "{\\b Documents}\\line "
+    "The corrections are Illustrator's own attributes: a file opens and "
+    "exports the same without StrokeMaster, which follows the edits."
+    "}";
+#else
 const char* const kBodyRtf =
     "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0\\fnil Segoe UI;}}"
     /* \sa140 is 7pt of space after each paragraph. Without it the sections run
@@ -77,6 +97,7 @@ const char* const kBodyRtf =
     "Nothing is written into them: a file opens and draws as InDesign draws it "
     "on a machine without StrokeMaster."
     "}";
+#endif
 
 struct AboutState {
     HFONT  body;        /* the host's typeface for the controls; null keeps the template's */
@@ -287,10 +308,19 @@ INT_PTR CALLBACK AboutProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
         /* The GPL asks an interactive program to show this where the user can
            find it. For a plugin with no window of its own, that is here. */
         SetDlgItemTextW(dlg, IDC_ABOUT_LEGAL,
+#ifdef STROKEMASTER_ABOUT_ILLUSTRATOR
+            /* LICENSE-EXCEPTION grants each plugin the exception for the SDK it is built
+               with (owner, 2026-10-30): this one, the Illustrator SDK's. */
+            L"Copyright " SM_COPY L" 2026 Vixen420. "
+            L"Free software under the GNU General Public License, version 3 or "
+            L"later, with an Adobe Illustrator SDK linking exception. It comes "
+            L"with ABSOLUTELY NO WARRANTY.");
+#else
             L"Copyright " SM_COPY L" 2026 Vixen420. "
             L"Free software under the GNU General Public License, version 3 or "
             L"later, with an Adobe InDesign SDK linking exception. It comes "
             L"with ABSOLUTELY NO WARRANTY.");
+#endif
 
         DialogPlacement::CenterOnOwner(dlg);
 

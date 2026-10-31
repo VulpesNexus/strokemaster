@@ -25,8 +25,9 @@
 //   Solid strokes, closed paths:
 //     Center, Miter       the outline stroked at the weight with bevel joins; each exterior
 //                         corner's miter join filled (past the limit, a shape's own point kept
-//                         whole, ise_miter::WholePoint, and any other corner beveled as
-//                         InDesign bevels it); each interior corner's miter filled, clipped to
+//                         whole, ise_miter::WholePoint, a glyph tip cut flush, and any other
+//                         corner beveled as InDesign bevels it); each interior corner's miter
+//                         filled, clipped to
 //                         the fill. Center round and bevel joins have nothing to correct and
 //                         stay InDesign's.
 //     Outside, any join   the outline filled at the fill event instead of InDesign's outward
@@ -109,7 +110,8 @@
 // on either side or an edge shorter than the stroke's reach, or sharper than 84 degrees with
 // both) is trimmed (TipReach): beside an edge shorter than the reach, its stroke ends flush,
 // cut at the reach along the tip, within the limit and past it; otherwise its miter reaches
-// past the stroke's edge no farther than that edge. A glyph tip's whole miter stuck out as a
+// past the stroke's edge no farther than that edge within the limit, and past it the stroke
+// ends flush at the reach (Outside and Center). A glyph tip's whole miter stuck out as a
 // spike (Segoe Script's W, Great Vibes' g; the owner asked for them trimmed, 2026-10-05, and
 // flush, 2026-10-06). Blunter corners, such as serif feet, keep their whole miters.
 //
@@ -458,8 +460,10 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
             // Past the limit, a shape's own point: kept whole (the owner's whole points), within
             // the bounds of the object's transparency group; none left there, the bevel below.
             out.push_back(ise_miter::JoinPolygon(s, h, bounds.Fit(s, h, ise_miter::WholePointReach(s, h, kLongestMiter))));
-        } else if (join == kPMMiterJoin && align == Align::Outside && tip && s.edge < h) {
-            // Past the limit, a glyph tip: cut flush, as within it (TipReach), not beveled.
+        } else if (join == kPMMiterJoin && align != Align::Inside && tip) {
+            // Past the limit, a glyph tip, Outside or Center: cut flush at the stroke's reach, not
+            // beveled, whatever the edge beside it (the bevel, made at the letter's point, still
+            // reads as a point on a hairline taper, or as a wedge close to it: the owner's V5).
             out.push_back(ise_miter::JoinPolygon(s, h, h));
         } else if (join == kPMMiterJoin && align == Align::Center) {
             continue;   // past the limit, any other corner: the stroke's bevel, as InDesign's
@@ -1349,7 +1353,7 @@ bool Analyze(IPMUnknown* item, const Coverage& coverage, Plan* plan)
     if (lineRead) key.Add(&plan->marksKey, sizeof plan->marksKey);
     key.Add(static_cast<int32>(coverage.wholePoints) | static_cast<int32>(coverage.overlaps) << 1 |
             static_cast<int32>(coverage.glyphTips) << 2 | static_cast<int32>(coverage.patternPoints) << 3 |
-            static_cast<int32>(coverage.wordOutline) << 4);
+            static_cast<int32>(coverage.wordOutline) << 4 | static_cast<int32>(coverage.shapeMiter) << 5);
     for (const auto& st : plan->stripes) { key.Add(st.first); key.Add(st.second); }
     // The point bounds, which only the stripes' bands carry (BandCorners); relative to the item,
     // so that moving it keeps what is prepared.
@@ -1654,7 +1658,9 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
         std::vector<std::vector<Pt>> interior;
         for (const Stub& s : stubs)
             if (s.interior && !PastLimit(s, limit)) interior.push_back(ise_miter::JoinPolygon(s, h, s.ratio * h));
-        if (!interior.empty()) {
+        // No miter spikes in shapes and outlines off: whole, as InDesign's own miter join draws them.
+        if (!interior.empty() && !coverage.shapeMiter) FillPolygons(port, interior);
+        else if (!interior.empty()) {
             AutoGSave clipScope(port);
             port->newpath();
             EmitContours(port, contours);

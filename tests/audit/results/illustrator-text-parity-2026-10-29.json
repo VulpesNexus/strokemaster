@@ -1,0 +1,1956 @@
+{
+  "schema": 1,
+  "date": "2026-10-29",
+  "host": {
+    "application": "Adobe Illustrator",
+    "version": "30.8.2",
+    "platform": "Windows x64"
+  },
+  "plugin": {
+    "name": "StrokeMasterRegionProbe",
+    "build": "region-prep-20",
+    "sha256": "851ff6c11207e070ca08acec46ec0a5dabe7ae9b747ed015e93bf393dbcddbc9",
+    "frozen": "plugin/illustrator-probe/build/region-prep20-frozen.aip",
+    "sourceSha256": {
+      "RegionProbe.cpp": "f0dc765eaa9a417f7855769169832c5e22c702579f3c7d4014f5cfa51a247217",
+      "RegionProbeTests.cpp": "9ad5df83f67acd2178eb58c2987551a0867ef3e638bf7de8c00c342ebe76b0d5",
+      "RegionProbe.vcxproj": "22bf48c31f9b3e68cea49dd0a352acf21479a02447ffce426b201e2388faf2ec",
+      "IllustratorContour.h": "7429eba3d941cedcd6d4874fbc50058e9ddce54cd06857236ad6368d2c39d824",
+      "IllustratorSdkContour.h": "44e12468221859a0f86f7363cbd003743f3db79b2c94448af2bed34c47565858",
+      "TextBehind.h": "e8b02f366f55963b494e213094e5d17ecb970fb5d985b07671ec51459ad32209",
+      "StrokeBehind.h": "c3fca6a51f8312345b1caae1adf9dca97ae9ab5c5cbd47db81167b3136573bae",
+      "TextBehindTests.cpp": "8ffe1c76bc6fdf3caf222324881af7aad0c61875da80a5936dafbc3b79677e04",
+      "NativeMiter.h": "e8ddfa38751344ba29988531c99a5c58b7038278071d207386981316f626496c",
+      "NativeRegion.h": "d17d2fa0a8fcfe9868f41015e9ee7ae65593aae954bfabacb9d6323c92198d10"
+    }
+  },
+  "scope": "Synthetic live text and threaded-story preservation; not InDesign parity or release certification.",
+  "baseline": {
+    "build": "region-prep-18",
+    "sha256": "4695d7b6d5032cae5b8061c04f3af6cae367dbfc5a5a5fb980a7a8b211a9b872",
+    "cases": 30,
+    "fonts": [
+      "MinionPro-Regular",
+      "SegoeScript",
+      "KerberosFang",
+      "GermanBeauty",
+      "GreatVibes-Regular"
+    ],
+    "kinds": [
+      "point",
+      "area",
+      "path",
+      "rotated",
+      "scaled",
+      "threaded"
+    ],
+    "flowProof": {
+      "font": "MinionPro-Regular",
+      "before": [
+        2,
+        2
+      ],
+      "after": [
+        1,
+        1
+      ]
+    },
+    "measurements": {
+      "schema": 1,
+      "dpi": 600,
+      "erodePixels": 3,
+      "darkLevel": 32,
+      "total": 30,
+      "passed": 0,
+      "runs": [
+        {
+          "run": "minion-isolate",
+          "font": "MinionPro-Regular",
+          "host": "30.8.2",
+          "cases": [
+            {
+              "kind": "point",
+              "corePixels": 180871,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 4194,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 118925,
+                  "damagedCorePt2": 1712.52,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 39,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 39,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "area",
+              "corePixels": 180455,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 3783,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 118682,
+                  "damagedCorePt2": 1709.0208,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 40,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 40,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "path",
+              "corePixels": 92467,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 3836,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 58188,
+                  "damagedCorePt2": 837.9072,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 12,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 13,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 14,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 1868,
+              "reopenMaxGrayDelta": 23,
+              "reopenMeanGrayDelta": 0.00038241666666666665,
+              "reopenChangedAreaPt2": 26.8992,
+              "passed": false
+            },
+            {
+              "kind": "rotated",
+              "corePixels": 183293,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 4470,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 120435,
+                  "damagedCorePt2": 1734.264,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 38,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 65028,
+              "reopenMaxGrayDelta": 184,
+              "reopenMeanGrayDelta": 0.23718516666666667,
+              "reopenChangedAreaPt2": 936.4032,
+              "passed": false
+            },
+            {
+              "kind": "scaled",
+              "corePixels": 153621,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 4439,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 101319,
+                  "damagedCorePt2": 1458.9936,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 2382,
+              "reopenMaxGrayDelta": 13,
+              "reopenMeanGrayDelta": 0.00045858333333333336,
+              "reopenChangedAreaPt2": 34.3008,
+              "passed": false
+            },
+            {
+              "kind": "threaded",
+              "corePixels": 180455,
+              "stylesPreserved": false,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 4582,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 118682,
+                  "damagedCorePt2": 1709.0208,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 40,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 40,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            }
+          ]
+        },
+        {
+          "run": "segoe",
+          "font": "SegoeScript",
+          "host": "30.8.2",
+          "cases": [
+            {
+              "kind": "point",
+              "corePixels": 269289,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 4847,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 179920,
+                  "damagedCorePt2": 2590.848,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "area",
+              "corePixels": 269281,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 4040,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 179875,
+                  "damagedCorePt2": 2590.2,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "path",
+              "corePixels": 136172,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 3954,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 86775,
+                  "damagedCorePt2": 1249.56,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 12,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 13,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 3125,
+              "reopenMaxGrayDelta": 41,
+              "reopenMeanGrayDelta": 0.0024375833333333333,
+              "reopenChangedAreaPt2": 45,
+              "passed": false
+            },
+            {
+              "kind": "rotated",
+              "corePixels": 268948,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 4227,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 179420,
+                  "damagedCorePt2": 2583.648,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 40,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 54199,
+              "reopenMaxGrayDelta": 185,
+              "reopenMeanGrayDelta": 0.19275475,
+              "reopenChangedAreaPt2": 780.4656,
+              "passed": false
+            },
+            {
+              "kind": "scaled",
+              "corePixels": 229955,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 4057,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 153912,
+                  "damagedCorePt2": 2216.3328,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 41,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 3785,
+              "reopenMaxGrayDelta": 14,
+              "reopenMeanGrayDelta": 0.0006318333333333333,
+              "reopenChangedAreaPt2": 54.504,
+              "passed": false
+            },
+            {
+              "kind": "threaded",
+              "corePixels": 269281,
+              "stylesPreserved": false,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 5445,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 179875,
+                  "damagedCorePt2": 2590.2,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            }
+          ]
+        },
+        {
+          "run": "kerberos",
+          "font": "KerberosFang",
+          "host": "30.8.2",
+          "cases": [
+            {
+              "kind": "point",
+              "corePixels": 515974,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 72131,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 355505,
+                  "damagedCorePt2": 5119.272,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "area",
+              "corePixels": 516002,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 70554,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 355521,
+                  "damagedCorePt2": 5119.5024,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "path",
+              "corePixels": 260764,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 67790,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 167710,
+                  "damagedCorePt2": 2415.024,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 12,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 14,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 23424,
+              "reopenMaxGrayDelta": 179,
+              "reopenMeanGrayDelta": 0.014122,
+              "reopenChangedAreaPt2": 337.30559999999997,
+              "passed": false
+            },
+            {
+              "kind": "rotated",
+              "corePixels": 517396,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 70237,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 355745,
+                  "damagedCorePt2": 5122.728,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 2,
+                  "damagedCorePt2": 0.0288,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 158939,
+              "reopenMaxGrayDelta": 190,
+              "reopenMeanGrayDelta": 0.42635116666666667,
+              "reopenChangedAreaPt2": 2288.7216,
+              "passed": false
+            },
+            {
+              "kind": "scaled",
+              "corePixels": 440166,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 72210,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 309170,
+                  "damagedCorePt2": 4452.048,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 35,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 35,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 10577,
+              "reopenMaxGrayDelta": 102,
+              "reopenMeanGrayDelta": 0.0050325,
+              "reopenChangedAreaPt2": 152.3088,
+              "passed": false
+            },
+            {
+              "kind": "threaded",
+              "corePixels": 516002,
+              "stylesPreserved": false,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 70807,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 355521,
+                  "damagedCorePt2": 5119.5024,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 36,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            }
+          ]
+        },
+        {
+          "run": "german",
+          "font": "GermanBeauty",
+          "host": "30.8.2",
+          "cases": [
+            {
+              "kind": "point",
+              "corePixels": 432204,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 4586,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 294279,
+                  "damagedCorePt2": 4237.6176,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 45,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 45,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "area",
+              "corePixels": 432402,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 3768,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 294353,
+                  "damagedCorePt2": 4238.6831999999995,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 45,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 45,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "path",
+              "corePixels": 220836,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 4156,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 141040,
+                  "damagedCorePt2": 2030.9759999999999,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 12,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 15,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 4820,
+              "reopenMaxGrayDelta": 45,
+              "reopenMeanGrayDelta": 0.004049083333333333,
+              "reopenChangedAreaPt2": 69.408,
+              "passed": false
+            },
+            {
+              "kind": "rotated",
+              "corePixels": 434736,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 4515,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 295860,
+                  "damagedCorePt2": 4260.384,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 43,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 44,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 56408,
+              "reopenMaxGrayDelta": 181,
+              "reopenMeanGrayDelta": 0.1822315,
+              "reopenChangedAreaPt2": 812.2751999999999,
+              "passed": false
+            },
+            {
+              "kind": "scaled",
+              "corePixels": 369899,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 3809,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 252504,
+                  "damagedCorePt2": 3636.0576,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 43,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 42,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 2926,
+              "reopenMaxGrayDelta": 14,
+              "reopenMeanGrayDelta": 0.00056,
+              "reopenChangedAreaPt2": 42.1344,
+              "passed": false
+            },
+            {
+              "kind": "threaded",
+              "corePixels": 432402,
+              "stylesPreserved": false,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 3825,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 294353,
+                  "damagedCorePt2": 4238.6831999999995,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 45,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 45,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            }
+          ]
+        },
+        {
+          "run": "vibes",
+          "font": "GreatVibes-Regular",
+          "host": "30.8.2",
+          "cases": [
+            {
+              "kind": "point",
+              "corePixels": 195468,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 3849,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 134197,
+                  "damagedCorePt2": 1932.4368,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "area",
+              "corePixels": 195508,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 4198,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 134071,
+                  "damagedCorePt2": 1930.6224,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 41,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 41,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            },
+            {
+              "kind": "path",
+              "corePixels": 99574,
+              "stylesPreserved": true,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 5051,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 63144,
+                  "damagedCorePt2": 909.2736,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 12,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 12,
+                  "uniqueGlyphsMatchFill": true
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 14,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 5284,
+              "reopenMaxGrayDelta": 35,
+              "reopenMeanGrayDelta": 0.004152833333333333,
+              "reopenChangedAreaPt2": 76.0896,
+              "passed": false
+            },
+            {
+              "kind": "rotated",
+              "corePixels": 191814,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 3891,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 131678,
+                  "damagedCorePt2": 1896.1632,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 92452,
+              "reopenMaxGrayDelta": 186,
+              "reopenMeanGrayDelta": 0.32384091666666664,
+              "reopenChangedAreaPt2": 1331.3088,
+              "passed": false
+            },
+            {
+              "kind": "scaled",
+              "corePixels": 160030,
+              "stylesPreserved": true,
+              "reopenPreserved": false,
+              "editable": true,
+              "ms": 6045,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 110592,
+                  "damagedCorePt2": 1592.5248,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 38,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 0,
+                  "damagedCorePt2": 0,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 6566,
+              "reopenMaxGrayDelta": 14,
+              "reopenMeanGrayDelta": 0.0010195833333333333,
+              "reopenChangedAreaPt2": 94.5504,
+              "passed": false
+            },
+            {
+              "kind": "threaded",
+              "corePixels": 193244,
+              "stylesPreserved": false,
+              "reopenPreserved": true,
+              "editable": true,
+              "ms": 3925,
+              "exports": {
+                "native": {
+                  "damagedCorePixels": 138010,
+                  "damagedCorePt2": 1987.344,
+                  "textMatchesFill": true,
+                  "visibleTextCharacters": 24,
+                  "uniqueGlyphs": 24,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "route": {
+                  "damagedCorePixels": 11220,
+                  "damagedCorePt2": 161.56799999999998,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                },
+                "reopen": {
+                  "damagedCorePixels": 11220,
+                  "damagedCorePt2": 161.56799999999998,
+                  "textMatchesFill": false,
+                  "visibleTextCharacters": 48,
+                  "uniqueGlyphs": 37,
+                  "uniqueGlyphsMatchFill": false
+                }
+              },
+              "reopenChangedPixels": 0,
+              "reopenMaxGrayDelta": 0,
+              "reopenMeanGrayDelta": 0,
+              "reopenChangedAreaPt2": 0,
+              "passed": false
+            }
+          ]
+        }
+      ]
+    }
+  },
+  "rejectedCandidate": {
+    "build": "region-prep-19",
+    "sha256": "a7003d17652d2447ada3c665e79951e48069eb46a26c63b8c9ec251ac4ae0777",
+    "reason": "Initially rejected after an immediate post-open collection read returned zero frames. Later phase-separated readback finds two linked editable frames; saved-text-loss diagnosis withdrawn.",
+    "nativeControlCrash": "A preceding multi-document native control crashed during text-on-path reopen before native-route/native-fix were called; not classified as a correction crash.",
+    "correction": {
+      "report": "docs/ILLUSTRATOR_NATIVE_STORY_2026-10-29.md",
+      "frames": 2,
+      "storyFrames": [
+        2,
+        2
+      ],
+      "frameCharacters": [
+        20,
+        7
+      ],
+      "readback": "build/ai-parity-2026-10-29/recheck-prep19-results.json"
+    }
+  },
+  "change": "Create glyph outlines from an owned deep copy with its object-level appearance cleared; never outline the live frame. Used for character miter choices and Inside inset inspection.",
+  "mockChecks": {
+    "registrationBridgeRefusalAndOutlineOwnership": 96,
+    "sdkOutput": 2879,
+    "strokeBehind": 13229,
+    "textBehind": 9255
+  },
+  "hostChecks": [
+    {
+      "run": "prep20-flow-minion",
+      "font": "MinionPro-Regular",
+      "flow": true,
+      "stylesPreserved": true,
+      "reopenPreserved": true,
+      "editable": true,
+      "framesBefore": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesAfter": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesReopened": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "nativeRouteOK": true,
+      "nativeFixOK": true,
+      "fix": {
+        "gate": "fixed",
+        "paths": 0,
+        "pathLimits": 0,
+        "reordered": 0,
+        "frames": 2,
+        "chars": 24,
+        "charLimits": 6,
+        "mapped": 2,
+        "corners": 233,
+        "keptBeveled": 0,
+        "cutMitered": 0,
+        "dashes": 0,
+        "dashRefused": 0,
+        "pathfinder": 0,
+        "failed": 0,
+        "offsetSynced": 0
+      }
+    },
+    {
+      "run": "prep20-flow-segoe",
+      "font": "SegoeScript",
+      "flow": true,
+      "stylesPreserved": true,
+      "reopenPreserved": true,
+      "editable": true,
+      "framesBefore": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesAfter": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesReopened": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "nativeRouteOK": true,
+      "nativeFixOK": true,
+      "fix": {
+        "gate": "fixed",
+        "paths": 0,
+        "pathLimits": 0,
+        "reordered": 0,
+        "frames": 2,
+        "chars": 24,
+        "charLimits": 3,
+        "mapped": 2,
+        "corners": 111,
+        "keptBeveled": 0,
+        "cutMitered": 0,
+        "dashes": 0,
+        "dashRefused": 0,
+        "pathfinder": 0,
+        "failed": 0,
+        "offsetSynced": 0
+      }
+    },
+    {
+      "run": "prep20-flow-kerberos",
+      "font": "KerberosFang",
+      "flow": true,
+      "stylesPreserved": true,
+      "reopenPreserved": true,
+      "editable": true,
+      "framesBefore": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesAfter": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesReopened": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "nativeRouteOK": true,
+      "nativeFixOK": true,
+      "fix": {
+        "gate": "fixed",
+        "paths": 0,
+        "pathLimits": 0,
+        "reordered": 0,
+        "frames": 2,
+        "chars": 24,
+        "charLimits": 5,
+        "mapped": 2,
+        "corners": 3554,
+        "keptBeveled": 46,
+        "cutMitered": 467,
+        "dashes": 0,
+        "dashRefused": 0,
+        "pathfinder": 0,
+        "failed": 0,
+        "offsetSynced": 0
+      }
+    },
+    {
+      "run": "prep20-flow-german",
+      "font": "GermanBeauty",
+      "flow": true,
+      "stylesPreserved": true,
+      "reopenPreserved": true,
+      "editable": true,
+      "framesBefore": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesAfter": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "framesReopened": [
+        {
+          "storyFrames": 2,
+          "characters": 20
+        },
+        {
+          "storyFrames": 2,
+          "characters": 7
+        }
+      ],
+      "nativeRouteOK": true,
+      "nativeFixOK": true,
+      "fix": {
+        "gate": "fixed",
+        "paths": 0,
+        "pathLimits": 0,
+        "reordered": 0,
+        "frames": 2,
+        "chars": 24,
+        "charLimits": 0,
+        "mapped": 2,
+        "corners": 114,
+        "keptBeveled": 0,
+        "cutMitered": 0,
+        "dashes": 0,
+        "dashRefused": 0,
+        "pathfinder": 0,
+        "failed": 0,
+        "offsetSynced": 0
+      }
+    },
+    {
+      "run": "prep20-flow-vibes-wide",
+      "font": "GreatVibes-Regular",
+      "flow": true,
+      "stylesPreserved": true,
+      "reopenPreserved": true,
+      "editable": true,
+      "framesBefore": [
+        {
+          "storyFrames": 2,
+          "characters": 6
+        },
+        {
+          "storyFrames": 2,
+          "characters": 21
+        }
+      ],
+      "framesAfter": [
+        {
+          "storyFrames": 2,
+          "characters": 6
+        },
+        {
+          "storyFrames": 2,
+          "characters": 21
+        }
+      ],
+      "framesReopened": [
+        {
+          "storyFrames": 2,
+          "characters": 6
+        },
+        {
+          "storyFrames": 2,
+          "characters": 21
+        }
+      ],
+      "nativeRouteOK": true,
+      "nativeFixOK": true,
+      "fix": {
+        "gate": "fixed",
+        "paths": 0,
+        "pathLimits": 0,
+        "reordered": 0,
+        "frames": 2,
+        "chars": 24,
+        "charLimits": 6,
+        "mapped": 2,
+        "corners": 151,
+        "keptBeveled": 0,
+        "cutMitered": 0,
+        "dashes": 0,
+        "dashRefused": 0,
+        "pathfinder": 0,
+        "failed": 0,
+        "offsetSynced": 0
+      }
+    }
+  ],
+  "measurements": {
+    "schema": 1,
+    "dpi": 600,
+    "erodePixels": 3,
+    "darkLevel": 32,
+    "total": 5,
+    "passed": 0,
+    "runs": [
+      {
+        "run": "prep20-flow-minion",
+        "font": "MinionPro-Regular",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 179589,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 6309,
+            "correctionMs": 95,
+            "fillExportMs": 3852,
+            "nativeExportMs": 436,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 120051,
+                "damagedCorePt2": 1728.7344,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 4474,
+                "damagedCorePt2": 64.4256,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 28,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 4474,
+                "damagedCorePt2": 64.4256,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 28,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": false
+          }
+        ]
+      },
+      {
+        "run": "prep20-flow-segoe",
+        "font": "SegoeScript",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 266918,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 6457,
+            "correctionMs": 96,
+            "fillExportMs": 3736,
+            "nativeExportMs": 505,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 178729,
+                "damagedCorePt2": 2573.6976,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 7156,
+                "damagedCorePt2": 103.04639999999999,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 42,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 7156,
+                "damagedCorePt2": 103.04639999999999,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 42,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": false
+          }
+        ]
+      },
+      {
+        "run": "prep20-flow-kerberos",
+        "font": "KerberosFang",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 508834,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 71492,
+            "correctionMs": 1609,
+            "fillExportMs": 4016,
+            "nativeExportMs": 31420,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 358728,
+                "damagedCorePt2": 5165.6831999999995,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 32613,
+                "damagedCorePt2": 469.62719999999996,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 30,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 32613,
+                "damagedCorePt2": 469.62719999999996,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 30,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": false
+          }
+        ]
+      },
+      {
+        "run": "prep20-flow-german",
+        "font": "GermanBeauty",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 427253,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 6272,
+            "correctionMs": 79,
+            "fillExportMs": 3828,
+            "nativeExportMs": 435,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 292642,
+                "damagedCorePt2": 4214.0448,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 12592,
+                "damagedCorePt2": 181.32479999999998,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 46,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 12592,
+                "damagedCorePt2": 181.32479999999998,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 46,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": false
+          }
+        ]
+      },
+      {
+        "run": "prep20-flow-vibes-wide",
+        "font": "GreatVibes-Regular",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 194372,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 5705,
+            "correctionMs": 108,
+            "fillExportMs": 2818,
+            "nativeExportMs": 462,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 139074,
+                "damagedCorePt2": 2002.6656,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 23333,
+                "damagedCorePt2": 335.9952,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 35,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 23333,
+                "damagedCorePt2": 335.9952,
+                "textMatchesFill": false,
+                "visibleTextCharacters": 48,
+                "uniqueGlyphs": 35,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": false
+          }
+        ]
+      }
+    ],
+    "gates": {
+      "measuredCases": 5,
+      "routeFillCoreUndamaged": 0,
+      "reopenFillCoreUndamaged": 0,
+      "formattingPreserved": 5,
+      "liveTextEditable": 5,
+      "reopenSnapshotExact": 5,
+      "reopenPixelsExact": 5,
+      "routeExtractionExact": 0
+    }
+  },
+  "automaticRefix": {
+    "passed": true,
+    "storyFrames": 2,
+    "textPreserved": true,
+    "runs": 1,
+    "lastError": 0,
+    "scope": "Minion Pro; three separate COM calls with two four-second idle periods."
+  },
+  "alignmentRegression": {
+    "matchesPriorRecord": true,
+    "managedRestoresAtZero": 10,
+    "nativeSquareControlIsNotManaged": true,
+    "lines": [
+      "op-out   changed   2254.9 pt2   restored vs orig     0.0 pt2",
+      "op-in    changed   2077.8 pt2   restored vs orig     0.0 pt2",
+      "cmp-out  changed   4403.4 pt2   restored vs orig     0.0 pt2",
+      "cmp-in   changed   4235.6 pt2   restored vs orig     0.0 pt2",
+      "tx-out   changed   3871.5 pt2   restored vs orig     0.0 pt2",
+      "tx-in    changed   2488.6 pt2   restored vs orig     0.0 pt2",
+      "txm-out  changed   3587.1 pt2   restored vs orig     0.0 pt2",
+      "txs-out  changed   6493.1 pt2   restored vs orig     0.0 pt2",
+      "txh-in   changed    630.5 pt2   restored vs orig     0.0 pt2",
+      "sq-out   changed   2415.7 pt2   restored vs orig  2415.7 pt2",
+      "th-dash  changed    803.4 pt2   restored vs orig     0.0 pt2",
+      "op-out      left (Outside)  2249.5  right (Inside)    31.2",
+      "op-in       left (Outside)    41.7  right (Inside)  2012.0",
+      "op-out-orig left (Outside)  1112.1  right (Inside)  1047.9",
+      "cmp-out square part vs Illustrator Outside 8.4 pt2",
+      "cmp-in square part vs Illustrator Inside 16.8 pt2; tx-in vs outlined Inside 49.0 pt2",
+      "cmp-in triangle part (open by 4 pt) vs Illustrator Inside on it closed 30.2 pt2",
+      "tx-out vs outlined Outside 70.7 pt2; txm-out vs outlined Outside 521.3 pt2 (x is 6 pt there)",
+      "txs-out stroke outside the letters 7075.5 pt2 against 3725.0 for the Center stroke as drawn: ratio 1.9 (2 = Outside of the drawn weight)",
+      "txh-in (frame at 50%) vs outlined Inside at the drawn weight 29.8 pt2",
+      "thref        tip drawn 1235.4 pt2",
+      "th-dash-orig tip drawn  973.1 pt2",
+      "th-dash      tip drawn 1048.4 pt2"
+    ]
+  },
+  "ownerState": {
+    "illustratorProcesses": 0,
+    "installedHash": "851ff6c11207e070ca08acec46ec0a5dabe7ae9b747ed015e93bf393dbcddbc9",
+    "preferencesRestored": true,
+    "workspaceSnapshotPending": false,
+    "recordedAt": "End of prep-20 stage; superseded by illustrator-native-story-2026-10-29.json"
+  },
+  "acceptance": {
+    "storyPreservation": true,
+    "liveTimer": true,
+    "alignmentBaselineRetained": true,
+    "fullParity": false,
+    "strictMeasurementExitCode": 1
+  },
+  "remaining": [
+    "Same-story cross-frame fill protection fails in all five overlapping flow fixtures; still an investigation target, not a proven native impossibility.",
+    "Searchable PDF text has two paint-pass occurrences (48 extracted nonspace characters for 24 source characters).",
+    "Transformed/path reopen stability needs dedicated fresh-process controls and wider coverage.",
+    "Product UI/identity, broader exports, real-document coverage, undo/redo, and release packaging remain open."
+  ],
+  "rawEvidenceDirectory": "build/ai-parity-2026-10-29",
+  "sha256Manifest": {
+    "build/ai-parity-2026-10-29/prep20-flow-minion-results.json": "8830efcee5a1260ef5f83bd782a1609d68f27748f81042e417e063d01396cb8f",
+    "build/ai-parity-2026-10-29/prep20-flow-minion-host.txt": "6461fc169b232350885cb1ff1f0b57bd8bb1fb91b9afbae279134b72acc80d22",
+    "build/ai-parity-2026-10-29/prep20-flow-segoe-results.json": "bc8c2312622500a7cd5351886cf975a8d8f57e56dbe8778295942d3cf4909709",
+    "build/ai-parity-2026-10-29/prep20-flow-segoe-host.txt": "4b41023b73c0b0eb127d85f145373883209de9027be0afe65800a408e7370602",
+    "build/ai-parity-2026-10-29/prep20-flow-kerberos-results.json": "9cc83f31fb268cc3b078b48ee04e6c606a21384aa617bfc6491ab2bcb548cf91",
+    "build/ai-parity-2026-10-29/prep20-flow-kerberos-host.txt": "421eb15b747cde9bfc4a69cd9de6288dd35bd74cb7f85f081089328eb8cdc336",
+    "build/ai-parity-2026-10-29/prep20-flow-german-results.json": "ce92f88f7d3a8f917860f385625dd8c2422b028a93712a6c2a93646bf7c4d35e",
+    "build/ai-parity-2026-10-29/prep20-flow-german-host.txt": "0e08a68a943fcfb4da23ce7a010d1dc2bf7f78768e2f7f849f0cc7a6a9c1a03c",
+    "build/ai-parity-2026-10-29/prep20-flow-vibes-wide-results.json": "e32eb09fdd53a7cd2acfa754525d1ef40b857452f1a80fbb03e63fb72ea81179",
+    "build/ai-parity-2026-10-29/prep20-flow-vibes-wide-host.txt": "24469dfe6adc901b556f63127fa6b60420b55915cbc7ecde678eade0675186f5",
+    "build/ai-parity-2026-10-29/baseline-flow-minion-results.json": "2cceb4d97e825ded26faff861ecd4e8db579ea4ab57854c2114f5513f7603ef3",
+    "build/ai-parity-2026-10-29/baseline-flow-minion-host.txt": "6461fc169b232350885cb1ff1f0b57bd8bb1fb91b9afbae279134b72acc80d22",
+    "build/ai-parity-2026-10-29/prep20-refix-results.json": "ad1ca6d49471d6986a37ea4fff3a13e7193b855bf48ddcdcb1903d3b194a1983",
+    "build/ai-parity-2026-10-29/prep20-refix-host.txt": "66ca9fbd92343fef74d5392cb3ed5df66eb520a0ff67ad9f6a3a713fb42475af",
+    "build/ai-parity-2026-10-29/prep20-flow-minion-threaded-fill.pdf": "89fc97bc0c2d13bf661c9dd7b7eedf35f846e251015f3809f9d1e073c529abda",
+    "build/ai-parity-2026-10-29/prep20-flow-minion-threaded-native.pdf": "15289ba793f538c04348563037e2a7ef502b61b273523c6c0e2db5f6e761dd0a",
+    "build/ai-parity-2026-10-29/prep20-flow-minion-threaded-route.pdf": "de84f6561b166ecf02a4d7a68c9c2d03a1e47918997dc00923c70ea176cf5a2f",
+    "build/ai-parity-2026-10-29/prep20-flow-minion-threaded-reopen.pdf": "831bbcb8375c414e142944f9e395785352617249334ba4a1c0a229bdc163fae5",
+    "build/ai-parity-2026-10-29/prep20-flow-segoe-threaded-fill.pdf": "db9d486c153b08331f1ebfe0595fcc612f50213365d86ce15f35b4931ca5fd37",
+    "build/ai-parity-2026-10-29/prep20-flow-segoe-threaded-native.pdf": "b6dfc950ca3f77e020a4d4109c9cd50e73fd38f9f646cc7d10f5601cb9d4542c",
+    "build/ai-parity-2026-10-29/prep20-flow-segoe-threaded-route.pdf": "d8079618289f3eb094a3a5cbec010a00b032eb7098b5320fa49ad192d710ad40",
+    "build/ai-parity-2026-10-29/prep20-flow-segoe-threaded-reopen.pdf": "9bf86a7dc18a89908ff2a6c55f6e357549e81f7901fd08af8900c16d46022f9f",
+    "build/ai-parity-2026-10-29/prep20-flow-kerberos-threaded-fill.pdf": "f70158a49a9561d417551f26350f8231404e1d80495148089e05b52eae331a4d",
+    "build/ai-parity-2026-10-29/prep20-flow-kerberos-threaded-native.pdf": "81e80b7ab549080facb41aa9892e610901881efdad40cc8d85e4967aeb7dede8",
+    "build/ai-parity-2026-10-29/prep20-flow-kerberos-threaded-route.pdf": "4eaa2be82aaf7fbe875920432ad17830da66138df9c34ea3effeedccf99207ee",
+    "build/ai-parity-2026-10-29/prep20-flow-kerberos-threaded-reopen.pdf": "4c095827c1e2ad2c527e48b62bed02e027dc6e3107c009af070e0d9d92dc1e2b",
+    "build/ai-parity-2026-10-29/prep20-flow-german-threaded-fill.pdf": "b6d1d19af9dde1ef10f38ea7caf10900c84a24b449a6dc6e653ff0dda2558a41",
+    "build/ai-parity-2026-10-29/prep20-flow-german-threaded-native.pdf": "0787c8e298f6b465721fc6c9a3671d90c789d17b47b28594c718d61dca327645",
+    "build/ai-parity-2026-10-29/prep20-flow-german-threaded-route.pdf": "7accdbeee8011461c2a66f2835e90906af12937ecd41f84e2f8a10267ff9d3b9",
+    "build/ai-parity-2026-10-29/prep20-flow-german-threaded-reopen.pdf": "898424bdb76bf932177c60d12cbaadf33af16eb8631cec76b6da5ef17acfc23b",
+    "build/ai-parity-2026-10-29/prep20-flow-vibes-wide-threaded-fill.pdf": "e3a3b7b007c930350a7d2763549c69fa38c713d6bc1079613dee318ba4b76c40",
+    "build/ai-parity-2026-10-29/prep20-flow-vibes-wide-threaded-native.pdf": "1732c5c43431542bdf3c143cca69fac2249f42fe6008b3dc55cab236ead13dd6",
+    "build/ai-parity-2026-10-29/prep20-flow-vibes-wide-threaded-route.pdf": "b85a7f60e36f54345fdbd0404b2a07b4591854f998b6894f1d611eca06989ecf",
+    "build/ai-parity-2026-10-29/prep20-flow-vibes-wide-threaded-reopen.pdf": "3fba1af3f0dc57af12c6c6c99f21ad3b5178f71eac42cd069fb2fdde5c484249"
+  },
+  "followUp": {
+    "record": "illustrator-native-story-2026-10-29.json",
+    "note": "Rendering/extraction failures here describe the prep-20 per-frame route. Prep-21 native group story fill closes the measured five-font adjacent-story cases; broader parity remains open."
+  }
+}

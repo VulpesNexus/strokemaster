@@ -29,11 +29,11 @@ int main()
     FILETIME stamp;
     Check(!ise_settings::Stamp(&stamp), "no file: no stamp");
     Check(!ise_settings::Load(&s), "no file: Load says so");
-    Check(s.enabled && s.textBehind && s.textStory && !s.textStories && s.shapes && s.wordOutline, "no file: the defaults");
+    Check(s.enabled && s.textBehind && s.textStory && !s.textStories && s.shapes && s.wordOutline && !s.closeHoles, "no file: the defaults");
 
     size_t count = 0;
     const ise_settings::Key* keys = ise_settings::Keys(&count);
-    Check(count == 15, "fifteen switches");
+    Check(count == 17, "seventeen switches");
     // Each switch flipped alone survives a round trip, and no other switch moves.
     for (size_t i = 0; i < count; ++i) {
         Settings w;

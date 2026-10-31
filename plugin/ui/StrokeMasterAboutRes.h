@@ -8,8 +8,8 @@
 // <https://www.gnu.org/licenses/>, for the full text.
 //
 // Additional permission under GPL-3.0 section 7: this file may be combined with
-// the Adobe InDesign SDK, whose sample framework sources are compiled into
-// every plugin built from it. See LICENSE-EXCEPTION.
+// the Adobe InDesign SDK or the Adobe Illustrator SDK, whose sources are
+// compiled into every plugin built with them. See LICENSE-EXCEPTION.
 
 // The About window's resource IDs and fixed strings, shared by the panel plugin's resource
 // script, StrokeMasterAbout.cpp, and tools/AboutHarness. No InDesign types, so the harness

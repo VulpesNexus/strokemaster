@@ -34,6 +34,9 @@ const Tip kTips[] = {
     {kIseUIInsideWidgetID, kIseUIInsideTipKey},
     {kIseUIOpenPathsWidgetID, kIseUIOpenPathsTipKey},
     {kIseUITransparencyWidgetID, kIseUITransparencyTipKey},
+    {kIseUICloseHolesWidgetID, kIseUICloseHolesTipKey},
+    {kIseUIShapeMiterWidgetID, kIseUIShapeMiterTipKey},
+    {kIseUINoteWidgetID, kIseUINoteTipKey},
     {kIseUIRestoreWidgetID, kIseUIRestoreTipKey},
 };
 

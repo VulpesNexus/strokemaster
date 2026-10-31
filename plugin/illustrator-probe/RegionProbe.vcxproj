@@ -31,18 +31,28 @@
       <WarningLevel>Level4</WarningLevel>
       <Optimization>Disabled</Optimization>
     </ClCompile>
-    <ResourceCompile><AdditionalIncludeDirectories>$(OutDir);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories></ResourceCompile>
+    <ResourceCompile><AdditionalIncludeDirectories>$(OutDir);$(MSBuildProjectDirectory)\..\ui;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories></ResourceCompile>
     <Link>
       <ModuleDefinitionFile Condition="'$(RegionProbeTests)' != 'true'">Probe.def</ModuleDefinitionFile>
       <SubSystem Condition="'$(RegionProbeTests)' != 'true'">Windows</SubSystem>
       <SubSystem Condition="'$(RegionProbeTests)' == 'true'">Console</SubSystem>
       <TargetMachine>MachineX64</TargetMachine>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>kernel32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>kernel32.lib;user32.lib;gdi32.lib;comctl32.lib;shell32.lib;shlwapi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup Condition="'$(RegionProbeTests)' != 'true'">
     <ClCompile Include="RegionProbe.cpp" />
+    <ClCompile Include="..\ui\StrokeMasterAbout.cpp">
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>STROKEMASTER_ABOUT_ILLUSTRATOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="..\ui\HostLook.cpp">
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="$(ProbeSdkRoot)\illustratorapi\illustrator\IAIUnicodeString.cpp">
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
     <ClCompile Include="..\..\tools\topology_region.cpp">
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>
@@ -63,6 +73,16 @@
   </ItemGroup>
   <ItemGroup Condition="'$(RegionProbeTests)' == 'true'">
     <ClCompile Include="RegionProbeTests.cpp" />
+    <ClCompile Include="..\ui\StrokeMasterAbout.cpp">
+      <WarningLevel>Level3</WarningLevel>
+      <PreprocessorDefinitions>STROKEMASTER_ABOUT_ILLUSTRATOR;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <ClCompile Include="..\ui\HostLook.cpp">
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
+    <ClCompile Include="$(ProbeSdkRoot)\illustratorapi\illustrator\IAIUnicodeString.cpp">
+      <WarningLevel>Level3</WarningLevel>
+    </ClCompile>
     <ClCompile Include="..\source\IseRegionCore.cpp">
       <WarningLevel>Level3</WarningLevel>
       <Optimization>MaxSpeed</Optimization>

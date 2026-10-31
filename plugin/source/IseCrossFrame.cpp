@@ -21,7 +21,7 @@
 //                   InDesign's own stroke from it, unclipped; off by default),
 //                   word=0|1 (patterns along one outline per word, IsePageItemStroke.cpp's
 //                   PrepareWord; on by default), overlaps, inside, whole_points,
-//                   pattern_points, glyph_tips, effect_corners, open_paths=0|1 (the
+//                   pattern_points, glyph_tips, effect_corners, open_paths, shape_miter=0|1 (the
 //                   page-item switches of IseSettings.h; on by default)
 //   ISE_XF_TRACE    the trace file, appended to
 // Without the control file, the research build follows the StrokeMaster switches as the
@@ -100,6 +100,8 @@ struct Control {
     std::uint32_t suppressShape = 0, suppressText = 0;
     bool deferProbe = false;
     bool miter = true;   // route W's miter correction (IseMiterCore.h)
+    bool textTips = true;   // ... with glyph tips trimmed on live text too (the owner, 2026-10-31)
+    bool closeHoles = false;   // route W fills the holes a run's stroke encloses (the owner, 2026-10-31)
     bool shapes = true;  // page-item strokes (IsePageItemStroke.cpp)
     bool shapesAlone = false;   // page-item strokes also when text is left to InDesign (the switches)
     ise_page_stroke::Coverage coverage;   // what page-item strokes may take over
@@ -111,11 +113,14 @@ Control FromSettings(const ise_settings::Settings& s)
     Control c;
     c.mode = !s.enabled || !s.textBehind ? Mode::Native : !s.textStory ? Mode::RouteW : s.textStories ? Mode::Overlap : Mode::Story;
     c.miter = s.enabled && s.textBehind && s.textMiter;
+    c.textTips = s.enabled && s.glyphTips;
+    c.closeHoles = s.enabled && s.textBehind && s.closeHoles;
     c.shapes = s.enabled && s.shapes;
     c.shapesAlone = true;
     c.coverage.transparency = s.transparency;
     c.coverage.wordOutline = s.wordOutline;
     c.coverage.wholePoints = s.wholePoints;
+    c.coverage.shapeMiter = s.shapeMiter;
     c.coverage.glyphTips = s.glyphTips;
     c.coverage.effectCorners = s.effectCorners;
     c.coverage.patternPoints = s.patternPoints;
@@ -191,10 +196,15 @@ void ReloadControl()
             c.coverage.inside = v != "0";
         } else if (k == "whole_points") {
             c.coverage.wholePoints = v != "0";
+        } else if (k == "shape_miter") {
+            c.coverage.shapeMiter = v != "0";
         } else if (k == "pattern_points") {
             c.coverage.patternPoints = v != "0";
         } else if (k == "glyph_tips") {
             c.coverage.glyphTips = v != "0";
+            c.textTips = c.coverage.glyphTips;
+        } else if (k == "close_holes") {
+            c.closeHoles = v == "1";
         } else if (k == "effect_corners") {
             c.coverage.effectCorners = v != "0";
         } else if (k == "open_paths") {
@@ -438,6 +448,10 @@ Mode CurrentMode() { return Ctl().mode; }
 bool RouteWEnabled() { return Ctl().mode != Mode::Native; }
 
 bool MiterCorrectionEnabled() { return Ctl().miter; }
+
+bool TextTipsEnabled() { return Ctl().textTips; }
+
+bool CloseHolesEnabled() { return Ctl().closeHoles; }
 
 void NoteParcel(const IParcelShape* parcelShape, char tag, int32 flags)
 {

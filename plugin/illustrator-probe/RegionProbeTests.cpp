@@ -12,6 +12,7 @@ SPBasicSuite basic{};AILiveEffectSuite live{};AIArtSuite art{};AIPathSuite path{
 AIPathStyleSuite paint{};AIArtStyleSuite styles{};AIArtStyleParserSuite parser{};
 AIDictionarySuite dict{};AIDocumentSuite doc{};AIBlendStyleSuite blend{};AIMaskSuite maskSuite{};
 int checks=0,acquired=0,released=0,registered=0,allocated=0,freed=0,failAt=0,calls=0;
+int copyFailure=0,outlineFailure=0,styleFailure=0,disposedCopies=0,outlinedCopies=0;
 void Check(bool x,const char* s){++checks;if(!x){std::cerr<<"FAIL: "<<s<<'\n';std::exit(1);}}
 ASErr Step(){return ++calls==failAt?-1234:kNoErr;}
 void Setup(){
@@ -64,6 +65,9 @@ void Setup(){
         }else if(registered==2){
             Check(std::strcmp(d->name,region_probe::strokeBehindIdentity)==0&&
                   d->prefersAsInput==region_probe::censusInput,"stroke-behind third, same input as the census");
+        }else if(registered==4){
+            Check(std::strcmp(d->name,region_probe::closeHolesIdentity)==0&&d->prefersAsInput==region_probe::censusInput,
+                  "Close holes fifth, the census's input (text as outlines)");
         }else{
             Check(std::strcmp(d->name,region_probe::textBehindIdentity)==0&&
                   (d->prefersAsInput&kTextFrameInputArt)&&!(d->prefersAsInput&kPathInputArt),
@@ -92,6 +96,51 @@ namespace ise { namespace topology {
 Result process(Request const&) noexcept { Result r{};r.status=Status::Refused;return r; }
 }}
 int main(){
+    // Never the user's switches: a settings file of the tests' own (IllustratorSettings.h).
+    { wchar_t tmp[MAX_PATH] = {}; GetTempPathW(MAX_PATH, tmp); wcscat_s(tmp, L"strokemaster-mock-settings.txt"); DeleteFileW(tmp); SetEnvironmentVariableW(L"STROKEMASTER_SETTINGS", tmp); }
+
+    {
+        AITextFrameSuite text{};
+        AIPaintStyleSuite paintStyle{};
+        ATE::TextRangeSuite ranges{};
+        ATE::CharFeaturesSuite features{};
+        ATE::TextFrameSuite frames{};
+        art.DuplicateArt=[](AIArtHandle source,ai::int16 order,AIArtHandle prep,AIArtHandle* out)->AIErr{
+            Check(source==reinterpret_cast<AIArtHandle>(101)&&prep==source&&order==kPlaceAbove,
+                  "outline copy uses the source frame placement");
+            *out=copyFailure?nullptr:reinterpret_cast<AIArtHandle>(102);
+            return copyFailure?-456:kNoErr;
+        };
+        art.DisposeArt=[](AIArtHandle a)->AIErr{
+            Check(a==reinterpret_cast<AIArtHandle>(102),"outline helper never disposes live source");
+            ++disposedCopies; return kNoErr;
+        };
+        text.CreateOutline=[](AIArtHandle a,AIArtHandle* out)->AIErr{
+            Check(a==reinterpret_cast<AIArtHandle>(102),"only owned copy is outlined");
+            ++outlinedCopies;
+            *out=outlineFailure?nullptr:reinterpret_cast<AIArtHandle>(103);
+            return outlineFailure?-457:kNoErr;
+        };
+        styles.SetArtStyle=[](AIArtHandle a,AIArtStyleHandle style)->AIErr{
+            Check(a==reinterpret_cast<AIArtHandle>(102)&&!style,"only copy loses object appearance");
+            return styleFailure?-458:kNoErr;
+        };
+        region_probe::FixSuites s{art,path,paint,paintStyle,styles,parser,text,ranges,features,frames};
+        AIArtHandle outline=reinterpret_cast<AIArtHandle>(999);
+        copyFailure=1;
+        Check(region_probe::CopyOutline(s,reinterpret_cast<AIArtHandle>(101),&outline)==-456&&
+              !outline&&disposedCopies==0&&outlinedCopies==0,"copy failure leaves source intact");
+        copyFailure=0; styleFailure=1;
+        Check(region_probe::CopyOutline(s,reinterpret_cast<AIArtHandle>(101),&outline)==-458&&
+              !outline&&disposedCopies==1&&outlinedCopies==0,"style failure releases copy before outlining");
+        styleFailure=0; outlineFailure=1;
+        Check(region_probe::CopyOutline(s,reinterpret_cast<AIArtHandle>(101),&outline)==-457&&
+              !outline&&disposedCopies==2&&outlinedCopies==1,"outline failure releases its copy");
+        outlineFailure=0;
+        Check(region_probe::CopyOutline(s,reinterpret_cast<AIArtHandle>(101),&outline)==kNoErr&&
+              outline==reinterpret_cast<AIArtHandle>(103)&&disposedCopies==3&&outlinedCopies==2,
+              "success releases copy and returns the owned outline");
+    }
     {
         std::array<AIPathSegment,4> square{};
         const double x[4]={0,10,10,0},y[4]={0,0,10,10};
@@ -122,7 +171,7 @@ int main(){
     }
     Setup();{
         auto m=Startup();
-        Check(registered==4&&m.globals!=nullptr,"all four effects registered and globals allocated");
+        Check(registered==5&&m.globals!=nullptr,"all five effects registered and globals allocated");
         auto* state=static_cast<region_probe::State*>(m.globals);
         Check(state->effect==reinterpret_cast<AILiveEffectHandle>(1)&&
               state->census==reinterpret_cast<AILiveEffectHandle>(2)&&
@@ -186,9 +235,62 @@ int main(){
         Check(region_probe::AppearanceStrokeBelow(m,*state)!=kNoErr&&
               std::strcmp(state->appearance.gate,"suites")==0&&state->appearance.styled==0,
               "appearance refuses without its suites and styles nothing");
+        Check(region_probe::StoryFill(m,*state)!=kNoErr&&
+              std::strcmp(state->appearance.gate,"story.suites")==0&&state->appearance.styled==0,
+              "story fill refuses without suites before writing any style");
         Check(region_probe::Payload(m,*state,"status",true,kNoErr,payload,sizeof(payload))==kNoErr&&
-              std::strstr(payload,"\"appearance\":{\"gate\":\"suites\",\"frames\":0,\"styled\":0"),
+              std::strstr(payload,"\"appearance\":{\"gate\":\"story.suites\",\"frames\":0,\"styled\":0"),
               "status reports the appearance gate");
+        Check(region_probe::StoryFill(m,*state,true)!=kNoErr&&std::strcmp(state->appearance.gate,"story.suites")==0,
+              "the separate-stories opt-in refuses without suites too");
+        // The panel's switches (IllustratorSettings.h): InDesign's key=0|1 format, defaults as InDesign's
+        // panel where the correction is the same, the opt-ins and Trim glyph tips off.
+        {
+            ai_settings::Settings d;
+            Check(d.enabled&&d.textBehind&&d.textStory&&!d.textStories&&d.textMiter&&d.wholePoints&&d.glyphTips&&
+                  d.overlaps&&d.patternPoints&&!d.outsideDashes&&d.followEdits,"switch defaults");
+            ai_settings::Settings s;
+            ai_settings::Parse("text_stories=1\r\nglyph_tips=0\nbogus=1\nfollow_edits=x\noutside_dashes=1",s);
+            Check(s.textStories&&!s.glyphTips&&s.outsideDashes&&s.followEdits,"parse: known keys set, unknown and malformed skipped");
+            ai_settings::Settings r;
+            ai_settings::Parse(ai_settings::Format(s).c_str(),r);
+            Check(r==s,"format and parse round-trip");
+            Check(ai_settings::Format(d).find("text_stories=0\n")!=std::string::npos,"one key=0|1 line per switch");
+            ai_settings::Settings b;
+            ai_settings::Parse("\xEF\xBB\xBF" "enabled = 0\r\n  glyph_tips=\t0",b);
+            Check(!b.enabled&&!b.glyphTips,"a BOM and spaces around '=' are read, as InDesign's reader");
+            wchar_t over[MAX_PATH]={};
+            Check(GetEnvironmentVariableW(L"STROKEMASTER_SETTINGS",over,MAX_PATH)>0&&ai_settings::Path()==over,
+                  "the tests use a settings file of their own");
+        }
+        // The text route's decision (2026-10-30): one stroke below first, so a recolor of the
+        // fills stays drawn without the plugin; then one fill above; then FillFirst off.
+        {
+            region_probe::CharPaint c;
+            Check(region_probe::ChooseRoute(c)==region_probe::kRouteNone,"no characters: no route");
+            c.any=true;c.noStroke=false;c.oneStroke=true;c.oneFill=true;
+            Check(region_probe::ChooseRoute(c)==region_probe::kRouteStroke,"one stroke and one fill: the stroke below");
+            c.oneStroke=false;
+            Check(region_probe::ChooseRoute(c)==region_probe::kRouteFill,"mixed strokes, one fill: the fill above");
+            c.oneFill=false;
+            Check(region_probe::ChooseRoute(c)==region_probe::kRouteFillFirst,"both mixed: FillFirst off");
+            c.noStroke=true;
+            Check(region_probe::ChooseRoute(c)==region_probe::kRouteNone,"no stroke anywhere: no route");
+            AIColor red{},red2{},gray{};
+            red.kind=red2.kind=kThreeColor;
+            red.c.rgb.red=red2.c.rgb.red=0.8f;red.c.rgb.green=red2.c.rgb.green=0.1f;red.c.rgb.blue=red2.c.rgb.blue=0.1f;
+            gray.kind=kGrayColor;gray.c.g.gray=0.8f;
+            Check(region_probe::SameSolid(red,red2)&&!region_probe::SameSolid(red,gray),"solid colors compare by kind and components");
+            red2.c.rgb.blue=0.2f;
+            Check(!region_probe::SameSolid(red,red2),"one component apart is another color");
+            AIStrokeStyle s1{},s2{};
+            s1.color=s2.color=red;s1.width=s2.width=7;s1.join=s2.join=kAIMiterJoin;s1.miterLimit=s2.miterLimit=4;
+            Check(region_probe::SameStroke(s1,s2),"identical strokes compare equal");
+            s2.dash.length=2;s2.dash.array[0]=3;s2.dash.array[1]=2;
+            Check(!region_probe::SameStroke(s1,s2),"a dashed stroke differs from a solid one");
+            s2.dash.length=0;s2.width=8;
+            Check(!region_probe::SameStroke(s1,s2),"another weight is another stroke");
+        }
         // Stroke-behind refusals pass through; the transform itself has its own suite.
         go.effect=state->strokeBehind;go.art=nullptr;
         Check(PluginMain(goCaller,selector,&go)==kNoErr,"stroke-behind with no art passes through");

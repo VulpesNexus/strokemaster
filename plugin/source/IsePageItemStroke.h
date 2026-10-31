@@ -15,6 +15,7 @@ struct Coverage {
     bool transparency = true;    // items with opacity or blending (object, stroke, or fill level); effects on a stroke or fill: never
     bool probeNative = false;    // research: InDesign's own stroke drawn from the event, unclipped
     bool wordOutline = true;     // patterns along one outline per word (Center and Inside also need overlaps)
+    bool shapeMiter = true;      // Center's interior miters clipped to the fill (else whole, as InDesign draws them)
     bool wholePoints = true;     // past the limit, a shape's own points kept whole (else beveled as InDesign)
     bool glyphTips = true;       // within the limit, glyph tips trimmed
     bool effectCorners = true;   // corner-effect corners told apart (beveled past the limit, trimmed within)

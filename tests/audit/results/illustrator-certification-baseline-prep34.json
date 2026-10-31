@@ -1,0 +1,2628 @@
+{
+  "schema": 1,
+  "jobs": {
+    "story-minion-rgb": {
+      "gate": "story.filled",
+      "damage": 0.0,
+      "native": 1824.94,
+      "halo": 0.0,
+      "recolor": 688.29,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-cmyk": {
+      "gate": "story.filled",
+      "damage": 0.0,
+      "native": 1816.83,
+      "halo": 0.0,
+      "recolor": 689.66,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-spot": {
+      "gate": "story.filled",
+      "damage": 0.0,
+      "native": 1816.83,
+      "halo": 0.0,
+      "recolor": 689.66,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-mixfill": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 2781.0,
+      "halo": 14.89,
+      "recolor": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 14.89
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-uniform": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 2764.63,
+      "halo": 14.89,
+      "recolor": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 14.89
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-mixboth": {
+      "gate": "story.refused-restored",
+      "damage": 1836.72,
+      "native": 1836.72,
+      "halo": 0.0,
+      "recolor": 1835.11,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 1836.72,
+        "halo": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-perframe": {
+      "gate": "native",
+      "damage": 54.71,
+      "native": 1824.94,
+      "halo": 0.0,
+      "recolor": 688.09,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 54.71,
+        "halo": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-separate": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 2764.63,
+      "halo": 14.89,
+      "recolor": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        26,
+        26
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 14.89
+      },
+      "host": "host=30.8.2"
+    },
+    "story-minion-separate-off": {
+      "gate": "story.separate",
+      "damage": 2764.63,
+      "native": 2764.63,
+      "halo": 0.0,
+      "recolor": 2766.34,
+      "text": [
+        48,
+        24
+      ],
+      "glyphs": [
+        52,
+        26
+      ],
+      "fixed": {
+        "damage": 2764.63,
+        "halo": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-segoes-rgb": {
+      "gate": "story.filled",
+      "damage": 0.01,
+      "native": 2668.58,
+      "halo": 0.0,
+      "recolor": 998.6,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 0.01,
+        "halo": 3.86
+      },
+      "host": "host=30.8.2"
+    },
+    "story-segoes-mixfill": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 4026.33,
+      "halo": 30.04,
+      "recolor": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 32.43
+      },
+      "host": "host=30.8.2"
+    },
+    "story-segoes-uniform": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 4012.16,
+      "halo": 33.61,
+      "recolor": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 36.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-kerber-rgb": {
+      "gate": "story.filled",
+      "damage": 6.47,
+      "native": 5343.44,
+      "halo": 1.09,
+      "recolor": 1864.76,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 6.51,
+        "halo": 492.02
+      },
+      "host": "host=30.8.2"
+    },
+    "story-kerber-mixfill": {
+      "gate": "story.stroked",
+      "damage": 3.86,
+      "native": 7714.74,
+      "halo": 940.06,
+      "recolor": 3.6,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 3.86,
+        "halo": 2042.28
+      },
+      "host": "host=30.8.2"
+    },
+    "story-kerber-uniform": {
+      "gate": "story.stroked",
+      "damage": 2.28,
+      "native": 7676.88,
+      "halo": 940.2,
+      "recolor": 2.48,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 2.28,
+        "halo": 2042.7
+      },
+      "host": "host=30.8.2"
+    },
+    "story-german-rgb": {
+      "gate": "story.filled",
+      "damage": 0.0,
+      "native": 4298.44,
+      "halo": 0.0,
+      "recolor": 1523.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        43,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "story-german-mixfill": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 6322.68,
+      "halo": 29.65,
+      "recolor": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 29.65
+      },
+      "host": "host=30.8.2"
+    },
+    "story-german-uniform": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 6310.61,
+      "halo": 29.65,
+      "recolor": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 29.65
+      },
+      "host": "host=30.8.2"
+    },
+    "story-greatv-rgb": {
+      "gate": "story.filled",
+      "damage": 0.09,
+      "native": 4402.38,
+      "halo": 0.0,
+      "recolor": 741.4,
+      "text": [
+        48,
+        48
+      ],
+      "glyphs": [
+        87,
+        55
+      ],
+      "fixed": {
+        "damage": 0.09,
+        "halo": 192.64
+      },
+      "host": "host=30.8.2"
+    },
+    "story-greatv-mixfill": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 6159.59,
+      "halo": 43.4,
+      "recolor": 0.0,
+      "text": [
+        48,
+        48
+      ],
+      "glyphs": [
+        55,
+        55
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 308.25
+      },
+      "host": "host=30.8.2"
+    },
+    "story-greatv-uniform": {
+      "gate": "story.stroked",
+      "damage": 0.0,
+      "native": 6102.6,
+      "halo": 43.4,
+      "recolor": 0.0,
+      "text": [
+        48,
+        48
+      ],
+      "glyphs": [
+        55,
+        55
+      ],
+      "fixed": {
+        "damage": 0.0,
+        "halo": 308.28
+      },
+      "host": "host=30.8.2"
+    },
+    "runs-hidden": {
+      "gate": "story.runs",
+      "order": [
+        "TRT",
+        "TTR"
+      ],
+      "groups": 1,
+      "damage": 0.0,
+      "native": 5499.65,
+      "halo": 32.73,
+      "text": [
+        48,
+        48
+      ],
+      "glyphs": [
+        56,
+        56
+      ],
+      "host": "host=30.8.2"
+    },
+    "runs-split3": {
+      "gate": "story.runs",
+      "order": [
+        "TRTT",
+        "TRTT"
+      ],
+      "groups": 1,
+      "damage": 141.78,
+      "native": 8260.17,
+      "halo": 48.82,
+      "text": [
+        72,
+        72
+      ],
+      "glyphs": [
+        84,
+        84
+      ],
+      "host": "host=30.8.2"
+    },
+    "runs-split4": {
+      "gate": "story.runs",
+      "order": [
+        "TTRTT",
+        "TTRTT"
+      ],
+      "groups": 2,
+      "damage": 141.78,
+      "native": 11013.88,
+      "halo": 52.85,
+      "text": [
+        96,
+        96
+      ],
+      "glyphs": [
+        111,
+        111
+      ],
+      "host": "host=30.8.2"
+    },
+    "correct-split4": {
+      "gate": null,
+      "order": [
+        "TTRTT",
+        "TTRTT"
+      ],
+      "groups": 2,
+      "damage": 141.78,
+      "native": 11013.88,
+      "halo": 52.85,
+      "text": [
+        96,
+        96
+      ],
+      "glyphs": [
+        111,
+        111
+      ],
+      "host": "host=30.8.2"
+    },
+    "panel": {
+      "panel": "true",
+      "menu": "true",
+      "rows": "17",
+      "storiesToggled": true,
+      "restored": true,
+      "masterOffEnabled": "5",
+      "masterOffCorrect": "false",
+      "groups": 1,
+      "framesInGroup": 2,
+      "groupsAfterUndo": 0,
+      "settingsLeft": false,
+      "damage": 0.0,
+      "text": [
+        24,
+        24
+      ],
+      "glyphs": [
+        27,
+        27
+      ],
+      "host": "host=30.8.2"
+    },
+    "switches": {
+      "tips": 15,
+      "tabTo": 4102,
+      "square": [
+        8,
+        16,
+        8
+      ],
+      "routeLimit": [
+        1.906,
+        4.0
+      ],
+      "glyphs": [
+        59,
+        59
+      ],
+      "stages": {
+        "story-on": {
+          "damage": {
+            "story": 223.5,
+            "separate": 2526.68,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 1,
+          "frames": 0,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "story-behind-off": {
+          "damage": {
+            "story": 2988.49,
+            "separate": 2526.68,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 0,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 2,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 1,
+          "undashed": 0
+        },
+        "story-behind-on": {
+          "damage": {
+            "story": 223.5,
+            "separate": 2526.68,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 1,
+          "frames": 0,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "story-frames": {
+          "damage": {
+            "story": 281.74,
+            "separate": 2526.68,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 0,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 2,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 1,
+          "undashed": 0
+        },
+        "story-again": {
+          "damage": {
+            "story": 223.5,
+            "separate": 2526.68,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 1,
+          "frames": 0,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "separate-on": {
+          "damage": {
+            "story": 0.0,
+            "separate": 0.0,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 2,
+          "gate": "corrected",
+          "stories": 2,
+          "frames": 0,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "separate-off": {
+          "damage": {
+            "story": 0.0,
+            "separate": 133.44,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 2,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 1,
+          "undashed": 0
+        },
+        "frames-behind-off": {
+          "damage": {
+            "story": 223.5,
+            "separate": 2526.68,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 2,
+          "paths": 0,
+          "unrouted": 2,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "frames-behind-on": {
+          "damage": {
+            "story": 0.0,
+            "separate": 133.44,
+            "miter": 688.1,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 2,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "miter-on": {
+          "damage": {
+            "story": 0.0,
+            "separate": 133.44,
+            "miter": 0.0,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 1,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "miter-off": {
+          "damage": {
+            "story": 0.0,
+            "separate": 133.44,
+            "miter": 0.0,
+            "dashes": 1531.01
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 1,
+          "paths": 0,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "dashes-on": {
+          "damage": {
+            "story": 0.0,
+            "separate": 133.44,
+            "miter": 0.0,
+            "dashes": 0.0
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 0,
+          "paths": 1,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 0
+        },
+        "dashes-off": {
+          "damage": {
+            "story": 0.0,
+            "separate": 133.44,
+            "miter": 0.0,
+            "dashes": 0.0
+          },
+          "groups": 1,
+          "gate": "corrected",
+          "stories": 0,
+          "frames": 0,
+          "paths": 1,
+          "unrouted": 0,
+          "dissolved": 0,
+          "undashed": 1
+        }
+      },
+      "host": "host=30.8.2"
+    },
+    "auto": {
+      "afterEdit": {
+        "old-text": {
+          "routed": true
+        },
+        "old-path": {
+          "limit": "4"
+        },
+        "locked-path": {
+          "limit": "4"
+        },
+        "new-text": {
+          "routed": true
+        },
+        "new-path": {
+          "limit": "5.76"
+        },
+        "bare-path": {
+          "limit": "10"
+        }
+      },
+      "afterMoves": {
+        "old-text": {
+          "routed": true
+        },
+        "old-path": {
+          "limit": "5.76"
+        },
+        "locked-path": {
+          "limit": "4"
+        },
+        "new-text": {
+          "routed": true
+        },
+        "new-path": {
+          "limit": "3"
+        },
+        "bare-path": {
+          "limit": "10"
+        }
+      },
+      "takenBack": "3",
+      "refix": {
+        "automatic": 4,
+        "released": 1,
+        "skipped": 0
+      },
+      "host": "host=30.8.2"
+    },
+    "p32": {
+      "squareDoubledWidth": "12",
+      "objectStrokeOrder": "sCFS",
+      "objectStrokeLimit": "2.092",
+      "threadParents": [
+        "GroupItem",
+        "GroupItem",
+        "True"
+      ],
+      "squareInside": true,
+      "squareWidth": "6",
+      "takenBackLimit": "9",
+      "takenBackReleased": "1",
+      "refix": {
+        "automatic": 3,
+        "released": 1,
+        "threaded": 1
+      },
+      "host": "host=30.8.2"
+    },
+    "holes": {
+      "fonts": [
+        "GoreFontII",
+        "MinionPro-Regular"
+      ],
+      "GoreFontII": {
+        "off": false,
+        "on": true,
+        "off-again": false
+      },
+      "MinionPro-Regular": {
+        "off": false,
+        "on": true,
+        "off-again": false
+      },
+      "effect": {
+        "passed": 0,
+        "gate": "published"
+      },
+      "host": "host=30.8.2"
+    },
+    "refix": {
+      "text": [
+        120,
+        120,
+        120
+      ],
+      "glyphs": [
+        180,
+        180,
+        132
+      ],
+      "A": {
+        "damage": 0.0,
+        "recolor": 64.8
+      },
+      "B": {
+        "damage": 0.0,
+        "recolor": 0.0
+      },
+      "C": {
+        "damage": 0.0,
+        "recolor": 0.0
+      },
+      "D": {
+        "damage": 0.0,
+        "recolor": 13.22
+      },
+      "E": {
+        "damage": 0.0,
+        "recolor": 0.0
+      },
+      "host": "host=30.8.2"
+    },
+    "exports": {
+      "pdf": {
+        "damage": 0.0,
+        "native": 3957.93
+      },
+      "png": {
+        "damage": 6.22,
+        "native": 4210.91
+      },
+      "pdfx4.pdf.text": 48,
+      "pdfx4.pdf.glyphs": 69,
+      "pdfx4.pdf": {
+        "damage": 0.0,
+        "native": 3957.93
+      },
+      "pdfx1a.pdf.text": 48,
+      "pdfx1a.pdf.glyphs": 69,
+      "pdfx1a.pdf": {
+        "damage": 0.0,
+        "native": 3957.93
+      },
+      "jpg": {
+        "damage": 6.22,
+        "native": 4210.91
+      },
+      "text": [
+        48,
+        48
+      ],
+      "glyphs": [
+        69,
+        53
+      ],
+      "host": "host=30.8.2"
+    },
+    "census": {
+      "rows": {
+        "0.squares": {
+          "escaping": 0.0,
+          "stray": 475.59,
+          "holes": 19.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "0.text": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "0.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.5,
+          "points_missing": 6.34,
+          "spill": 0.0
+        },
+        "0.all": {
+          "escaping": 0.14,
+          "stray": 475.59,
+          "holes": 24.5,
+          "points_missing": 6.34,
+          "spill": 0.0
+        },
+        "1.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "1.text": {
+          "escaping": 0.16,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "1.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "1.all": {
+          "escaping": 0.16,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "2.squares": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 13.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "2.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "2.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 10.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "2.all": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 23.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "3.squares": {
+          "escaping": 0.0,
+          "stray": 22.39,
+          "holes": 11.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "3.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "3.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 3.5,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "3.all": {
+          "escaping": 0.0,
+          "stray": 22.39,
+          "holes": 14.5,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "4.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "4.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "4.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 162.16,
+          "spill": 0.0
+        },
+        "4.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 162.16,
+          "spill": 0.0
+        },
+        "5.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "5.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "5.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.28,
+          "spill": 0.0
+        },
+        "5.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.28,
+          "spill": 0.0
+        },
+        "6.squares": {
+          "escaping": 0.0,
+          "stray": 479.05,
+          "holes": 0.8,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "6.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "6.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.3,
+          "points_missing": 162.34,
+          "spill": 0.0
+        },
+        "6.all": {
+          "escaping": 0.0,
+          "stray": 479.05,
+          "holes": 6.09,
+          "points_missing": 162.34,
+          "spill": 0.0
+        },
+        "7.squares": {
+          "escaping": 0.0,
+          "stray": 479.06,
+          "holes": 1.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "7.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "7.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.3,
+          "points_missing": 162.12,
+          "spill": 0.0
+        },
+        "7.all": {
+          "escaping": 0.0,
+          "stray": 479.06,
+          "holes": 1.3,
+          "points_missing": 162.12,
+          "spill": 0.0
+        },
+        "8.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "8.text": {
+          "escaping": 0.12,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "8.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "8.all": {
+          "escaping": 0.12,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "9.squares": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 16.12,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "9.text": {
+          "escaping": 0.12,
+          "stray": 0.0,
+          "holes": 2.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "9.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 8.47,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "9.all": {
+          "escaping": 0.12,
+          "stray": 4.62,
+          "holes": 27.56,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "10.squares": {
+          "escaping": 0.0,
+          "stray": 2.47,
+          "holes": 15.59,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "10.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.92,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "10.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 14.02,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "10.all": {
+          "escaping": 0.0,
+          "stray": 2.47,
+          "holes": 35.53,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "11.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "11.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "11.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.09,
+          "spill": 0.0
+        },
+        "11.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.09,
+          "spill": 0.0
+        },
+        "12.squares": {
+          "escaping": 3.95,
+          "stray": 11.25,
+          "holes": 0.94,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "12.text": {
+          "escaping": 10.97,
+          "stray": 7.27,
+          "holes": 5.05,
+          "points_missing": 0.0,
+          "spill": 25.58
+        },
+        "12.thorn": {
+          "escaping": 3.92,
+          "stray": 7.53,
+          "holes": 0.83,
+          "points_missing": 6.83,
+          "spill": 3.86
+        },
+        "12.all": {
+          "escaping": 18.84,
+          "stray": 26.05,
+          "holes": 6.81,
+          "points_missing": 6.83,
+          "spill": 29.44
+        },
+        "13.squares": {
+          "escaping": 0.0,
+          "stray": 470.3,
+          "holes": 18.61,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "13.text": {
+          "escaping": 1.92,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "13.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 6.2,
+          "points_missing": 162.83,
+          "spill": 0.0
+        },
+        "13.all": {
+          "escaping": 1.92,
+          "stray": 470.3,
+          "holes": 24.81,
+          "points_missing": 162.83,
+          "spill": 0.0
+        },
+        "14.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "14.text": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "14.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.31,
+          "spill": 0.0
+        },
+        "14.all": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.31,
+          "spill": 0.0
+        },
+        "15.squares": {
+          "escaping": 0.0,
+          "stray": 475.59,
+          "holes": 19.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "15.text": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "15.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.5,
+          "points_missing": 6.34,
+          "spill": 0.0
+        },
+        "15.all": {
+          "escaping": 0.14,
+          "stray": 475.59,
+          "holes": 24.5,
+          "points_missing": 6.34,
+          "spill": 0.0
+        },
+        "16.squares": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 13.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "16.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "16.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 10.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "16.all": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 23.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "17.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "17.text": {
+          "escaping": 0.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "17.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "17.all": {
+          "escaping": 0.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "18.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 197.5,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "18.text": {
+          "escaping": 0.16,
+          "stray": 0.0,
+          "holes": 82.2,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "18.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 22.12,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "18.all": {
+          "escaping": 0.16,
+          "stray": 0.0,
+          "holes": 301.83,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "19.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "19.text": {
+          "escaping": 0.22,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "19.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 5.78,
+          "spill": 0.0
+        },
+        "19.all": {
+          "escaping": 0.22,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 5.78,
+          "spill": 0.0
+        },
+        "20.squares": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 49.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "20.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "20.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 11.61,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "20.all": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 60.61,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "21.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "21.text": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "21.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.25,
+          "spill": 0.0
+        },
+        "21.all": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.25,
+          "spill": 0.0
+        },
+        "22.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "22.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "22.thorn": {
+          "escaping": 0.02,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.09,
+          "spill": 0.0
+        },
+        "22.all": {
+          "escaping": 0.02,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.09,
+          "spill": 0.0
+        },
+        "23.squares": {
+          "escaping": 0.0,
+          "stray": 512.83,
+          "holes": 10.36,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "23.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "23.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 8.34,
+          "points_missing": 8.03,
+          "spill": 0.0
+        },
+        "23.all": {
+          "escaping": 0.0,
+          "stray": 512.83,
+          "holes": 18.7,
+          "points_missing": 8.03,
+          "spill": 0.0
+        },
+        "24.squares": {
+          "escaping": 0.0,
+          "stray": 12.0,
+          "holes": 7.11,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "24.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "24.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 3.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "24.all": {
+          "escaping": 0.0,
+          "stray": 12.0,
+          "holes": 10.11,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "25.squares": {
+          "escaping": 0.08,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "25.text": {
+          "escaping": 0.59,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "25.thorn": {
+          "escaping": 0.05,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.36,
+          "spill": 0.0
+        },
+        "25.all": {
+          "escaping": 0.72,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.36,
+          "spill": 0.0
+        },
+        "26.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "26.text": {
+          "escaping": 0.19,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "26.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "26.all": {
+          "escaping": 0.19,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "27.squares": {
+          "escaping": 0.0,
+          "stray": 368.78,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "27.text": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "27.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.02,
+          "points_missing": 162.12,
+          "spill": 0.0
+        },
+        "27.all": {
+          "escaping": 0.14,
+          "stray": 368.78,
+          "holes": 0.02,
+          "points_missing": 162.12,
+          "spill": 0.0
+        },
+        "28.squares": {
+          "escaping": 0.0,
+          "stray": 185.86,
+          "holes": 2211.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "28.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 1302.03,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "28.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 484.0,
+          "points_missing": 162.12,
+          "spill": 0.0
+        },
+        "28.all": {
+          "escaping": 0.0,
+          "stray": 185.86,
+          "holes": 3997.03,
+          "points_missing": 162.12,
+          "spill": 0.0
+        },
+        "29.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "29.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "29.thorn": {
+          "escaping": 0.0,
+          "stray": 209.31,
+          "holes": 6.89,
+          "points_missing": 163.28,
+          "spill": 0.0
+        },
+        "29.all": {
+          "escaping": 0.0,
+          "stray": 209.31,
+          "holes": 6.89,
+          "points_missing": 163.28,
+          "spill": 0.0
+        },
+        "30.squares": {
+          "escaping": 0.0,
+          "stray": 380.58,
+          "holes": 0.77,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "30.text": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "30.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.02,
+          "points_missing": 161.81,
+          "spill": 0.0
+        },
+        "30.all": {
+          "escaping": 0.14,
+          "stray": 380.58,
+          "holes": 0.78,
+          "points_missing": 161.81,
+          "spill": 0.0
+        },
+        "31.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.7,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "31.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "31.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.34,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "31.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 6.05,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "32.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 1.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "32.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "32.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.38,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "32.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 6.38,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "33.squares": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 13.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "33.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "33.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 10.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "33.all": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 23.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "34.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "34.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "34.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.28,
+          "spill": 0.0
+        },
+        "34.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.28,
+          "spill": 0.0
+        },
+        "35.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "35.text": {
+          "escaping": 0.16,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "35.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "35.all": {
+          "escaping": 0.16,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "36.squares": {
+          "escaping": 0.0,
+          "stray": 475.59,
+          "holes": 19.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "36.text": {
+          "escaping": 0.14,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "36.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.5,
+          "points_missing": 6.34,
+          "spill": 0.0
+        },
+        "36.all": {
+          "escaping": 0.14,
+          "stray": 475.59,
+          "holes": 24.5,
+          "points_missing": 6.34,
+          "spill": 0.0
+        },
+        "37.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "37.text": {
+          "escaping": 0.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "37.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "37.all": {
+          "escaping": 0.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.3,
+          "spill": 0.0
+        },
+        "38.squares": {
+          "escaping": 0.0,
+          "stray": 479.05,
+          "holes": 9.5,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "38.text": {
+          "escaping": 7.39,
+          "stray": 0.0,
+          "holes": 3.88,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "38.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 2.75,
+          "points_missing": 6.19,
+          "spill": 0.0
+        },
+        "38.all": {
+          "escaping": 7.39,
+          "stray": 479.05,
+          "holes": 16.12,
+          "points_missing": 6.19,
+          "spill": 0.0
+        },
+        "39.squares": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 13.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "39.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 4.11,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "39.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 10.97,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "39.all": {
+          "escaping": 0.0,
+          "stray": 4.62,
+          "holes": 28.08,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "40.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "40.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "40.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.81,
+          "spill": 0.0
+        },
+        "40.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.81,
+          "spill": 0.0
+        },
+        "41.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "41.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "41.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "41.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "42.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 12.72,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "42.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 4.53,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "42.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 10.78,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "42.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 28.03,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "43.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "43.text": {
+          "escaping": 0.06,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "43.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "43.all": {
+          "escaping": 0.06,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "44.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "44.text": {
+          "escaping": 0.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "44.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.31,
+          "spill": 0.0
+        },
+        "44.all": {
+          "escaping": 0.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.31,
+          "spill": 0.0
+        },
+        "45.squares": {
+          "escaping": 0.0,
+          "stray": 479.05,
+          "holes": 9.5,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "45.text": {
+          "escaping": 5.61,
+          "stray": 0.0,
+          "holes": 4.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "45.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 2.75,
+          "points_missing": 6.19,
+          "spill": 0.0
+        },
+        "45.all": {
+          "escaping": 5.61,
+          "stray": 479.05,
+          "holes": 16.25,
+          "points_missing": 6.19,
+          "spill": 0.0
+        },
+        "46.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "46.text": {
+          "escaping": 3.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "46.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.23,
+          "spill": 0.0
+        },
+        "46.all": {
+          "escaping": 3.09,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 6.23,
+          "spill": 0.0
+        },
+        "47.squares": {
+          "escaping": 0.0,
+          "stray": 475.59,
+          "holes": 19.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "47.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.2,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "47.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 5.5,
+          "points_missing": 6.19,
+          "spill": 0.0
+        },
+        "47.all": {
+          "escaping": 0.0,
+          "stray": 475.59,
+          "holes": 24.7,
+          "points_missing": 6.19,
+          "spill": 0.0
+        },
+        "48.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "48.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "48.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "48.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 163.3,
+          "spill": 0.0
+        },
+        "49.squares": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "49.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "49.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 3.59,
+          "spill": 0.0
+        },
+        "49.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 3.59,
+          "spill": 0.0
+        },
+        "50.squares": {
+          "escaping": 0.0,
+          "stray": 479.05,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "50.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "50.thorn": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 3.7,
+          "spill": 0.0
+        },
+        "50.all": {
+          "escaping": 0.0,
+          "stray": 479.05,
+          "holes": 0.0,
+          "points_missing": 3.7,
+          "spill": 0.0
+        },
+        "51.text": {
+          "escaping": 0.31,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "51.all": {
+          "escaping": 0.31,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "52.text": {
+          "escaping": 0.34,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "52.all": {
+          "escaping": 0.34,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "53.text": {
+          "escaping": 0.31,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "53.all": {
+          "escaping": 0.31,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "54.text": {
+          "escaping": 0.3,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "54.all": {
+          "escaping": 0.3,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "55.text": {
+          "escaping": 0.34,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "55.all": {
+          "escaping": 0.34,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "56.text": {
+          "escaping": 0.69,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "56.all": {
+          "escaping": 0.69,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "57.text": {
+          "escaping": 0.33,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "57.all": {
+          "escaping": 0.33,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "58.text": {
+          "escaping": 0.33,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "58.all": {
+          "escaping": 0.33,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "59.text": {
+          "escaping": 1.98,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "59.all": {
+          "escaping": 1.98,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "60.text": {
+          "escaping": 0.98,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "60.all": {
+          "escaping": 0.98,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "61.text": {
+          "escaping": 1.89,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "61.all": {
+          "escaping": 1.89,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "62.text": {
+          "escaping": 0.78,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "62.all": {
+          "escaping": 0.78,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "63.text": {
+          "escaping": 0.33,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "63.all": {
+          "escaping": 0.33,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "64.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 4944.08
+        },
+        "64.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 4944.08
+        },
+        "65.text": {
+          "escaping": 10.42,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "65.all": {
+          "escaping": 10.42,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "66.text": {
+          "escaping": 1.61,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "66.all": {
+          "escaping": 1.61,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "67.text": {
+          "escaping": 10.42,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "67.all": {
+          "escaping": 10.42,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "68.text": {
+          "escaping": 0.17,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "68.all": {
+          "escaping": 0.17,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "69.text": {
+          "escaping": 0.02,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "69.all": {
+          "escaping": 0.02,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "70.text": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        },
+        "70.all": {
+          "escaping": 0.0,
+          "stray": 0.0,
+          "holes": 0.0,
+          "points_missing": 0.0,
+          "spill": 0.0
+        }
+      },
+      "host": "host=30.8.2"
+    }
+  },
+  "missing": []
+}

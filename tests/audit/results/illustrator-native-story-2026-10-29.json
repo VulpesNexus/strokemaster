@@ -1,0 +1,1139 @@
+{
+  "schema": 1,
+  "date": "2026-10-29",
+  "host": {
+    "application": "Adobe Illustrator",
+    "version": "30.8.2",
+    "platform": "Windows x64"
+  },
+  "plugin": {
+    "name": "StrokeMasterRegionProbe",
+    "build": "region-prep-21",
+    "sha256": "535241e27b2dd6ebfd4225dd15026782d20b7396e3eb2a154bf12628b0107c39",
+    "frozen": "plugin/illustrator-probe/build/region-prep21-frozen.aip",
+    "sourceSha256": {
+      "RegionProbe.cpp": "766fa0b37ab1f18d77448d7011e41d8918fdaf9f90534ad1d546f877561345c2",
+      "RegionProbeTests.cpp": "1913d4a3fbf203cfb81b8c9a3856fac9411f757e778283bac1aace0463b9115d",
+      "RegionProbe.vcxproj": "22bf48c31f9b3e68cea49dd0a352acf21479a02447ffce426b201e2388faf2ec",
+      "IllustratorContour.h": "7429eba3d941cedcd6d4874fbc50058e9ddce54cd06857236ad6368d2c39d824",
+      "IllustratorSdkContour.h": "44e12468221859a0f86f7363cbd003743f3db79b2c94448af2bed34c47565858",
+      "TextBehind.h": "e8b02f366f55963b494e213094e5d17ecb970fb5d985b07671ec51459ad32209",
+      "StrokeBehind.h": "c3fca6a51f8312345b1caae1adf9dca97ae9ab5c5cbd47db81167b3136573bae",
+      "TextBehindTests.cpp": "8ffe1c76bc6fdf3caf222324881af7aad0c61875da80a5936dafbc3b79677e04",
+      "NativeMiter.h": "e8ddfa38751344ba29988531c99a5c58b7038278071d207386981316f626496c",
+      "NativeRegion.h": "d17d2fa0a8fcfe9868f41015e9ee7ae65593aae954bfabacb9d6323c92198d10"
+    }
+  },
+  "scope": "Experimental native story fill for a complete adjacent two-frame story with uniform gray character fill. No full parity or release certification.",
+  "change": {
+    "nativeCommand": "story-fill",
+    "entryPoint": "tools/jsx/strokemaster-fix-story.jsx",
+    "method": "One native group Appearance fill above Contents; editable text remains in the group; native-fix remains separate.",
+    "defaultSelectionScriptChanged": false,
+    "admission": "Complete story, 2 to 64 editable sibling frames contiguous in direct sibling order. Native command requires a plain selected group, text-only same-story children, normal opacity/blend, uniform solid gray fill and overprint.",
+    "mutation": "Script checks flattened sibling UUID order after grouping; native refusal rolls the original frames and selection back."
+  },
+  "measurements": {
+    "schema": 1,
+    "dpi": 600,
+    "erodePixels": 3,
+    "darkLevel": 32,
+    "total": 5,
+    "passed": 5,
+    "runs": [
+      {
+        "run": "story-minion-deferred",
+        "font": "MinionPro-Regular",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 179589,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 6200,
+            "correctionMs": 236,
+            "fillExportMs": 4233,
+            "nativeExportMs": 477,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 120051,
+                "damagedCorePt2": 1728.7344,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "run": "story-segoe-deferred",
+        "font": "SegoeScript",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 266918,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 6259,
+            "correctionMs": 264,
+            "fillExportMs": 3824,
+            "nativeExportMs": 705,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 178729,
+                "damagedCorePt2": 2573.6976,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "run": "story-kerberos-deferred",
+        "font": "KerberosFang",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 508834,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 38707,
+            "correctionMs": 1468,
+            "fillExportMs": 4420,
+            "nativeExportMs": 31513,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 358728,
+                "damagedCorePt2": 5165.6831999999995,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": true
+              },
+              "reopen": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": true
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "run": "story-german-deferred",
+        "font": "GermanBeauty",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 427253,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 5742,
+            "correctionMs": 232,
+            "fillExportMs": 3892,
+            "nativeExportMs": 446,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 292642,
+                "damagedCorePt2": 4214.0448,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": true
+          }
+        ]
+      },
+      {
+        "run": "story-vibes-deferred",
+        "font": "GreatVibes-Regular",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 194372,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 5352,
+            "correctionMs": 238,
+            "fillExportMs": 3266,
+            "nativeExportMs": 500,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 139074,
+                "damagedCorePt2": 2002.6656,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": true
+              },
+              "reopen": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": true
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": true
+          }
+        ]
+      }
+    ],
+    "gates": {
+      "measuredCases": 5,
+      "routeFillCoreUndamaged": 5,
+      "reopenFillCoreUndamaged": 5,
+      "formattingPreserved": 5,
+      "liveTextEditable": 5,
+      "reopenSnapshotExact": 5,
+      "reopenPixelsExact": 5,
+      "routeExtractionExact": 5
+    }
+  },
+  "entryPointMeasurement": {
+    "schema": 1,
+    "dpi": 600,
+    "erodePixels": 3,
+    "darkLevel": 32,
+    "total": 1,
+    "passed": 1,
+    "runs": [
+      {
+        "run": "story-driver-minion",
+        "font": "MinionPro-Regular",
+        "host": "30.8.2",
+        "cases": [
+          {
+            "kind": "threaded",
+            "corePixels": 179589,
+            "stylesPreserved": true,
+            "reopenPreserved": true,
+            "editable": true,
+            "ms": 6165,
+            "correctionMs": 249,
+            "fillExportMs": 4329,
+            "nativeExportMs": 511,
+            "exports": {
+              "native": {
+                "damagedCorePixels": 120051,
+                "damagedCorePt2": 1728.7344,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "route": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              },
+              "reopen": {
+                "damagedCorePixels": 0,
+                "damagedCorePt2": 0,
+                "textMatchesFill": true,
+                "visibleTextCharacters": 24,
+                "uniqueGlyphs": 24,
+                "uniqueGlyphsMatchFill": false
+              }
+            },
+            "reopenChangedPixels": 0,
+            "reopenMaxGrayDelta": 0,
+            "reopenMeanGrayDelta": 0,
+            "reopenChangedAreaPt2": 0,
+            "passed": true
+          }
+        ]
+      }
+    ],
+    "gates": {
+      "measuredCases": 1,
+      "routeFillCoreUndamaged": 1,
+      "reopenFillCoreUndamaged": 1,
+      "formattingPreserved": 1,
+      "liveTextEditable": 1,
+      "reopenSnapshotExact": 1,
+      "reopenPixelsExact": 1,
+      "routeExtractionExact": 1
+    }
+  },
+  "refusalControls": [
+    {
+      "name": "intervening",
+      "gate": "story.intervening-art",
+      "expected": "story.intervening-art",
+      "unchanged": true,
+      "ok": true
+    },
+    {
+      "name": "partial",
+      "gate": "story.selection",
+      "expected": "story.selection",
+      "unchanged": true,
+      "ok": true
+    },
+    {
+      "name": "independent",
+      "gate": "story.incomplete",
+      "expected": "story.incomplete",
+      "unchanged": true,
+      "ok": true
+    },
+    {
+      "name": "mixed-fill",
+      "gate": "story.refused-restored",
+      "expected": "story.refused-restored",
+      "unchanged": true,
+      "ok": true
+    }
+  ],
+  "withoutPlugin": {
+    "schema": 1,
+    "host": "30.8.2",
+    "run": "story-no-plugin-minion",
+    "dpi": 600,
+    "erodePixels": 3,
+    "darkLevel": 32,
+    "pluginAbsence": {
+      "confirmed": true,
+      "reply": "Error: an Illustrator error occurred: 1344357988 ('P!Fd')"
+    },
+    "reopenPreserved": true,
+    "editable": true,
+    "reopenChangedPixels": 0,
+    "reopenTextExact": true,
+    "editedCorePixels": 192658,
+    "damagedCorePixels": 0,
+    "damagedCorePt2": 0,
+    "expectedCharacters": 26,
+    "extractedCharacters": 26,
+    "editedTextExact": true,
+    "passed": true
+  },
+  "historicalCorrection": {
+    "prep18": {
+      "frames": 2,
+      "storyFrames": [
+        1,
+        1
+      ],
+      "destructiveStorySplitConfirmed": true
+    },
+    "prep19": {
+      "frames": 2,
+      "storyFrames": [
+        2,
+        2
+      ],
+      "frameCharacters": [
+        20,
+        7
+      ],
+      "savedTextLossClaimWithdrawn": true
+    },
+    "lesson": "Open, inspect, and edit in separate COM calls with idle time; immediate post-open collections can be transiently empty."
+  },
+  "mockChecks": {
+    "registrationBridgeRefusal": 97,
+    "sdkOutput": 2879,
+    "strokeBehind": 13229,
+    "textBehind": 9255
+  },
+  "stability": {
+    "combinedControlRun": "COM RPC failure 0x800706BE; no completed receipt; cause not isolated. Four individual fresh-host controls pass.",
+    "badFixture": "First intervening-art control placed the shape below both frames. Corrected fixture verifies shape between frames and refuses unchanged."
+  },
+  "ownerState": {
+    "disabledBackupPresent": false,
+    "illustratorProcesses": 0,
+    "installedHash": "535241e27b2dd6ebfd4225dd15026782d20b7396e3eb2a154bf12628b0107c39",
+    "preferencesRestored": true,
+    "workspaceSnapshotPending": false
+  },
+  "acceptance": {
+    "fiveFontRenderingAndExtraction": true,
+    "nativeSaveReopen": true,
+    "guardedEntryPoint": true,
+    "nativeLiveEditWithoutPlugin": true,
+    "fullInDesignParity": false,
+    "releaseReady": false
+  },
+  "remaining": [
+    {
+      "severity": "high",
+      "item": "Noncontiguous story frames with intervening artwork remain refused; mixed-color stories need another native approach."
+    },
+    {
+      "severity": "medium",
+      "item": "Group fill color is an explicit Appearance color and does not follow later character recoloring. Child object effects, complex appearances, clipping parents, transparency interactions, and larger stories are not certified."
+    },
+    {
+      "severity": "medium",
+      "item": "Cross-format export, font coverage, transformed/path roundtrips, undo/redo, crash robustness, real documents, and product UI/identity remain open."
+    }
+  ],
+  "rawEvidenceDirectory": "build/ai-story-2026-10-29",
+  "scriptSha256": {
+    "tools/jsx/strokemaster-fix-story.jsx": "d7928e0b6685d05a7d354683f6dea049689e04d16ea7c59c9140e49934ff1369",
+    "tools/jsx/ai-text-parity-lib.jsx": "ea36263fd3e551dfded6c86229cd16fe0349fa3ec4f6066cd68b940979712bbe",
+    "tools/jsx/ai-text-parity-sweep.jsx": "d7df63255a11079ce3e2057760eef0e90d3ec5b3b4602003f5048452fd304ed3",
+    "tools/jsx/ai-text-parity-open.jsx": "0fdbc47f12eaf87d1849c489180373246dd637090f317ab5e04355f0698e05a8",
+    "tools/jsx/ai-text-parity-edit.jsx": "03799d25c3ccffeb9f561a9cbef3c36aaa8fb25d2765c27c78bfe3ee7d23fa89",
+    "tools/jsx/ai-text-parity-final.jsx": "862c4fa6b443a4aa5168c392bf65b289fd1f4f613c6715d7eabfb4313b9c64d7",
+    "tools/jsx/ai-story-guards.jsx": "0b5eb5941ecf8987b80b056fbfdf8ec3925e509eb052c9c5891e8a740acfb12d",
+    "tools/jsx/ai-story-readback.jsx": "bb10c0ad94614904ad71e5a72c098df4791c34378d813edad499dc80fe2652b5",
+    "tools/run-ai-parity.ps1": "3431594ce4edb534095affd8c7eabadbcae9cdf5dcb6297c3d0152f7451012cd",
+    "tools/run-ai-story-inspect.ps1": "1b37ddc8e4ff595cdd2fdf4ea217a189f976e5f2fa5a49446f385b1c87a0eb12",
+    "tools/measure_story_edit.py": "4c60093344146f92544920d71cc958a5febded235ae1a6afcc9f0bc9bf55ee37",
+    "tools/measure_text_parity.py": "08b12e6cfb56aae7d41e2ab0b88f7caaa3b628fa8d482bac40f4e2e0a618f896"
+  },
+  "sha256Manifest": [
+    {
+      "path": "build/ai-story-2026-10-29/build-prep21.log",
+      "bytes": 11236,
+      "sha256": "c20c91c43f79c8d3ffdc509a320f63c10cc3fa0b737938e0e0cd683461b667d9"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/driver-measurement.json",
+      "bytes": 1913,
+      "sha256": "787ffa3eaadcd5d7cfe75349adb934a31a6f5364575666154430fb892c28468a"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/final-state.json",
+      "bytes": 205,
+      "sha256": "1cf85127439a5992656deec4827c612824a2ac9b2ab194f1e0e6044c3a1763ba"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/group-measurement.json",
+      "bytes": 8009,
+      "sha256": "0d2eca0b67c0819ac89e3edfc6f73708f15f4d2b6b0292a33bdacc6218ca51ee"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-independent-before.json",
+      "bytes": 3742,
+      "sha256": "a2ba4e96b31b3c98328700e85bd59b2c3281d1a03da8fd58ed3d6ac618a338b3"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-independent-host.txt",
+      "bytes": 25,
+      "sha256": "1430699d149da8643637ca48b38e4d8e176d2012144fb27642884c05305f8966"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-independent-results.json",
+      "bytes": 132,
+      "sha256": "7073fbf11ac4cb481649d37e434c9abb6ed3ed91efb69a8886d3e46cd904e021"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-independent-started.json",
+      "bytes": 22,
+      "sha256": "398faf22adb02b1dffde59ce7bd41786428d373a40a9e0d455381c26e4f25880"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-before.json",
+      "bytes": 5819,
+      "sha256": "22be507fd571c696c85313e48f5e3d0177d7b4d616433b23b9306a831db619e5"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-fixed-before.json",
+      "bytes": 5819,
+      "sha256": "8144cbebbdf674c7bf08e50f5a4f9364f65fbd99e5508916eeccca3c5203b204"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-fixed-host.txt",
+      "bytes": 25,
+      "sha256": "1430699d149da8643637ca48b38e4d8e176d2012144fb27642884c05305f8966"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-fixed-results.json",
+      "bytes": 142,
+      "sha256": "cdd2ad070d05557b6835d9c7c1e789d98cc0406aa851249883030c47a1c8f563"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-fixed-started.json",
+      "bytes": 22,
+      "sha256": "70deeae14d951fff5e128bb9ef8200f70571a091cdf5376e08f54b68fc85e48f"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-host.txt",
+      "bytes": 68,
+      "sha256": "688f64bc59a4a89b2f55e31aa8d937cec9060b9fa40e972ca7010ebbf374d5e1"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-results.json",
+      "bytes": 135,
+      "sha256": "681d345fd7de59b476943d326d8420327cdb575aaf6c4f3307eec1bb10424ae7"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-intervening-started.json",
+      "bytes": 22,
+      "sha256": "70deeae14d951fff5e128bb9ef8200f70571a091cdf5376e08f54b68fc85e48f"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-mixed-fill-before.json",
+      "bytes": 5820,
+      "sha256": "797b690878e5ede950bd524382fa65ab1a8b321e093f6feb1fa08228fa75b25a"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-mixed-fill-host.txt",
+      "bytes": 25,
+      "sha256": "1430699d149da8643637ca48b38e4d8e176d2012144fb27642884c05305f8966"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-mixed-fill-results.json",
+      "bytes": 143,
+      "sha256": "50c693d562012bd2c212a19628f044bc3742794a2b27cc81f2cc3e2a6986f0aa"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-mixed-fill-started.json",
+      "bytes": 21,
+      "sha256": "9ee6de32cd2033a6f5a914b575fcb5d65ae770f7df9c0d5beb3bc296197d7231"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-partial-before.json",
+      "bytes": 5786,
+      "sha256": "1f673ad6bfa320b0b560422c999421399cb7943b5c35b1ea8f58e7c5b04bafbf"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-partial-host.txt",
+      "bytes": 25,
+      "sha256": "1430699d149da8643637ca48b38e4d8e176d2012144fb27642884c05305f8966"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-partial-results.json",
+      "bytes": 126,
+      "sha256": "53b90ce5d3b451c4857940585cd0d239f548bb9de29eb118f5e76fcac467af3f"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/guard-partial-started.json",
+      "bytes": 18,
+      "sha256": "d5be0e406d42e0ce2d87afd2ffe359676cb82a61aa4c55c4bc9a2d41473f1f81"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/inspect-group-minion-host.txt",
+      "bytes": 184,
+      "sha256": "ff453c8beaf49f4a4c983c482a32681670faa0b6adfacf62dd24ed58f149db09"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/inspect-group-minion-results.txt",
+      "bytes": 167,
+      "sha256": "4975e65de9c4a4f642e9bf84b3e89f5b4eed04b96c7e4d27c3e3997a0a723fa8"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/minion-deferred-measurement.json",
+      "bytes": 1915,
+      "sha256": "c7d560cfe672097a90d70e44c151b8e8f8f0d1d01fbb97ed2dd2040ad6d4e83d"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/minion-measurement.json",
+      "bytes": 2043,
+      "sha256": "ce6149952c8f9dd324765672888c9ab4a0d01784f175d8f7cc663ddd338d5433"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/no-plugin-measurement.json",
+      "bytes": 556,
+      "sha256": "565049b881998425ab6bc1b6c484347e63b858f8f785820c39bf5310873d6800"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/plugin-restore.json",
+      "bytes": 122,
+      "sha256": "7e5aa2cd09664d0974d68ec9437f37a6256640e221b5dd925b837ceaa84f0c69"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/run-controls.ps1",
+      "bytes": 549,
+      "sha256": "5194b48d4001135bfc7404e17d98d697ef0fe14d47fccf444cd14c1fe6240503"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/run-final-host.ps1",
+      "bytes": 439,
+      "sha256": "a4e12f49c7a759077087f31fafc82ff41c1fd45d64f8beddd931e1ca3ba22a22"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/run-guard-readback.ps1",
+      "bytes": 395,
+      "sha256": "ade406023e1e02a79015de6bafb689887fc55fce26fadba55d7ba28c8214be4a"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/run-no-plugin.ps1",
+      "bytes": 1501,
+      "sha256": "b2cd1fd1c5b61938960587e15488c24393b3e9b4c65553e7c56a96daab2a2310"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-host.txt",
+      "bytes": 171,
+      "sha256": "2276888dba7d681016616d72c5abbda634d2d440bd6ca41c8b1574e9e2a738e9"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-phase1-results.json",
+      "bytes": 28049,
+      "sha256": "ae6394ee207b4275a7b19c8388c05b26882b0d32de9850b5f54b84337772f2eb"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-phase3-results.json",
+      "bytes": 33070,
+      "sha256": "a8746e21eedb9eb12931e9c7140704d461684e68eb4f1df95de969cf1dc15ec4"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-results.json",
+      "bytes": 38586,
+      "sha256": "aa2a85f454f07391d3863260a0df659e099eb67bc6799029ad9ac83654c49600"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-threaded-edited.pdf",
+      "bytes": 47098,
+      "sha256": "9a112e21177306f5a82fa6924fe11c5a494e33e22569650339ab531bbf7c4fa2"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-threaded-fill.pdf",
+      "bytes": 46374,
+      "sha256": "34f4d98320df9b8c65d202a486300bce3becfba513955bb60cb59e93cc115a5c"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-threaded-native.pdf",
+      "bytes": 46071,
+      "sha256": "5d43a7b019287d349451e49e3f8090629e12e7c91ce38b19524fec5d94f0fb33"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-threaded-reopen.pdf",
+      "bytes": 46655,
+      "sha256": "c22e044182b730bd605da1ae79d2cb5318c7317ad4c371bb09a2feff724a4330"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-threaded-route.pdf",
+      "bytes": 46559,
+      "sha256": "419ddace1bab9bbb229a65ce67262b9e8b4387a7914a116b9e831ea0321ae102"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-driver-minion-threaded.ai",
+      "bytes": 242510,
+      "sha256": "d916ec5e0e4e924d829672832f64120449b85abb1abd038693df5fe737a65cd6"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-host.txt",
+      "bytes": 166,
+      "sha256": "d19d2f3ca86c62e93c624e2aace325ec88f26218a6136fca32b222ef1b580976"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-phase1-results.json",
+      "bytes": 26675,
+      "sha256": "6c1b0217b4fb4033c292dc14562ae4f3af7e861363d2e6c04d44ae1668d860ae"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-phase3-results.json",
+      "bytes": 31426,
+      "sha256": "cd8780ce60159f9a4510e3c45c71f192a2d820e139765a1e0dd84ade54a85ead"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-results.json",
+      "bytes": 36642,
+      "sha256": "12f4841de499c0f547b1cd98d20890a1371690c63e80f380b52823479a502c36"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-threaded-edited.pdf",
+      "bytes": 48579,
+      "sha256": "255ea2e51e44c29e53d61dc8d7d5b9f76c8cf3c196759fc0b69cbec54418cc39"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-threaded-fill.pdf",
+      "bytes": 47173,
+      "sha256": "e9eaef060c713afa918fb2d31f731fde8eecfe9fedc66d9ae92e7efcd2663f72"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-threaded-native.pdf",
+      "bytes": 47058,
+      "sha256": "3166e77dcee171fcfaba83eb7970f67f274db25b9fe4924681ed2c8ef4036d72"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-threaded-reopen.pdf",
+      "bytes": 48083,
+      "sha256": "8f92db6544900212459f4b2c1263247f55645b7cf09b7514b6433c7d4ebdc537"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-threaded-route.pdf",
+      "bytes": 47990,
+      "sha256": "6997b7f5e490a10df23333ee4bb3067514b886b2ba7d1d2fe21c7b7701905a01"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-deferred-threaded.ai",
+      "bytes": 243542,
+      "sha256": "1d26d4531ea9d6c698c82acea6ce5e0f12b196cf8842cee555742fa85e21d8a3"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-german-runner.log",
+      "bytes": 168,
+      "sha256": "535a7d9413cba0cceb2178802ccfb929c0f0fc6745e1517b786dcf98342d3249"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-host.txt",
+      "bytes": 166,
+      "sha256": "ede77f45b0b91b0cd6753877b9eaa00465b64807537cc007407154fec14f1f3f"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-phase1-results.json",
+      "bytes": 26684,
+      "sha256": "83f2080393a895cdeedb38620027d31cbb656bd88cad94f2423572a55c9fd6fd"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-phase3-results.json",
+      "bytes": 31435,
+      "sha256": "3aaf1d1f90b6bc55cb8134bba3e72b13cae8e244614868fa1301e70309da7b2f"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-results.json",
+      "bytes": 36651,
+      "sha256": "86469b0d28b8acbadd1dfc287e0e8492a3fed0474b9bdcebf08bca21d8359446"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-threaded-edited.pdf",
+      "bytes": 106442,
+      "sha256": "e4a30f4c401738c72861b8b9700f47ce1ded3cfdc1a5307766f4a1123e2acd4b"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-threaded-fill.pdf",
+      "bytes": 104940,
+      "sha256": "5bd8133c0b78c14dc9e914b0856a0f46f9889065b4ca1a231ce6d9d86fd9a3a3"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-threaded-native.pdf",
+      "bytes": 104577,
+      "sha256": "85c4b0c9ded6d8f16d801d3cb7b6cb2d3021d73a18db47a971f73fd7d25e9127"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-threaded-reopen.pdf",
+      "bytes": 105824,
+      "sha256": "efaed3737f24a1bfba512d2b0689d782e3ff6ce0afa446bb8fce649e00073018"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-threaded-route.pdf",
+      "bytes": 105730,
+      "sha256": "9d39de62b73aaac66b1332fd443fb630a505bf59da77ef3ac47001f102b4b7a0"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-deferred-threaded.ai",
+      "bytes": 302282,
+      "sha256": "d1cab81a3088e51df2d4ed5bdf6d040fa8d37b54cdccad31bcbe49c958c1bff2"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-kerberos-runner.log",
+      "bytes": 168,
+      "sha256": "9e4ea5fd52bd1de28dac4fc53383283176661e1d1ebce75e3bcc09b847635a09"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-host.txt",
+      "bytes": 171,
+      "sha256": "2276888dba7d681016616d72c5abbda634d2d440bd6ca41c8b1574e9e2a738e9"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-phase1-results.json",
+      "bytes": 28030,
+      "sha256": "caabf478e14757d0acc3a60ef9dbb5070d1227f76f19e7b15300bcff89ed13a7"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-phase3-results.json",
+      "bytes": 33051,
+      "sha256": "1f3f230d283d0eea139ab48844c70d7db8f734dd37c8c32037b2255cd4dea388"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-results.json",
+      "bytes": 38567,
+      "sha256": "eac2c0cd40892d23a92508f860a459baaacdece1cb18005f98800d0d1b4eca18"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-threaded-edited.pdf",
+      "bytes": 47102,
+      "sha256": "81c246f3906e5bda5d580650e3f70e827ff4ed00c22a99cbb04293af2415d9f5"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-threaded-fill.pdf",
+      "bytes": 46378,
+      "sha256": "cbd884d49048a4fabb4fd80c586e4053d5385bb14ea4aee43a971e55eac2de49"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-threaded-native.pdf",
+      "bytes": 46075,
+      "sha256": "a3347d3e005d9c05e6f5b47022ce71b129295a9c875bf79aed1b248721bd64d2"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-threaded-reopen.pdf",
+      "bytes": 46659,
+      "sha256": "f9be2f74a9f4c70c89de63cdeb6e11bb211631c225c12887ea570bccfc372483"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-threaded-route.pdf",
+      "bytes": 46563,
+      "sha256": "3a967ad4153949af47229853ed078d97ff3213d5ba2f5e0b38557b22af8c55e8"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-deferred-threaded.ai",
+      "bytes": 242334,
+      "sha256": "23d965d954f21dcf9f090ae9478169e491e297d0cc8608d5f26f21f4fca7e362"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-host.txt",
+      "bytes": 67,
+      "sha256": "641c66b404399d67fae9639fe69c29873d5ea8ad983299bec2a78e04905bf750"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-results.json",
+      "bytes": 28129,
+      "sha256": "fd6be27fcca526e0bdda2ed73c87f2661bc2420c419d77b723b70d71af36eef7"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-threaded-fill.pdf",
+      "bytes": 46360,
+      "sha256": "1e07651bcee4d4fe25a5ba49c4a4ea1b27d44c51e9ef2ebbce9cc06c24fb143c"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-threaded-native.pdf",
+      "bytes": 46056,
+      "sha256": "2c404ed89b1a31c1589b4b2609cfe43ce01374e3ac35c3a781ed99d1779e8665"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-threaded-reopen.pdf",
+      "bytes": 46641,
+      "sha256": "927afcc14f8905167311d6340001bcc8a66a3b4025056cbcff35ef795d7d786c"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-threaded-route.pdf",
+      "bytes": 46545,
+      "sha256": "573df32f2f125cfaa1ed4176cb5861591dfd5d23460774b991dd251539dea6e6"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-minion-threaded.ai",
+      "bytes": 242177,
+      "sha256": "dc91c3cfebf9c911493004aa726603dcf95c673444200805e6374dc3b27c6f36"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-host.txt",
+      "bytes": 128,
+      "sha256": "4171447a7d1c2bfd90cbe83a315c8dec919b496609dfccc4bf920e7807b0bc38"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-phase1-results.json",
+      "bytes": 28069,
+      "sha256": "5f39ddbb56d8624335b28d4bb8fa785db27b0cf2d02fd6fd2e15eb9281c678b7"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-phase3-results.json",
+      "bytes": 33193,
+      "sha256": "38b993f5528f6aaceaf17a170b7791af2ad0cd57377410662c6eb6d202a03235"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-results.json",
+      "bytes": 38709,
+      "sha256": "8a1b7672b2a54a6ecdc5993d1460a333defc40c4dec5514d700b5a1f75fb2740"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-threaded-edited-fill.pdf",
+      "bytes": 47389,
+      "sha256": "6980c13047e3612b7789f9c094134f66c441655ceea8fd73578a77bd9bf52629"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-threaded-edited.pdf",
+      "bytes": 47113,
+      "sha256": "e869b52bdd1b04ae948153725316d173595c2774b19317b9f55ffd1f92df2990"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-threaded-reopen.pdf",
+      "bytes": 46661,
+      "sha256": "edad223e3c8b4a7f813feba7527c87aceb73dd7cf12965b35b2e89c5aaad3ac3"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-no-plugin-minion-threaded.ai",
+      "bytes": 242510,
+      "sha256": "d916ec5e0e4e924d829672832f64120449b85abb1abd038693df5fe737a65cd6"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-host.txt",
+      "bytes": 165,
+      "sha256": "90b61059373d60f68318cdf0758baf4079c974da3490770c489d50c361907872"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-phase1-results.json",
+      "bytes": 26404,
+      "sha256": "27a2baa1adfd890112bfbd3e0b75cead7fff821d3007e0f18ffd99b6c587871b"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-phase3-results.json",
+      "bytes": 31101,
+      "sha256": "4511bad264308360fbd6a4bf97cc8b3f463bc494064e596605fd452d65e8289d"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-results.json",
+      "bytes": 36257,
+      "sha256": "9b7a549539c1561630a4c48304f9e9f3a672d8626256078aef733184df4840da"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-threaded-edited.pdf",
+      "bytes": 66182,
+      "sha256": "1c96eac1cd4976f38116f3205a6e9653c7332a38def50b9417f2334191d04001"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-threaded-fill.pdf",
+      "bytes": 64695,
+      "sha256": "d34ea1f5f7cdfe5fd4cdeb07dfb462cd82ca75ed12ff7d3f589b71d34badcdcc"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-threaded-native.pdf",
+      "bytes": 64370,
+      "sha256": "383673f26f67f50530d252bbafdd80049b560a414731629b7a1c5aab259d9793"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-threaded-reopen.pdf",
+      "bytes": 65021,
+      "sha256": "151d531f1e33c3b9ae873649d26b8a025d987596e887daddc60d336442cda23f"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-threaded-route.pdf",
+      "bytes": 64921,
+      "sha256": "7d510651a76614edf093eb675505d72b7077b20cd3bfdbd1bb25302711aac922"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-deferred-threaded.ai",
+      "bytes": 260285,
+      "sha256": "fb7cf444400f6f3ab3713fc4e0319881b8bb6e3c9933fbb4c4860c28ef2f889b"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-segoe-runner.log",
+      "bytes": 167,
+      "sha256": "6c96c19a2d2eb4fb1b405862521a03db2ba8ec83f3e18fd6ea7361460e879c13"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-host.txt",
+      "bytes": 172,
+      "sha256": "2f94b88b59a43970a3862eb3244cf01f9034cbed467488413f435d6494dd614a"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-phase1-results.json",
+      "bytes": 28301,
+      "sha256": "6ec34d186494daba172302d3bfe4563da9ab8ef62448cc2d4ad4695101747135"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-phase3-results.json",
+      "bytes": 33376,
+      "sha256": "8c44a00a5d73623b9a2651d802f004466afd6b38d66614a038dc770ae515f55c"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-results.json",
+      "bytes": 38952,
+      "sha256": "189f12aff7fff26dc62fccf603463a00986e07d885b08206a4cfe5d40ad92bad"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-threaded-edited.pdf",
+      "bytes": 50837,
+      "sha256": "1bd5ca74dc1655de109ce560cd0ead497c358e79d447e6eb7e4206d686f94f7c"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-threaded-fill.pdf",
+      "bytes": 50370,
+      "sha256": "78fe88f24ac96acf672458cbed9a2c3e14249124bf0905581d995a3282fe5c75"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-threaded-native.pdf",
+      "bytes": 49616,
+      "sha256": "3b235528cfcfd467a54068d032a6499105d545bcdc7e0c15be0ef6a940e9a95b"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-threaded-reopen.pdf",
+      "bytes": 50628,
+      "sha256": "bcd1633049c74ba2d4c46381550875ac180ad2031bdf61ac319a0760513785e3"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-threaded-route.pdf",
+      "bytes": 50532,
+      "sha256": "84c60e646ce8a571e02a987452da5022d074b1c1a8366ca3b3037dfc5bbee5e5"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-deferred-threaded.ai",
+      "bytes": 246392,
+      "sha256": "2822c4a2346c8d5d15f82fa3d6b40bcabfaff7bd9ae2e473ae59a1b2b987adfb"
+    },
+    {
+      "path": "build/ai-story-2026-10-29/story-vibes-runner.log",
+      "bytes": 174,
+      "sha256": "cbc240302fa8fed653a7689c9abd7336505bf03428e066dde75d47a06e071cff"
+    },
+    {
+      "path": "build/ai-parity-2026-10-29/recheck-prep18-results.json",
+      "bytes": 2716,
+      "sha256": "a42ef5288ceb7d86f7a98e27248763b3746a07d4d86c117513729726afc22164"
+    },
+    {
+      "path": "build/ai-parity-2026-10-29/recheck-prep18-host.txt",
+      "bytes": 68,
+      "sha256": "b2a4e7914859da1aa7a19f759c436333ff46f7355aafa6b5ac2b1734d67084f3"
+    },
+    {
+      "path": "build/ai-parity-2026-10-29/recheck-prep19-results.json",
+      "bytes": 4696,
+      "sha256": "697ac9d5a21fdd0bd8731c3173026d2241ad6820fe9ebbd2c4db21816ccd74db"
+    },
+    {
+      "path": "build/ai-parity-2026-10-29/recheck-prep19-host.txt",
+      "bytes": 68,
+      "sha256": "b2a4e7914859da1aa7a19f759c436333ff46f7355aafa6b5ac2b1734d67084f3"
+    }
+  ],
+  "validation": {
+    "jsxParseAndAscii": {
+      "files": 12,
+      "passed": true
+    },
+    "powerShellParse": true,
+    "houseStyleExitCode": 0,
+    "houseStyleNotes": "20 advisory findings judged; no failing findings.",
+    "privacy": {
+      "files": 26,
+      "findings": 0
+    },
+    "gitDiffCheckExitCode": 0,
+    "sourceBinaryAndEvidenceHashesVerified": true
+  },
+  "withdrawn": {
+    "date": "2026-10-30",
+    "reason": "region-prep-21's story fill drew no strokes: its group style lacked an explicit Contents entry, so only the group fill was drawn on the glyph outlines; the fill-core metric cannot see missing strokes.",
+    "strokeInkOutsideFillsPt2": {
+      "metric": "600 ppi RGB; pixels outside the stroke-free export's ink (channel < 160) dilated by 3 px, differing from it by more than 48 on any channel",
+      "minion": {
+        "native": 6762.2,
+        "storyFill": 0.0
+      },
+      "segoe": {
+        "native": 6609.7,
+        "storyFill": 0.0
+      },
+      "kerberos": {
+        "native": 8321.7,
+        "storyFill": 0.0
+      },
+      "german": {
+        "native": 5568.7,
+        "storyFill": 0.0
+      },
+      "vibes": {
+        "native": 8451.9,
+        "storyFill": 0.0
+      },
+      "driverMinion": {
+        "native": 6762.2,
+        "storyFill": 0.0
+      }
+    },
+    "measuredBy": "tools/measure_story_route.py (render, differs) on build/ai-story-2026-10-29/*-threaded-{fill,native,route}.pdf",
+    "superseded": "docs/ILLUSTRATOR_TEXT_ROUTE_2026-10-30.md",
+    "stands": [
+      "refusal controls",
+      "reopen diagnosis correction (prep-19 claim withdrawn)"
+    ]
+  }
+}

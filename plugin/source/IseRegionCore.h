@@ -127,4 +127,12 @@ bool ContoursInteract(const std::vector<ise_miter::Contour>& contours, double re
     method), split at its corners (turning more than 30 degrees), which are kept sharp. */
 ise_miter::Contour FitCurves(const std::vector<ise_miter::Pt>& ring, double tol);
 
+/** The silhouette of a stroke that reaches `grow` beyond the nonzero fill of `fill`: that fill
+    grown by `grow` with bevel joins (so it never passes the stroke, whatever its join), every hole
+    dropped, as Close holes fills it beneath the stroke (the owner, 2026-10-31: "close all holes",
+    a letter's counters and the gaps the strokes of touching letters enclose alike). Contours of
+    cubic curves fitted within `tol`, wound for the nonzero rule; empty, and `ok` false, when
+    Clipper2 fails. */
+std::vector<ise_miter::Contour> Silhouette(const std::vector<ise_miter::Contour>& fill, double grow, double tol, bool* ok);
+
 } // namespace ise_region

@@ -21,6 +21,10 @@ Mode CurrentMode();
 bool RouteWEnabled();
 // Route W's miter correction runs (false only when the research build's control says miter=0).
 bool MiterCorrectionEnabled();
+// Trim glyph tips on live text: a tip's miter cut flush where route W fills the joins.
+bool TextTipsEnabled();
+// Close holes: route W fills the silhouette of a run's stroke beneath it (ise_region::Silhouette).
+bool CloseHolesEnabled();
 // A parcel is about to be drawn in the pass named by tag ('W' stroke pass, 'R' restore pass).
 void NoteParcel(const IParcelShape* parcel, char tag, int32 flags);
 // Stroke pass, every run: remember a fill this parcel is about to paint.

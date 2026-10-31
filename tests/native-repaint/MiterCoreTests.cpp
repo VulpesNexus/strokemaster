@@ -981,6 +981,25 @@ int main()
         Check(okThin && triThin.empty(), "Inside: a triangle has no thin parts, its corners included");
     }
 
+    {
+        // Silhouette (Close holes): an "o" (a ring) and two bars whose strokes touch, enclosing a
+        // gap between them; every hole filled, nothing grown past the stroke.
+        bool okS = false;
+        const Contour outer = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}}), counter = Poly({{3, 3}, {3, 7}, {7, 7}, {7, 3}});
+        const std::vector<Contour> o = ise_region::Silhouette({outer, counter}, 1, 1e-3, &okS);
+        auto inO = [&](Pt q) { return Winding(Flatten(o, 1e-4, 1e-9), q) != 0; };
+        Check(okS && inO({5, 5}) && inO({0.5, 0.5}) && inO({-0.9, 5}) && !inO({-1.1, 5}), "Silhouette: an o's counter filled, grown by the stroke only");
+        // Two U shapes facing each other, 1.5 apart: strokes of reach 1 meet and enclose the
+        // space between the arms.
+        const Contour left = Poly({{0, 0}, {4, 0}, {4, 1}, {1, 1}, {1, 9}, {4, 9}, {4, 10}, {0, 10}});
+        const Contour right = Poly({{5.5, 0}, {9.5, 0}, {9.5, 10}, {5.5, 10}, {5.5, 9}, {8.5, 9}, {8.5, 1}, {5.5, 1}});
+        const std::vector<Contour> pair = ise_region::Silhouette({left, right}, 1, 1e-3, &okS);
+        auto inPair = [&](Pt q) { return Winding(Flatten(pair, 1e-4, 1e-9), q) != 0; };
+        Check(okS && inPair({4.75, 5}) && inPair({2.5, 5}), "Silhouette: the gap the touching strokes enclose is filled");
+        Check(ise_region::Silhouette({left, right}, 0.5, 1e-3, &okS).size() == 2 && okS, "Silhouette: strokes that do not touch close nothing between them");
+        Check(ise_region::Silhouette({}, 1, 1e-3, &okS).empty(), "Silhouette: nothing to fill");
+    }
+
     std::printf("miter core: %d checks passed\n", checks);
     return 0;
 }

@@ -72,6 +72,7 @@
 #include "IseID.h"
 #include "IseStrokeBehindCore.h"
 #include "IseMiterCore.h"
+#include "IseRegionCore.h"
 #ifdef ISE_ROUTE_X
 #include "IseCrossFrame.h"
 #endif
@@ -208,14 +209,28 @@ void EmitPath(IGraphicsPort* port, const std::vector<ise_miter::Contour>& contou
     run's miter limit, for half width h; a corner past it stays beveled, as the native stroke
     draws it. Filled rather than restroked along the corner: InDesign's PDF port rounds
     coordinates to a thousandth of a point, which bent short restrokes beside tiny segments
-    enough for renderers to disagree on the join (2026-10-04). Returns whether any was. */
-bool FillJoins(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, bool interior, double h, double limit)
+    enough for renderers to disagree on the join (2026-10-04). Returns whether any was.
+    `tips`: Trim glyph tips, on live text as on shapes (the owner, 2026-10-31): a glyph tip's miter
+    within the limit is cut flush (TipReach), and past it, with `cutPast` (Outside and Center runs),
+    cut flush at the stroke's reach instead of beveled, whatever the length of the edge beside it,
+    as StrokeSideJoins draws a shape's (the bevel, made at the letter's point, left the tip
+    wedged close to it: the owner's V5, 2026-10-31). */
+bool FillJoins(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, bool interior, double h, double limit,
+               bool tips = false, bool cutPast = false)
 {
     bool any = false;
     port->newpath();
     for (const ise_miter::Stub& s : stubs) {
-        if (s.interior != interior || s.ratio > limit) continue;
-        const std::vector<ise_miter::Pt> pts = ise_miter::Counterclockwise(ise_miter::JoinPolygon(s, h, s.ratio * h));
+        if (s.interior != interior) continue;
+        const bool tip = tips && !interior && ise_miter::TrimmedTip(s, h);
+        double reach = s.ratio * h;
+        if (s.ratio > limit) {
+            if (!(tip && cutPast)) continue;
+            reach = h;
+        } else if (tip) {
+            reach = std::min(reach, ise_miter::TipReach(s, h));
+        }
+        const std::vector<ise_miter::Pt> pts = ise_miter::Counterclockwise(ise_miter::JoinPolygon(s, h, reach));
         port->moveto(pts[0].x, pts[0].y);
         for (size_t i = 1; i < pts.size(); ++i) port->lineto(pts[i].x, pts[i].y);
         port->closepath();
@@ -262,7 +277,9 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     stroke->Install(port, mutableData, IRenderingObject::kInstallStroke);
     if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
     const double limit = ToDouble(mutableData->GetMiterLimit());
-    if (anyExterior) FillJoins(port, stubs, false, options.halfWidth, limit);
+    // Past the limit, a glyph tip is cut flush, not left to the bevel: on a letter that tapers to
+    // a hairline, the bevel still reads as a point (the owner's S11, 2026-10-31).
+    if (anyExterior) FillJoins(port, stubs, false, options.halfWidth, limit, ise_cross_frame::TextTipsEnabled(), true);
     if (anyInterior) {
         AutoGSave clipScope(port);
         port->newpath();
@@ -272,8 +289,34 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     }
 }
 
-/** Whether route W corrects this run's miter joins (always, outside the research build). */
-bool CorrectMiter(int32 join)
+/** Close holes (the owner, 2026-10-31: "close all holes"): the silhouette of the run's stroke,
+    which reaches `reach` beyond its glyphs (ise_region::Silhouette), filled beneath the stroke in
+    the port's current paint, so every hole its outline encloses is filled: a letter's counters and
+    the gaps that the strokes of touching letters close off. Within the run: a hole closed only by
+    another run's stroke stays open. In a sheared frame, in page space, as the stroke is drawn. */
+void FillSilhouette(IGraphicsPort* port, const IWaxRun* run, const IWaxGlyphs* glyphs, IFontInstance* instance, double reach)
+{
+    if (port == nil || !(reach > 0)) return;
+    ise_miter::Recorder recorder;
+    TransformedOutline writer(nullptr, &recorder);
+    WriteRun(&writer, run, glyphs, instance);
+    PMMatrix linear;
+    double widthScale = 1;
+    const bool pageSpace = PageSpace(run, &linear, &widthScale);
+    const std::vector<ise_miter::Contour> contours = pageSpace ? Placed(recorder.Contours(), linear) : recorder.Contours();
+    // Short of the stroke's edge by twice the tolerance, so the fitted curves never show past it.
+    const double tol = 0.01;
+    bool ok = false;
+    const std::vector<ise_miter::Contour> shape = ise_region::Silhouette(contours, std::max(0.0, reach * widthScale - 2 * tol), tol, &ok);
+    if (!ok || shape.empty()) return;
+    AutoGSave save(port);
+    if (pageSpace) port->concat(linear.Inverse());
+    port->newpath();
+    EmitPath(port, shape);
+    port->fill();
+}
+
+/** Whether route W corrects this run's miter joins (always, outside the research build). */bool CorrectMiter(int32 join)
 {
     if (join != kPMMiterJoin) return false;
 #ifdef ISE_ROUTE_X
@@ -411,6 +454,24 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
         // A mitered Center stroke stays native and in InDesign's order; only its join is muted
         // to bevel for the Text pass, and its miter joins are filled after it (RecoverJoin).
         const int32 join = data->GetOutlineJoin();
+        // Close holes: the silhouette of the stroke's outer half, beneath it, in its paint.
+        if (ise_cross_frame::CloseHolesEnabled()) {
+            IGraphicsPort* port = gd->GetGraphicsPort();
+            IWaxRenderData* mutableData = const_cast<IWaxRenderData*>(data);
+            InterfacePtr<IPMFont> font(mutableData->QueryFont());
+            InterfacePtr<IFontMgr> fontMgr(GetExecutionContextSession(), UseDefaultIID());
+            InterfacePtr<IFontInstance> instance(font && fontMgr ? fontMgr->QueryFontInstance(font, mutableData->GetFontMatrix()) : nil);
+            InterfacePtr<IRenderingObject> paint(db, mutableData->GetColorUID(kTrue), UseDefaultIID());
+            if (port != nil && instance != nil && paint != nil) {
+                AutoGSave save(port);
+#ifdef ISE_ROUTE_X
+                ise_cross_frame::ClipWithheld(gd, port, run, data, glyphs, db);
+#endif
+                paint->Install(port, mutableData, IRenderingObject::kInstallStroke);
+                if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
+                FillSilhouette(port, run, glyphs, instance, width / 2);
+            }
+        }
         if (CorrectMiter(join) && ThreadJoinLedger().Mute(run, data, PrintOf(run, data, glyphs), static_cast<std::uint32_t>(join))) {
             const_cast<IWaxRenderData*>(data)->SetOutlineJoin(kPMBevelJoin);
         }
@@ -443,6 +504,8 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
         // Install does not carry the run's stroke overprint, and the PDF port wrote this stroke
         // without it (measured 2026-10-04): it is set explicitly, for the stroke and its joins.
         if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
+        // Close holes: the silhouette of the whole Outside stroke, beneath it, in its paint.
+        if (ise_cross_frame::CloseHolesEnabled()) FillSilhouette(port, run, glyphs, instance, width);
         // Outside alignment is drawn by InDesign as a centered stroke of twice the weight
         // beneath the fill; reproduce that geometry explicitly. A mitered run is stroked with
         // bevel joins first, and its exterior corners get their miters back below (see
@@ -470,7 +533,9 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
                 ise_miter::Options options;
                 options.halfWidth = h;
                 const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(contours, options);
-                if (!stubs.empty()) FillJoins(port, stubs, false, h, ToDouble(mutableData->GetMiterLimit()));
+                if (!stubs.empty())
+                    FillJoins(port, stubs, false, h, ToDouble(mutableData->GetMiterLimit()), ise_cross_frame::TextTipsEnabled(),
+                              alignment == Alignment::Outside);
             }
         } else {
             port->setlinewidth(mutableData->GetOutlineWidth() * 2);
@@ -503,7 +568,8 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
                 if (!stubs.empty()) {
                     // The exterior corners' miter joins, within the run's limit as the native stroke
                     // draws them, filled in the stroke's paint and overprint.
-                    FillJoins(port, stubs, false, options.halfWidth, ToDouble(mutableData->GetMiterLimit()));
+                    FillJoins(port, stubs, false, options.halfWidth, ToDouble(mutableData->GetMiterLimit()),
+                              ise_cross_frame::TextTipsEnabled(), alignment == Alignment::Outside);
                 }
             }
         }

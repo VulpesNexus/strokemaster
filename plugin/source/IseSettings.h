@@ -33,8 +33,10 @@ struct Settings {
     bool textMiter = true;       // no miter spikes on text strokes (needs textBehind)
     // Shapes, frames, and outlined text
     bool shapes = true;          // the plugin draws page-item strokes
+    bool shapeMiter = true;      // no miter spikes on shapes and outlined text (Center's interior miters clipped to the fill;
+                                 // a switch of its own, the owner 2026-10-31)
     bool wholePoints = true;     // past the miter limit, a shape's own points kept whole
-    bool glyphTips = true;       // within the limit, glyph tips trimmed
+    bool glyphTips = true;       // within the limit, glyph tips trimmed (live text too, 2026-10-31)
     bool effectCorners = true;   // corner-effect corners beveled past the limit, trimmed within
     bool patternPoints = true;   // whole points on dashed, dotted, and striped strokes
     bool wordOutline = true;     // Outside dashes and built-in stripes along one outline per word
@@ -42,6 +44,7 @@ struct Settings {
     bool inside = true;          // Inside strokes
     bool openPaths = true;       // open paths (Center, Miter)
     bool transparency = true;    // items with opacity, blending, or object-level effects
+    bool closeHoles = false;     // every hole a text stroke's outline encloses filled (opt-in, the owner 2026-10-31)
 };
 
 /** The switches by name, in the file's order. */
@@ -55,6 +58,7 @@ inline const Key* Keys(size_t* count)
         {"text_stories", &Settings::textStories},
         {"text_miter", &Settings::textMiter},
         {"shapes", &Settings::shapes},
+        {"shape_miter", &Settings::shapeMiter},
         {"whole_points", &Settings::wholePoints},
         {"glyph_tips", &Settings::glyphTips},
         {"effect_corners", &Settings::effectCorners},
@@ -64,6 +68,7 @@ inline const Key* Keys(size_t* count)
         {"inside", &Settings::inside},
         {"open_paths", &Settings::openPaths},
         {"transparency", &Settings::transparency},
+        {"close_holes", &Settings::closeHoles},
     };
     *count = sizeof keys / sizeof keys[0];
     return keys;
@@ -77,8 +82,12 @@ inline std::wstring Folder()
     return std::wstring(appData) + L"\\StrokeMaster";
 }
 
+/** The file, or the one STROKEMASTER_SETTINGS names: the tests' own, so they never read or write
+    the user's switches (as the Illustrator plugin's IllustratorSettings.h, 2026-10-31). */
 inline std::wstring FilePath()
 {
+    const wchar_t* over = _wgetenv(L"STROKEMASTER_SETTINGS");
+    if (over != nullptr && *over != 0) return over;
     const std::wstring folder = Folder();
     return folder.empty() ? folder : folder + L"\\settings.txt";
 }
@@ -118,10 +127,9 @@ inline bool Load(Settings* out)
     drawing thread never reads half of it. */
 inline bool Save(const Settings& s)
 {
-    const std::wstring folder = Folder();
-    if (folder.empty()) return false;
-    CreateDirectoryW(folder.c_str(), nullptr);
     const std::wstring path = FilePath(), temp = path + L".tmp";
+    if (path.empty()) return false;
+    CreateDirectoryW(path.substr(0, path.find_last_of(L'\\')).c_str(), nullptr);
     FILE* f = _wfopen(temp.c_str(), L"wb");
     if (f == nullptr) return false;
     size_t count = 0;

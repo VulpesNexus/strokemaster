@@ -44,6 +44,7 @@ The render comparator accepts an independent fill-only mask. Without it, its ero
 | --- | --- |
 | [Research revival, 2026-09-25](STROKEMASTER_RESEARCH_REVIVAL_2026-09-25.md) | Current evidence ledger, root-cause map, architecture decision, and next experiment |
 | [Route X on InDesign 21.6, 2026-10-03](docs/ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md) | 21.6 recertification, the extension census, the installed candidate, and the miter-spike model checked against InDesign |
+| [What to know](docs/WHAT_TO_KNOW.md) | What each plugin does to your files, and its limits, in one page |
 | [Usage guide](docs/USING_STROKEMASTER.md) | Workflow, supported contexts, installation, and limitations |
 | [Takeover audit](PROJECT_TAKEOVER_AUDIT.md) | Initial A–N audit, claim ledger, and subsequent evidence |
 | [Open questions](OPEN_QUESTIONS.md) | Remaining discriminating tests and release blockers |
@@ -61,7 +62,7 @@ The render comparator accepts an independent fill-only mask. Without it, its ero
 
 ## License
 
-**GPL-3.0-or-later**, with an **Adobe InDesign SDK linking exception** ([LICENSE](LICENSE), [LICENSE-EXCEPTION](LICENSE-EXCEPTION)).
+**GPL-3.0-or-later**, with an **Adobe SDK linking exception** for each plugin: the InDesign SDK for the InDesign plugins, the Illustrator SDK for the Illustrator plugin ([LICENSE](LICENSE), [LICENSE-EXCEPTION](LICENSE-EXCEPTION)).
 
 The exception is load-bearing, not boilerplate: both InDesign plugins compile three of Adobe's SDK source files into themselves, under terms GPL section 10 forbids passing on. The repository itself vendors no Adobe code, and the scripts in *tools/jsx/* link nothing.
 

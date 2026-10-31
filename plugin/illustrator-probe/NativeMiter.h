@@ -33,11 +33,15 @@ struct Choice {
 // Illustrator's range for a miter limit.
 constexpr double kMinLimit = 1, kMaxLimit = 500;
 
-// Whether an exterior corner must keep its miter under limit `limit` and half width h.
-inline bool MustKeep(const ise_miter::Stub& s, double h, double limit)
+// Whether an exterior corner must keep its miter under limit `limit` and half width h. Live
+// text (`wholePoints` false) keeps no point past the run's own limit: InDesign's plugin strokes
+// a text run with the run's own limit and keeps whole points only on shapes and outlined text
+// (owner's question on the German Beauty bevels, 2026-10-30).
+// `glyphTips` false (the panel's Trim glyph tips off): every corner within the limit keeps its miter.
+inline bool MustKeep(const ise_miter::Stub& s, double h, double limit, bool wholePoints = true, bool glyphTips = true)
 {
-    if (s.ratio <= limit) return !ise_miter::TrimmedTip(s, h);
-    return ise_miter::WholePoint(s, h) && s.ratio <= kMaxLimit;
+    if (s.ratio <= limit) return !glyphTips || !ise_miter::TrimmedTip(s, h);
+    return wholePoints && ise_miter::WholePoint(s, h) && s.ratio <= kMaxLimit;
 }
 
 // The limit for corners that must keep their miter (`keep`) and corners that must be cut
@@ -125,8 +129,10 @@ inline double DepthInside(const ise_miter::RingGrid& grid, ise_miter::Pt v, ise_
 //                interior miter is kept within the limit and beveled past it, as InDesign
 // Otherwise an interior miter that stays inside is visible: kept within the limit, and cut
 // past it (InDesign bevels it there).
+//   wholePoints  false for live text (see MustKeep); glyphTips false keeps tips within the limit
 inline Choice ChooseLimitForOutline(const std::vector<ise_miter::Contour>& contours, double h, double limit, bool interior,
-                                    bool hiddenInside = false, bool clipped = false)
+                                    bool hiddenInside = false, bool clipped = false, bool wholePoints = true,
+                                    bool glyphTips = true)
 {
     if (!(h > 0) || !std::isfinite(h)) return ChooseLimit({}, h, limit);
     ise_miter::Options o;
@@ -139,7 +145,7 @@ inline Choice ChooseLimitForOutline(const std::vector<ise_miter::Contour>& conto
     const double eps = 1e-9 * std::max(1.0, h);
     for (const auto& s : corners) {
         if (!std::isfinite(s.ratio)) continue;
-        if (!s.interior) { (MustKeep(s, h, limit) ? keep : cut).push_back(s.ratio); continue; }
+        if (!s.interior) { (MustKeep(s, h, limit, wholePoints, glyphTips) ? keep : cut).push_back(s.ratio); continue; }
         if (s.ratio > kMaxLimit) continue;   // beveled at any limit
         bool escapes = false;
         if (!clipped) {

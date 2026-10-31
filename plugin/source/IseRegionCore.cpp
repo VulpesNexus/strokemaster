@@ -936,4 +936,25 @@ std::vector<Contour> Uncovered(const std::vector<Contour>& fill, const std::vect
                   tol);
 }
 
+
+std::vector<Contour> Silhouette(const std::vector<Contour>& fill, double grow, double tol, bool* ok)
+{
+    *ok = tol > 0 && grow >= 0;
+    if (!*ok) return {};
+    const int precision = kBandPrecision;
+    const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
+    if (!*ok || region.empty()) return {};
+    const Clipper2Lib::PathsD grown = grow > 0 ? Clipper2Lib::InflatePaths(region, grow, Clipper2Lib::JoinType::Bevel,
+                                                                           Clipper2Lib::EndType::Polygon, 2.0, precision, tol)
+                                               : region;
+    Clipper2Lib::ClipperD clipper(precision);
+    clipper.AddSubject(grown);
+    Clipper2Lib::PolyTreeD tree;
+    *ok = clipper.Execute(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::NonZero, tree) && *ok;
+    if (!*ok) return {};
+    // The outer polygons only: their holes, and whatever lies within those, are dropped.
+    Clipper2Lib::PathsD outer;
+    for (const auto& child : tree) outer.push_back(child->Polygon());
+    return Fitted(outer, tol);
+}
 } // namespace ise_region
