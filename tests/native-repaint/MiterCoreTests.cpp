@@ -1087,6 +1087,30 @@ int main()
         Check(!inPair2(ise_region::Silhouette({left, right}, 0.6, 1e-3, &okS), {4.75, 5}) && okS,
               "Silhouette: strokes a twentieth of the reach apart or more close nothing");
         // Holes alone (a dashed stroke): the gap between the U shapes, not the band around them.
+        {
+            using ise_region::BandJoin;
+            std::vector<ise_region::StrokeField> fields = {{{left}, 0.4, BandJoin::Miter, 4},
+                                                          {{right}, 1.2, BandJoin::Miter, 4}};
+            const auto mixed = ise_region::SharedStrokeHoles(fields, 1e-3, &okS);
+            Check(okS && inPair2(mixed, {4.75, 5}), "Shared holes: unequal strokes close their common cavity");
+            Check(!inPair2(mixed, {0.5, 5}) && !inPair2(mixed, {9, 5}) && !inPair2(mixed, {-0.2, 5}),
+                  "Shared holes: preserve both glyph fills and exterior stroke bands");
+            auto islandFields = fields;
+            islandFields.push_back({{Poly({{4,4}, {5,4}, {5,6}, {4,6}})}, 0.2, BandJoin::Bevel, 0});
+            const auto islands = ise_region::SharedStrokeHoles(islandFields, 1e-3, &okS);
+            Check(okS && !inPair2(islands, {4.5,5}) && inPair2(islands, {4.75,3}),
+                  "Shared holes: preserve a glyph island inside the enclosed cavity");
+            std::reverse(fields.begin(), fields.end());
+            const auto reverse = ise_region::SharedStrokeHoles(fields, 1e-3, &okS);
+            Check(okS && inPair2(reverse, {4.75, 5}) && !inPair2(reverse, {0.5, 5}),
+                  "Shared holes: independent of stroke order");
+            fields[0].grow = 0.6;
+            Check(ise_region::SharedStrokeHoles(fields, 1e-3, &okS).empty() && okS,
+                  "Shared holes: unequal strokes with an open passage do not bridge it");
+            fields[0].grow = -1;
+            Check(ise_region::SharedStrokeHoles(fields, 1e-3, &okS).empty() && !okS,
+                  "Shared holes: invalid reach fails closed");
+        }
         const std::vector<Contour> holesOnly = ise_region::Silhouette({left, right}, 1, 1e-3, &okS, ise_region::BandJoin::Bevel, 0, true);
         Check(okS && inPair2(holesOnly, {4.75, 5}) && !inPair2(holesOnly, {-0.5, 5}) && !inPair2(holesOnly, {0.5, 5}),
               "Silhouette: holes only, without the stroke's band or the fill");

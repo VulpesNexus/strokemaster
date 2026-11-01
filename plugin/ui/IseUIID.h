@@ -37,6 +37,8 @@ DECLARE_PMID(kImplementationIDSpace, kIseUIPanelObserverImpl, kIseUIPrefix + 0x4
 DECLARE_PMID(kImplementationIDSpace, kIseUIActionComponentImpl, kIseUIPrefix + 0x41)
 DECLARE_PMID(kImplementationIDSpace, kIseUITipImpl, kIseUIPrefix + 0x42)
 DECLARE_PMID(kImplementationIDSpace, kIseUIPanelViewImpl, kIseUIPrefix + 0x43)
+DECLARE_PMID(kImplementationIDSpace, kIseUICheckKeyImpl, kIseUIPrefix + 0x44)
+DECLARE_PMID(kImplementationIDSpace, kIseUIButtonKeyImpl, kIseUIPrefix + 0x45)
 
 // ActionIDs:
 DECLARE_PMID(kActionIDSpace, kIseUIPanelWidgetActionID, kIseUIPrefix + 0x40)

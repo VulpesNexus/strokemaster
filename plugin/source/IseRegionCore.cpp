@@ -937,6 +937,53 @@ std::vector<Contour> Uncovered(const std::vector<Contour>& fill, const std::vect
 }
 
 
+static Clipper2Lib::PathsD JoinedStroke(const Clipper2Lib::PathsD& region, double distance, BandJoin join, double limit, double tol)
+{
+    const int precision = kBandPrecision;
+    Clipper2Lib::PathsD joined;
+    if (join != BandJoin::Miter) {
+        joined = Clipper2Lib::InflatePaths(region, distance,
+                                           join == BandJoin::Round ? Clipper2Lib::JoinType::Round : Clipper2Lib::JoinType::Bevel,
+                                           Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+    } else {
+        joined = Clipper2Lib::InflatePaths(region, distance, Clipper2Lib::JoinType::Bevel, Clipper2Lib::EndType::Polygon, 2.0,
+                                           precision, tol);
+        // The side the region lies on, from its largest polygon's winding (an outer one).
+        double largest = 0;
+        for (const auto& p : region) {
+            const double a = Clipper2Lib::Area(p);
+            if (std::fabs(a) > std::fabs(largest)) largest = a;
+        }
+        const double side = largest < 0 ? -1 : 1;
+        for (const auto& p : region) {
+            const size_t n = p.size();
+            if (n < 3) continue;
+            for (size_t i = 0; i < n; ++i) {
+                const Clipper2Lib::PointD& a = p[(i + n - 1) % n];
+                const Clipper2Lib::PointD& b = p[i];
+                const Clipper2Lib::PointD& c = p[(i + 1) % n];
+                const double l1 = std::hypot(b.x - a.x, b.y - a.y), l2 = std::hypot(c.x - b.x, c.y - b.y);
+                if (!(l1 > 0) || !(l2 > 0)) continue;
+                const double d1x = (b.x - a.x) / l1, d1y = (b.y - a.y) / l1, d2x = (c.x - b.x) / l2, d2y = (c.y - b.y) / l2;
+                if (side * (d1x * d2y - d1y * d2x) <= 0) continue;   // not a corner the stroke goes around
+                // Outward normals, the miter's tip where the offset edges meet, and its length
+                // in reaches (the miter limit's measure).
+                const double n1x = side * d1y, n1y = -side * d1x, n2x = side * d2y, n2y = -side * d2x;
+                const double cosine = n1x * n2x + n1y * n2y;
+                if (!(cosine > -1 + 1e-9)) continue;
+                const double ratio = std::sqrt(2 / (1 + cosine));
+                // Within the limit, and longer than the bevel by more than the tolerance.
+                if (ratio > limit || distance * (ratio - 1 / ratio) <= tol) continue;
+                const double k = distance / (1 + cosine);
+                joined.push_back({b, {b.x + distance * n1x, b.y + distance * n1y}, {b.x + k * (n1x + n2x), b.y + k * (n1y + n2y)},
+                                  {b.x + distance * n2x, b.y + distance * n2y}});
+                if (Clipper2Lib::Area(joined.back()) * side < 0) std::reverse(joined.back().begin(), joined.back().end());
+            }
+        }
+    }
+    return joined;
+}
+
 std::vector<Contour> Silhouette(const std::vector<Contour>& fill, double grow, double tol, bool* ok, BandJoin join, double limit,
                                 bool holesOnly, bool hollow)
 {
@@ -972,47 +1019,7 @@ std::vector<Contour> Silhouette(const std::vector<Contour>& fill, double grow, d
         const double wide = grow + std::max(3 * tol, 0.05 * grow);
         // Keep holes at the real reach too: widening can erase small cavities.
         auto holesAt = [&](double distance, double overlap) {
-            Clipper2Lib::PathsD joined;
-            if (join != BandJoin::Miter) {
-                joined = Clipper2Lib::InflatePaths(region, distance,
-                                                   join == BandJoin::Round ? Clipper2Lib::JoinType::Round : Clipper2Lib::JoinType::Bevel,
-                                                   Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
-            } else {
-                joined = Clipper2Lib::InflatePaths(region, distance, Clipper2Lib::JoinType::Bevel, Clipper2Lib::EndType::Polygon, 2.0,
-                                                   precision, tol);
-                // The side the region lies on, from its largest polygon's winding (an outer one).
-                double largest = 0;
-                for (const auto& p : region) {
-                    const double a = Clipper2Lib::Area(p);
-                    if (std::fabs(a) > std::fabs(largest)) largest = a;
-                }
-                const double side = largest < 0 ? -1 : 1;
-                for (const auto& p : region) {
-                    const size_t n = p.size();
-                    if (n < 3) continue;
-                    for (size_t i = 0; i < n; ++i) {
-                        const Clipper2Lib::PointD& a = p[(i + n - 1) % n];
-                        const Clipper2Lib::PointD& b = p[i];
-                        const Clipper2Lib::PointD& c = p[(i + 1) % n];
-                        const double l1 = std::hypot(b.x - a.x, b.y - a.y), l2 = std::hypot(c.x - b.x, c.y - b.y);
-                        if (!(l1 > 0) || !(l2 > 0)) continue;
-                        const double d1x = (b.x - a.x) / l1, d1y = (b.y - a.y) / l1, d2x = (c.x - b.x) / l2, d2y = (c.y - b.y) / l2;
-                        if (side * (d1x * d2y - d1y * d2x) <= 0) continue;   // not a corner the stroke goes around
-                        // Outward normals, the miter's tip where the offset edges meet, and its length
-                        // in reaches (the miter limit's measure).
-                        const double n1x = side * d1y, n1y = -side * d1x, n2x = side * d2y, n2y = -side * d2x;
-                        const double cosine = n1x * n2x + n1y * n2y;
-                        if (!(cosine > -1 + 1e-9)) continue;
-                        const double ratio = std::sqrt(2 / (1 + cosine));
-                        // Within the limit, and longer than the bevel by more than the tolerance.
-                        if (ratio > limit || distance * (ratio - 1 / ratio) <= tol) continue;
-                        const double k = distance / (1 + cosine);
-                        joined.push_back({b, {b.x + distance * n1x, b.y + distance * n1y}, {b.x + k * (n1x + n2x), b.y + k * (n1y + n2y)},
-                                          {b.x + distance * n2x, b.y + distance * n2y}});
-                        if (Clipper2Lib::Area(joined.back()) * side < 0) std::reverse(joined.back().begin(), joined.back().end());
-                    }
-                }
-            }
+            const auto joined = JoinedStroke(region, distance, join, limit, tol);
             Clipper2Lib::PolyTreeD enclosed;
             tree(joined, enclosed);
             if (!*ok) return Clipper2Lib::PathsD{};
@@ -1056,6 +1063,53 @@ std::vector<Contour> Silhouette(const std::vector<Contour>& fill, double grow, d
         if (!*ok) return {};
     }
     return Fitted(outer, tol);
+}
+
+std::vector<Contour> SharedStrokeHoles(const std::vector<StrokeField>& fields, double tol, bool* ok)
+{
+    *ok = tol > 0 && !fields.empty();
+    if (!*ok) return {};
+    std::size_t segments = 0;
+    if (fields.size() > 17) { *ok = false; return {}; }
+    for (const auto& field : fields) for (const auto& c : field.contours) {
+        segments += c.segments.size();
+        if (segments > 200000) { *ok = false; return {}; }
+    }
+    Clipper2Lib::PathsD result, fills;
+    // Detect at the actual reach as well as the existing near-touch threshold: widening
+    // alone can erase small cavities. Each field retains its own width and join.
+    for (int pass = 0; pass < 2; ++pass) {
+        Clipper2Lib::PathsD joined;
+        double overlap = tol;
+        for (const auto& field : fields) {
+            if (!(field.grow > 0) || !std::isfinite(field.grow)) { *ok = false; return {}; }
+            const auto region = Union(Paths(field.contours, tol), Clipper2Lib::FillRule::NonZero, ok, kBandPrecision);
+            if (!*ok) return {};
+            if (pass == 0) fills.insert(fills.end(), region.begin(), region.end());
+            const double extra = pass ? std::max(3 * tol, 0.05 * field.grow) : 0;
+            overlap = std::max(overlap, extra + tol);
+            const auto grown = JoinedStroke(region, field.grow + extra, field.join, field.limit, tol);
+            joined.insert(joined.end(), grown.begin(), grown.end());
+        }
+        Clipper2Lib::ClipperD clipper(kBandPrecision);
+        Clipper2Lib::PolyTreeD tree;
+        clipper.AddSubject(joined);
+        *ok = clipper.Execute(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::NonZero, tree);
+        if (!*ok) return {};
+        Clipper2Lib::PathsD holes;
+        for (const auto& outer : tree) for (const auto& hole : *outer) {
+            auto path = hole->Polygon();
+            if (Clipper2Lib::Area(path) < 0) std::reverse(path.begin(), path.end());
+            holes.push_back(std::move(path));
+        }
+        const auto expanded = Clipper2Lib::InflatePaths(holes, overlap, Clipper2Lib::JoinType::Round,
+                                                       Clipper2Lib::EndType::Polygon, 2.0, kBandPrecision, tol);
+        result.insert(result.end(), expanded.begin(), expanded.end());
+    }
+    // Islands of glyph fill can sit inside a cavity. Never paint over those or a
+    // letter body when growing the seam overlap under the surrounding stroke.
+    result = Run(Clipper2Lib::ClipType::Difference, result, fills, kBandPrecision, ok);
+    return *ok ? Fitted(result, tol) : std::vector<Contour>{};
 }
 
 std::vector<Contour> TippedOutline(const std::vector<Contour>& fill, double h, double limit, double tol, bool* ok)

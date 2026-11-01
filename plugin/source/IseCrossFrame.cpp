@@ -707,6 +707,11 @@ bool ReadFill(FillRecord& rec, const IWaxRun* run, const IWaxRenderData* data, c
         const bool strokes = method == IWaxRenderData::kFillStroke && stroked->GetColorUID(kTrue) != none && width > 0;
         rec.reach = !strokes ? 0 : align == kStrokeAlignOutside ? width : align == kStrokeAlignCenter ? width / 2 : 0;
         rec.strokePaint = strokes ? stroked->GetColorUID(kTrue).Get() : 0;
+        if (stroked->GetOverprint(kTrue)) rec.reach = 0;
+        rec.strokeJoin = stroked->GetOutlineJoin();
+        rec.strokeLimit = ToDouble(stroked->GetMiterLimit());
+        rec.strokeTint = ToDouble(stroked->GetTint(kTrue));
+        for (int i = 0; i < 4; ++i) rec.linear[i] = ToDouble(toPb[i]);
     }
     if (glyphs->HasGlyphMatrix()) {
         // Rotated, scaled, or pathed glyphs: build the outlines now.
@@ -884,20 +889,27 @@ public:
         for (const Box& box : FramePaintBoxes(item, false)) content(box, true);
         for (const Box& box : FramePaintBoxes(item, true)) content(box, true);
         if (uid == fStop) { found = true; return; }
-        if (column == nil || (Ctl().mode == Mode::Story && column->GetFrameListUID().Get() != gParcel.story)) return;
-        if (!fBox.Empty() && !ContentBox(item).Meets(fBox)) return;
+        if (column == nil) return;
+        if (Ctl().mode == Mode::Story && column->GetFrameListUID().Get() != gParcel.story) {
+            fTracker->BlockSharedHoles(uid, ContentBox(item), fGd->GetGraphicsPort()); return;
+        }
+        if (!fBox.Empty() && !ContentBox(item).Meets(fBox)) {
+            fTracker->BlockSharedHoles(uid, ContentBox(item), fGd->GetGraphicsPort()); return;
+        }
         IDataBase* db = ::GetDataBase(column);
         InterfacePtr<IShape> shape(item, UseDefaultIID());
         InterfacePtr<IXPManager> xp(Utils<IXPUtils>()->QueryXPManager(db));
-        if (shape == nil || xp == nil || xp->ItemHasTransparencyInParentHierarchy(shape)) return;
+        if (shape == nil || xp == nil || xp->ItemHasTransparencyInParentHierarchy(shape)) {
+            fTracker->BlockSharedHoles(uid, ContentBox(item), fGd->GetGraphicsPort()); return;
+        }
         // Wax belongs to the frame-list strand, not the text-model boss.
         InterfacePtr<IWaxStrand> strand(list, UseDefaultIID());
-        if (list == nil || strand == nil) return;
+        if (list == nil || strand == nil) { fTracker->BlockSharedHoles(uid, ContentBox(item), fGd->GetGraphicsPort()); return; }
         const TextIndex start = list->GetFrameStart(::GetUID(column));
         const int32 span = list->GetFrameSpan(::GetUID(column));
         if (start < 0 || span <= 0) return;
         std::unique_ptr<const IWaxIterator> it(strand->NewReadOnlyWaxIterator());
-        if (!it) return;
+        if (!it) { fTracker->BlockSharedHoles(uid, ContentBox(item), fGd->GetGraphicsPort()); return; }
         int lines = 0;
         for (const IWaxLine* line = it->GetFirstWaxLine(start); line && line->TextOrigin() < start + span; line = it->GetNextWaxLine()) {
             if (++lines > 400) { truncated = true; return; }
@@ -905,10 +917,15 @@ public:
                 InterfacePtr<IWaxRun> run(line->QueryRun(i));
                 InterfacePtr<IWaxRenderData> data(run, UseDefaultIID());
                 InterfacePtr<IWaxGlyphs> glyphs(run, UseDefaultIID());
-                if (run == nil || data == nil || glyphs == nil || run->IsVerticalWritingMode()) continue;
+                if (run == nil || data == nil || glyphs == nil || run->IsVerticalWritingMode()) {
+                    fTracker->BlockSharedHoles(uid, ContentBox(item), fGd->GetGraphicsPort()); continue;
+                }
+                if (glyphs->GetGlyphCount() <= 0) continue;
                 FillRecord rec;
                 if (!ReadFill(rec, run, data, glyphs, db, fGd->GetGraphicsPort(), uid,
-                              column->GetFrameListUID().Get(), line->GetParcelKey())) continue;
+                              column->GetFrameListUID().Get(), line->GetParcelKey())) {
+                    fTracker->BlockSharedHoles(uid, ContentBox(item), fGd->GetGraphicsPort()); continue;
+                }
                 // Iterator-owned wax can be reused for the next line. A sequential identity is
                 // enough for this resolved or self-contained snapshot; it is never dereferenced.
                 rec.run = reinterpret_cast<const void*>(++fRuns);
@@ -1031,13 +1048,20 @@ void RecordPendingFill(GraphicsData* gd, const IWaxRun* run, const IWaxRenderDat
 {
     if (!CrossFrameMode() || gd == nil || run == nil || data == nil || glyphs == nil || db == nil) return;
     Tracker& t = ThreadTracker();
+    auto barrier = [&] {
+        InterfacePtr<IShape> frame(db, UID(gParcel.frame), UseDefaultIID());
+        if (frame != nil) t.BlockSharedHoles(gParcel.frame, ContentBox(frame), gd->GetGraphicsPort());
+    };
     if (!t.Active() || !SameParcel(run) || gParcel.transparent) {
+        if (t.Active() && SameParcel(run)) barrier();
         Trace("F unavailable active=%d same=%d xp=%d", t.Active() ? 1 : 0, SameParcel(run) ? 1 : 0, gParcel.transparent ? 1 : 0);
         return;
     }
-    if (Ctl().mode == Mode::Story && gParcel.parcels < 2) return;   // a one-parcel story has no other frame
+    if (Ctl().mode == Mode::Story && gParcel.parcels < 2) { barrier(); return; }
     FillRecord rec;
-    if (!ReadFill(rec, run, data, glyphs, db, gd->GetGraphicsPort(), gParcel.frame, gParcel.story, gParcel.key)) return;
+    if (!ReadFill(rec, run, data, glyphs, db, gd->GetGraphicsPort(), gParcel.frame, gParcel.story, gParcel.key)) {
+        if (glyphs->GetGlyphCount() > 0) barrier(); return;
+    }
     const Box b = rec.box;
     const bool lazy = !rec.resolved;
     const bool kept = t.Pending(std::move(rec));
@@ -1045,10 +1069,10 @@ void RecordPendingFill(GraphicsData* gd, const IWaxRun* run, const IWaxRenderDat
           lazy ? 1 : 0, gParcel.frame, b.x0, b.y0, b.x1, b.y1);
 }
 
-std::vector<ise_miter::Contour> NeighborOutlines(GraphicsData* gd, const IWaxRun* run, double x0, double y0, double x1, double y1,
+std::vector<ise_region::StrokeField> NeighborOutlines(GraphicsData* gd, const IWaxRun* run, double x0, double y0, double x1, double y1,
                                                  double reach, std::uint32_t paint)
 {
-    std::vector<ise_miter::Contour> out;
+    std::vector<ise_region::StrokeField> out;
     if (!CrossFrameMode() || gd == nil || run == nil || run->GetWaxLine() == nil) return out;
     Tracker* screen = ScreenRecords(gd, run);
     Tracker& t = screen ? *screen : ThreadTracker();
@@ -1066,15 +1090,31 @@ std::vector<ise_miter::Contour> NeighborOutlines(GraphicsData* gd, const IWaxRun
     s.own = gParcel.own;
     const double cx[4] = {x0, x1, x1, x0}, cy[4] = {y0, y0, y1, y1};
     for (int i = 0; i < 4; ++i) { PMReal x = cx[i], y = cy[i]; toPb.Transform(&x, &y); s.strokeBox.Add(ToDouble(x), ToDouble(y)); }
+    InterfacePtr<IWaxRenderData> currentPaint(const_cast<IWaxRun*>(run), IID_IWAXRENDERDATA);
+    if (currentPaint == nil) return out;
     NeighborStats stats;
-    const std::vector<const Glyph*> nearby = t.Neighbors(s, Ctl().mode == Mode::Overlap, reach, paint, Resolve, Tracing() ? &stats : nullptr);
+    const auto nearby = t.Neighbors(s, Ctl().mode == Mode::Overlap, reach, paint, Resolve, Tracing() ? &stats : nullptr, true);
     const PMMatrix toLine = toPb.Inverse();
-    for (const Glyph* g : nearby) {
+    for (const auto& neighbor : nearby) {
+        const Glyph* g = neighbor.glyph;
+        const FillRecord& rec = *neighbor.record;
+        if (std::fabs(rec.strokeTint - ToDouble(currentPaint->GetTint(kTrue))) > 1e-6 || rec.reach <= 0.02) continue;
+        // Different frame linear transforms need a page-space stroke conversion.
+        // Keep that unverified case out rather than assigning the current frame's scale.
+        bool sameLinear = true;
+        for (int i = 0; i < 4; ++i) if (std::fabs(rec.linear[i] - ToDouble(toPb[i])) > 1e-6) sameLinear = false;
+        if (!sameLinear) return {};
+        ise_region::StrokeField field;
+        field.grow = rec.reach;
+        field.join = rec.strokeJoin == kPMMiterJoin ? ise_region::BandJoin::Miter :
+                     rec.strokeJoin == kPMRoundJoin ? ise_region::BandJoin::Round : ise_region::BandJoin::Bevel;
+        field.limit = rec.strokeLimit;
+        auto& contours = field.contours;
         for (const Seg& seg : g->segs) {
             PMReal q[6];
             for (int i = 0; i < 6; i += 2) { PMReal x = seg.p[i], y = seg.p[i + 1]; toLine.Transform(&x, &y); q[i] = x; q[i + 1] = y; }
-            if (seg.op == Seg::Move) { out.emplace_back(); out.back().start = {ToDouble(q[0]), ToDouble(q[1])}; continue; }
-            if (out.empty() || seg.op == Seg::Close) continue;
+            if (seg.op == Seg::Move) { contours.emplace_back(); contours.back().start = {ToDouble(q[0]), ToDouble(q[1])}; continue; }
+            if (contours.empty() || seg.op == Seg::Close) continue;
             ise_miter::Segment s2;
             if (seg.op == Seg::Curve) {
                 s2.curve = true;
@@ -1084,7 +1124,17 @@ std::vector<ise_miter::Contour> NeighborOutlines(GraphicsData* gd, const IWaxRun
             } else {
                 s2.p = {ToDouble(q[0]), ToDouble(q[1])};
             }
-            out.back().segments.push_back(s2);
+            contours.back().segments.push_back(s2);
+        }
+        if (!contours.empty()) {
+            auto same = std::find_if(out.begin(), out.end(), [&](const ise_region::StrokeField& f) {
+                return f.grow == field.grow && f.join == field.join && f.limit == field.limit;
+            });
+            if (same != out.end()) same->contours.insert(same->contours.end(), contours.begin(), contours.end());
+            else {
+                if (out.size() >= 16) return {}; // bounded style groups; no partial shared fill
+                out.push_back(std::move(field));
+            }
         }
     }
     Trace("H neighbors run=%p source=%s glyphs=%u contours=%u records=%u pending=%u ports=%u stories=%u own=%u stroke=%u bounds=%u covered=%u",
@@ -1093,6 +1143,31 @@ std::vector<ise_miter::Contour> NeighborOutlines(GraphicsData* gd, const IWaxRun
           static_cast<unsigned>(stats.otherStory), static_cast<unsigned>(stats.ownParcel), static_cast<unsigned>(stats.stroke),
           static_cast<unsigned>(stats.bounds), static_cast<unsigned>(stats.covered));
     return out;
+}
+
+bool SharedHoleAreaSafe(GraphicsData* gd, const IWaxRun* run, double x0, double y0, double x1, double y1,
+                       double sx0, double sy0, double sx1, double sy1)
+{
+    if (gd == nil || run == nil || run->GetWaxLine() == nil || !SameParcel(run)) return false;
+    Tracker* screen = ScreenRecords(gd, run);
+    Tracker& t = screen ? *screen : ThreadTracker();
+    if (!t.Active()) return false;
+    StrokeContext s;
+    s.port = gd->GetGraphicsPort(); s.story = gParcel.story; s.frame = gParcel.frame;
+    s.parcelKey = KeyValue(gParcel.key); s.own = gParcel.own;
+    const PMMatrix toPb = run->GetWaxLine()->GetToPasteboardMatrix();
+    const double cx[4] = {x0, x1, x1, x0}, cy[4] = {y0, y0, y1, y1};
+    for (int i = 0; i < 4; ++i) { PMReal x = cx[i], y = cy[i]; toPb.Transform(&x, &y); s.strokeBox.Add(ToDouble(x), ToDouble(y)); }
+    if (!t.ResolveArea(s, Resolve)) return false;
+    Box searchBox;
+    const double sx[4] = {sx0, sx1, sx1, sx0}, sy[4] = {sy0, sy0, sy1, sy1};
+    for (int i = 0; i < 4; ++i) { PMReal x = sx[i], y = sy[i]; toPb.Transform(&x, &y); searchBox.Add(ToDouble(x), ToDouble(y)); }
+    InterfacePtr<IWaxRenderData> data(const_cast<IWaxRun*>(run), IID_IWAXRENDERDATA);
+    int reason = 0; std::uint32_t obstacle = 0;
+    const bool safe = data != nil && t.SharedHolesSafe(s, data->GetColorUID(kTrue).Get(), ToDouble(data->GetTint(kTrue)),
+                                                       Ctl().mode == Mode::Overlap, &reason, &obstacle, &searchBox);
+    if (!safe) Trace("H refused frame=%u reason=%d obstacle=%u source=%s", s.frame, reason, obstacle, screen ? "layout" : "paint");
+    return safe;
 }
 
 void ConfirmFill(GraphicsData* gd, const IWaxRun* run)

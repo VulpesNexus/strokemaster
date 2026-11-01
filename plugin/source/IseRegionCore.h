@@ -140,6 +140,16 @@ std::vector<ise_miter::Contour> Silhouette(const std::vector<ise_miter::Contour>
                                            BandJoin join = BandJoin::Bevel, double limit = 0, bool holesOnly = false,
                                            bool hollow = false);
 
+// Independently stroked filled outlines, in one coordinate system. SharedStrokeHoles
+// returns only enclosed cavities, excluding every input fill and all exterior bands.
+struct StrokeField {
+    std::vector<ise_miter::Contour> contours;
+    double grow = 0;
+    BandJoin join = BandJoin::Bevel;
+    double limit = 0;
+};
+std::vector<ise_miter::Contour> SharedStrokeHoles(const std::vector<StrokeField>& fields, double tol, bool* ok);
+
 /** The region an outward stroke of reach `h` paints around the nonzero fill of `fill`, its glyph
     tips cut as InDesign's route cuts them with Trim glyph tips (the owner, 2026-11-01, for
     Illustrator's flat-tips opt-in): the fill grown by `h` with bevel joins, and each exterior

@@ -133,7 +133,13 @@ struct FillRecord {
     // glyphs (0: none route W draws) and its paint's UID.
     double reach = 0;
     std::uint32_t strokePaint = 0;
+    int strokeJoin = 0;
+    double strokeLimit = 0;
+    double strokeTint = 100;
+    double linear[4] = {1, 0, 0, 1};
 };
+
+struct NeighborGlyph { const Glyph* glyph; const FillRecord* record; };
 
 // Content drawn during the traversal that may lie above an earlier fill: a page item's
 // shape (with the items it belongs to) or a frame fill.
@@ -260,16 +266,19 @@ public:
     // reach as far in the same paint, so that the holes their strokes and the frame's close off
     // together can be filled.
     template <class Resolve>
-    std::vector<const Glyph*> Neighbors(const StrokeContext& s, bool overlapDomain, double reach, std::uint32_t paint, Resolve resolve, NeighborStats* stats = nullptr)
+    std::vector<NeighborGlyph> Neighbors(const StrokeContext& s, bool overlapDomain, double reach, std::uint32_t paint, Resolve resolve, NeighborStats* stats = nullptr, bool mixedWidths = false)
     {
-        std::vector<const Glyph*> out;
+        std::vector<NeighborGlyph> out;
         if (!Active() || s.strokeBox.Empty() || !(reach > 0)) return out;
         for (auto& r : records_) {
             if (r.paintedSeq == 0) { if (stats) ++stats->pending; continue; }
             if (r.port != s.port) { if (stats) ++stats->otherPort; continue; }
             if (!overlapDomain && (r.story == 0 || r.story != s.story)) { if (stats) ++stats->otherStory; continue; }
             if (r.frame == s.frame && r.parcelKey == s.parcelKey) { if (stats) ++stats->ownParcel; continue; }
-            if (r.strokePaint != paint || std::fabs(r.reach - reach) > 1e-6) { if (stats) ++stats->stroke; continue; }
+            if (r.strokePaint != paint || !(r.reach > 0) || (!mixedWidths && std::fabs(r.reach - reach) > 1e-6)) { if (stats) ++stats->stroke; continue; }
+            // A shared cavity may contain intervening artwork without that artwork
+            // touching a participating glyph. Refuse that neighbor conservatively.
+            if (CoveredSince(s.strokeBox, r.paintedSeq, s)) { if (stats) ++stats->covered; continue; }
             if (!r.box.Meets(s.strokeBox)) { if (stats) ++stats->bounds; continue; }
             if (!r.resolved) {
                 r.resolved = true;
@@ -280,12 +289,58 @@ public:
             for (const auto& g : r.glyphs) {
                 if (!g.box.Meets(s.strokeBox)) continue;
                 if (CoveredSince(g.box, r.paintedSeq, s)) { if (stats) ++stats->covered; continue; }
-                out.push_back(&g);
+                out.push_back({&g, &r});
             }
         }
         return out;
     }
     std::size_t resolvedRecords = 0;
+
+    template <class Resolve>
+    bool ResolveArea(const StrokeContext& s, Resolve resolve)
+    {
+        for (auto& r : records_) {
+            if (!r.paintedSeq || r.port != s.port) continue;
+            if (r.resolved && r.box.Empty()) return false;
+            if (r.resolved || !r.box.Meets(s.strokeBox)) continue;
+            r.resolved = true;
+            resolve(r);
+            ++resolvedRecords;
+            if (r.box.Empty()) return false;
+        }
+        return true;
+    }
+
+    // Unsupported earlier text is an obstacle to shared hole filling even when it
+    // cannot participate in the normal glyph-fill tracker (hollow, overprint, etc.).
+    void BlockSharedHoles(std::uint32_t frame, const Box& box, const void* port = nullptr)
+    {
+        if (!Active() || box.Empty()) return;
+        if (holeBarriers_.size() >= kMaxEvents) { ++overflow; return; }
+        ContentEvent e; e.item = frame; e.box = box; e.port = port; holeBarriers_.push_back(e);
+    }
+    bool SharedHolesSafe(const StrokeContext& s, std::uint32_t paint, double tint, bool overlapDomain = true,
+                         int* reason = nullptr, std::uint32_t* obstacle = nullptr, const Box* searchBox = nullptr) const
+    {
+        auto refuse = [&](int why, std::uint32_t frame) {
+            if (reason) *reason = why;
+            if (obstacle) *obstacle = frame;
+            return false;
+        };
+        if (overflow != holeOverflowStart_) return refuse(1, 0);
+        for (const auto& b : holeBarriers_)
+            if (b.item != s.frame && (!b.port || b.port == s.port) && b.box.Meets(s.strokeBox)) return refuse(2, b.item);
+        for (const auto& r : records_) {
+            if (!r.paintedSeq || r.port != s.port || r.frame == s.frame || !r.box.Meets(s.strokeBox)) continue;
+            // A glyph omitted by the wide neighbor search must not become hole paint.
+            if (!(r.reach > 0.02) || r.strokePaint != paint || std::fabs(r.strokeTint - tint) > 1e-6 ||
+                (!overlapDomain && r.story != s.story) || CoveredSince(searchBox ? *searchBox : s.strokeBox, r.paintedSeq, s))
+                return refuse(3, r.frame);
+            for (const auto& g : r.glyphs)
+                if (g.box.Meets(s.strokeBox) && CoveredSince(g.box, r.paintedSeq, s)) return refuse(3, r.frame);
+        }
+        return true;
+    }
 
     std::size_t Records() const { return records_.size(); }
     std::size_t PaintedRecords() const { return painted_; }   // asked at every draw event: kept, not counted
@@ -317,13 +372,15 @@ private:
             return true;
         }), records_.end());
     }
-    void Clear() { records_.clear(); events_.clear(); painted_ = 0; }
+    void Clear() { records_.clear(); events_.clear(); holeBarriers_.clear(); painted_ = 0; holeOverflowStart_ = overflow; }
 
     std::uint64_t seq_ = 0;
     int depth_ = 0;
     std::size_t painted_ = 0;
     std::vector<FillRecord> records_;
     std::vector<ContentEvent> events_;
+    std::vector<ContentEvent> holeBarriers_;
+    std::size_t holeOverflowStart_ = 0;
 };
 
 inline Tracker& ThreadTracker()

@@ -307,6 +307,31 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     }
 }
 
+struct HoleBounds { double x0, y0, x1, y1; GraphicsData* gd; const IWaxRun* run; };
+bool HolesWithin(const std::vector<ise_miter::Contour>& contours, const HoleBounds& bounds, const PMMatrix& toLine)
+{
+    double x0 = 1e300, y0 = 1e300, x1 = -1e300, y1 = -1e300;
+    auto inside = [&](ise_miter::Pt p) {
+        PMReal x = p.x, y = p.y; toLine.Transform(&x, &y);
+        x0 = std::min(x0, ToDouble(x)); y0 = std::min(y0, ToDouble(y));
+        x1 = std::max(x1, ToDouble(x)); y1 = std::max(y1, ToDouble(y));
+        return ToDouble(x) >= bounds.x0 && ToDouble(y) >= bounds.y0 && ToDouble(x) <= bounds.x1 && ToDouble(y) <= bounds.y1;
+    };
+    for (const auto& c : contours) {
+        if (!inside(c.start)) return false;
+        for (const auto& s : c.segments)
+            if (!inside(s.p) || (s.curve && (!inside(s.c1) || !inside(s.c2)))) return false;
+    }
+    // Test the actual fill footprint, not the larger neighbor-search margin.
+    // Control-point bounds contain each entire Bezier, including fitted overshoot.
+#ifdef ISE_ROUTE_X
+    return !contours.empty() && ise_cross_frame::SharedHoleAreaSafe(bounds.gd, bounds.run, x0, y0, x1, y1,
+                                                                  bounds.x0, bounds.y0, bounds.x1, bounds.y1);
+#else
+    return true;
+#endif
+}
+
 /** Close holes (the owner, 2026-10-31: "close all holes"): the silhouette of a stroke that
     reaches `reach` beyond `contours` (glyph outlines in the run's line coordinates;
     ise_region::Silhouette), filled beneath the stroke in the port's current paint, so every hole
@@ -314,7 +339,7 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     letters close off. In a sheared frame, in page space, as the stroke is drawn. The holes are
     those the stroke's own `join` and miter `limit` enclose. */
 void FillHoles(IGraphicsPort* port, const IWaxRun* run, const std::vector<ise_miter::Contour>& lineContours, double reach,
-               int32 join, double limit, bool hollow, bool holesOnly = false)
+               int32 join, double limit, bool hollow, bool holesOnly = false, const HoleBounds* bounds = nullptr)
 {
 #ifndef ISE_ROUTE_X
     (void)port; (void)run; (void)lineContours; (void)reach; (void)join; (void)limit; (void)hollow; (void)holesOnly;
@@ -334,6 +359,7 @@ void FillHoles(IGraphicsPort* port, const IWaxRun* run, const std::vector<ise_mi
     const std::vector<ise_miter::Contour> shape =
         ise_region::Silhouette(contours, std::max(0.0, reach * widthScale - 2 * tol), tol, &ok, joined, limit, holesOnly);
     if (!ok || shape.empty()) return;
+    if (bounds && !HolesWithin(shape, *bounds, pageSpace ? linear.Inverse() : PMMatrix())) return;
     AutoGSave save(port);
     if (pageSpace) port->concat(linear.Inverse());
     // `hollow`: a run without a fill; its letters stay hollow, and only the holes are filled (the
@@ -478,6 +504,7 @@ bool FrameHoles(IGraphicsPort* port, const IWaxRun* run, const IWaxRenderData* d
             if (!CenterMiterEligible(a, w, m) && !Eligible(a, w, m)) continue;   // no stroke this route draws
             // Its stroke as the first run's: anything else, and each run fills its own.
             if (d->GetColorUID(kTrue) != paint || d->GetOverprint(kTrue) != overprint || a != alignment ||
+                std::fabs(ToDouble(d->GetTint(kTrue)) - ToDouble(mutableData->GetTint(kTrue))) > 1e-6 ||
                 std::fabs(w - width) > 1e-6 || d->GetOutlineJoin() != join || std::fabs(ToDouble(d->GetMiterLimit()) - limit) > 1e-6 ||
                 (d->GetColorUID(kFalse) == none) != hollow)
                 return mix();
@@ -523,11 +550,39 @@ bool FrameHoles(IGraphicsPort* port, const IWaxRun* run, const IWaxRenderData* d
             }
         }
         const double margin = 2 * reach * std::max(1.0, limit) + 1;
-        std::vector<ise_miter::Contour> nearby = ise_cross_frame::NeighborOutlines(tHoles.gd, run, x0 - margin, y0 - margin, x1 + margin,
+        std::vector<ise_region::StrokeField> nearby = ise_cross_frame::NeighborOutlines(tHoles.gd, run, x0 - margin, y0 - margin, x1 + margin,
                                                                                   y1 + margin, reach, paint.Get());
-        if (!nearby.empty()) {
-            nearby.insert(nearby.end(), all.begin(), all.end());
-            FillHoles(port, run, nearby, reach, join, limit, hollow, true);
+        if (!nearby.empty() && !overprint) {
+            // SharedHolesSafe refuses unsupported/foreign earlier text under the output.
+            // Refuse output outside the checked area geometrically; adding a graphics
+            // port clip here changes antialiased edge compositing in PDF.
+            const HoleBounds sharedBounds{x0 - margin, y0 - margin, x1 + margin, y1 + margin, tHoles.gd, run};
+            const auto joined = join == kPMMiterJoin ? ise_region::BandJoin::Miter :
+                                join == kPMRoundJoin ? ise_region::BandJoin::Round : ise_region::BandJoin::Bevel;
+            bool uniform = true;
+            for (const auto& f : nearby) if (std::fabs(f.grow - reach) > 1e-6 || f.join != joined ||
+                                             std::fabs(f.limit - limit) > 1e-6) uniform = false;
+            if (uniform) {
+                auto combined = all;
+                for (const auto& f : nearby) combined.insert(combined.end(), f.contours.begin(), f.contours.end());
+                FillHoles(port, run, combined, reach, join, limit, hollow, true, &sharedBounds);
+            } else if (!hollow) {
+                nearby.push_back({all, reach, joined, limit});
+                PMMatrix linear;
+                double widthScale = 1;
+                const bool pageSpace = PageSpace(run, &linear, &widthScale);
+                for (auto& f : nearby) {
+                    if (pageSpace) f.contours = Placed(f.contours, linear);
+                    f.grow = std::max(0.0, f.grow * widthScale - 0.02);
+                }
+                bool ok = false;
+                const auto holes = ise_region::SharedStrokeHoles(nearby, 0.01, &ok);
+                if (ok && !holes.empty() && HolesWithin(holes, sharedBounds, pageSpace ? linear.Inverse() : PMMatrix())) {
+                    AutoGSave save(port);
+                    if (pageSpace) port->concat(linear.Inverse());
+                    port->newpath(); EmitPath(port, holes); port->fill();
+                }
+            }
         }
     }
     return true;

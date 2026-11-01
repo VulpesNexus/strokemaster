@@ -5,6 +5,7 @@
 #pragma once
 #include "IseCrossFrameCore.h"
 #include "IseMiterCore.h"
+#include "IseRegionCore.h"
 #include <cstdint>
 #include <vector>
 
@@ -29,11 +30,15 @@ bool TextTipsEnabled();
 // Close holes: route W fills the silhouette of a run's stroke beneath it (ise_region::Silhouette).
 bool CloseHolesEnabled();
 // Close holes across frames: the outlines, in `run`'s line coordinates, of glyphs other frames
-// painted earlier in this traversal within `box` (line coordinates) whose strokes reach `reach` in
-// the paint `paint` (a UID's value). Screen drawing reads earlier visible frames from a
+// painted earlier in this traversal within `box` (line coordinates), retaining each stroke's
+// reach, join and limit. Paint and tint must match. `reach` is the current stroke's reach.
+// Screen drawing reads earlier visible frames from a
 // parcel-scoped layout snapshot, since their item caches may replay without adornment visits.
-std::vector<ise_miter::Contour> NeighborOutlines(GraphicsData* gd, const IWaxRun* run, double x0, double y0, double x1, double y1,
+std::vector<ise_region::StrokeField> NeighborOutlines(GraphicsData* gd, const IWaxRun* run, double x0, double y0, double x1, double y1,
                                                  double reach, std::uint32_t paint);
+// Refuse shared paint over unsupported or covered text in the actual output bounds.
+bool SharedHoleAreaSafe(GraphicsData* gd, const IWaxRun* run, double x0, double y0, double x1, double y1,
+                       double sx0, double sy0, double sx1, double sy1);
 // A parcel is about to be drawn in the pass named by tag ('W' stroke pass, 'R' restore pass).
 void NoteParcel(const IParcelShape* parcel, char tag, int32 flags);
 // Release the screen snapshot's font references when the parcel pass ends.

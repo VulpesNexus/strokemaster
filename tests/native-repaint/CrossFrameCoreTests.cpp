@@ -261,6 +261,19 @@ int main()
                   "neighbors: a pending fill is diagnosed");
             t.Painted(&kRun1, &kPortA);
             Check(t.Neighbors(context, false, 3, 9, [](FillRecord&) {}).size() == 1, "neighbors: matching painted fill is read");
+            Check(t.Neighbors(context, false, 4, 9, [](FillRecord&) {}).empty(),
+                  "neighbors: uniform-width query still rejects a different reach");
+            const auto mixed = t.Neighbors(context, false, 4, 9, [](FillRecord&) {}, nullptr, true);
+            Check(mixed.size() == 1 && mixed[0].record->reach == 3,
+                  "neighbors: mixed-width query preserves donor reach instead of replacing it");
+            Check(t.Neighbors(context, false, 4, 10, [](FillRecord&) {}, nullptr, true).empty(),
+                  "neighbors: mixed-width query never mixes different paint");
+            Check(t.SharedHolesSafe(context,9,100) && !t.SharedHolesSafe(context,10,100) && !t.SharedHolesSafe(context,9,50),
+                  "shared holes: foreign paint and tint refuse the whole fill");
+            Check(!t.SharedHolesSafe(Stroke(&kPortA,8,200,2,context.strokeBox),9,100,false),
+                  "shared holes: other threaded stories block story-only output even in the same paint");
+            t.BlockSharedHoles(900,B(4,4,6,6));
+            Check(!t.SharedHolesSafe(context,9,100), "shared holes: unrecordable earlier text is a barrier");
             NeighborStats ports;
             Check(t.Neighbors(Stroke(&kPortB, 7, 200, 2, context.strokeBox), false, 3, 9, [](FillRecord&) {}, &ports).empty() &&
                   ports.otherPort == 1, "neighbors: a different output port stays isolated");
@@ -272,6 +285,63 @@ int main()
             NeighborStats covered;
             Check(t.Neighbors(context, false, 3, 9, [](FillRecord&) {}, &covered).empty() && covered.covered == 1,
                   "neighbors: intervening artwork is diagnosed and preserved");
+            t.End(); t.Begin();
+            Check(t.SharedHolesSafe(context,9,100), "shared hole barriers expire with the paint traversal");
+            t.BlockSharedHoles(900,B(4,4,6,6),&kPortB);
+            Check(t.SharedHolesSafe(context,9,100), "shared hole barriers stay within their output port");
+            ++t.overflow;
+            Check(!t.SharedHolesSafe(context,9,100), "shared holes fail closed on this traversal's overflow");
+            t.End(); t.Begin();
+            Check(t.SharedHolesSafe(context,9,100), "past overflow does not disable future traversals");
+        }
+        {
+            Tracker t; t.Begin();
+            auto r = Fill(&kRun1, &kPortA, 7, 100, 1, {Square(0,0,2)});
+            r.reach = 3; r.strokePaint = 9; t.Pending(r); t.Painted(&kRun1,&kPortA);
+            ContentEvent e; e.item = 55; e.port = &kPortA; e.box = B(5,5,6,6); t.Content(e);
+            NeighborStats stats;
+            Check(t.Neighbors(Stroke(&kPortA,7,200,2,B(-3,-3,13,13)),true,4,9,[](FillRecord&){},&stats,true).empty()
+                      && stats.covered == 1,
+                  "shared holes: artwork inside a cavity blocks correction even without touching a glyph");
+            auto later = Fill(&kRun2,&kPortA,7,101,1,{Square(8,8,2)});
+            later.reach=4; later.strokePaint=9; t.Pending(later); t.Painted(&kRun2,&kPortA);
+            Check(!t.SharedHolesSafe(Stroke(&kPortA,7,200,2,B(-3,-3,13,13)),9,100),
+                  "shared holes: a covered earlier record refuses the whole fill despite an accepted later donor");
+        }
+        {
+            Tracker t; t.Begin();
+            auto a = Fill(&kRun1,&kPortA,7,100,1,{Square(0,0,2)});
+            a.reach=3; a.strokePaint=9; t.Pending(a); t.Painted(&kRun1,&kPortA);
+            ContentEvent e; e.item=101; e.port=&kPortA; e.box=B(4,4,10,10); t.Content(e);
+            auto b = Fill(&kRun2,&kPortA,7,101,1,{Square(8,8,2)});
+            b.reach=4; b.strokePaint=9; t.Pending(b); t.Painted(&kRun2,&kPortA);
+            auto s=Stroke(&kPortA,7,200,2,B(-3,-3,13,13));
+            Check(!t.SharedHolesSafe(s,9,100), "covered text remains conservatively protected");
+            auto distant=Stroke(&kPortA,7,200,2,B(20,20,25,25));
+            Check(t.SharedHolesSafe(distant,9,100), "artwork outside the actual shared fill does not refuse it");
+            t.End(); t.Begin();
+            a.resolved=false; a.box=B(-10,-10,30,30); a.strokePaint=10;
+            t.Pending(a); t.Painted(&kRun1,&kPortA);
+            Check(!t.SharedHolesSafe(distant,9,100), "generous unresolved text bounds initially block output");
+            int resolved=0;
+            t.ResolveArea(distant,[&](FillRecord& r){ ++resolved; r.box=B(0,0,2,2); });
+            Check(resolved==1 && t.SharedHolesSafe(distant,9,100), "exact glyph bounds remove a false overlap");
+            t.ResolveArea(distant,[&](FillRecord&){ ++resolved; });
+            Check(resolved==1, "resolved bounds are reused");
+            t.End(); t.Begin(); t.Pending(a); t.Painted(&kRun1,&kPortA);
+            Check(!t.ResolveArea(distant,[](FillRecord& r){ r.box=Box(); }), "failed or empty resolution refuses shared output");
+            Check(!t.ResolveArea(distant,[](FillRecord&){}), "failed resolution stays refused on repeated checks");
+        }
+        {
+            Tracker t; t.Begin();
+            auto a=Fill(&kRun1,&kPortA,7,100,1,{Square(0,0,2)});
+            a.reach=3; a.strokePaint=9; t.Pending(a); t.Painted(&kRun1,&kPortA);
+            ContentEvent e; e.item=900; e.port=&kPortA; e.box=B(8,8,9,9); t.Content(e);
+            auto s=Stroke(&kPortA,7,200,2,B(0,0,2,2));
+            const Box search=B(-10,-10,10,10);
+            Check(t.SharedHolesSafe(s,9,100), "remote event misses the output and glyph bounds");
+            Check(!t.SharedHolesSafe(s,9,100,true,nullptr,nullptr,&search),
+                  "a donor omitted by the broad search cannot be painted over in the smaller output");
         }
         {
             std::vector<std::uint32_t> history;

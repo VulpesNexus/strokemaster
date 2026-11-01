@@ -81,6 +81,7 @@ resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
         kCheckBoxWidgetBoss,
         {
             IID_ITIP, kIseUITipImpl,
+            IID_IEVENTHANDLER, kIseUICheckKeyImpl,
         }
     },
     Class
@@ -89,6 +90,7 @@ resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
         kButtonWidgetBoss,
         {
             IID_ITIP, kIseUITipImpl,
+            IID_IEVENTHANDLER, kIseUIButtonKeyImpl,
         }
     },
 }}};
