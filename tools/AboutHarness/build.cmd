@@ -28,5 +28,12 @@ cl /nologo /EHsc /W4 /std:c++17 /DUNICODE /D_UNICODE ^
    /Fe:AboutHarness.exe ^
    /link /SUBSYSTEM:WINDOWS user32.lib gdi32.lib comctl32.lib shell32.lib || exit /b 1
 
+rem The same with the Illustrator plugin's prose.
+cl /nologo /EHsc /W4 /std:c++17 /DUNICODE /D_UNICODE /DSTROKEMASTER_ABOUT_ILLUSTRATOR ^
+   /I "%SRC%" ^
+   main.cpp "%SRC%\StrokeMasterAbout.cpp" "%SRC%\HostLook.cpp" harness.res ^
+   /Fe:AboutHarnessAI.exe ^
+   /link /SUBSYSTEM:WINDOWS user32.lib gdi32.lib comctl32.lib shell32.lib || exit /b 1
+
 del /q *.obj harness.res 2>nul
 echo Built AboutHarness.exe

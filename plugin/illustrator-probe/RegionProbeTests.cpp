@@ -68,6 +68,9 @@ void Setup(){
         }else if(registered==4){
             Check(std::strcmp(d->name,region_probe::closeHolesIdentity)==0&&d->prefersAsInput==region_probe::censusInput,
                   "Close holes fifth, the census's input (text as outlines)");
+        }else if(registered==5){
+            Check(std::strcmp(d->name,region_probe::flatTipsIdentity)==0&&d->prefersAsInput==region_probe::censusInput,
+                  "flat tips sixth, the census's input (text as outlines)");
         }else{
             Check(std::strcmp(d->name,region_probe::textBehindIdentity)==0&&
                   (d->prefersAsInput&kTextFrameInputArt)&&!(d->prefersAsInput&kPathInputArt),
@@ -161,6 +164,33 @@ int main(){
         Check(!illustrator_contour::ConvertSdk(square.data(),square.size(),true,&converted),
               "SDK nonfinite handle refused");
     }
+    {
+        Setup();
+        live.GetLiveEffectHandleByName=[](const char* name,AILiveEffectHandle* out)->AIErr{
+            Check(std::strcmp(name,"Adobe Outline Type")==0,"text pass uses the native outline effect");
+            *out=reinterpret_cast<AILiveEffectHandle>(50);return kNoErr;
+        };
+        live.CreateLiveEffectParameters=[](AILiveEffectParameters* out)->AIErr{
+            *out=reinterpret_cast<AILiveEffectParameters>(51);return kNoErr;
+        };
+        dict.Key=[](const char*)->AIDictKey{return reinterpret_cast<AIDictKey>(52);};
+        dict.SetBooleanEntry=[](AIDictionaryRef,AIDictKey,AIBoolean)->AIErr{return kNoErr;};
+        dict.SetIntegerEntry=[](AIDictionaryRef,AIDictKey,ai::int32)->AIErr{return kNoErr;};
+        dict.Release=[](AIDictionaryRef)->ai::int32{return 0;};
+        parser.CountEffectsOfPaintField=[](AIParserPaintField)->ai::int32{return 0;};
+        parser.NewParserLiveEffect=[](AILiveEffectHandle effect,AILiveEffectParameters,AIParserLiveEffect* out)->AIErr{
+            Check(effect==reinterpret_cast<AILiveEffectHandle>(50),"outline handle reaches the paint pass");
+            *out=reinterpret_cast<AIParserLiveEffect>(53);return kNoErr;
+        };
+        parser.InsertNthEffectOfPaintField=[](AIStyleParser,AIParserPaintField,ai::int32 at,AIParserLiveEffect)->AIErr{
+            Check(at==0,"text outlining precedes hole processing");return kNoErr;
+        };
+        Check(region_probe::AddOutlinePass(&basic,parser,dict,nullptr,reinterpret_cast<AIParserPaintField>(54))==kNoErr,
+              "whole text paint pass accepts native outlining");
+        live.GetLiveEffectHandleByName=[](const char*,AILiveEffectHandle*)->AIErr{return -456;};
+        Check(region_probe::AddOutlinePass(&basic,parser,dict,nullptr,reinterpret_cast<AIParserPaintField>(54))==kBadParameterErr,
+              "missing native outline effect is refused");
+    }
     for(int fault=0;fault<=2;++fault){
         Setup();failAt=fault;SPMessageData m{};m.basic=&basic;
         char caller[]=kSPInterfaceCaller,start[]=kSPInterfaceStartupSelector;
@@ -171,7 +201,7 @@ int main(){
     }
     Setup();{
         auto m=Startup();
-        Check(registered==5&&m.globals!=nullptr,"all five effects registered and globals allocated");
+        Check(registered==6&&m.globals!=nullptr,"all six effects registered and globals allocated");
         auto* state=static_cast<region_probe::State*>(m.globals);
         Check(state->effect==reinterpret_cast<AILiveEffectHandle>(1)&&
               state->census==reinterpret_cast<AILiveEffectHandle>(2)&&
@@ -268,6 +298,14 @@ int main(){
         {
             region_probe::CharPaint c;
             Check(region_probe::ChooseRoute(c)==region_probe::kRouteNone,"no characters: no route");
+            Check(region_probe::GroupOwnsTextFields(region_probe::kRouteStroke),"stroke route supplies group hole and tip fields");
+            Check(!region_probe::GroupRouteSupportsFields(region_probe::kRouteFill,true,false)&&
+                  !region_probe::GroupRouteSupportsFields(region_probe::kRouteFill,false,true),"mixed stroke group refuses incompatible child correction fields");
+            Check(region_probe::GroupRouteSupportsFields(region_probe::kRouteFill,false,false)&&
+                  region_probe::GroupRouteSupportsFields(region_probe::kRouteStroke,true,true),"compatible group routes remain admitted");
+            Check(!region_probe::GroupOwnsTextFields(region_probe::kRouteFill)&&
+                  !region_probe::GroupOwnsTextFields(region_probe::kRouteFillFirst)&&
+                  !region_probe::GroupOwnsTextFields(region_probe::kRouteNone),"other routes retain per-frame hole and tip fields");
             c.any=true;c.noStroke=false;c.oneStroke=true;c.oneFill=true;
             Check(region_probe::ChooseRoute(c)==region_probe::kRouteStroke,"one stroke and one fill: the stroke below");
             c.oneStroke=false;

@@ -45,9 +45,11 @@ DECLARE_PMID(kClassIDSpace, kIseStrokeBehindAdornmentBoss, kIsePrefix + 1)
 DECLARE_PMID(kClassIDSpace, kIseStrokeRestoreAdornmentBoss, kIsePrefix + 2)
 // Experimental route X (build-plugin.ps1 -RouteX): route W across the frames of one story.
 DECLARE_PMID(kClassIDSpace, kIseXfDrawEventBoss, kIsePrefix + 3)
+DECLARE_PMID(kClassIDSpace, kIseScreenDocResponderBoss, kIsePrefix + 4)
 
 // InterfaceIDs:
-// None: the plugin implements interfaces the API already declares.
+DECLARE_PMID(kInterfaceIDSpace, IID_ISESCREENOBSERVER, kIsePrefix + 0)
+DECLARE_PMID(kInterfaceIDSpace, IID_ISESCREENIDLE, kIsePrefix + 1)
 
 // ImplementationIDs:
 DECLARE_PMID(kImplementationIDSpace, kIseFillRepaintAdornmentImpl, kIsePrefix + 0)
@@ -55,6 +57,10 @@ DECLARE_PMID(kImplementationIDSpace, kIseStrokeBehindAdornmentImpl, kIsePrefix +
 DECLARE_PMID(kImplementationIDSpace, kIseStrokeRestoreAdornmentImpl, kIsePrefix + 2)
 DECLARE_PMID(kImplementationIDSpace, kIseXfDrawEventHandlerImpl, kIsePrefix + 3)
 DECLARE_PMID(kImplementationIDSpace, kIseXfDrawEventServiceImpl, kIsePrefix + 4)
+DECLARE_PMID(kImplementationIDSpace, kIseScreenObserverImpl, kIsePrefix + 5)
+DECLARE_PMID(kImplementationIDSpace, kIseScreenDocResponderImpl, kIsePrefix + 6)
+DECLARE_PMID(kImplementationIDSpace, kIseScreenDocServiceImpl, kIsePrefix + 7)
+DECLARE_PMID(kImplementationIDSpace, kIseScreenIdleImpl, kIsePrefix + 8)
 
 // Format IDs for the PluginVersion resource:
 #define kIseInitialMajorFormat      kSDKDef_20_PersistMajorVersionNumber

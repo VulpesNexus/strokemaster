@@ -58,6 +58,67 @@ int main()
         Check(!B(0, 0, 10, 10).Meets(B(10.5, 0, 20, 10)), "separate boxes do not meet");
         Check(B(0, 0, 10, 10).Grown(2).Meets(B(11, 11, 12, 12)), "growing reaches a neighbor");
 
+        // Screen cache dependencies respect story scope and exclude isolated frames.
+        {
+            const std::vector<FrameBounds> frames = {{1, 7, B(0, 0, 10, 10)}, {2, 7, B(5, 5, 15, 15)},
+                                                      {3, 8, B(12, 12, 20, 20)}, {4, 7, B(100, 100, 110, 110)}};
+            Check(RelatedFrames(frames, false) == std::vector<std::uint32_t>({1, 2}), "screen: same-story overlaps only");
+            Check(RelatedFrames(frames, true) == std::vector<std::uint32_t>({1, 2, 3}), "screen: separate stories opt in");
+            auto moved = frames;
+            moved[1].box = B(50, 50, 60, 60);
+            Check(RelatedFrames(moved, true).empty(), "screen: moved-apart frames have no new dependency");
+            Check(RelatedFrames({{1, 7, Box()}, {2, 7, B(0, 0, 10, 10)}}, true).empty(), "screen: empty bounds have no dependency");
+        }
+
+        // A dense spread has bounded storage/work, with conservative invalidation if the
+        // comparison budget is exceeded. Duplicate columns never duplicate the result.
+        {
+            std::vector<FrameBounds> dense;
+            for (std::uint32_t uid = 1; uid <= 1500; ++uid)
+                dense.push_back({uid, uid, B(0, 0, 10, 10)});
+            dense.push_back({1501, 9, B(100, 100, 110, 110)});
+            auto affected = RelatedFrames(dense, true);
+            Check(affected.size() == 1501 && affected.front() == 1 && affected.back() == 1501,
+                  "screen: exhausted comparison budget conservatively keeps every frame");
+            Check(RelatedFrames({{1, 7, B(0, 0, 10, 10)}, {1, 7, B(0, 0, 10, 10)}}, true).empty(),
+                  "screen: duplicate entries alone create no dependency");
+            Check(RelatedFrames({{0, 7, B(0, 0, 10, 10)}, {2, 7, B(0, 0, 10, 10)}}, true).empty(),
+                  "screen: invalid frame identities create no dependency");
+        }
+
+        // Ends that never came: a bracket stack deeper than any real draw starts over, and the
+        // records of the lost traversal go (the review of 2026-11-01).
+        {
+            Tracker t;
+            t.Begin();
+            Check(t.Pending(Fill(&kRun1, &kPortA, 7, 100, 1, {Square(0, 0, 10)})), "kept in the first traversal");
+            for (int i = 1; i < Tracker::kMaxDepth; ++i) t.Begin();
+            Check(t.Records() == 1 && t.Depth() == Tracker::kMaxDepth, "nested brackets keep the records");
+            t.Begin();
+            Check(t.Records() == 0 && t.Depth() == 1 && t.resets == 1, "one more starts over");
+            t.End();
+            Check(!t.Active(), "and closes normally");
+        }
+
+        // One missed end: the next spread draw on the same port starts over; a partial draw inside
+        // a spread draw keeps its records (the second review of 2026-11-01).
+        {
+            Tracker t;
+            t.Begin(true, &kPortA);
+            Check(t.Pending(Fill(&kRun1, &kPortA, 7, 100, 1, {Square(0, 0, 10)})), "kept in the spread draw");
+            t.Begin(false, &kPortA);
+            Check(t.Records() == 1 && t.Depth() == 2, "a partial draw inside keeps them");
+            t.End();
+            t.Begin(true, &kPortA);
+            Check(t.Records() == 0 && t.Depth() == 1, "a spread draw on the same port, its end missed: started over");
+            t.End();
+            Check(!t.Active(), "and closed");
+            t.Begin(true, &kPortA);
+            t.Pending(Fill(&kRun1, &kPortA, 7, 100, 1, {Square(0, 0, 10)}));
+            t.Begin(true, &kPortB);
+            Check(t.Records() == 1 && t.Depth() == 2, "a spread draw on another port nests");
+        }
+
         // Nothing is recorded outside a traversal.
         {
             Tracker t;
@@ -186,6 +247,40 @@ int main()
             w = t.Withheld(Stroke(&kPortA, 7, 200, 2, B(30, 2, 40, 8)), false, nullptr, resolve);
             Check(w.empty(), "inside the generous box but between the exact glyphs: nothing withheld");
             Check(t.resolvedRecords == 1, "one record resolved in all");
+        }
+        // Neighbor diagnostics distinguish missing paint, separate ports, and occluding art.
+        {
+            Tracker t;
+            t.Begin();
+            auto record = Fill(&kRun1, &kPortA, 7, 100, 1, {Square(0, 0, 10)});
+            record.reach = 3; record.strokePaint = 9;
+            t.Pending(record);
+            const auto context = Stroke(&kPortA, 7, 200, 2, B(-3, -3, 13, 13));
+            NeighborStats pending;
+            Check(t.Neighbors(context, false, 3, 9, [](FillRecord&) {}, &pending).empty() && pending.pending == 1,
+                  "neighbors: a pending fill is diagnosed");
+            t.Painted(&kRun1, &kPortA);
+            Check(t.Neighbors(context, false, 3, 9, [](FillRecord&) {}).size() == 1, "neighbors: matching painted fill is read");
+            NeighborStats ports;
+            Check(t.Neighbors(Stroke(&kPortB, 7, 200, 2, context.strokeBox), false, 3, 9, [](FillRecord&) {}, &ports).empty() &&
+                  ports.otherPort == 1, "neighbors: a different output port stays isolated");
+            Check(t.Neighbors(Stroke(&kPortA, 8, 200, 2, context.strokeBox), false, 3, 9, [](FillRecord&) {}).empty(),
+                  "neighbors: another story needs the opt-in");
+            Check(t.Neighbors(Stroke(&kPortA, 8, 200, 2, context.strokeBox), true, 3, 9, [](FillRecord&) {}).size() == 1,
+                  "neighbors: the separate-story opt-in reads it");
+            ContentEvent e; e.item = 55; e.port = &kPortA; e.box = B(0, 0, 10, 10); t.Content(e);
+            NeighborStats covered;
+            Check(t.Neighbors(context, false, 3, 9, [](FillRecord&) {}, &covered).empty() && covered.covered == 1,
+                  "neighbors: intervening artwork is diagnosed and preserved");
+        }
+        {
+            std::vector<std::uint32_t> history;
+            RememberScreenFrames(history, {{11, 1, B(0,0,1,1)}, {12, 2, B(100,100,101,101)}});
+            Check(history == std::vector<std::uint32_t>({11,12}), "unpaired frames can gain a first neighbor after an edit");
+            RememberScreenFrames(history, {{12, 2, B(0,0,1,1)}, {0, 0, Box()}, {13, 3, Box()}});
+            Check(history == std::vector<std::uint32_t>({11,12,13}), "history deduplicates identities and retains empty frames that may gain ink");
+            for (std::uint32_t i=14; i<114; ++i) RememberScreenFrames(history, {{i, i, B(0,0,1,1)}});
+            Check(history.front()==11 && history.back()==113, "history does not evict still-cached frames after 64 entries");
         }
         std::cout << "cross-frame core: " << checks << " checks passed\n";
         return 0;

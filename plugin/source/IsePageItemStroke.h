@@ -23,6 +23,7 @@ struct Coverage {
     bool overlaps = true;        // overlapping contours: Outside and Inside strokes, Center patterns (else InDesign's)
     bool inside = true;          // Inside strokes (else left to InDesign)
     bool openPaths = true;       // open paths (else left to InDesign)
+    bool closeHoles = false;     // the holes a closed outline's Outside or Center stroke encloses, filled in its paint
     void (*trace)(const char* fmt, ...) = nullptr;   // research: one line per transparency attribute read
 };
 

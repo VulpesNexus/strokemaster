@@ -53,10 +53,13 @@
 #include "IRenderingObject.h"
 #include "ISwatchUtils.h"
 #include "ITextOptions.h"
+#include "IParcel.h"
 #include "IWaxGlyphs.h"
+#include "IWaxIterator.h"
 #include "IWaxLine.h"
 #include "IWaxRenderData.h"
 #include "IWaxRun.h"
+#include "IWaxStrand.h"
 
 // General includes:
 #include "AutoGSave.h"
@@ -73,12 +76,23 @@
 #include "IseStrokeBehindCore.h"
 #include "IseMiterCore.h"
 #include "IseRegionCore.h"
+
+#ifndef ISE_ROUTE_X
+// Route W alone (build-plugin.ps1 -RouteW) reads no switches file: the defaults route X starts
+// from, Close holes off (it needs the region code route X links). It did not build since the
+// switches came in (the second review of 2026-11-01).
+namespace ise_cross_frame {
+inline bool TextTipsEnabled() { return true; }
+inline bool CloseHolesEnabled() { return false; }
+}
+#endif
 #ifdef ISE_ROUTE_X
 #include "IseCrossFrame.h"
 #endif
 
 #include <algorithm>
 #include <cmath>
+#include <memory>
 
 namespace {
 
@@ -227,7 +241,7 @@ bool FillJoins(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, b
         if (s.ratio > limit) {
             if (!(tip && cutPast)) continue;
             reach = h;
-        } else if (tip) {
+        } else if (tips && !interior && ise_miter::NearTip(s, h)) {
             reach = std::min(reach, ise_miter::TipReach(s, h));
         }
         const std::vector<ise_miter::Pt> pts = ise_miter::Counterclockwise(ise_miter::JoinPolygon(s, h, reach));
@@ -244,6 +258,8 @@ bool FillJoins(IGraphicsPort* port, const std::vector<ise_miter::Stub>& stubs, b
     miter joins back, the exterior ones as they are and the interior ones clipped to the run's
     fill, so only the part of an interior miter outside the letter is not drawn. Joins are
     fills in the stroke's paint and overprint. */
+bool RemoveInteriorMiters();   // below, with CorrectMiter
+
 void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs,
                      IDataBase* db, int32 join)
 {
@@ -282,43 +298,259 @@ void DrawCenterStubs(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData*
     if (anyExterior) FillJoins(port, stubs, false, options.halfWidth, limit, ise_cross_frame::TextTipsEnabled(), true);
     if (anyInterior) {
         AutoGSave clipScope(port);
-        port->newpath();
-        EmitPath(port, contours);
-        port->clip();
+        if (RemoveInteriorMiters()) {
+            port->newpath();
+            EmitPath(port, contours);
+            port->clip();
+        }
         FillJoins(port, stubs, true, options.halfWidth, limit);
     }
 }
 
-/** Close holes (the owner, 2026-10-31: "close all holes"): the silhouette of the run's stroke,
-    which reaches `reach` beyond its glyphs (ise_region::Silhouette), filled beneath the stroke in
-    the port's current paint, so every hole its outline encloses is filled: a letter's counters and
-    the gaps that the strokes of touching letters close off. Within the run: a hole closed only by
-    another run's stroke stays open. In a sheared frame, in page space, as the stroke is drawn. */
-void FillSilhouette(IGraphicsPort* port, const IWaxRun* run, const IWaxGlyphs* glyphs, IFontInstance* instance, double reach)
+/** Close holes (the owner, 2026-10-31: "close all holes"): the silhouette of a stroke that
+    reaches `reach` beyond `contours` (glyph outlines in the run's line coordinates;
+    ise_region::Silhouette), filled beneath the stroke in the port's current paint, so every hole
+    its outline encloses is filled: a letter's counters and the gaps that the strokes of touching
+    letters close off. In a sheared frame, in page space, as the stroke is drawn. The holes are
+    those the stroke's own `join` and miter `limit` enclose. */
+void FillHoles(IGraphicsPort* port, const IWaxRun* run, const std::vector<ise_miter::Contour>& lineContours, double reach,
+               int32 join, double limit, bool hollow, bool holesOnly = false)
 {
-    if (port == nil || !(reach > 0)) return;
-    ise_miter::Recorder recorder;
-    TransformedOutline writer(nullptr, &recorder);
-    WriteRun(&writer, run, glyphs, instance);
+#ifndef ISE_ROUTE_X
+    (void)port; (void)run; (void)lineContours; (void)reach; (void)join; (void)limit; (void)hollow; (void)holesOnly;
+    return;
+#else
+    if (port == nil || !(reach > 0) || lineContours.empty()) return;
     PMMatrix linear;
     double widthScale = 1;
     const bool pageSpace = PageSpace(run, &linear, &widthScale);
-    const std::vector<ise_miter::Contour> contours = pageSpace ? Placed(recorder.Contours(), linear) : recorder.Contours();
+    const std::vector<ise_miter::Contour> contours = pageSpace ? Placed(lineContours, linear) : lineContours;
     // Short of the stroke's edge by twice the tolerance, so the fitted curves never show past it.
     const double tol = 0.01;
     bool ok = false;
-    const std::vector<ise_miter::Contour> shape = ise_region::Silhouette(contours, std::max(0.0, reach * widthScale - 2 * tol), tol, &ok);
+    const ise_region::BandJoin joined = join == kPMMiterJoin   ? ise_region::BandJoin::Miter
+                                      : join == kPMRoundJoin ? ise_region::BandJoin::Round
+                                                             : ise_region::BandJoin::Bevel;
+    const std::vector<ise_miter::Contour> shape =
+        ise_region::Silhouette(contours, std::max(0.0, reach * widthScale - 2 * tol), tol, &ok, joined, limit, holesOnly);
     if (!ok || shape.empty()) return;
     AutoGSave save(port);
     if (pageSpace) port->concat(linear.Inverse());
+    // `hollow`: a run without a fill; its letters stay hollow, and only the holes are filled (the
+    // silhouette took the letters' bodies too: the second review of 2026-11-01). The clip is the
+    // outside of the letters' filled region, the same under either fill rule (OutsideClip).
+    if (hollow) {
+        const std::vector<ise_miter::Contour> region = ise_region::NonzeroRegion(contours, tol);
+        const std::vector<ise_miter::Contour> outside =
+            region.empty() ? region : ise_miter::OutsideClip(region, 2 * reach * widthScale + 10, tol, tol, true, false);
+        if (outside.empty()) return;
+        port->newpath();
+        EmitPath(port, outside);
+        port->clip();
+    }
     port->newpath();
     EmitPath(port, shape);
     port->fill();
+#endif
 }
 
-/** Whether route W corrects this run's miter joins (always, outside the research build). */bool CorrectMiter(int32 join)
+/** Close holes on one run: its own glyphs' silhouette (FillHoles). A hole closed only by another
+    run's stroke stays open: FrameHoles takes the frame's runs together where it can. */
+void FillSilhouette(IGraphicsPort* port, const IWaxRun* run, const IWaxGlyphs* glyphs, IFontInstance* instance, double reach,
+                    int32 join, double limit, bool hollow = false)
+{
+    ise_miter::Recorder recorder;
+    TransformedOutline writer(nullptr, &recorder);
+    WriteRun(&writer, run, glyphs, instance);
+    FillHoles(port, run, recorder.Contours(), reach, join, limit, hollow);
+}
+
+Alignment AlignmentOf(const IWaxRenderData* data);   // below
+Method MethodOf(const IWaxRenderData* data, IDataBase* db);
+
+/** The frame (parcel) whose stroke pass is being drawn, between StartOfParcelDraw and
+    EndOfParcelDraw, and whether its holes were filled in this pass (FrameHoles). */
+struct HolesPass {
+    bool open = false;
+    GraphicsData* gd = nullptr;   // the pass's, for the frames drawn before (NeighborOutlines)
+    ParcelKey key;
+    bool done = false;    // filled, for the whole frame, by its first run that strokes
+    bool mixed = false;   // its runs' strokes differ: each run fills its own (FillSilhouette)
+};
+thread_local HolesPass tHoles;
+
+/** A frame's stroke pass begins (GetIsActive, StartOfParcelDraw): its holes are not filled yet. */
+void OpenHolesPass(GraphicsData* gd, const IParcelShape* parcel)
+{
+    tHoles = HolesPass();
+    tHoles.gd = gd;
+    InterfacePtr<IParcel> p(const_cast<IParcelShape*>(parcel), UseDefaultIID());
+    if (p != nil) { tHoles.key = p->GetParcelKey(); tHoles.open = true; }
+}
+
+/** Close holes across a frame's lines (the owner's retest notes, 2026-11-01: on live text the
+    gaps between two lines' words stayed open, where Illustrator closes them): the first run of the
+    frame that strokes fills, beneath every stroke of the frame, the silhouette of all its runs
+    whose strokes Close holes takes, when they are all alike (paint, overprint, weight, alignment,
+    join, limit, and with or without a fill). True when the frame's holes are taken care of (now,
+    or earlier in this pass); false when the run should fill its own (FillSilhouette): outside a
+    frame's pass, when the strokes differ, or for a frame too large to take at once. Holes are
+    closed across frames with matching strokes through NeighborOutlines. The fill is
+    withheld only where the first run's stroke is from fills of the story painted earlier
+    (ClipWithheld, applied by the caller). */
+bool FrameHoles(IGraphicsPort* port, const IWaxRun* run, const IWaxRenderData* data, IDataBase* db, double reach, bool hollow)
+{
+#ifndef ISE_ROUTE_X
+    (void)port; (void)run; (void)data; (void)db; (void)reach; (void)hollow;
+    return false;
+#else
+    const IWaxLine* line = run ? run->GetWaxLine() : nil;
+    if (line == nil) return false;
+    const ParcelKey key = line->GetParcelKey();
+    // Within the frame's pass (GetIsActive, StartOfParcelDraw): its first stroking run drawn fills
+    // the frame. Without it, as InDesign's first screen draw of a document had it (the owner's
+    // retest CC1, 2026-11-01: a toggle was still needed), the frame's first stroking run in text
+    // order fills the frame, and every other run its own line (the caller's FillSilhouette).
+    // STROKEMASTER_HOLES_UNBRACKETED (tests only): as if no pass were open, as on screen.
+    static const bool unbracketed = [] { const wchar_t* v = _wgetenv(L"STROKEMASTER_HOLES_UNBRACKETED"); return v != nullptr && *v == L'1'; }();
+    const bool bracketed = !unbracketed && tHoles.open && key == tHoles.key;
+    if (bracketed && tHoles.mixed) return false;
+    if (bracketed && tHoles.done) return true;
+    IWaxRenderData* mutableData = const_cast<IWaxRenderData*>(data);
+    const UID paint = mutableData->GetColorUID(kTrue), none = Utils<ISwatchUtils>()->GetNoneSwatchUID(db);
+    const bool16 overprint = mutableData->GetOverprint(kTrue);
+    const double width = ToDouble(mutableData->GetOutlineWidth()), limit = ToDouble(mutableData->GetMiterLimit());
+    const int32 join = mutableData->GetOutlineJoin();
+    const Alignment alignment = AlignmentOf(data);
+    InterfacePtr<IWaxStrand> strand(line->QueryWaxStrand());
+    if (strand == nil) return false;
+    std::unique_ptr<const IWaxIterator> it(strand->NewReadOnlyWaxIterator());
+    if (it == nullptr) return false;
+    // The frame's first line: its lines are consecutive in the story.
+    const int kMaxLines = 400;
+    const IWaxLine* first = it->GetFirstWaxLine(line->TextOrigin());
+    if (first == nil) return false;
+    TextIndex start = first->TextOrigin();
+    for (int n = 0; n < kMaxLines; ++n) {
+        const IWaxLine* back = it->GetPreviousWaxLine();
+        if (back == nil || !(back->GetParcelKey() == key)) break;
+        start = back->TextOrigin();
+    }
+    if (!bracketed) {
+        // Told apart by where they start in the story, not by pointer: the run being drawn and
+        // the one its line hands out need not be the same object.
+        const TextIndex here = line->TextOrigin(run);
+        bool found = false, first = false;
+        int scanned = 0;
+        for (const IWaxLine* l = it->GetFirstWaxLine(start); l != nil && l->GetParcelKey() == key && !found && ++scanned <= kMaxLines;
+             l = it->GetNextWaxLine()) {
+            for (int32 i = 0, n = l->GetRunCount(); i < n; ++i) {
+                InterfacePtr<IWaxRun> r(l->QueryRun(i));
+                InterfacePtr<IWaxRenderData> d(r, IID_IWAXRENDERDATA);
+                if (r == nil || d == nil || r->IsVerticalWritingMode()) continue;
+                const Alignment a = AlignmentOf(d);
+                const double w = ToDouble(d->GetOutlineWidth());
+                const Method m = MethodOf(d, db);
+                if (CenterMiterEligible(a, w, m) || Eligible(a, w, m)) { found = true; first = l->TextOrigin(r) == here; break; }
+            }
+        }
+        if (!first) return false;
+    }
+    InterfacePtr<IFontMgr> fontMgr(GetExecutionContextSession(), UseDefaultIID());
+    if (fontMgr == nil) return false;
+    const PMMatrix toLine = line->GetToPasteboardMatrix().Inverse();
+    std::vector<ise_miter::Contour> all;
+    size_t segments = 0;
+    auto mix = [&] { if (bracketed) tHoles.mixed = true; return false; };
+    int lines = 0;
+    for (const IWaxLine* l = it->GetFirstWaxLine(start); l != nil && l->GetParcelKey() == key; l = it->GetNextWaxLine()) {
+        if (++lines > kMaxLines) return mix();
+        const PMMatrix toPb = l->GetToPasteboardMatrix();
+        for (int32 i = 0, n = l->GetRunCount(); i < n; ++i) {
+            InterfacePtr<IWaxRun> r(l->QueryRun(i));
+            InterfacePtr<IWaxRenderData> d(r, IID_IWAXRENDERDATA);
+            InterfacePtr<IWaxGlyphs> g(r, IID_IWAXGLYPHS);
+            if (r == nil || d == nil || g == nil) return mix();
+            if (r->IsVerticalWritingMode()) continue;   // left to InDesign (Draw)
+            const Alignment a = AlignmentOf(d);
+            const double w = ToDouble(d->GetOutlineWidth());
+            const Method m = MethodOf(d, db);
+            if (!CenterMiterEligible(a, w, m) && !Eligible(a, w, m)) continue;   // no stroke this route draws
+            // Its stroke as the first run's: anything else, and each run fills its own.
+            if (d->GetColorUID(kTrue) != paint || d->GetOverprint(kTrue) != overprint || a != alignment ||
+                std::fabs(w - width) > 1e-6 || d->GetOutlineJoin() != join || std::fabs(ToDouble(d->GetMiterLimit()) - limit) > 1e-6 ||
+                (d->GetColorUID(kFalse) == none) != hollow)
+                return mix();
+            InterfacePtr<IPMFont> font(d->QueryFont());
+            InterfacePtr<IFontInstance> instance(font ? fontMgr->QueryFontInstance(font, d->GetFontMatrix()) : nil);
+            if (instance == nil) return mix();
+            ise_miter::Recorder recorder;
+            TransformedOutline writer(nullptr, &recorder);
+            WriteRun(&writer, r, g, instance);
+            std::vector<ise_miter::Contour> contours = recorder.Contours();
+            // Another line's outline in this run's line coordinates, through the pasteboard.
+            if (l != line) {
+                auto at = [&](ise_miter::Pt q) {
+                    PMReal x = q.x, y = q.y;
+                    toPb.Transform(&x, &y);
+                    toLine.Transform(&x, &y);
+                    return ise_miter::Pt{ToDouble(x), ToDouble(y)};
+                };
+                for (ise_miter::Contour& c : contours) {
+                    c.start = at(c.start);
+                    for (ise_miter::Segment& s : c.segments) {
+                        s.p = at(s.p);
+                        if (s.curve) { s.c1 = at(s.c1); s.c2 = at(s.c2); }
+                    }
+                }
+            }
+            for (const ise_miter::Contour& c : contours) segments += c.segments.size();
+            if (segments > 200000) return mix();
+            all.insert(all.end(), contours.begin(), contours.end());
+        }
+    }
+    if (bracketed) tHoles.done = true;
+    FillHoles(port, run, all, reach, join, limit, hollow);
+    // Holes closed together with other frames' strokes (the owner's retest BB1, 2026-11-01): those
+    // frames' glyphs painted earlier in this traversal, with strokes alike, are taken with the
+    // frame's, and only the holes are filled, so nothing is painted over a glyph already drawn.
+    if (!all.empty()) {
+        double x0 = 1e300, y0 = 1e300, x1 = -1e300, y1 = -1e300;
+        for (const ise_miter::Contour& c : all) {
+            x0 = std::min(x0, c.start.x); x1 = std::max(x1, c.start.x); y0 = std::min(y0, c.start.y); y1 = std::max(y1, c.start.y);
+            for (const ise_miter::Segment& s : c.segments) {
+                x0 = std::min(x0, s.p.x); x1 = std::max(x1, s.p.x); y0 = std::min(y0, s.p.y); y1 = std::max(y1, s.p.y);
+            }
+        }
+        const double margin = 2 * reach * std::max(1.0, limit) + 1;
+        std::vector<ise_miter::Contour> nearby = ise_cross_frame::NeighborOutlines(tHoles.gd, run, x0 - margin, y0 - margin, x1 + margin,
+                                                                                  y1 + margin, reach, paint.Get());
+        if (!nearby.empty()) {
+            nearby.insert(nearby.end(), all.begin(), all.end());
+            FillHoles(port, run, nearby, reach, join, limit, hollow, true);
+        }
+    }
+    return true;
+#endif
+}
+
+/** Whether route W draws this run's miter joins itself (always, outside the research build): for
+    No miter spikes in live text, or for Trim glyph tips alone, which trims tips only there (it did
+    nothing on live text with No miter spikes off: the review of 2026-11-01). */
+bool CorrectMiter(int32 join)
 {
     if (join != kPMMiterJoin) return false;
+#ifdef ISE_ROUTE_X
+    return ise_cross_frame::MiterCorrectionEnabled() || ise_cross_frame::TextTipsEnabled();
+#else
+    return true;
+#endif
+}
+
+/** Whether the interior miters are removed (No miter spikes in live text); otherwise, drawn whole as
+    InDesign draws them, when the joins are drawn for Trim glyph tips alone. */
+bool RemoveInteriorMiters()
+{
 #ifdef ISE_ROUTE_X
     return ise_cross_frame::MiterCorrectionEnabled();
 #else
@@ -402,10 +634,13 @@ public:
     virtual Text::DrawPriority GetDrawPriority() { return Text::DrawPriority(Text::kTAPassPriBackground + 0.95); }
     virtual bool16 GetCheckIsActive() { return kTrue; }
 #ifdef ISE_ROUTE_X
-    /** Route X also learns here which parcel (frame, story) the pass is about to draw. */
+    /** Route X also learns here which parcel (frame, story) the pass is about to draw, and Close
+        holes' pass opens here too: a screen draw that never called StartOfParcelDraw left each
+        line to fill its own (the owner's retest BB1, 2026-11-01). */
     virtual bool16 GetIsActive(const IParcelShape* parcel, const ITextOptions*, int32 flags)
     {
         if (parcel != nil) ise_cross_frame::NoteParcel(parcel, 'W', flags);
+        OpenHolesPass(nullptr, parcel);
         return parcel != nil;
     }
 #else
@@ -413,18 +648,37 @@ public:
 #endif
     virtual bool16 GetCheckCouldDraw() { return kFalse; }
     virtual bool16 GetCouldDraw(const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) { return kTrue; }
-    /** The moved stroke occupies the ink the run's native Outside stroke already claims. */
-    virtual bool16 GetHasInkBounds() { return kFalse; }
-    virtual void GetInkBounds(PMRect*, const IWaxRun*, const IWaxRenderData*, const IWaxGlyphs*) {}
+    /** Cross-frame holes can extend beyond the run's native stroke bounds on screen. */
+    virtual bool16 GetHasInkBounds() { return kTrue; }
+    virtual void GetInkBounds(PMRect* bounds, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs)
+    {
 #ifdef ISE_ROUTE_X
-    virtual void StartOfParcelDraw(GraphicsData*, int32 flags, const IParcelShape* parcel)
+        if (!ise_cross_frame::CloseHolesEnabled() || run == nil || data == nil || glyphs == nil || run->IsVerticalWritingMode()) return;
+        const UID none = Utils<ISwatchUtils>()->GetNoneSwatchUID(run->GetDataBase());
+        if (data->GetColorUID(kTrue) == none) return;
+        const double width = ToDouble(data->GetOutlineWidth());
+        if (!(width > 0)) return;
+        const double margin = 2 * width * std::max(1.0, ToDouble(data->GetMiterLimit())) + 1;
+        const PMRect ink = glyphs->GetStrokeBoundingBox();
+        const double x = ToDouble(run->GetXPosition()), y = ToDouble(run->GetYPosition());
+        *bounds = PMRect(ToDouble(ink.Left()) + x - margin, ToDouble(ink.Top()) + y - margin,
+                         ToDouble(ink.Right()) + x + margin, ToDouble(ink.Bottom()) + y + margin);
+#else
+        (void)bounds; (void)run; (void)data; (void)glyphs;
+#endif
+    }
+#ifdef ISE_ROUTE_X
+    virtual void StartOfParcelDraw(GraphicsData* gd, int32 flags, const IParcelShape* parcel)
     {
         if (parcel != nil) ise_cross_frame::NoteParcel(parcel, 'w', flags);
+        // The frame's stroke pass begins: its holes are not filled yet (FrameHoles).
+        OpenHolesPass(gd, parcel);
     }
+    virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape*) { tHoles = HolesPass(); ise_cross_frame::EndParcel(); }
 #else
     virtual void StartOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
-#endif
     virtual void EndOfParcelDraw(GraphicsData*, int32, const IParcelShape*) {}
+#endif
     virtual void Draw(GraphicsData* gd, int32 flags, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs);
 };
 
@@ -436,6 +690,7 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
     if (gd == nil || run == nil || data == nil || glyphs == nil) return;
     IDataBase* db = run->GetDataBase();
     if (db == nil) return;
+    tHoles.gd = gd;   // Close holes across frames asks the traversal through it (FrameHoles)
     Recover(run, data, glyphs, db);
     RecoverJoin(run, data, glyphs, db, nil);
     // Vertical text stays InDesign's: its glyphs are placed and turned by the run in ways the
@@ -469,7 +724,9 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
 #endif
                 paint->Install(port, mutableData, IRenderingObject::kInstallStroke);
                 if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
-                FillSilhouette(port, run, glyphs, instance, width / 2);
+                const bool hollow = mutableData->GetColorUID(kFalse) == Utils<ISwatchUtils>()->GetNoneSwatchUID(db);
+                if (!FrameHoles(port, run, data, db, width / 2, hollow))
+                    FillSilhouette(port, run, glyphs, instance, width / 2, join, ToDouble(mutableData->GetMiterLimit()), hollow);
             }
         }
         if (CorrectMiter(join) && ThreadJoinLedger().Mute(run, data, PrintOf(run, data, glyphs), static_cast<std::uint32_t>(join))) {
@@ -505,7 +762,9 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
         // without it (measured 2026-10-04): it is set explicitly, for the stroke and its joins.
         if (mutableData->GetOverprint(kTrue)) port->setoverprint(kTrue);
         // Close holes: the silhouette of the whole Outside stroke, beneath it, in its paint.
-        if (ise_cross_frame::CloseHolesEnabled()) FillSilhouette(port, run, glyphs, instance, width);
+        if (ise_cross_frame::CloseHolesEnabled() && !FrameHoles(port, run, data, db, width, mutableData->GetColorUID(kFalse) == none))
+            FillSilhouette(port, run, glyphs, instance, width, mutableData->GetOutlineJoin(), ToDouble(mutableData->GetMiterLimit()),
+                           mutableData->GetColorUID(kFalse) == none);
         // Outside alignment is drawn by InDesign as a centered stroke of twice the weight
         // beneath the fill; reproduce that geometry explicitly. A mitered run is stroked with
         // bevel joins first, and its exterior corners get their miters back below (see
@@ -532,10 +791,12 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
             if (correctMiter) {
                 ise_miter::Options options;
                 options.halfWidth = h;
-                const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(contours, options);
-                if (!stubs.empty())
+                const std::vector<ise_miter::Stub> stubs = ise_miter::Corners(contours, options, !RemoveInteriorMiters());
+                if (!stubs.empty()) {
                     FillJoins(port, stubs, false, h, ToDouble(mutableData->GetMiterLimit()), ise_cross_frame::TextTipsEnabled(),
                               alignment == Alignment::Outside);
+                    if (!RemoveInteriorMiters()) FillJoins(port, stubs, true, h, ToDouble(mutableData->GetMiterLimit()));
+                }
             }
         } else {
             port->setlinewidth(mutableData->GetOutlineWidth() * 2);
@@ -564,12 +825,14 @@ void IseStrokeBehindAdornment::Draw(GraphicsData* gd, int32, const IWaxRun* run,
             if (correctMiter) {
                 ise_miter::Options options;
                 options.halfWidth = ToDouble(mutableData->GetOutlineWidth());
-                const std::vector<ise_miter::Stub> stubs = ise_miter::ExteriorCorners(recorder.Contours(), options);
+                const std::vector<ise_miter::Stub> stubs = ise_miter::Corners(recorder.Contours(), options, !RemoveInteriorMiters());
                 if (!stubs.empty()) {
                     // The exterior corners' miter joins, within the run's limit as the native stroke
-                    // draws them, filled in the stroke's paint and overprint.
+                    // draws them, filled in the stroke's paint and overprint; the interior ones too,
+                    // whole, when the joins are drawn for Trim glyph tips alone.
                     FillJoins(port, stubs, false, options.halfWidth, ToDouble(mutableData->GetMiterLimit()),
                               ise_cross_frame::TextTipsEnabled(), alignment == Alignment::Outside);
+                    if (!RemoveInteriorMiters()) FillJoins(port, stubs, true, options.halfWidth, ToDouble(mutableData->GetMiterLimit()));
                 }
             }
         }

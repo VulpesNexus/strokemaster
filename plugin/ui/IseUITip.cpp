@@ -10,6 +10,7 @@
 // Interface includes:
 #include "AbstractTip.h"
 #include "IControlView.h"
+#include "ITextControlData.h"
 
 // Project includes:
 #include "IseUIID.h"
@@ -57,6 +58,11 @@ PMString IseUITip::GetTipText(const PMPoint&)
     InterfacePtr<IControlView> view(this, UseDefaultIID());
     if (view == nil) return PMString();
     const WidgetID id = view->GetWidgetID();
+    // The note has a tip only while it says something (the engine is missing).
+    if (id == kIseUINoteWidgetID) {
+        InterfacePtr<ITextControlData> note(this, UseDefaultIID());
+        if (note == nil || note->GetString().IsEmpty()) return PMString();
+    }
     for (const Tip& t : kTips) {
         if (t.widget != id) continue;
         PMString text(t.key);

@@ -46,12 +46,12 @@ def measure(folder, run):
         image, text = render(path)
         stages[name] = {"damagePt2": banded(core & differs(image, fill)),
                         "differsFromNativePt2": banded(differs(image, native)),
-                        "characters": len(text), "glyphsDrawn": drawn_glyphs(path),
+                        "characters": len(text), "textSame": text == fill_text, "glyphsDrawn": drawn_glyphs(path),
                         "groups": row.get("groups"), "correct": json.loads(row["correct"])}
     record = {"schema": 1, "run": run, "sourceCharacters": len(fill_text),
               "fillGlyphsDrawn": drawn_glyphs(folder / f"{run}-fill.pdf"), "stages": stages}
     for key in ("uiStatus0", "uiStatusAfterTab", "tab", "limitsBefore", "limitsOn", "limitsOff",
-                "squareBefore", "squareOn", "squareOff"):
+                "squareBefore", "squareOn", "squareOff", "switchesOff"):
         if key in receipt:
             record[key] = receipt[key]
     # The route stroke's limit with No miter spikes on, then off (the style dumps).

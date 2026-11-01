@@ -1,4 +1,4 @@
-// PROPOSED region-prep-39: real-core closed-region replacement for the marked
+// PROPOSED region-prep-51: real-core closed-region replacement for the marked
 // analytic fixture only. RegionNative.h carries the validated integration:
 // parser-checked source admission, the closed-form fixture oracle, and the
 // owned-output SDK backend. Arbitrary artwork is refused before staging.
@@ -15,6 +15,7 @@
 #include "NativeRegion.h"
 #include "IllustratorSettings.h"
 #include <algorithm>
+#include <functional>
 #include "AIMatchingArt.h"
 #include "AIMdMemory.h"
 #include "AIPaintStyle.h"
@@ -61,7 +62,7 @@ namespace region_probe {
 // The panel's switches (IllustratorSettings.h): read from the settings file at load, and again
 // whenever the panel or the bridge's "settings" command changes them.
 inline ai_settings::Settings& Switches() { static ai_settings::Settings s = ai_settings::Load(); return s; }
-constexpr char build[] = "region-prep-39";
+constexpr char build[] = "region-prep-51";
 
 struct Event {
     unsigned long long sequence = 0;
@@ -157,8 +158,30 @@ constexpr ai::int32 textBehindInput = kGroupInputArt | kTextFrameInputArt;
 // (ise_region::Silhouette), which the fill paints in the stroke's color. Illustrator keeps the
 // result in the document, so it still shows without the plugin; it follows edits with it.
 constexpr char closeHolesIdentity[] = "org.strokemaster.close-holes.v1";
+// Sixth effect: flat glyph tips, the opt-in (the owner, 2026-11-01): on a fill below the strokes,
+// the region an outward stroke paints around the art with InDesign's tip geometry
+// (ise_region::TippedOutline), in the stroke's color. Like Close holes, its last result stays in
+// the document without the plugin, and follows edits only with it.
+constexpr char flatTipsIdentity[] = "org.strokemaster.flat-tips.v1";
 constexpr char kCloseHolesReach[] = "StrokeMasterCloseHolesReach";
+// The stroke's join (an AILineJoin) and miter limit, with which the holes it encloses are found;
+// without them, as written before 2026-11-01, the bevel's.
+constexpr char kCloseHolesJoin[] = "StrokeMasterCloseHolesJoin";
+constexpr char kCloseHolesLimit[] = "StrokeMasterCloseHolesLimit";
+// The effect's revision: Illustrator keeps an effect's last result in the document and computes it
+// again only when its parameters change, so a fill made by an older build is rewritten (and so
+// computed again) when this differs. 2: holes found by the stroke's own join, past its edge.
+// 3: paths and compound paths too, holes alone beneath a dashed stroke, unfilled letters hollow.
+// 4: outline the entire text paint pass before finding holes, including separate stories.
+constexpr char kCloseHolesRevisionKey[] = "StrokeMasterCloseHolesRevision";
+constexpr ai::int32 kCloseHolesRevision = 4;
+// 1: a dashed stroke, beneath which only the holes are filled, so its gaps stay open.
+constexpr char kCloseHolesPattern[] = "StrokeMasterCloseHolesPattern";
+// 1: nothing fills the letters or the shape, which stay hollow; only what lies outside them is filled.
+constexpr char kCloseHolesHollow[] = "StrokeMasterCloseHolesHollow";
 AILiveEffectHandle gCloseHoles = nullptr;   // State::closeHoles, for the fix
+AILiveEffectHandle gFlatTips = nullptr;     // State::flatTips, for the fix
+char gPathJudged[160] = "";                 // the last path stroke FixPath judged (status, for tests)
 
 // Result of the last "appearance" bridge command: a native, effect-free object-level
 // stroke added beneath the contents of every text frame in the document.
@@ -186,6 +209,7 @@ struct NativeFixStats {
     int objectStrokes = 0; // text objects whose own strokes were moved below their fills
     int realigned = 0;     // dashed Outside opt-ins undone for the alignment the user set since
     int holes = 0;         // Close holes' fills added, updated, or taken off
+    int tips = 0;          // glyph tips' fills (TipFields) added, updated, or taken off
     int carried = 0;       // re-fix: a limit set on unstroked characters carried to the strokes below
     int orderRestored = 0; // text objects' own strokes put back above (Strokes behind off)
 };
@@ -198,7 +222,10 @@ struct RefixState {
     AIDocumentHandle document = nullptr;
     size_t global = 0;                 // the document's global stamp at the last scan
     struct Seen { AIArtHandle art; size_t stamp; };
-    Seen seen[4096] = {};
+    // Sorted by handle after each scan. 4,096 entries left every later item of a large document
+    // unfollowed, first seen at every scan (the review of 2026-11-01).
+    static constexpr int kSeen = 65536;
+    Seen seen[kSeen] = {};
     int count = 0;
     unsigned long long scans = 0, runs = 0, items = 0, deferred = 0, released = 0, overflow = 0;
     unsigned long long rerouted = 0, routeReleased = 0;
@@ -222,6 +249,7 @@ struct RefixState {
     int docCount = 0;
     ai_settings::Settings applied{};   // the switches the active document's corrections follow
     bool opening = false;              // the active document has just opened (Also documents as they open)
+    bool paused = false;               // automatic correction was off or paused at the last tick
     bool waiting = false;              // a changed text frame waits for typing to end
     int lastError = 0;
 };
@@ -265,6 +293,8 @@ struct State {
     AILiveEffectHandle textBehind = nullptr;
     text_behind::Stats textBehindStats{};
     AILiveEffectHandle closeHoles = nullptr;
+    AILiveEffectHandle flatTips = nullptr;
+    struct { unsigned long long calls = 0, published = 0, passed = 0; const char* gate = "ready"; } flatTipsStats;
     struct { unsigned long long calls = 0, published = 0, passed = 0, contours = 0, rings = 0; const char* gate = "ready"; } closeHolesStats;
     NativeFixStats nativeFix{};
     AlignStats align{};
@@ -374,6 +404,9 @@ ASErr Register(SPMessageData& message, State& state) {
     char closeHolesTitle[] = "StrokeMaster Close Holes";
     if (!RegisterOne(message, *live.operator&(), closeHolesIdentity, closeHolesTitle, censusInput, state.closeHoles))
         gCloseHoles = state.closeHoles;
+    char flatTipsTitle[] = "StrokeMaster Flat Tips";
+    if (!RegisterOne(message, *live.operator&(), flatTipsIdentity, flatTipsTitle, censusInput, state.flatTips))
+        gFlatTips = state.flatTips;
     // Twice a second, in an undoable context (the re-fix is appended to the edit's step).
     Suite<AITimerSuite> timer(message.basic, kAITimerSuite, kAITimerVersion);
     if (timer.error) return kNoErr;   // no re-fix, everything else still works
@@ -451,32 +484,13 @@ void CollectOutlines(const AIArtSuite& art, const AIPathSuite& path, AIArtHandle
     }
 }
 
-ASErr CloseHolesGo(AILiveEffectGoMessage& go, State& state) {
-    auto& st = state.closeHolesStats;
-    ++st.calls;
-    Suite<AIArtSuite> art(go.d.basic, kAIArtSuite, kAIArtVersion);
-    Suite<AIPathSuite> path(go.d.basic, kAIPathSuite, kAIPathVersion);
-    Suite<AIDictionarySuite> dict(go.d.basic, kAIDictionarySuite, kAIDictionaryVersion);
-    Suite<AIPathStyleSuite> paint(go.d.basic, kAIPathStyleSuite, kAIPathStyleVersion);
-    if (art.error || path.error || dict.error || paint.error || !go.art) { st.gate = "suites"; ++st.passed; return kNoErr; }
-    AIReal reach = 0;
-    if (!go.parameters || dict->GetRealEntry(go.parameters, dict->Key(kCloseHolesReach), &reach) || !(reach > 0)) {
-        st.gate = "parameters"; ++st.passed; return kNoErr;
-    }
-    std::vector<ise_miter::Contour> outlines;
-    AIArtHandle source = nullptr;
-    CollectOutlines(*art.operator&(), *path.operator&(), go.art, outlines, &source);
-    st.contours = outlines.size();
-    if (outlines.empty()) { short type = kUnknownArt; art->GetArtType(go.art, &type); st.gate = type == kTextFrameArt ? "input.text" : "input.empty"; }
-    // Short of the stroke's edge by twice the tolerance, so the fitted curves never show past it.
-    const double tol = 0.01;
-    bool ok = false;
-    const std::vector<ise_miter::Contour> shape =
-        outlines.empty() ? std::vector<ise_miter::Contour>() : ise_region::Silhouette(outlines, (std::max)(0.0, static_cast<double>(reach) - 2 * tol), tol, &ok);
-    if (!ok || shape.empty()) { if (!outlines.empty()) st.gate = "silhouette"; ++st.passed; return kNoErr; }
-    st.rings = shape.size();
+// An effect's result: `shape` as a compound path in place of the art, painted as the art it
+// replaces is (`source`'s paint, the field's). False, with `gate` saying why, when it cannot be
+// written; the art then passes through.
+bool PublishShape(AILiveEffectGoMessage& go, const AIArtSuite& art, const AIPathSuite& path, const AIPathStyleSuite& paint,
+                  const std::vector<ise_miter::Contour>& shape, AIArtHandle source, const char*& gate) {
     AIArtHandle compound = nullptr;
-    if (art->NewArt(kCompoundPathArt, kPlaceAbove, go.art, &compound) || !compound) { st.gate = "new-art"; ++st.passed; return kNoErr; }
+    if (art.NewArt(kCompoundPathArt, kPlaceAbove, go.art, &compound) || !compound) { gate = "new-art"; return false; }
     auto point = [](const ise_miter::Pt& q) { AIRealPoint r; r.h = static_cast<AIReal>(q.x); r.v = static_cast<AIReal>(q.y); return r; };
     bool written = true;
     for (const ise_miter::Contour& c : shape) {
@@ -500,9 +514,9 @@ ASErr CloseHolesGo(AILiveEffectGoMessage& go, State& state) {
         }
         if (segs.size() < 3 || segs.size() > 32000) continue;
         AIArtHandle ring = nullptr;
-        if (art->NewArt(kPathArt, kPlaceInsideOnTop, compound, &ring) || !ring ||
-            path->SetPathSegmentCount(ring, static_cast<ai::int16>(segs.size())) ||
-            path->SetPathSegments(ring, 0, static_cast<ai::int16>(segs.size()), segs.data()) || path->SetPathClosed(ring, true)) {
+        if (art.NewArt(kPathArt, kPlaceInsideOnTop, compound, &ring) || !ring ||
+            path.SetPathSegmentCount(ring, static_cast<ai::int16>(segs.size())) ||
+            path.SetPathSegments(ring, 0, static_cast<ai::int16>(segs.size()), segs.data()) || path.SetPathClosed(ring, true)) {
             written = false;
             break;
         }
@@ -511,15 +525,85 @@ ASErr CloseHolesGo(AILiveEffectGoMessage& go, State& state) {
     // host test, 2026-10-31).
     AIPathStyle style{};
     AIBoolean advanced = false;
-    if (written && source && !paint->GetPathStyle(source, &style, &advanced)) {
+    if (written && source && !paint.GetPathStyle(source, &style, &advanced)) {
         style.strokePaint = false;
-        written = paint->SetPathStyle(compound, &style) == kNoErr;
+        written = paint.SetPathStyle(compound, &style) == kNoErr;
     }
-    if (!written) { art->DisposeArt(compound); st.gate = "write"; ++st.passed; return kNoErr; }
-    art->DisposeArt(go.art);
+    if (!written) { art.DisposeArt(compound); gate = "write"; return false; }
+    art.DisposeArt(go.art);
     go.art = compound;
-    st.gate = "published";
-    ++st.published;
+    return true;
+}
+
+
+ASErr CloseHolesGo(AILiveEffectGoMessage& go, State& state) {
+    auto& st = state.closeHolesStats;
+    ++st.calls;
+    Suite<AIArtSuite> art(go.d.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathSuite> path(go.d.basic, kAIPathSuite, kAIPathVersion);
+    Suite<AIDictionarySuite> dict(go.d.basic, kAIDictionarySuite, kAIDictionaryVersion);
+    Suite<AIPathStyleSuite> paint(go.d.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    if (art.error || path.error || dict.error || paint.error || !go.art) { st.gate = "suites"; ++st.passed; return kNoErr; }
+    AIReal reach = 0;
+    if (!go.parameters || dict->GetRealEntry(go.parameters, dict->Key(kCloseHolesReach), &reach) || !(reach > 0)) {
+        st.gate = "parameters"; ++st.passed; return kNoErr;
+    }
+    ai::int32 joinValue = kAIBevelJoin, pattern = 0, hollow = 0;
+    AIReal limit = 0;
+    dict->GetIntegerEntry(go.parameters, dict->Key(kCloseHolesPattern), &pattern);
+    dict->GetIntegerEntry(go.parameters, dict->Key(kCloseHolesHollow), &hollow);
+    dict->GetIntegerEntry(go.parameters, dict->Key(kCloseHolesJoin), &joinValue);
+    dict->GetRealEntry(go.parameters, dict->Key(kCloseHolesLimit), &limit);
+    const ise_region::BandJoin join = joinValue == kAIMiterJoin  ? ise_region::BandJoin::Miter
+                                            : joinValue == kAIRoundJoin ? ise_region::BandJoin::Round
+                                                                        : ise_region::BandJoin::Bevel;
+    std::vector<ise_miter::Contour> outlines;
+    AIArtHandle source = nullptr;
+    CollectOutlines(*art.operator&(), *path.operator&(), go.art, outlines, &source);
+    st.contours = outlines.size();
+    if (outlines.empty()) { short type = kUnknownArt; art->GetArtType(go.art, &type); st.gate = type == kTextFrameArt ? "input.text" : "input.empty"; }
+    // Short of the stroke's edge by twice the tolerance, so the fitted curves never show past it.
+    const double tol = 0.01;
+    bool ok = false;
+    const std::vector<ise_miter::Contour> shape =
+        outlines.empty() ? std::vector<ise_miter::Contour>()
+                         : ise_region::Silhouette(outlines, (std::max)(0.0, static_cast<double>(reach) - 2 * tol), tol, &ok, join, limit,
+                                                  pattern != 0, hollow != 0);
+    if (!ok || shape.empty()) { if (!outlines.empty()) st.gate = "silhouette"; ++st.passed; return kNoErr; }
+    st.rings = shape.size();
+    const char* gate = "published";
+    if (PublishShape(go, *art.operator&(), *path.operator&(), *paint.operator&(), shape, source, gate)) ++st.published;
+    else ++st.passed;
+    st.gate = gate;
+    return kNoErr;
+}
+
+// The flat tips' effect (see flatTipsIdentity): parameters "ofst" (the stroke's reach) and "mlim"
+// (its miter limit), as the native tip fills carry them (TipFields).
+ASErr FlatTipsGo(AILiveEffectGoMessage& go, State& state) {
+    auto& st = state.flatTipsStats;
+    ++st.calls;
+    Suite<AIArtSuite> art(go.d.basic, kAIArtSuite, kAIArtVersion);
+    Suite<AIPathSuite> path(go.d.basic, kAIPathSuite, kAIPathVersion);
+    Suite<AIDictionarySuite> dict(go.d.basic, kAIDictionarySuite, kAIDictionaryVersion);
+    Suite<AIPathStyleSuite> paint(go.d.basic, kAIPathStyleSuite, kAIPathStyleVersion);
+    if (art.error || path.error || dict.error || paint.error || !go.art) { st.gate = "suites"; ++st.passed; return kNoErr; }
+    AIReal reach = 0, limit = 4;
+    if (!go.parameters || dict->GetRealEntry(go.parameters, dict->Key("ofst"), &reach) || !(reach > 0)) {
+        st.gate = "parameters"; ++st.passed; return kNoErr;
+    }
+    dict->GetRealEntry(go.parameters, dict->Key("mlim"), &limit);
+    std::vector<ise_miter::Contour> outlines;
+    AIArtHandle source = nullptr;
+    CollectOutlines(*art.operator&(), *path.operator&(), go.art, outlines, &source);
+    if (outlines.empty()) { st.gate = "input.empty"; ++st.passed; return kNoErr; }
+    bool ok = false;
+    const std::vector<ise_miter::Contour> shape = ise_region::TippedOutline(outlines, reach, (std::max)(1.0, static_cast<double>(limit)), 0.01, &ok);
+    if (!ok || shape.empty()) { st.gate = "outline"; ++st.passed; return kNoErr; }
+    const char* gate = "published";
+    if (PublishShape(go, *art.operator&(), *path.operator&(), *paint.operator&(), shape, source, gate)) ++st.published;
+    else ++st.passed;
+    st.gate = gate;
     return kNoErr;
 }
 
@@ -920,7 +1004,10 @@ ASErr StrokesBelowFills(const AIArtSuite& art, const AIDictionarySuite& dict, co
         if (parser.GetNthPaintField(p, n - k + j, &f) || f != move[static_cast<size_t>(j)]) inPlace = false;
     }
     if (inPlace) return kNoErr;
-    const std::string before = FieldOrder(parser, p);
+    // Without Close holes' fill, which RestoreFieldOrder leaves last: with it in the record, the
+    // two orders never matched and the order was never put back (the review of 2026-11-01).
+    std::string before = FieldOrder(parser, p);
+    if (tail && !before.empty() && before.back() == 'F') before.pop_back();
     for (AIParserPaintField f : move) if ((e = parser.RemovePaintField(p, f, false)) != kNoErr) return e;
     for (AIParserPaintField f : move)
         if ((e = parser.InsertNthPaintField(p, tail ? parser.CountPaintFields(p) - tail : -1, f)) != kNoErr) return e;
@@ -952,8 +1039,9 @@ ASErr RestoreFieldOrder(const AIArtSuite& art, const AIDictionarySuite& dict, co
     struct ReleaseDict { const AIDictionarySuite& api; AIDictionaryRef d; ~ReleaseDict() { api.Release(d); } } releaseDict{dict, d};
     const char* text = nullptr;
     if (dict.GetStringEntry(d, dict.Key(kRecordOrderBefore), &text) || !text || !*text) return kNoErr;
-    const std::string before = text;
-    dict.DeleteEntry(d, dict.Key(kRecordOrderBefore));
+    const std::string recorded = text;
+    // Deleted once restored, or once it no longer fits the fields; kept when a step fails, so the
+    // order can still be put back (the second review of 2026-11-01).
     AIArtStyleHandle style = nullptr;
     auto e = styles.GetArtStyle(item, &style);
     if (e || !style) return e;
@@ -967,11 +1055,15 @@ ASErr RestoreFieldOrder(const AIArtSuite& art, const AIDictionarySuite& dict, co
     if (n > 0 && !parser.GetNthPaintField(p, n - 1, &hole) && hole && !HoleField(parser, hole)) hole = nullptr;
     std::string now = FieldOrder(parser, p);
     if (hole) now.pop_back();
+    // A record made before 2026-11-01 kept the hole's fill: dropped the same way.
+    std::string before = recorded;
+    // A record from before 2026-11-01 kept Close holes' fill, which may be gone since.
+    if (before.size() == now.size() + 1 && before.back() == 'F') before.pop_back();
     // The same letters in another order, or nothing is done: the fields were changed since.
     std::string a = before, b = now;
     std::sort(a.begin(), a.end());
     std::sort(b.begin(), b.end());
-    if (a != b || now == before) return kNoErr;
+    if (a != b || now == before) { dict.DeleteEntry(d, dict.Key(kRecordOrderBefore)); return kNoErr; }
     // Each letter of the recorded order takes the next field of its kind, in the order they are now.
     std::map<char, std::vector<AIParserPaintField>> byKind;
     for (ai::int32 i = 0, at = 0; i < n - (hole ? 1 : 0); ++i) {
@@ -994,6 +1086,7 @@ ASErr RestoreFieldOrder(const AIArtSuite& art, const AIDictionarySuite& dict, co
     AIArtStyleHandle created = nullptr;
     if ((e = parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
     if ((e = styles.SetArtStyle(item, created)) != kNoErr) return e;
+    dict.DeleteEntry(d, dict.Key(kRecordOrderBefore));
     changed = true;
     return kNoErr;
 }
@@ -1050,6 +1143,16 @@ constexpr char kRouteSig[] = "StrokeMasterRouteSig";
 // The story route's group, in builds before region-prep-22 the only record.
 constexpr char kStoryMark[] = "StrokeMasterStory";
 enum RouteKind { kRouteNone = 0, kRouteFill = 1, kRouteStroke = 2, kRouteFillFirst = 3 };
+
+// Only this route installs group-level hole and tip fields. Other routes must
+// retain each frame's fields even though their paint order belongs to the group.
+inline bool GroupOwnsTextFields(RouteKind route) { return route == kRouteStroke; }
+
+// A fill above group Contents also paints over child hole/tip fields. Keep
+// independently corrected frames when those fields cannot move to one stroke.
+inline bool GroupRouteSupportsFields(RouteKind route, bool holes, bool miter) {
+    return route != kRouteFill || !(holes || miter);
+}
 
 struct RouteSuites {
     SPBasicSuite* basic;
@@ -1159,6 +1262,27 @@ bool SetFrameChars(const RouteSuites& s, AIArtHandle frame, bool fillFirst, bool
     return !ate && f;
 }
 
+// FillFirst turned off by Reroute under a stroke route (some characters restroked), to be turned
+// back on by Unroute; without the mark, Unroute leaves it as the user had it (the second review of
+// 2026-11-01: turning it on for every stroke route overrode the user's own setting).
+constexpr char kFillFirstOff[] = "StrokeMasterFillFirstOff";
+void MarkFillFirstOff(const RouteSuites& s, AIArtHandle target, bool on) {
+    AIDictionaryRef d = nullptr;
+    if (s.art.GetDictionary(target, &d) || !d) return;
+    if (on) s.dict.SetBooleanEntry(d, s.dict.Key(kFillFirstOff), true);
+    else s.dict.DeleteEntry(d, s.dict.Key(kFillFirstOff));
+    s.dict.Release(d);
+}
+bool FillFirstOffMarked(const RouteSuites& s, AIArtHandle target) {
+    if (!s.art.HasDictionary(target)) return false;
+    AIDictionaryRef d = nullptr;
+    if (s.art.GetDictionary(target, &d) || !d) return false;
+    AIBoolean v = false;
+    const bool marked = !s.dict.GetBooleanEntry(d, s.dict.Key(kFillFirstOff), &v) && v;
+    s.dict.Release(d);
+    return marked;
+}
+
 void WriteRouteRecord(const RouteSuites& s, AIArtHandle target, RouteKind kind, const std::string& sig) {
     AIDictionaryRef d = nullptr;
     if (s.art.GetDictionary(target, &d) || !d) return;
@@ -1215,6 +1339,40 @@ AIParserPaintField FindRouteField(const RouteSuites& s, AIStyleParser p, RouteKi
     return nullptr;
 }
 
+// Predict the paint after removing individual routes, without mutating them.
+// Stroke routes have disabled native strokes, so read their verified owned field.
+ASErr ReadGroupingPaint(const RouteSuites& s, const std::vector<AIArtHandle>& frames, CharPaint& out) {
+    out = CharPaint{};
+    for (AIArtHandle frame : frames) {
+        CharPaint one;
+        if (ReadCharPaint(s, {frame}, one)) return kBadParameterErr;
+        if (!one.any) continue;
+        std::string sig;
+        if (one.noStroke && ReadRouteRecord(s.art, s.dict, frame, &sig) == kRouteStroke) {
+            AIArtStyleHandle style = nullptr;
+            AIStyleParser parser = nullptr;
+            if (s.styles.GetArtStyle(frame, &style) || !style || s.parser.NewParser(&parser) || !parser) return kBadParameterErr;
+            struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, parser};
+            if (s.parser.ParseStyle(parser, style)) return kBadParameterErr;
+            AIParserPaintField field = FindRouteField(s, parser, kRouteStroke, sig);
+            AIArtStylePaintData data;
+            if (!field || s.parser.GetStroke(field, &one.stroke, &data)) return kBadParameterErr;
+            one.noStroke = false;
+            one.oneStroke = one.haveStroke = true;
+        }
+        out.any = true;
+        out.noStroke = out.noStroke && one.noStroke;
+        if (!one.oneFill || (out.haveFill && (!SameSolid(one.fill.color, out.fill.color) || !one.fill.overprint != !out.fill.overprint)))
+            out.oneFill = false;
+        else if (!out.haveFill) { out.fill = one.fill; out.haveFill = true; }
+        if (!one.oneStroke || (out.haveStroke && !SameStroke(one.stroke, out.stroke))) out.oneStroke = false;
+        else if (!out.haveStroke) { out.stroke = one.stroke; out.haveStroke = true; }
+    }
+    out.oneFill = out.oneFill && out.haveFill;
+    out.oneStroke = out.oneStroke && out.haveStroke;
+    return kNoErr;
+}
+
 // The route's own paint pass drawn as paths: Illustrator's Effect > Path > Outline Object
 // ("Adobe Outline Type") at the head of the route's field, with the parameters the menu command
 // writes plus a tag. Illustrator writes every paint pass of type as a copy of the text, so
@@ -1223,29 +1381,34 @@ AIParserPaintField FindRouteField(const RouteSuites& s, AIStyleParser p, RouteKi
 // route alone gave 96 and Illustrator's own uncorrected export 72). The effect is Illustrator's,
 // so it follows edits with or without the plugin.
 constexpr char kRoutePassKey[] = "StrokeMasterRoutePass";
-ASErr AddOutlinePass(const RouteSuites& s, AIStyleParser p, AIParserPaintField field) {
-    Suite<AILiveEffectSuite> live(s.basic, kAILiveEffectSuite, kAILiveEffectVersion);
+ASErr AddOutlinePass(SPBasicSuite* basic, const AIArtStyleParserSuite& parser, const AIDictionarySuite& dict,
+                     AIStyleParser p, AIParserPaintField field) {
+    Suite<AILiveEffectSuite> live(basic, kAILiveEffectSuite, kAILiveEffectVersion);
     if (live.error) return live.error;
     AILiveEffectHandle outline = nullptr;
     if (live->GetLiveEffectHandleByName("Adobe Outline Type", &outline) || !outline) return kBadParameterErr;
-    for (ai::int32 k = 0, n = s.parser.CountEffectsOfPaintField(field); k < n; ++k) {
+    for (ai::int32 k = 0, n = parser.CountEffectsOfPaintField(field); k < n; ++k) {
         AIParserLiveEffect fx = nullptr;
         AILiveEffectParameters params = nullptr;
         ai::int32 tag = 0;
-        if (!s.parser.GetNthEffectOfPaintField(field, k, &fx) && fx && !s.parser.GetLiveEffectParams(fx, &params) && params &&
-            !s.dict.GetIntegerEntry(params, s.dict.Key(kRoutePassKey), &tag) && tag == 1)
+        if (!parser.GetNthEffectOfPaintField(field, k, &fx) && fx && !parser.GetLiveEffectParams(fx, &params) && params &&
+            !dict.GetIntegerEntry(params, dict.Key(kRoutePassKey), &tag) && tag == 1)
             return kNoErr;   // already there
     }
     AILiveEffectParameters params = nullptr;
     if (live->CreateLiveEffectParameters(&params) || !params) return kOutOfMemoryErr;
-    s.dict.SetBooleanEntry(params, s.dict.Key("-DefaultApplyEffectsKey"), false);
-    s.dict.SetIntegerEntry(params, s.dict.Key(kRoutePassKey), 1);
+    dict.SetBooleanEntry(params, dict.Key("-DefaultApplyEffectsKey"), false);
+    dict.SetIntegerEntry(params, dict.Key(kRoutePassKey), 1);
     AIParserLiveEffect fx = nullptr;
-    auto e = s.parser.NewParserLiveEffect(outline, params, &fx);
-    s.dict.Release(params);
+    auto e = parser.NewParserLiveEffect(outline, params, &fx);
+    dict.Release(params);
     if (e || !fx) return e ? e : kOutOfMemoryErr;
-    if ((e = s.parser.InsertNthEffectOfPaintField(p, field, 0, fx)) != kNoErr) s.parser.DisposeParserLiveEffect(fx);
+    if ((e = parser.InsertNthEffectOfPaintField(p, field, 0, fx)) != kNoErr) parser.DisposeParserLiveEffect(fx);
     return e;
+}
+
+ASErr AddOutlinePass(const RouteSuites& s, AIStyleParser p, AIParserPaintField field) {
+    return AddOutlinePass(s.basic, s.parser, s.dict, p, field);
 }
 
 // Writes `kind` on `target` (a frame, or a story group) from the parsed style `p`, which must
@@ -1351,6 +1514,7 @@ ASErr Reroute(const RouteSuites& s, AIArtHandle target, bool& changed, bool& rel
             if (c.noStroke) return kNoErr;                       // as the route left it
             if (!c.oneStroke) {                                   // some characters restroked
                 for (AIArtHandle f : frames) SetFrameChars(s, f, true, false);
+                MarkFillFirstOff(s, target, true);
                 changed = true;
                 return kNoErr;
             }
@@ -1370,11 +1534,18 @@ ASErr Reroute(const RouteSuites& s, AIArtHandle target, bool& changed, bool& rel
     RouteKind next = ChooseRoute(c);
     if (story && next == kRouteFillFirst) {
         // The story's fills and strokes no longer agree: each character's stroke before its own
-        // fill, and the group's paint taken off.
-        for (AIArtHandle f : frames) SetFrameChars(s, f, true, false);
+        // fill, recorded on each frame so that Unroute puts FillFirst back (the review of
+        // 2026-11-01), and the group's paint taken off.
+        for (AIArtHandle f : frames) if (SetFrameChars(s, f, true, false)) WriteRouteRecord(s, f, kRouteFillFirst, "");
         next = kRouteNone;
     }
     if (kind == kRouteFillFirst && next == kRouteFillFirst) return kNoErr;
+    // Leaving the FillFirst route (fills recolored alike, or every stroke removed): FillFirst back on
+    // before the next route, or none, which would leave it off with no record (the second review
+    // of 2026-11-01). Not when the route stays for a style that is the user's (below).
+    const bool userStyled = s.parser.ContainsEffects(p) || s.parser.CountPaintFields(p) > 2 || s.parser.ContainsTransparency(p);
+    if (kind == kRouteFillFirst && !(userStyled && (next == kRouteFill || next == kRouteStroke)))
+        for (AIArtHandle f : frames) SetFrameChars(s, f, true, true);
     // A frame left on FillFirst because its style was the user's (effects, more paint, opacity)
     // stays so: a route would rebuild that style (review 2026-10-30).
     if (kind == kRouteFillFirst && (next == kRouteFill || next == kRouteStroke) &&
@@ -1428,17 +1599,24 @@ ASErr Unroute(const RouteSuites& s, AIArtHandle target, bool& removed) {
         if (!s.parser.GetNthPaintField(p, i, &f) && f == field) index = i;
     }
     const ai::int32 contents = s.parser.GetGroupContentsPosition(p);
+    // A stroke lifted from the frames' own is read before its field is removed: removing it
+    // disposes of it (doDelete), and it was read after that until 2026-11-01 (a use after free
+    // the review found; a switch turned off could crash Illustrator).
+    const bool lifted = kind == kRouteStroke && sig.find(kLiftedSig) != std::string::npos;
+    AIStrokeStyle stroke{};
+    AIArtStylePaintData data;
+    const bool haveStroke = lifted && !s.parser.GetStroke(field, &stroke, &data);
+    if (lifted && !haveStroke) return kBadParameterErr;   // not removed: the frames would get nothing back
     if ((e = s.parser.RemovePaintField(p, field, true)) != kNoErr) return e;
+    field = nullptr;
     if (index >= 0 && (e = s.parser.MoveGroupContentsPosition(p, index < contents ? contents - 1 : contents)) != kNoErr) return e;
     // No style at all when nothing is left, so a group never keeps a style without its Contents.
     AIArtStyleHandle created = nullptr;
     if (s.parser.CountPaintFields(p) > 0 && ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created)) return e ? e : kBadParameterErr;
     if ((e = s.styles.SetArtStyle(target, created)) != kNoErr) return e;
-    if (kind == kRouteStroke && sig.find(kLiftedSig) != std::string::npos) {
+    if (lifted) {
         // Lifted from the frames' own strokes: one each again, beneath each frame's Characters.
-        AIStrokeStyle stroke{};
-        AIArtStylePaintData data;
-        if (!s.parser.GetStroke(field, &stroke, &data))
+        if (haveStroke)
             for (AIArtHandle f : frames) {
                 AIArtStyleHandle fs = nullptr;
                 AIStyleParser fp = nullptr;
@@ -1465,7 +1643,13 @@ ASErr Unroute(const RouteSuites& s, AIArtHandle target, bool& removed) {
                 AIArtStyleHandle made = nullptr;
                 if (!s.parser.CreateNewStyle(fp, &made) && made) s.styles.SetArtStyle(f, made);
             }
-    } else if (kind == kRouteStroke) for (AIArtHandle f : frames) SetFrameChars(s, f, false, true);
+    } else if (kind == kRouteStroke) {
+        // The characters' strokes back on, and FillFirst too when Reroute turned it off (the review
+        // of 2026-11-01; only then: the second review).
+        const bool fillFirstOff = FillFirstOffMarked(s, target);
+        for (AIArtHandle f : frames) { SetFrameChars(s, f, false, true); if (fillFirstOff) SetFrameChars(s, f, true, true); }
+        MarkFillFirstOff(s, target, false);
+    }
     WriteRouteRecord(s, target, kRouteNone, "");
     removed = true;
     return kNoErr;
@@ -1653,6 +1837,10 @@ ASErr StoryFill(SPMessageData& message, State& state, bool separate = false, boo
         return kNoErr;
     }
     if (kind == kRouteFillFirst) { st.gate = "story.mixed"; return kBadParameterErr; }
+    if (!GroupRouteSupportsFields(kind, Switches().closeHoles, Switches().textMiter)) {
+        st.gate = "story.mixed-stroke-fields";
+        return kBadParameterErr;
+    }
     st.contentsBefore = parser->GetGroupContentsPosition(p);
     if ((e = ApplyRoute(s, group, frames, p, kind, c)) != kNoErr) { st.gate = "story.set-style"; return e; }
     // The frames' own route records (a FillFirst from native-route, for one) give way to the
@@ -1753,6 +1941,8 @@ ASErr NativeRoute(SPMessageData& message, State& state, const std::vector<AIArtH
             }
             if (!fillAbove) {
                 if (!SetFrameChars(s, frame, true, false)) { stats.gate = "fill-first"; return kBadParameterErr; }
+                // Recorded, so that Unroute turns FillFirst back on (the review of 2026-11-01).
+                WriteRouteRecord(s, frame, kRouteFillFirst, "");
                 ++stats.fillFirst;
             }
             continue;
@@ -2223,6 +2413,12 @@ std::vector<ise_miter::Contour> UnitedOutline(const std::vector<ise_miter::Conto
 // corrects, as InDesign draws nothing for a switch that is off (the owner's hand test 4,
 // 2026-10-30). The re-fix of an edit never does; a switch changed does it through Reapply.
 bool gReconcile = false;
+// Correction the user did not ask for (AutoCorrect, Reapply): art the user took back stays theirs,
+// and art changed by hand where StrokeMaster did not see it (another machine, or while Correct
+// automatically was off) is released rather than corrected again, as the re-fix does. Only Correct
+// Selection pressed by the user takes such art back (the review of 2026-11-01).
+bool gAutomatic = false;
+struct Automatic { bool was = gAutomatic; Automatic() { gAutomatic = true; } ~Automatic() { gAutomatic = was; } };
 // Correct Selection without Across other text objects' grouping of the stories selected together:
 // Reapply's pass over a whole document, which would ask to group every story in it at once.
 bool gNoSeparate = false;
@@ -2322,6 +2518,8 @@ ASErr FixPath(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, ai::uint
                                                                 underFill, align == kAIStrokeAlignmentInside,
                                                                 Switches().wholePoints, Switches().glyphTips);
         Tally(st, choice);
+        std::snprintf(gPathJudged, sizeof gPathJudged, "own w%.2f lim%.3f ruling%.3f h%.2f skip%d choice%.3f kept%d cut%d", static_cast<double>(style.stroke.width),
+                      static_cast<double>(style.stroke.miterLimit), ruling, h, skipLimit ? 1 : 0, choice.limit, choice.kept, choice.cut);
         rec.hasLimit = true;
         rec.limit = style.stroke.miterLimit;
         if (std::fabs(choice.limit - style.stroke.miterLimit) > 1e-6) {
@@ -2491,6 +2689,8 @@ ASErr FixFieldStrokes(SPBasicSuite* basic, const FixSuites& s, AIArtHandle item,
                                  : native_miter::ChooseLimitForOutline(contours, h, ruling, Switches().shapeMiter, false, false,
                                                                        Switches().wholePoints, Switches().glyphTips);
         Tally(st, choice);
+        std::snprintf(gPathJudged, sizeof gPathJudged, "field w%.2f lim%.3f ruling%.3f h%.2f choice%.3f kept%d cut%d", static_cast<double>(stroke.width),
+                      static_cast<double>(stroke.miterLimit), ruling, h, choice.limit, choice.kept, choice.cut);
         if (std::fabs(choice.limit - stroke.miterLimit) > 1e-6) {
             stroke.miterLimit = static_cast<AIReal>(choice.limit);
             if (!s.parser.SetStroke(field, &stroke, &data)) {
@@ -2735,6 +2935,9 @@ constexpr char kRecordOrder[] = "StrokeMasterOrder";
 // Add taken off, the route's field changed): automatic correction leaves it alone from then on,
 // and Correct Selection takes it back (Mark clears this).
 constexpr char kReleasedMark[] = "StrokeMasterReleased";
+// A story group's route stroke limits as the fix left them, to tell a limit set by hand on the
+// group (the second review of 2026-11-01: it was reset at the next tick).
+constexpr char kGroupLimits[] = "StrokeMasterGroupLimits";
 
 void Mark(const AIArtSuite& art, const AIDictionarySuite& dict, AIArtHandle item, const FixRecord& rec) {
     AIDictionaryRef d = nullptr;
@@ -2992,9 +3195,38 @@ ASErr SyncOffset(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, doubl
 // Close holes' fill (the owner, 2026-10-31): last in the style of a text frame or a story group,
 // beneath its strokes, in the color of the widest stroke that paints below Characters (its own,
 // or the route's), its effect reaching as far as that stroke (half its width, the stroke on type
-// being Center, times the frame's scale). Taken off when `want` is false or no stroke paints
-// there. `changed`: the style was rewritten.
-ASErr CloseHolesField(SPBasicSuite* basic, const FixSuites& s, AIArtHandle target, bool want, double scale, bool& changed) {
+// being Center, times the frame's scale), with that stroke's join and miter limit. On a path or a
+// compound path (the owner's retest notes, 2026-11-01: outlined text was left out), last beneath
+// all its fields, its widest stroke reaching by `align` (Outside its whole width, Center half,
+// Inside nothing to close). Holes alone beneath a dashed stroke; letters nothing fills kept
+// hollow. Taken off when `want` is false or no stroke paints there. `changed`: the style was
+// rewritten.
+bool TextUnfilled(const FixSuites& s, AIArtHandle target);   // below
+
+// Whether any of a group's own paths and compound paths is filled (outlined letters whose stroke
+// is the group's). False for anything but a group.
+bool ChildrenFilled(const FixSuites& s, AIArtHandle group) {
+    short type = kUnknownArt;
+    if (s.art.GetArtType(group, &type) || type != kGroupArt) return false;
+    for (AIArtHandle child = nullptr; !(child ? s.art.GetArtSibling(child, &child) : s.art.GetArtFirstChild(group, &child)) && child;) {
+        short t = kUnknownArt;
+        AIPathStyle style{};
+        AIBoolean advanced = false;
+        if (!s.art.GetArtType(child, &t) && (t == kPathArt || t == kCompoundPathArt) && !s.paint.GetPathStyle(child, &style, &advanced) &&
+            style.fillPaint && style.fill.color.kind != kNoneColor)
+            return true;
+    }
+    return false;
+}
+// The stroke Close holes fills for when it is not one of the target's own fields: a group of
+// outlined letters' widest (GroupHoleStroke).
+struct HoleStroke {
+    AIStrokeStyle stroke{};
+    double reach = 0;
+    bool hollow = false;
+};
+ASErr CloseHolesField(SPBasicSuite* basic, const FixSuites& s, AIArtHandle target, bool want, double scale, bool& changed,
+                      ai::uint32 align = kAIStrokeAlignmentCenter, const HoleStroke* given = nullptr) {
     changed = false;
     if (!gCloseHoles) return kNoErr;
     Suite<AILiveEffectSuite> live(basic, kAILiveEffectSuite, kAILiveEffectVersion);
@@ -3008,36 +3240,63 @@ ASErr CloseHolesField(SPBasicSuite* basic, const FixSuites& s, AIArtHandle targe
     struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
     if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
     const ai::int32 contents = s.parser.GetGroupContentsPosition(p), n = s.parser.CountPaintFields(p);
-    if (contents < 0) return kNoErr;
+    // A path or a compound path (whose Contents, when it has one, is its paths' own paint).
+    short targetType = kUnknownArt;
+    s.art.GetArtType(target, &targetType);
+    const bool shape = targetType == kPathArt || targetType == kCompoundPathArt ||
+                       (targetType == kGroupArt && ReadRouteRecord(s.art, *dict.operator&(), target) == kRouteNone);
+    if (!shape && contents < 0) return kNoErr;
+    if (shape && align == kAIStrokeAlignmentInside) want = false;
     AIParserPaintField hole = nullptr;
     ai::int32 holeAt = -1;
     AIStrokeStyle widest{};
-    bool have = false;
+    bool have = false, filled = false;
     for (ai::int32 i = 0; i < n; ++i) {
         AIParserPaintField f = nullptr;
         if (s.parser.GetNthPaintField(p, i, &f) || !f) continue;
         if (HoleField(s.parser, f)) { hole = f; holeAt = i; continue; }
         AIStrokeStyle stroke{};
+        AIFillStyle fill{};
         AIArtStylePaintData data;
-        if (i >= contents && PaintingStroke(s.parser, f) && !s.parser.GetStroke(f, &stroke, &data) && (!have || stroke.width > widest.width)) {
+        AIBoolean visible = true;
+        s.parser.GetPaintFieldVisible(f, &visible);
+        if (s.parser.IsFill(f) && visible && !s.parser.GetFill(f, &fill, &data) && fill.color.kind != kNoneColor) filled = true;
+        if ((shape || i >= contents) && PaintingStroke(s.parser, f) && !s.parser.GetStroke(f, &stroke, &data) && (!have || stroke.width > widest.width)) {
             widest = stroke;
             have = true;
         }
     }
-    const double reach = have ? widest.width / 2 * scale : 0;
+    double reach = have ? (shape && align == kAIStrokeAlignmentOutside ? widest.width : widest.width / 2) * scale : 0;
+    if (given) {
+        widest = given->stroke;
+        reach = given->reach;
+        have = reach > 0;
+    }
+    const ai::int32 pattern = have && widest.dash.length > 0 ? 1 : 0;
+    if (!filled && shape) filled = ChildrenFilled(s, target);
+    const ai::int32 hollow = given ? (given->hollow ? 1 : 0) : (!filled && (shape || TextUnfilled(s, target)) ? 1 : 0);
     if (want && have && hole && holeAt == n - 1) {
         AIFillStyle fill{};
         AIArtStylePaintData data;
-        AIReal had = -1;
+        AIReal had = -1, hadLimit = -1;
+        ai::int32 hadJoin = -1, hadRevision = 0, hadPattern = -1, hadHollow = -1;
         for (ai::int32 k = 0, m = s.parser.CountEffectsOfPaintField(hole); k < m; ++k) {
             AIParserLiveEffect fx = nullptr;
             AILiveEffectParameters params = nullptr;
-            if (!s.parser.GetNthEffectOfPaintField(hole, k, &fx) && fx && !s.parser.GetLiveEffectParams(fx, &params) && params)
+            if (!s.parser.GetNthEffectOfPaintField(hole, k, &fx) && fx && !s.parser.GetLiveEffectParams(fx, &params) && params) {
                 dict->GetRealEntry(params, dict->Key(kCloseHolesReach), &had);
+                dict->GetIntegerEntry(params, dict->Key(kCloseHolesJoin), &hadJoin);
+                dict->GetRealEntry(params, dict->Key(kCloseHolesLimit), &hadLimit);
+                dict->GetIntegerEntry(params, dict->Key(kCloseHolesRevisionKey), &hadRevision);
+                dict->GetIntegerEntry(params, dict->Key(kCloseHolesPattern), &hadPattern);
+                dict->GetIntegerEntry(params, dict->Key(kCloseHolesHollow), &hadHollow);
+            }
         }
         if (!s.parser.GetFill(hole, &fill, &data) && !fill.overprint == !widest.overprint &&
             (SameSolid(fill.color, widest.color) || std::memcmp(&fill.color, &widest.color, sizeof fill.color) == 0) &&
-            std::fabs(had - reach) <= 1e-4)
+            std::fabs(had - reach) <= 1e-4 && hadJoin == static_cast<ai::int32>(widest.join) &&
+            std::fabs(hadLimit - widest.miterLimit) <= 1e-4 && hadRevision == kCloseHolesRevision && hadPattern == pattern &&
+            hadHollow == hollow)
             return kNoErr;   // as it should be
     }
     if (!hole && !(want && have)) return kNoErr;
@@ -3053,16 +3312,24 @@ ASErr CloseHolesField(SPBasicSuite* basic, const FixSuites& s, AIArtHandle targe
         AIParserPaintField field = nullptr;
         if ((e = s.parser.NewPaintFieldFill(&fill, false, nullptr, &field)) != kNoErr || !field) return e ? e : kOutOfMemoryErr;
         if ((e = s.parser.InsertNthPaintField(p, -1, field)) != kNoErr) { s.parser.DisposePaintField(field); return e; }
+        // A group accepted as effect input may still contain live text. Outline this fill's
+        // entire pass first, so CloseHolesGo receives all stories together as glyph paths.
+        if (!shape && (e = AddOutlinePass(basic, s.parser, *dict.operator&(), p, field)) != kNoErr) return e;
         AILiveEffectParameters params = nullptr;
         if (live->CreateLiveEffectParameters(&params) || !params) return kOutOfMemoryErr;
         dict->SetRealEntry(params, dict->Key(kCloseHolesReach), static_cast<AIReal>(reach));
+        dict->SetIntegerEntry(params, dict->Key(kCloseHolesJoin), static_cast<ai::int32>(widest.join));
+        dict->SetRealEntry(params, dict->Key(kCloseHolesLimit), widest.miterLimit);
+        dict->SetIntegerEntry(params, dict->Key(kCloseHolesRevisionKey), kCloseHolesRevision);
+        dict->SetIntegerEntry(params, dict->Key(kCloseHolesPattern), pattern);
+        dict->SetIntegerEntry(params, dict->Key(kCloseHolesHollow), hollow);
         AIParserLiveEffect fx = nullptr;
         e = s.parser.NewParserLiveEffect(gCloseHoles, params, &fx);
         dict->Release(params);
         if (e || !fx) return e ? e : kOutOfMemoryErr;
-        if ((e = s.parser.InsertNthEffectOfPaintField(p, field, 0, fx)) != kNoErr) { s.parser.DisposeParserLiveEffect(fx); return e; }
+        if ((e = s.parser.InsertNthEffectOfPaintField(p, field, shape ? 0 : -1, fx)) != kNoErr) { s.parser.DisposeParserLiveEffect(fx); return e; }
     }
-    if ((e = s.parser.MoveGroupContentsPosition(p, at)) != kNoErr) return e;
+    if (contents >= 0 && (e = s.parser.MoveGroupContentsPosition(p, at)) != kNoErr) return e;
     AIArtStyleHandle created = nullptr;
     if (s.parser.CountPaintFields(p) > 0 && ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created)) return e ? e : kBadParameterErr;
     if ((e = s.styles.SetArtStyle(target, created)) != kNoErr) return e;
@@ -3070,8 +3337,298 @@ ASErr CloseHolesField(SPBasicSuite* basic, const FixSuites& s, AIArtHandle targe
     return kNoErr;
 }
 
+// A group of outlined letters (Create Outlines makes one path or compound path per letter): when
+// two or more of its own paths and compound paths are stroked, the widest of their strokes, its
+// reach by its alignment (Inside: none), and whether none of them is filled. Close holes then goes
+// on the group, beneath all its letters, so that the gaps their strokes close off between them are
+// filled too (the owner's retest notes, 2026-11-01: each letter only filled its own counters).
+bool GroupHoleStroke(SPBasicSuite* basic, const FixSuites& s, AIArtHandle group, HoleStroke* out) {
+    int stroked = 0;
+    bool filled = false;
+    for (AIArtHandle child = nullptr; !(child ? s.art.GetArtSibling(child, &child) : s.art.GetArtFirstChild(group, &child)) && child;) {
+        short t = kUnknownArt;
+        if (s.art.GetArtType(child, &t) || (t != kPathArt && t != kCompoundPathArt)) continue;
+        AIPathStyle style{};
+        AIBoolean advanced = false;
+        if (s.paint.GetPathStyle(child, &style, &advanced)) continue;
+        if (style.fillPaint && style.fill.color.kind != kNoneColor) filled = true;
+        if (!style.strokePaint || style.stroke.color.kind == kNoneColor || !(style.stroke.width > 0)) continue;
+        ++stroked;
+        const ai::uint32 align = ReadAlignment(basic, s, child);
+        const double reach = align == kAIStrokeAlignmentInside ? 0 : align == kAIStrokeAlignmentOutside ? style.stroke.width : style.stroke.width / 2;
+        if (reach > out->reach) { out->reach = reach; out->stroke = style.stroke; }
+    }
+    out->hollow = !filled;
+    return stroked >= 2 && out->reach > 0;
+}
+
+// Whether a text frame's characters (a story group's first frame's) are all unfilled: hollow
+// letters, which Close holes leaves hollow.
+bool TextUnfilled(const FixSuites& s, AIArtHandle target) {
+    short type = kUnknownArt;
+    AIArtHandle frame = target;
+    if (s.art.GetArtType(target, &type)) return false;
+    if (type == kGroupArt) {
+        frame = nullptr;
+        for (AIArtHandle child = nullptr; !s.art.GetArtFirstChild(target, &child) && child;) {
+            short t = kUnknownArt;
+            if (!s.art.GetArtType(child, &t) && t == kTextFrameArt) frame = child;
+            break;
+        }
+        if (!frame) return false;
+    } else if (type != kTextFrameArt) {
+        return false;
+    }
+    TextRangeRef whole = nullptr;
+    if (s.text.GetATETextRange(frame, &whole) || !whole) return false;
+    ATE::CharFeaturesRef u = nullptr;
+    ATE::ATEBool8 assigned = false, on = true;
+    const bool unfilled = !s.range.GetUniqueCharFeatures(whole, &u) && u && !s.features.GetFill(u, &assigned, &on) && assigned && !on;
+    if (u) s.features.Release(u);
+    s.range.Release(whole);
+    return unfilled;
+}
+
+// Glyph tips drawn natively (the owner, 2026-11-01: InDesign cuts a sharp glyph tip flush at the
+// stroke's reach, which no native Illustrator construction does; the closest, chosen by the owner,
+// reaches as far with a rounded end). Fills of the stroke's color just below Characters (a story
+// group's Contents), each Illustrator's own Effect > Path > Offset Path of the letters by the
+// stroke's reach, outward only, so they draw no interior join and need no miter limit against
+// spikes (the story's one route limit beveled every letter's tips: the owner's AA3):
+//   - Trim glyph tips on: one mitered at the user's limit, at most 2 (corners under 60 degrees
+//     sharper are tips), and one round, which carries every tip to the stroke's reach, rounded.
+//   - Trim glyph tips off: one mitered at the user's limit, which gives each letter back the
+//     whole miters a lower limit chosen against spikes took.
+// Only with No miter spikes in live text on (off, the stroke keeps the user's limit and its
+// spikes, as Illustrator draws them), a solid stroke of a flat color, and letters that are
+// filled (the fills cover the stroke's inner half these do not draw). They follow every edit
+// and draw the same without the plugin. The Offset Path effect carries kTipFillKey: 1 mitered,
+// 2 round.
+constexpr char kTipFillKey[] = "StrokeMasterTipFill";
+const char* gTipGate = "ready";   // where TipFields last stopped (status, for tests)
+
+// A tip fill of the fix's own, its kind (kTipFillKey), or 0.
+ai::int32 TipFieldKind(const AIArtStyleParserSuite& parser, const AIDictionarySuite& dict, AIParserPaintField f, AIReal* ofst = nullptr,
+                       AIReal* mlim = nullptr) {
+    if (!parser.IsFill(f)) return 0;
+    for (ai::int32 k = 0, n = parser.CountEffectsOfPaintField(f); k < n; ++k) {
+        AIParserLiveEffect fx = nullptr;
+        AILiveEffectParameters params = nullptr;
+        ai::int32 kind = 0;
+        if (!parser.GetNthEffectOfPaintField(f, k, &fx) && fx && !parser.GetLiveEffectParams(fx, &params) && params &&
+            !dict.GetIntegerEntry(params, dict.Key(kTipFillKey), &kind) && kind > 0) {
+            if (ofst) dict.GetRealEntry(params, dict.Key("ofst"), ofst);
+            if (mlim) dict.GetRealEntry(params, dict.Key("mlim"), mlim);
+            return kind;
+        }
+    }
+    return 0;
+}
+
+// The tip fills of a text frame or a story group (`group`: its Contents hold the frames, so the
+// letters go through Outline Type first, as the route's own stroke does). `userLimit`: the miter
+// limit the user gave the text (0: unknown, Illustrator's own 4 for type). `changed`: the style
+// was rewritten.
+ASErr TipFields(SPBasicSuite* basic, const FixSuites& s, AIArtHandle target, bool want, bool group, double scale, double userLimit,
+                bool& changed, bool shape = false, bool letters = false) {
+    changed = false;
+    Suite<AILiveEffectSuite> live(basic, kAILiveEffectSuite, kAILiveEffectVersion);
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    if (live.error || dict.error) return kNoErr;
+    AIArtStyleHandle style = nullptr;
+    auto e = s.styles.GetArtStyle(target, &style);
+    if (e || !style) return e;
+    AIStyleParser p = nullptr;
+    if ((e = s.parser.NewParser(&p)) != kNoErr || !p) return e ? e : kOutOfMemoryErr;
+    struct Dispose { const AIArtStyleParserSuite& api; AIStyleParser p; ~Dispose() { api.DisposeParser(p); } } dispose{s.parser, p};
+    if ((e = s.parser.ParseStyle(p, style)) != kNoErr) return e;
+    const ai::int32 contents = s.parser.GetGroupContentsPosition(p), n = s.parser.CountPaintFields(p);
+    if (contents < 0 && !shape) return kNoErr;
+    std::vector<AIParserPaintField> had;
+    std::vector<std::pair<ai::int32, std::pair<AIReal, AIReal>>> hadKinds;
+    AIStrokeStyle widest{};
+    AIFillStyle hadFill{};
+    bool have = false, filled = false;
+    for (ai::int32 i = 0; i < n; ++i) {
+        AIParserPaintField f = nullptr;
+        if (s.parser.GetNthPaintField(p, i, &f) || !f) continue;
+        AIReal o = 0, m = 0;
+        if (const ai::int32 kind = TipFieldKind(s.parser, *dict.operator&(), f, &o, &m)) {
+            had.push_back(f);
+            hadKinds.push_back({kind, {o, m}});
+            AIArtStylePaintData data;
+            s.parser.GetFill(f, &hadFill, &data);
+            continue;
+        }
+        if (HoleField(s.parser, f)) continue;
+        AIStrokeStyle stroke{};
+        AIFillStyle fill{};
+        AIArtStylePaintData data;
+        AIBoolean visible = true;
+        s.parser.GetPaintFieldVisible(f, &visible);
+        if (s.parser.IsFill(f) && visible && !s.parser.GetFill(f, &fill, &data) && fill.color.kind != kNoneColor) filled = true;
+        if ((shape || i >= contents) && PaintingStroke(s.parser, f) && !s.parser.GetStroke(f, &stroke, &data) &&
+            (!have || stroke.width > widest.width)) {
+            widest = stroke;
+            have = true;
+        }
+    }
+    // A group's letters are filled by their own paths (outlined text whose stroke is the group's).
+    if (!filled && shape) filled = ChildrenFilled(s, target);
+    if (want && (!have || widest.dash.length > 0 || widest.color.kind == kGradient || widest.color.kind == kPattern ||
+                 (!filled && (shape || TextUnfilled(s, target))))) {
+        gTipGate = !have ? "no-stroke" : widest.dash.length > 0 ? "dashed" : !filled ? "unfilled" : "paint";
+        want = false;
+    }
+    const AIReal reach = have ? static_cast<AIReal>(widest.width / 2 * scale) : 0;
+    // The user's limit: the text's, or a shape's own stroke's.
+    const AIReal limit = static_cast<AIReal>(userLimit > 1 ? userLimit : (have && widest.miterLimit > 1 ? widest.miterLimit : 4));
+    std::vector<std::pair<ai::int32, std::pair<AIReal, AIReal>>> wanted;
+    // Flat tips, the opt-in: one fill of StrokeMaster's own effect (kind 3) in place of the two.
+    const bool flat = Switches().glyphTips && Switches().flatTips && gFlatTips;
+    // A shape: the limit its outer corners want, judged without its interior spikes (the mitered
+    // fill is outward only), as InDesign judges a shape's corners: whole points kept past the limit,
+    // glyph tips trimmed within it. A thin triangle whose interior spike lowered the stroke's one
+    // limit got its whole point back so (the owner's question with CC3, 2026-11-01). Outlined
+    // letters (`letters`) get the round fill too with Trim glyph tips; another shape gets the
+    // mitered fill only where it adds to its stroke.
+    if (want && reach > 0 && shape) {
+        std::vector<ise_miter::Contour> cs;
+        short targetType = kUnknownArt;
+        s.art.GetArtType(target, &targetType);
+        if (targetType == kGroupArt) {
+            for (AIArtHandle child = nullptr; !(child ? s.art.GetArtSibling(child, &child) : s.art.GetArtFirstChild(target, &child)) && child;) {
+                short t = kUnknownArt;
+                if (!s.art.GetArtType(child, &t) && (t == kPathArt || t == kCompoundPathArt)) Contours(s, child, cs);
+            }
+        } else {
+            Contours(s, target, cs);
+        }
+        const double outer = cs.empty() ? limit
+                                        : native_miter::ChooseLimitForOutline(cs, reach, limit, false, false, false, Switches().wholePoints,
+                                                                               Switches().glyphTips).limit;
+        if (letters || outer > widest.miterLimit + 1e-6) wanted.push_back({1, {reach, static_cast<AIReal>(outer)}});
+        else gTipGate = cs.empty() ? "shape.no-contours" : "shape.nothing-to-add";
+        if (letters && Switches().glyphTips) wanted.push_back({2, {reach, 0}});
+    } else if (want && reach > 0 && flat) {
+        wanted.push_back({3, {reach, limit}});
+    } else if (want && reach > 0) {
+        wanted.push_back({1, {reach, Switches().glyphTips ? (std::min)(limit, static_cast<AIReal>(2)) : limit}});
+        if (Switches().glyphTips) wanted.push_back({2, {reach, 0}});
+    }
+    // As they should be: the same fills, offsets, limits, and paint.
+    if (wanted.size() == hadKinds.size()) {
+        bool same = !had.empty() || wanted.empty();
+        for (size_t k = 0; k < wanted.size() && same; ++k)
+            same = wanted[k].first == hadKinds[k].first && std::fabs(wanted[k].second.first - hadKinds[k].second.first) <= 1e-4 &&
+                   (wanted[k].first == 2 || std::fabs(wanted[k].second.second - hadKinds[k].second.second) <= 1e-4);
+        if (same && !had.empty())
+            same = !hadFill.overprint == !widest.overprint &&
+                   (SameSolid(hadFill.color, widest.color) || std::memcmp(&hadFill.color, &widest.color, sizeof hadFill.color) == 0);
+        if (same) return kNoErr;
+    }
+    AILiveEffectHandle offset = nullptr, outline = nullptr;
+    if (!wanted.empty() && (live->GetLiveEffectHandleByName("Adobe Offset Path", &offset) || !offset ||
+                            (group && (live->GetLiveEffectHandleByName("Adobe Outline Type", &outline) || !outline))))
+        return kBadParameterErr;
+    ai::int32 at = contents;
+    for (AIParserPaintField f : had) {
+        ai::int32 index = -1;
+        for (ai::int32 i = 0, m = s.parser.CountPaintFields(p); i < m; ++i) {
+            AIParserPaintField g = nullptr;
+            if (!s.parser.GetNthPaintField(p, i, &g) && g == f) index = i;
+        }
+        if ((e = s.parser.RemovePaintField(p, f, true)) != kNoErr) return e;
+        if (index >= 0 && index < at) --at;
+    }
+    // Just below Characters (Contents): above the strokes, which stay the last fields. On a shape,
+    // last, beneath its fills (which cover the offsets' inner part) and above Close holes' fill.
+    ai::int32 slot = at;
+    if (shape) {
+        slot = s.parser.CountPaintFields(p);
+        AIParserPaintField last = nullptr;
+        if (slot > 0 && !s.parser.GetNthPaintField(p, slot - 1, &last) && last && HoleField(s.parser, last)) --slot;
+    }
+    for (const auto& w : wanted) {
+        AIFillStyle band{};
+        band.color = widest.color;
+        band.overprint = widest.overprint;
+        AIParserPaintField field = nullptr;
+        if ((e = s.parser.NewPaintFieldFill(&band, false, nullptr, &field)) != kNoErr || !field) return e ? e : kOutOfMemoryErr;
+        if ((e = s.parser.InsertNthPaintField(p, slot, field)) != kNoErr) { s.parser.DisposePaintField(field); return e; }
+        ++slot;
+        ai::int32 position = 0;
+        if (w.first == 3) {
+            AILiveEffectParameters params = nullptr;
+            if (live->CreateLiveEffectParameters(&params) || !params) return kOutOfMemoryErr;
+            dict->SetRealEntry(params, dict->Key("ofst"), w.second.first);
+            dict->SetRealEntry(params, dict->Key("mlim"), w.second.second);
+            dict->SetIntegerEntry(params, dict->Key(kTipFillKey), 3);
+            AIParserLiveEffect fx = nullptr;
+            e = s.parser.NewParserLiveEffect(gFlatTips, params, &fx);
+            dict->Release(params);
+            if (e || !fx) return e ? e : kOutOfMemoryErr;
+            if ((e = s.parser.InsertNthEffectOfPaintField(p, field, 0, fx)) != kNoErr) { s.parser.DisposeParserLiveEffect(fx); return e; }
+            continue;
+        }
+        if (group) {
+            AILiveEffectParameters params = nullptr;
+            if (live->CreateLiveEffectParameters(&params) || !params) return kOutOfMemoryErr;
+            dict->SetBooleanEntry(params, dict->Key("-DefaultApplyEffectsKey"), false);
+            AIParserLiveEffect fx = nullptr;
+            e = s.parser.NewParserLiveEffect(outline, params, &fx);
+            dict->Release(params);
+            if (e || !fx) return e ? e : kOutOfMemoryErr;
+            if ((e = s.parser.InsertNthEffectOfPaintField(p, field, position++, fx)) != kNoErr) { s.parser.DisposeParserLiveEffect(fx); return e; }
+        }
+        AILiveEffectParameters params = nullptr;
+        if (live->CreateLiveEffectParameters(&params) || !params) return kOutOfMemoryErr;
+        dict->SetRealEntry(params, dict->Key("ofst"), w.second.first);
+        dict->SetIntegerEntry(params, dict->Key("jntp"), w.first == 1 ? 2 : 0);
+        dict->SetRealEntry(params, dict->Key("mlim"), w.first == 1 ? w.second.second : static_cast<AIReal>(4));
+        dict->SetIntegerEntry(params, dict->Key(kTipFillKey), w.first);
+        AIParserLiveEffect fx = nullptr;
+        e = s.parser.NewParserLiveEffect(offset, params, &fx);
+        dict->Release(params);
+        if (e || !fx) return e ? e : kOutOfMemoryErr;
+        if ((e = s.parser.InsertNthEffectOfPaintField(p, field, position, fx)) != kNoErr) { s.parser.DisposeParserLiveEffect(fx); return e; }
+    }
+    if (contents >= 0 && (e = s.parser.MoveGroupContentsPosition(p, at)) != kNoErr) return e;
+    AIArtStyleHandle created = nullptr;
+    if ((e = s.parser.CreateNewStyle(p, &created)) != kNoErr || !created) return e ? e : kBadParameterErr;
+    if ((e = s.styles.SetArtStyle(target, created)) != kNoErr) return e;
+    changed = true;
+    return kNoErr;
+}
+
 // Defined with native-align below.
 bool Realign(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, ai::uint32 wanted);
+
+// A frame of threaded text judged against the character limits every frame of its story recorded:
+// text flowing between frames carries a sibling's limits, which are no hand change (the re-fix
+// released such frames: the third review of 2026-11-01). Leaves `rec` as it is for a lone frame.
+void StoryLimits(SPBasicSuite* basic, const FixSuites& s, AIArtHandle frame, FixRecord& rec) {
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    Suite<AIMatchingArtSuite> matching(basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
+    Suite<AIMdMemorySuite> memory(basic, kAIMdMemorySuite, kAIMdMemorySuiteVersion);
+    ai::int32 index = -1;
+    if (dict.error || matching.error || memory.error || rec.charLimits.empty() || s.text.GetStoryIndex(frame, &index) || index < 0) return;
+    AIMatchingArtSpec spec(kTextFrameArt, 0, 0);
+    AIArtHandle** every = nullptr;
+    ai::int32 n = 0;
+    if (matching->GetMatchingArt(&spec, 1, &every, &n) || !every) return;
+    std::set<long> all;
+    int frames = 0;
+    for (ai::int32 i = 0; i < n; ++i) {
+        ai::int32 k = -1;
+        if (s.text.GetStoryIndex((*every)[i], &k) || k != index) continue;
+        ++frames;
+        FixRecord r;
+        if (Marked(s.art, *dict.operator&(), (*every)[i], &r)) all.insert(r.charLimits.begin(), r.charLimits.end());
+    }
+    memory->MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(every));
+    if (frames > 1) rec.charLimits.insert(all.begin(), all.end());
+}
 
 ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtHandle>& items, NativeFixStats& st,
                bool refix = false, std::vector<AIArtHandle>* done = nullptr) {
@@ -3085,9 +3642,17 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
     }
     int failed = 0;
     ASErr first = kNoErr;
+    std::set<AIArtHandle> holeGroups;   // groups of outlined letters whose Close holes this pass took
     for (size_t i = 0; i < items.size(); ++i) {
         short type = kUnknownArt;
         if (s.art.GetArtType(items[i], &type)) { ++failed; continue; }
+        // Taken back by the user: left alone unless the user presses Correct Selection (gAutomatic),
+        // a story group too, before its route follows an edit (a released group was rerouted: the
+        // third review of 2026-11-01).
+        if ((refix || gAutomatic) && Released(s.art, *dict.operator&(), items[i])) {
+            if (done) done->push_back(items[i]);
+            continue;
+        }
         // An Inside drawn as two fills (native-align): the shrunk fill shown or hidden for the outline
         // as it is now.
         {
@@ -3117,6 +3682,36 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
         }
         if (type == kGroupArt) {
             const bool strokeRoute = ReadRouteRecord(s.art, *dict.operator&(), items[i]) == kRouteStroke;
+            // Its route stroke's limits, as the fix left them: changed by hand, the group is the
+            // user's, as a marked item is; only Correct Selection takes it back.
+            auto limitsOf = [&](AIArtHandle g) {
+                std::string out;
+                AIArtStyleHandle gs = nullptr;
+                AIStyleParser gp = nullptr;
+                if (s.styles.GetArtStyle(g, &gs) || !gs || s.parser.NewParser(&gp) || !gp) return out;
+                struct DisposeGroup { const AIArtStyleParserSuite& api; AIStyleParser p; ~DisposeGroup() { api.DisposeParser(p); } } disposeGroup{s.parser, gp};
+                if (s.parser.ParseStyle(gp, gs)) return out;
+                for (ai::int32 k = std::max<ai::int32>(0, s.parser.GetGroupContentsPosition(gp)), n = s.parser.CountPaintFields(gp); k < n; ++k) {
+                    AIParserPaintField f = nullptr;
+                    AIStrokeStyle sk{};
+                    AIArtStylePaintData dk;
+                    if (!s.parser.GetNthPaintField(gp, k, &f) && f && s.parser.IsStroke(f) && !s.parser.GetStroke(f, &sk, &dk) && sk.join == kAIMiterJoin)
+                        out += std::to_string(std::lround(static_cast<double>(sk.miterLimit) * 1000)) + ",";
+                }
+                return out;
+            };
+            AIDictionaryRef gd = nullptr;
+            const bool hasDict = !s.art.GetDictionary(items[i], &gd) && gd;
+            struct ReleaseGroupDict { const AIDictionarySuite& api; AIDictionaryRef d; ~ReleaseGroupDict() { if (d) api.Release(d); } } releaseGroupDict{*dict.operator&(), hasDict ? gd : nullptr};
+            if (refix || gAutomatic) {
+                const char* had = nullptr;
+                const bool handSet = strokeRoute && !rerouted && hasDict && !dict->GetStringEntry(gd, dict->Key(kGroupLimits), &had) && had &&
+                                     std::string(had) != limitsOf(items[i]);
+                if (handSet) { MarkReleased(s.art, *dict.operator&(), items[i]); ++st.released; }
+                if (handSet || Released(s.art, *dict.operator&(), items[i])) { if (done) done->push_back(items[i]); continue; }
+            } else if (hasDict) {
+                dict->DeleteEntry(gd, dict->Key(kReleasedMark));   // Correct Selection takes it back
+            }
             // The story's own limit, when its frames recorded the same one.
             double limit = -1;
             AIArtHandle child = nullptr;
@@ -3137,6 +3732,7 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
                     if (e) { ++failed; if (!first) first = e; Trace("fix.story-limit", e, ""); continue; }
                 }
             }
+            if (hasDict && strokeRoute) dict->SetStringEntry(gd, dict->Key(kGroupLimits), limitsOf(items[i]).c_str());
             // Close holes on the story group, beneath its stroke.
             {
                 double groupScale = 1;
@@ -3146,6 +3742,11 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
                 const bool want = Switches().closeHoles && Switches().textBehind && strokeRoute;
                 bool holes = false;
                 if ((want || gReconcile) && !CloseHolesField(basic, s, items[i], want, groupScale, holes) && holes) ++st.holes;
+                // The glyph tips' fills (TipFields), with the story's own limit.
+                const bool tips = Switches().textBehind && Switches().textMiter && strokeRoute;
+                bool tipped = false;
+                if ((tips || gReconcile) && !TipFields(basic, s, items[i], tips, true, groupScale, limit > 0 ? limit : 0, tipped) && tipped)
+                    ++st.tips;
             }
             if (done) done->push_back(items[i]);
             continue;
@@ -3165,7 +3766,9 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
             realigned = true;
             aligns[i] = ReadAlignment(basic, s, items[i]);
         }
-        if (refix && hasPrior && !realigned && Overridden(basic, s, items[i], prior, rerouted)) {
+        FixRecord judged = prior;
+        if (refix && hasPrior && type == kTextFrameArt) StoryLimits(basic, s, items[i], judged);
+        if (refix && hasPrior && !realigned && Overridden(basic, s, items[i], judged, rerouted)) {
             // A limit set in the Stroke panel on text whose characters are unstroked lands on the
             // characters, where it draws nothing: it is carried to the strokes below Characters
             // (the route's, or the object's own), which then are the user's (the owner's retest
@@ -3207,7 +3810,7 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
                 AIArtHandle up = nullptr;
                 short upType = kUnknownArt;
                 const bool inStory = !s.art.GetArtParent(items[i], &up) && up && !s.art.GetArtType(up, &upType) && upType == kGroupArt &&
-                                     ReadRouteRecord(s.art, *dict.operator&(), up) != kRouteNone;
+                                     GroupOwnsTextFields(ReadRouteRecord(s.art, *dict.operator&(), up));
                 const bool want = Switches().closeHoles && Switches().textBehind && !inStory;
                 bool holes = false;
                 if ((want || gReconcile || inStory) && !CloseHolesField(basic, s, items[i], want, FrameScale(s, items[i]), holes) && holes) ++st.holes;
@@ -3221,9 +3824,57 @@ ASErr FixItems(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtH
             rec.charUserLimit = userLimit;
             const auto limits = RunLimits(basic, s, items[i]);
             if (!limits.empty()) rec.charLimits = limits;
+            // The glyph tips' fills (TipFields); a frame of a routed story group has its group's.
+            if (!err) {
+                AIArtHandle up = nullptr;
+                short upType = kUnknownArt;
+                const bool inStory = !s.art.GetArtParent(items[i], &up) && up && !s.art.GetArtType(up, &upType) && upType == kGroupArt &&
+                                     GroupOwnsTextFields(ReadRouteRecord(s.art, *dict.operator&(), up));
+                const bool tips = Switches().textBehind && Switches().textMiter && !inStory;
+                bool tipped = false;
+                if ((tips || gReconcile || inStory) &&
+                    !TipFields(basic, s, items[i], tips, false, FrameScale(s, items[i]), userLimit, tipped) && tipped)
+                    ++st.tips;
+            }
         } else {
             ++st.paths;
             err = FixPath(basic, s, items[i], aligns[i], st, hasPrior ? &prior : nullptr, rec);
+            // Close holes on paths and compound paths too (outlined text), last beneath their fields;
+            // on a group of outlined letters, on the group (GroupHoleStroke), each letter's own taken off.
+            if (!err) {
+                const bool want = Switches().closeHoles;
+                AIArtHandle up = nullptr;
+                short upType = kUnknownArt;
+                HoleStroke group;
+                const bool letters = !s.art.GetArtParent(items[i], &up) && up && !s.art.GetArtType(up, &upType) && upType == kGroupArt &&
+                                     ReadRouteRecord(s.art, *dict.operator&(), up) == kRouteNone && GroupHoleStroke(basic, s, up, &group);
+                // Outlined text whose stroke is the group's own (the Appearance panel's, carried by
+                // Create Outlines): Close holes and the tips on the group (the owner's retest BB5).
+                const bool grouped = !letters && up && upType == kGroupArt && ReadRouteRecord(s.art, *dict.operator&(), up) == kRouteNone &&
+                                     HasPaintingStroke(s.styles, s.parser, up);
+                bool holes = false;
+                if ((want || gReconcile) &&
+                    !CloseHolesField(basic, s, items[i], want && !letters && !grouped, 1, holes, ReadAlignment(basic, s, items[i])) && holes)
+                    ++st.holes;
+                const bool firstOfGroup = (letters || grouped) && holeGroups.insert(up).second;
+                if (letters && firstOfGroup && (want || gReconcile) &&
+                    !CloseHolesField(basic, s, up, want, 1, holes, kAIStrokeAlignmentCenter, &group) && holes)
+                    ++st.holes;
+                if (grouped && firstOfGroup && (want || gReconcile) && !CloseHolesField(basic, s, up, want, 1, holes) && holes)
+                    ++st.holes;
+                // Compound paths and groups of stroked paths are treated as outlined text
+                // for rounded tips. Illustrator provides no reliable original-text identity;
+                // ordinary compound shapes and grouped paths share this classification.
+                const bool tips = Switches().shapeMiter;
+                const bool outlinedLetter = type == kCompoundPathArt || letters;
+                const double user = rec.fieldUser > 0 ? rec.fieldUser : rec.userLimit;
+                bool tipped = false;
+                if ((tips || gReconcile) &&
+                    !TipFields(basic, s, items[i], tips && !grouped, false, 1, user, tipped, true, outlinedLetter) && tipped)
+                    ++st.tips;
+                if (grouped && firstOfGroup && (tips || gReconcile) && !TipFields(basic, s, up, tips, false, 1, 0, tipped, true, true) && tipped)
+                    ++st.tips;
+            }
         }
         if (err) {
             ++failed;
@@ -3309,8 +3960,69 @@ ASErr CorrectSelection(SPMessageData& message, State& state);
 // more than `cap` such items at once (Correct Selection is there for those). Threaded text is
 // corrected across its frames as Correct Selection does it, its frames grouped (the owner,
 // 2026-10-31), with the selection put back after. Returns the items corrected.
+// Before an automatic pass: each marked item whose managed attributes differ from its record was
+// changed by hand where the timer did not see it (another machine, or while Correct automatically
+// was off) and is released, so the pass leaves it alone (the review of 2026-11-01). Checked once,
+// before the pass: within it, an item fixed twice (its strokes moved below its fills, then fixed
+// again) would differ from its record by the pass's own change.
+// A frame of threaded text is judged against the character limits every frame of its story
+// recorded: text flowing between frames carries a sibling's limits, which are not a hand change
+// (the second review of 2026-11-01). Returns the items the pass may correct: not released,
+// locked, or hidden; Correct Selection also reorders, routes, and groups what it is given, so a
+// released item is kept out of it altogether (the second review).
+std::vector<AIArtHandle> ReleaseOverridden(SPBasicSuite* basic, const FixSuites& s, const std::vector<AIArtHandle>& items) {
+    Suite<AIDictionarySuite> dict(basic, kAIDictionarySuite, kAIDictionaryVersion);
+    Suite<AIMatchingArtSuite> matching(basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
+    Suite<AIMdMemorySuite> memory(basic, kAIMdMemorySuite, kAIMdMemorySuiteVersion);
+    if (dict.error || matching.error || memory.error) return items;
+    std::map<ai::int32, std::vector<AIArtHandle>> stories;
+    {
+        AIMatchingArtSpec spec(kTextFrameArt, 0, 0);
+        AIArtHandle** every = nullptr;
+        ai::int32 n = 0;
+        if (!matching->GetMatchingArt(&spec, 1, &every, &n) && every) {
+            for (ai::int32 i = 0; i < n; ++i) {
+                ai::int32 index = -1;
+                if (!s.text.GetStoryIndex((*every)[i], &index) && index >= 0) stories[index].push_back((*every)[i]);
+            }
+            memory->MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(every));
+        }
+    }
+    std::map<ai::int32, std::set<long>> storyLimits;
+    for (const auto& kv : stories) {
+        if (kv.second.size() < 2) continue;
+        auto& all = storyLimits[kv.first];
+        for (AIArtHandle f : kv.second) {
+            FixRecord r;
+            if (Marked(s.art, *dict.operator&(), f, &r)) all.insert(r.charLimits.begin(), r.charLimits.end());
+        }
+    }
+    std::vector<AIArtHandle> keep;
+    for (AIArtHandle a : items) {
+        if (!s.art.ValidArt(a, true)) continue;
+        ai::int32 attr = 0;
+        if (!s.art.GetArtUserAttr(a, kArtLocked | kArtHidden, &attr) && attr) continue;
+        FixRecord prior;
+        short type = kUnknownArt;
+        if (!s.art.GetArtType(a, &type) && type != kGroupArt && Marked(s.art, *dict.operator&(), a, &prior)) {
+            ai::int32 index = -1;
+            if (type == kTextFrameArt && !prior.charLimits.empty() && !s.text.GetStoryIndex(a, &index) && storyLimits.count(index))
+                prior.charLimits = storyLimits[index];
+            if (Overridden(basic, s, a, prior)) {
+                Unmark(s.art, *dict.operator&(), a);
+                MarkReleased(s.art, *dict.operator&(), a);
+            }
+        }
+        if (Released(s.art, *dict.operator&(), a)) continue;
+        keep.push_back(a);
+    }
+    return keep;
+}
+
 size_t AutoCorrect(SPMessageData& message, State& state, const FixSuites& s, const std::vector<AIArtHandle>& fresh,
                    size_t cap = 500) {
+    const Automatic automatic;
+    ReleaseOverridden(message.basic, s, fresh);   // released, the loop below leaves them out
     const auto& sw = Switches();
     Suite<AIDictionarySuite> dict(message.basic, kAIDictionarySuite, kAIDictionaryVersion);
     Suite<AIATEPaintSuite> atePaint(message.basic, kAIATEPaintSuite, kAIATEPaintVersion);
@@ -3370,6 +4082,9 @@ size_t AutoCorrect(SPMessageData& message, State& state, const FixSuites& s, con
             for (AIArtHandle g : stories[index])
                 if (std::find(threaded.begin(), threaded.end(), g) == threaded.end()) threaded.push_back(g);
         }
+        // Every frame the stories add, checked for hand changes and kept out when released,
+        // locked, or hidden (only the new art was: the second review of 2026-11-01).
+        threaded = ReleaseOverridden(message.basic, s, threaded);
         if (!threaded.empty()) {
             std::vector<AIArtHandle> selection;
             AIArtHandle** chosen = nullptr;
@@ -3409,6 +4124,7 @@ ai_settings::Settings Corrections(ai_settings::Settings s) {
 // threaded text goes whole, each story with all its frames. `opening`: what was never corrected
 // is corrected too (AutoCorrect). Returns the items corrected.
 size_t Reapply(SPMessageData& message, State& state, const FixSuites& s, bool opening) {
+    const Automatic automatic;
     Suite<AIDictionarySuite> dict(message.basic, kAIDictionarySuite, kAIDictionaryVersion);
     Suite<AIMatchingArtSuite> matching(message.basic, kAIMatchingArtSuite, kAIMatchingArtVersion);
     Suite<AIMdMemorySuite> memory(message.basic, kAIMdMemorySuite, kAIMdMemorySuiteVersion);
@@ -3420,6 +4136,13 @@ size_t Reapply(SPMessageData& message, State& state, const FixSuites& s, bool op
     if (matching->GetMatchingArt(specs, 4, &matches, &count) || !matches) return 0;
     std::vector<AIArtHandle> items, fresh, frames;
     std::set<ai::int32> stories;
+    // Art made since the last scan: changed after it (the seen table holds only corrected art, so
+    // "not in it" took every never-corrected object for new: the third review of 2026-11-01).
+    const auto& rs0 = state.refix;
+    auto madeSinceScan = [&](AIArtHandle a) {
+        size_t v = 0;
+        return rs0.count > 0 && !s.art.GetArtTimeStamp(a, kAITimeStampMaxFromArtAndChildren, &v) && v > rs0.global;
+    };
     auto add = [&](AIArtHandle a) { if (std::find(items.begin(), items.end(), a) == items.end()) items.push_back(a); };
     for (ai::int32 i = 0; i < count; ++i) {
         AIArtHandle a = (*matches)[i], parent = nullptr;
@@ -3437,7 +4160,11 @@ size_t Reapply(SPMessageData& message, State& state, const FixSuites& s, bool op
             add(a);
             ai::int32 index = -1;
             if (type == kTextFrameArt && !s.text.GetStoryIndex(a, &index) && index >= 0) stories.insert(index);
-        } else if (opening) fresh.push_back(a);
+        } else if (opening || madeSinceScan(a)) {
+            // Opening: all of it; otherwise art made since the last scan, which the scan that
+            // follows this pass would no longer take for new (the second review of 2026-11-01).
+            fresh.push_back(a);
+        }
     }
     memory->MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(matches));
     for (AIArtHandle f : frames) {
@@ -3445,6 +4172,9 @@ size_t Reapply(SPMessageData& message, State& state, const FixSuites& s, bool op
         if (!s.text.GetStoryIndex(f, &index) && stories.count(index)) add(f);
     }
     size_t made = 0;
+    // Hand changes first (AutoCorrect, below, widens new art to stories with marked frames), and
+    // released, locked, or hidden items kept out (the second review of 2026-11-01).
+    items = ReleaseOverridden(message.basic, s, items);
     if (!fresh.empty()) made += AutoCorrect(message, state, s, fresh, 20000);
     if (items.empty()) return made;
     if (items.size() > 20000) { ++state.refix.skipped; return made; }
@@ -3546,9 +4276,22 @@ ASErr Refix(SPMessageData& message, State& state) {
     // as following the switches as they are then: not an opening, and no switch change.
     if (!Switches().enabled || !Switches().followEdits || state.refixPaused) {
         keep();
-        for (int i = 0; i < r.docCount; ++i) { r.docs[i].global = 0; r.docs[i].adopt = true; }
-        r.document = nullptr; r.count = 0; r.opening = false;
+        // Only a document already following the switches adopts them; one with a switch change
+        // still due keeps it for its return (it was dropped: the review of 2026-11-01).
+        for (int i = 0; i < r.docCount; ++i) {
+            r.docs[i].global = 0;
+            if (Corrections(r.docs[i].applied) == Corrections(Switches())) r.docs[i].adopt = true;
+        }
+        r.document = nullptr; r.count = 0; r.opening = false; r.paused = true;
         return kNoErr;
+    }
+    // Back from a pause: the documents that adopted the switches take them as they are now, once;
+    // a switch changed later still reaches them when they are visited (adopt was kept, so every
+    // later change was taken as applied: the second review of 2026-11-01).
+    if (r.paused) {
+        r.paused = false;
+        for (int i = 0; i < r.docCount; ++i)
+            if (r.docs[i].adopt) { r.docs[i].applied = Switches(); r.docs[i].adopt = false; }
     }
     Suite<AIDocumentSuite> document(message.basic, kAIDocumentSuite, kAIDocumentVersion);
     Suite<AIArtSuite> art(message.basic, kAIArtSuite, kAIArtVersion);
@@ -3559,9 +4302,11 @@ ASErr Refix(SPMessageData& message, State& state) {
     AIBoolean typing = false;
     if (document->HasTextFocus(&typing)) typing = false;
     if (doc != r.document) {
-        keep();
-        // Documents closed since drop out.
+        // Documents closed since drop out, before keep() might evict an open one's memo.
         Suite<AIDocumentListSuite> list(message.basic, kAIDocumentListSuite, kAIDocumentListVersion);
+        // The document left is kept only when still open (a closed one's memo was added back: the
+        // second review of 2026-11-01).
+        bool leftOpen = true;
         if (!list.error) {
             ai::int32 open = 0;
             if (list->Count(&open)) open = 0;
@@ -3572,7 +4317,10 @@ ASErr Refix(SPMessageData& message, State& state) {
                 if (still) r.docs[kept++] = r.docs[i];
             }
             r.docCount = kept;
+            leftOpen = false;
+            for (ai::int32 j = 0; j < open && !leftOpen; ++j) { AIDocumentHandle d = nullptr; leftOpen = !list->GetNthDocument(&d, j) && d == r.document; }
         }
+        if (leftOpen) keep();
         r.count = 0; r.waiting = false; ++r.docSwitches;
         if (const RefixState::DocMemo* m = memo(doc)) {
             r.global = m->global;
@@ -3588,9 +4336,19 @@ ASErr Refix(SPMessageData& message, State& state) {
     }
     // While the user types, only the story being typed changes: nothing is scanned until the
     // typing ends (the text focus goes), then the changed frames are fixed.
-    if (typing) { ++r.typingWaits; if (global != r.global) { r.waiting = true; ++r.deferred; } return kNoErr; }
+    if (typing) {
+        ++r.typingWaits;
+        if (global != r.global) { r.waiting = true; ++r.deferred; }
+        // Correct Selection pressed while typing: its changes are seen as edits once the typing
+        // ends, re-fixed in that edit's undo step, rather than the flag swallowing every edit made
+        // meanwhile (the review of 2026-11-01).
+        state.refixRefreshOnly = false;
+        return kNoErr;
+    }
     const bool switched = !(Corrections(r.applied) == Corrections(Switches()));
-    if (global == r.global && !r.waiting && !switched && !r.opening) return kNoErr;
+    // Nothing changed: a refresh-only flag left by a Correct Selection that changed nothing goes too
+    // (it swallowed the next edit: the second review of 2026-11-01).
+    if (global == r.global && !r.waiting && !switched && !r.opening) { state.refixRefreshOnly = false; return kNoErr; }
     Suite<AIUndoSuite> undo(message.basic, kAIUndoSuite, kAIUndoVersion);
     if (undo.error) return kNoErr;
     // While redo steps wait (the user is undoing), every state restored was fixed when it was made,
@@ -3600,6 +4358,9 @@ ASErr Refix(SPMessageData& message, State& state) {
         ai::int32 past = 0, future = 0;
         undoing = !undo->CountTransactions(&past, &future) && future > 0;
     }
+    // A switch change waiting for the redo steps to go, and nothing else changed: no rescan at
+    // every tick meanwhile (the second review of 2026-11-01).
+    if (switched && undoing && global == r.global && !r.waiting && !r.opening) return kNoErr;
     if (state.refixRefreshOnly) { undoing = true; state.refixRefreshOnly = false; }
     ++r.scans;
     Suite<AIPathSuite> path(message.basic, kAIPathSuite, kAIPathVersion);
@@ -3646,8 +4407,9 @@ ASErr Refix(SPMessageData& message, State& state) {
         ~Release() { if (matches) memory.MdMemoryDisposeHandle(reinterpret_cast<AIMdMemoryHandle>(matches)); }
     } release{*memory.operator&(), matches};
     auto find = [&](AIArtHandle a) -> const RefixState::Seen* {
-        for (int i = 0; i < r.count; ++i) if (r.seen[i].art == a) return &r.seen[i];
-        return nullptr;
+        const auto end = r.seen + r.count;
+        const auto it = std::lower_bound(r.seen, end, a, [](const RefixState::Seen& x, AIArtHandle k) { return std::less<AIArtHandle>()(x.art, k); });
+        return it != end && it->art == a ? it : nullptr;
     };
     auto stampOf = [&](AIArtHandle a) {
         size_t v = 0;
@@ -3722,6 +4484,9 @@ ASErr Refix(SPMessageData& message, State& state) {
         r.regrouped += made;
         for (auto& x : next) if (art->ValidArt(x.art, true)) x.stamp = stampOf(x.art);
     }
+    // AutoCorrect may have taken apart and disposed of a story group that is due (a frame threaded
+    // onto its story): only art that still exists is fixed (the review of 2026-11-01).
+    due.erase(std::remove_if(due.begin(), due.end(), [&](AIArtHandle a) { return !art->ValidArt(a, true); }), due.end());
     if (!due.empty()) {
         NativeFixStats st{};
         std::vector<AIArtHandle> fixed;
@@ -3748,8 +4513,9 @@ ASErr Refix(SPMessageData& message, State& state) {
     // correction showed only once the object was moved (the owner's retest Q1, 2026-10-31).
     if (!due.empty() || !fresh.empty() || !regroup.empty()) { document->RedrawDocument(); ++r.redraws; }
     r.count = 0;
-    for (const auto& e : next) { if (r.count >= 4096) break; r.seen[r.count++] = e; }
-    if (next.size() > 4096) ++r.overflow;
+    for (const auto& e : next) { if (r.count >= RefixState::kSeen) break; r.seen[r.count++] = e; }
+    if (next.size() > static_cast<size_t>(RefixState::kSeen)) ++r.overflow;
+    std::sort(r.seen, r.seen + r.count, [](const RefixState::Seen& x, const RefixState::Seen& y) { return std::less<AIArtHandle>()(x.art, y.art); });
     r.waiting = false;
     if (undoing) ++r.deferred;
     r.global = art->GetGlobalTimeStamp();
@@ -4775,7 +5541,7 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
         e = FillAboveStroke(s, art, changed);
         if (e) return rollback(e);
         if (!FillOnTop(s, art)) return rollback(kBadParameterErr);
-        WriteAlignRecord(basic, s.art, art, AlignRecord{"doubled", fillWasOnTop ? 3 : 1, w});
+        if (!WriteAlignRecord(basic, s.art, art, AlignRecord{"doubled", fillWasOnTop ? 3 : 1, w})) return rollback(kBadParameterErr);
         ++st.doubled;
         if (alignDashes && style.stroke.dash.length > 0) {
             bool aligned = false, refusedDash = false;
@@ -5074,7 +5840,7 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
                 }
                 return e;
             }
-            WriteAlignRecord(basic, s.art, art, AlignRecord{"type-outside", 1, w});
+            if (!WriteAlignRecord(basic, s.art, art, AlignRecord{"type-outside", 1, w})) Trace("align.record", kBadParameterErr, "type-outside");
             ++st.typeOutside;
             return kNoErr;
         }
@@ -5104,15 +5870,24 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
             }
             iter->Release(runs);
         }
-        for (const auto& ro : runsOut) {
+        // All or nothing: Restore halves every stroked run, so a run left at its weight would be
+        // halved (its failures were ignored: the review of 2026-11-01).
+        auto setWidth = [&](const std::pair<ATETextDOM::Int32, ATETextDOM::Int32>& span, double width) {
             TextRangeRef r = nullptr;
-            if (s.range.Clone(whole, &r) || !r) continue;
+            if (s.range.Clone(whole, &r) || !r) return false;
             ATE::CharFeaturesRef f = nullptr;
-            if (!s.range.SetStart(r, ro.first.first) && !s.range.SetEnd(r, ro.first.second) && !s.features.Initialize(&f) && f &&
-                !s.features.SetLineWidth(f, static_cast<ATETextDOM::Float>(ro.second)))
-                s.range.ReplaceOrAddLocalCharFeatures(r, f);
+            bool ok = !s.range.SetStart(r, span.first) && !s.range.SetEnd(r, span.second) && !s.features.Initialize(&f) && f &&
+                      !s.features.SetLineWidth(f, static_cast<ATETextDOM::Float>(width)) && !s.range.ReplaceOrAddLocalCharFeatures(r, f);
             if (f) s.features.Release(f);
             s.range.Release(r);
+            return ok;
+        };
+        size_t doubledRuns = 0;
+        while (doubledRuns < runsOut.size() && setWidth(runsOut[doubledRuns].first, runsOut[doubledRuns].second)) ++doubledRuns;
+        if (doubledRuns < runsOut.size()) {
+            for (size_t k = 0; k < doubledRuns; ++k) setWidth(runsOut[k].first, runsOut[k].second / 2);
+            s.range.Release(whole);
+            return refuse("type-chars-width");
         }
         // FillFirst before: on everywhere (the default) is recorded, to be put back on restore.
         bool fillFirstWasOn = false;
@@ -5128,7 +5903,7 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
             if (f) s.features.Release(f);
         }
         s.range.Release(whole);
-        WriteAlignRecord(basic, s.art, art, AlignRecord{"type-chars", 1, fillFirstWasOn ? 1.0 : 0.0});
+        if (!WriteAlignRecord(basic, s.art, art, AlignRecord{"type-chars", 1, fillFirstWasOn ? 1.0 : 0.0})) Trace("align.record", kBadParameterErr, "type-chars");
         ++st.typeOutside;
         return kNoErr;
     }
@@ -5151,7 +5926,9 @@ ASErr NativeAlignItem(SPBasicSuite* basic, const FixSuites& s, AIArtHandle art, 
         if (style.stroke.dash.length <= 0 || ReadAlignment(basic, s, art) != kAIStrokeAlignmentOutside) return kNoErr;
         const ASErr e = doubleUnderFill(true);
         AlignRecord made = ReadAlignRecord(basic, s.art, art);
-        if (!e && made.as == "doubled") { made.dashes = true; WriteAlignRecord(basic, s.art, art, made); }
+        // Doubled and recorded for the dashes opt-in even when aligning its dashes then failed, so the
+        // switch turned off still takes it back (the second review of 2026-11-01).
+        if (made.as == "doubled") { made.dashes = true; WriteAlignRecord(basic, s.art, art, made); }
         return e;
     }
     if (!(outside || inside)) return refuse("mode");
@@ -5488,20 +6265,42 @@ ASErr CorrectSelection(SPMessageData& message, State& state) {
         // corrected below as the switches say.
         // Also one whose story now has a frame outside it among the selection (a frame threaded on
         // since, for one): taken apart and grouped again with it.
-        std::set<ai::int32> restIds;
-        for (AIArtHandle f : rest) { ai::int32 index = -1; if (!text->GetStoryIndex(f, &index) && index >= 0) restIds.insert(index); }
         std::vector<AIArtHandle> kept;
         for (AIArtHandle g : routedGroups) {
             std::set<ai::int32> ids;
             for (AIArtHandle f : RouteFrames(A, g)) { ai::int32 index = -1; if (!text->GetStoryIndex(f, &index)) ids.insert(index); }
+            // Grown: a frame of its story outside it would join it, that is, shares its parent with
+            // nothing visible between. A frame that visible artwork keeps apart is a run of its own,
+            // and the group stays as it is (it was taken apart and rebuilt on every correction,
+            // losing its own opacity or name: the review of 2026-11-01).
             bool grown = false;
-            for (ai::int32 id : ids) grown = grown || restIds.count(id) > 0;
+            AIArtHandle gParent = nullptr;
+            A.GetArtParent(g, &gParent);
+            const auto sibs = gParent ? children(gParent) : std::vector<AIArtHandle>{};
+            const auto at = [&](AIArtHandle x) { return static_cast<int>(std::find(sibs.begin(), sibs.end(), x) - sibs.begin()); };
+            for (AIArtHandle f : rest) {
+                ai::int32 index = -1;
+                if (grown || text->GetStoryIndex(f, &index) || !ids.count(index)) continue;
+                const int gi = at(g), fi = at(f);
+                if (gi >= static_cast<int>(sibs.size()) || fi >= static_cast<int>(sibs.size())) continue;   // another parent
+                bool visible = false;
+                for (int k = (std::min)(gi, fi) + 1; k < (std::max)(gi, fi) && !visible; ++k)
+                    visible = !correct_detail::Invisible(message.basic, A, *paint.operator&(), *text.operator&(), *range.operator&(), sibs[k]);
+                grown = !visible;
+            }
             // One whose stroke was lifted from its frames' own goes with its opt-in.
             std::string sig;
-            ReadRouteRecord(A, *dictionary.operator&(), g, &sig);
+            const RouteKind existingRoute = ReadRouteRecord(A, *dictionary.operator&(), g, &sig);
             const bool lifted = sig.find(kLiftedSig) != std::string::npos;
             const bool keep = sw.textBehind && sw.textStory && (ids.size() < 2 || sw.textStories) && !grown &&
                               (!lifted || sw.appearanceStrokes);
+            if (keep && !GroupRouteSupportsFields(existingRoute, sw.closeHoles, sw.textMiter)) {
+                // Preserve the existing group, including owner opacity, blend mode,
+                // name, and paint. It is excluded from this correction pass entirely.
+                ++c.refused;
+                c.refusal = "correct.existing-mixed-group";
+                continue;
+            }
             bool removed = false;
             if (keep || Unroute(rs, g, removed) != kNoErr) { kept.push_back(g); continue; }
             const auto kids = children(g);
@@ -5541,19 +6340,44 @@ ASErr CorrectSelection(SPMessageData& message, State& state) {
             if (!runs.back().empty()) runs.emplace_back();
         }
         if (visible && separate) return false;   // separate stories need nothing visible between them
-        for (auto it = hidden.rbegin(); it != hidden.rend(); ++it)
-            if (!A.ReorderArt(*it, kPlaceBelow, sibs[last])) ++c.moved;
+        bool hiddenMoved = false;
         bool any = false;
         for (auto& run : runs) {
             if (run.size() < 2) { for (AIArtHandle f : run) lone.push_back(f); continue; }
+            CharPaint anticipated;
+            const ASErr paintError = ReadGroupingPaint(rs, run, anticipated);
+            if (paintError || !GroupRouteSupportsFields(ChooseRoute(anticipated), sw.closeHoles, sw.textMiter)) {
+                ++c.refused;
+                c.refusal = paintError ? "correct.paint-preflight" : "story.mixed-stroke-fields";
+                if (separate) return any;
+                for (AIArtHandle f : run) lone.push_back(f);
+                continue;
+            }
+            if (!hiddenMoved) {
+                for (auto it = hidden.rbegin(); it != hidden.rend(); ++it)
+                    if (!A.ReorderArt(*it, kPlaceBelow, sibs[last])) ++c.moved;
+                hiddenMoved = true;
+            }
             // Routes of their own (corrected frame by frame before) give way to the group's, and
             // so do their own Close holes fills, which the group's fill refused as the frames'
             // own construction (story.frame-style): Across other text objects turned off, then on,
             // left the stories apart with Close holes on (the owner's V1, 2026-10-31).
+            bool prepared = true;
             for (AIArtHandle f : run) {
-                bool removed = false, holes = false;
-                Unroute(rs, f, removed);
-                CloseHolesField(message.basic, fs, f, false, 1, holes);
+                bool removed = false, holes = false, tips = false;
+                if (Unroute(rs, f, removed) || CloseHolesField(message.basic, fs, f, false, 1, holes) ||
+                    TipFields(message.basic, fs, f, false, false, 1, 0, tips)) {
+                    prepared = false;
+                    break;
+                }
+            }
+            // Owned tip fills carry effects too. They must move to the group along with Close
+            // holes, or StoryFill mistakes a previously corrected frame for user-built art.
+            if (!prepared) {
+                ++c.refused;
+                c.refusal = "correct.prepare";
+                for (AIArtHandle f : run) lone.push_back(f);
+                continue;
             }
             AIArtHandle group = nullptr;
             if (A.NewArt(kGroupArt, kPlaceAbove, run[0], &group) || !group) { for (AIArtHandle f : run) lone.push_back(f); continue; }
@@ -5653,7 +6477,9 @@ ASErr CorrectSelection(SPMessageData& message, State& state) {
         NativeFix(message, state);
     }
     correct_detail::SelectOnly(M, A, all);
-    c.gate = partial ? "corrected-partial" : "corrected";
+    // A group that could not be taken apart again keeps its gate (it read "corrected": the review
+    // of 2026-11-01).
+    if (std::strcmp(c.gate, "correct.rollback-incomplete") != 0) c.gate = partial ? "corrected-partial" : "corrected";
     return kNoErr;
 }
 
@@ -5703,7 +6529,7 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         "\"rootType\":%d,\"frames\":%d,\"outlineLeaves\":%d,\"stroked\":%d,\"mode\":%d,\"census\":\"%s\",\"gate\":\"%s\"},"
         "\"nativeFix\":{\"gate\":\"%s\",\"paths\":%d,\"pathLimits\":%d,\"reordered\":%d,\"frames\":%d,\"chars\":%d,"
         "\"charLimits\":%d,\"mapped\":%d,\"corners\":%d,\"keptBeveled\":%d,\"cutMitered\":%d,\"dashes\":%d,"
-        "\"dashRefused\":%d,\"pathfinder\":%d,\"failed\":%d,\"offsetSynced\":%d,\"fieldLimits\":%d,\"orderRestored\":%d,\"objectStrokes\":%d,\"realigned\":%d,\"holes\":%d,\"carried\":%d},"
+        "\"dashRefused\":%d,\"pathfinder\":%d,\"failed\":%d,\"offsetSynced\":%d,\"fieldLimits\":%d,\"orderRestored\":%d,\"objectStrokes\":%d,\"realigned\":%d,\"holes\":%d,\"tips\":%d,\"tipGate\":\"%s\",\"pathJudged\":\"%s\",\"carried\":%d},"
         "\"align\":{\"gate\":\"%s\",\"native\":%d,\"profiled\":%d,\"doubled\":%d,\"typeOutside\":%d,"
         "\"restored\":%d,\"refused\":%d,\"offset\":%d,\"reasons\":\"%s\"},"
         "\"refix\":{\"timer\":%s,\"scans\":%llu,\"runs\":%llu,\"items\":%llu,\"deferred\":%llu,\"lastError\":%d,"
@@ -5736,7 +6562,7 @@ ASErr Payload(SPMessageData& message, State& state, const char* selector, bool e
         state.nativeFix.frames, state.nativeFix.chars, state.nativeFix.charLimits, state.nativeFix.mapped,
         state.nativeFix.corners, state.nativeFix.keptBeveled, state.nativeFix.cutMitered, state.nativeFix.dashes,
         state.nativeFix.dashRefused, state.nativeFix.pathfinder, state.nativeFix.failed, state.nativeFix.offsetSynced,
-        state.nativeFix.fieldLimits, state.nativeFix.orderRestored, state.nativeFix.objectStrokes, state.nativeFix.realigned, state.nativeFix.holes, state.nativeFix.carried,
+        state.nativeFix.fieldLimits, state.nativeFix.orderRestored, state.nativeFix.objectStrokes, state.nativeFix.realigned, state.nativeFix.holes, state.nativeFix.tips, gTipGate, gPathJudged, state.nativeFix.carried,
         state.align.gate, state.align.native, state.align.profiled, state.align.doubled, state.align.typeOutside,
         state.align.restored, state.align.refused, state.align.offset, state.align.reasons,
         state.refix.timer ? "true" : "false", state.refix.scans, state.refix.runs, state.refix.items,
@@ -5797,8 +6623,12 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
             static_cast<ai::UnicodeString::offset_type>(text.size()), kAIUTF8CharacterEncoding);
     }
     if (std::strcmp(selector, "panel-align") == 0) {
-        state.panelAlignPending = std::strcmp(input, "inside") == 0 ? 2 : (std::strcmp(input, "center") == 0 ? 3 : 1);
-        const std::string text = "queued " + std::to_string(state.panelAlignPending) + " last " + std::to_string(state.panelAlignResult);
+        // Inside, center, or outside only, and only while StrokeMaster is on, as the panel's own
+        // commands (any other input queued Outside: the review of 2026-11-01).
+        const int which = std::strcmp(input, "inside") == 0 ? 2 : std::strcmp(input, "center") == 0 ? 3 : std::strcmp(input, "outside") == 0 ? 1 : 0;
+        if (which && Switches().enabled) state.panelAlignPending = which;
+        const std::string text = (which && Switches().enabled ? "queued " + std::to_string(which) : std::string("refused")) +
+                                 " last " + std::to_string(state.panelAlignResult);
         if (auto err2 = unicode->Destroy(message.outParam)) return err2;
         return unicode->Initialize(message.outParam, text.c_str(),
             static_cast<ai::UnicodeString::offset_type>(text.size()), kAIUTF8CharacterEncoding);
@@ -5814,15 +6644,17 @@ ASErr Script(AIScriptMessage& message, State& state, const char* selector) {
     // change is saved to the settings file the panel uses.
     if (std::strcmp(selector, "settings") == 0) {
         auto& sw = Switches();
-        bool ok = true;
-        if (std::strcmp(input, "defaults") == 0) { sw = ai_settings::Settings{}; ok = ai_settings::Save(sw); }
+        // "ok", "unchanged", or "unsaved": in force, but the file could not be written (it read
+        // "unchanged": the review of 2026-11-01).
+        const char* answer = "ok";
+        if (std::strcmp(input, "defaults") == 0) { sw = ai_settings::Settings{}; if (!ai_settings::Save(sw)) answer = "unsaved"; }
         else if (std::strcmp(input, "?") != 0) {
             const ai_settings::Settings before = sw;
             ai_settings::Parse(input, sw);
-            ok = !(sw == before) && ai_settings::Save(sw);
+            answer = sw == before ? "unchanged" : ai_settings::Save(sw) ? "ok" : "unsaved";
         }
         sm_panel::Refresh();
-        const std::string text = std::string(ok ? "ok" : "unchanged") + "\n" + ai_settings::Format(sw);
+        const std::string text = std::string(answer) + "\n" + ai_settings::Format(sw);
         if (auto err2 = unicode->Destroy(message.outParam)) return err2;
         return unicode->Initialize(message.outParam, text.c_str(),
             static_cast<ai::UnicodeString::offset_type>(text.size()), kAIUTF8CharacterEncoding);
@@ -5971,6 +6803,7 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
                     state->strokeBehind = startupState.strokeBehind;
                     state->textBehind = startupState.textBehind;
                     state->closeHoles = startupState.closeHoles;
+                    state->flatTips = startupState.flatTips;
                     state->refix.timer = startupState.refix.timer;
                     region_probe::Trace("globals.allocated");
                     // The StrokeMaster panel (Window > StrokeMaster); a host without panels
@@ -6090,6 +6923,10 @@ extern "C" ASAPI ASErr PluginMain(char* caller, char* selector, void* raw) {
                 if (state->closeHoles && go.effect == state->closeHoles) {
                     region_probe::TelemetryScope telemetry(&state->telemetry);
                     return finish(region_probe::CloseHolesGo(go, *state));
+                }
+                if (state->flatTips && go.effect == state->flatTips) {
+                    region_probe::TelemetryScope telemetry(&state->telemetry);
+                    return finish(region_probe::FlatTipsGo(go, *state));
                 }
                 if (state->census && go.effect == state->census) {
                     region_probe::TelemetryScope telemetry(&state->telemetry);

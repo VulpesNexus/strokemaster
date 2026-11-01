@@ -42,6 +42,7 @@ struct Settings {
     // and Illustrator can only bevel a tip at its point where InDesign cuts it flush half a width
     // beyond, so a trimmed tip reads as a small wedge in Illustrator.
     bool glyphTips = true;
+    bool flatTips = false;        // tips cut flat by StrokeMaster's own effect (opt-in, the owner 2026-11-01)
     // Contours
     bool overlaps = true;         // overlapping contours: one outline (fill above, Pathfinder Add)
     bool closeHoles = false;      // every hole a text stroke's outline encloses filled (opt-in, the owner 2026-10-31)
@@ -67,6 +68,7 @@ inline const Key* Keys(size_t* count)
         {"pattern_points", &Settings::patternPoints},
         {"outside_dashes", &Settings::outsideDashes},
         {"glyph_tips", &Settings::glyphTips},
+        {"flat_tips", &Settings::flatTips},
         {"overlaps", &Settings::overlaps},
         {"close_holes", &Settings::closeHoles},
         {"follow_edits", &Settings::followEdits},
@@ -89,11 +91,19 @@ inline void Parse(const char* text, Settings& s)
         const char* eq = static_cast<const char*>(std::memchr(line, '=', len));
         const char* v = eq ? eq + 1 : nullptr;
         while (v && v < line + len && (*v == ' ' || *v == '\t')) ++v;
-        if (eq && v < line + len && (*v == '0' || *v == '1')) {
+        // The value: 1 or 0, true or false, on or off, as InDesign's file reads them; anything else
+        // keeps the default ("enabled=false" was ignored, and "enabled=10" read as on: the second
+        // review of 2026-11-01).
+        size_t vlen = 0;
+        while (v && v + vlen < line + len && v[vlen] != ' ' && v[vlen] != '\t') ++vlen;
+        const std::string value = v ? std::string(v, vlen) : std::string();
+        auto is = [&](const char* w) { return value.size() == std::strlen(w) && _strnicmp(value.c_str(), w, value.size()) == 0; };
+        const bool on = is("1") || is("true") || is("on"), off = is("0") || is("false") || is("off");
+        if (eq && (on || off)) {
             size_t klen = static_cast<size_t>(eq - line);
             while (klen && (line[klen - 1] == ' ' || line[klen - 1] == '\t')) --klen;
             for (size_t i = 0; i < n; ++i)
-                if (std::strlen(keys[i].name) == klen && std::strncmp(keys[i].name, line, klen) == 0) s.*(keys[i].field) = *v == '1';
+                if (std::strlen(keys[i].name) == klen && std::strncmp(keys[i].name, line, klen) == 0) s.*(keys[i].field) = on;
         }
         if (!end) break;
         line = end + 1;
@@ -138,18 +148,22 @@ inline Settings Load()
     return s;
 }
 
-/** Writes the file (and its folder); false when it could not. */
+/** Writes the file (and its folder); false when it could not. Written beside it, then moved over
+    it in one step, so a crash, a full disk, or another Illustrator reading it never finds half of
+    it (it was rewritten in place: the review of 2026-11-01). */
 inline bool Save(const Settings& s)
 {
-    const std::wstring path = Path();
+    const std::wstring path = Path(), temp = path + L".tmp";
     if (path.empty()) return false;
-    const std::wstring dir = path.substr(0, path.find_last_of(L'\\'));
-    CreateDirectoryW(dir.c_str(), nullptr);
+    const size_t cut = path.find_last_of(L"\\/");
+    if (cut != std::wstring::npos) CreateDirectoryW(path.substr(0, cut).c_str(), nullptr);
     FILE* f = nullptr;
-    if (_wfopen_s(&f, path.c_str(), L"wb") || !f) return false;
+    if (_wfopen_s(&f, temp.c_str(), L"wb") || !f) return false;
     const std::string text = Format(s);
     const bool ok = std::fwrite(text.data(), 1, text.size(), f) == text.size();
-    return std::fclose(f) == 0 && ok;
+    if (std::fclose(f) != 0 || !ok) { DeleteFileW(temp.c_str()); return false; }
+    if (!MoveFileExW(temp.c_str(), path.c_str(), MOVEFILE_REPLACE_EXISTING | MOVEFILE_WRITE_THROUGH)) { DeleteFileW(temp.c_str()); return false; }
+    return true;
 }
 
 } // namespace ai_settings

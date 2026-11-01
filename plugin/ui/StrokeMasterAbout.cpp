@@ -36,6 +36,7 @@
 
 #pragma comment(lib, "shell32.lib")
 #pragma comment(lib, "comctl32.lib")
+#pragma comment(lib, "advapi32.lib")
 
 /* SM_WVERSION, SM_COPY and the two URLs come from StrokeMasterAboutRes.h, which
    the harness includes too. */
@@ -60,7 +61,9 @@ namespace {
  * 10pt, the nearest half-point to the 13 pixels its dialogs use. */
 #ifdef STROKEMASTER_ABOUT_ILLUSTRATOR
 /* The Illustrator plugin's prose (2026-10-30): the same window, its corrections written into the
-   document instead of drawn, so the third paragraph says the opposite of InDesign's. */
+   document instead of drawn, so the third paragraph says the opposite of InDesign's. The notice
+   shown once for each new version is this same window and text (the owner, 2026-11-01: no reason
+   for two texts), its third paragraph the caveat, with the full list a link away. */
 const char* const kBodyRtf =
     "{\\rtf1\\ansi\\deff0{\\fonttbl{\\f0\\fnil Segoe UI;}}"
     "\\fs18\\sa140 "
@@ -73,9 +76,10 @@ const char* const kBodyRtf =
     "Correct Selection writes what the switches allow, and edits are "
     "followed. Hover a switch to see what it does.\\par "
 
-    "{\\b Documents}\\line "
-    "The corrections are Illustrator's own attributes: a file opens and "
-    "exports the same without StrokeMaster, which follows the edits."
+    "{\\b It edits your documents}\\line "
+    "New and edited art is corrected as you work, in the undo step of your "
+    "edit, and saved in the file as Illustrator's own attributes. Every limit "
+    "is in {\\i What to know}."
     "}";
 #else
 const char* const kBodyRtf =
@@ -93,13 +97,25 @@ const char* const kBodyRtf =
     "One switch per correction, for every document, on screen and in every "
     "export. Hover a switch to see what it does.\\par "
 
-    "{\\b Documents}\\line "
-    "Nothing is written into them: a file opens and draws as InDesign draws it "
-    "on a machine without StrokeMaster."
+    "{\\b Rendered live, never saved}\\line "
+    "Nothing is written into a document: without StrokeMaster, it shows "
+    "InDesign's own strokes, so hand over PDFs exported with it. Every limit "
+    "is in {\\i What to know}."
     "}";
 #endif
 
+/* The words in the prose that link to the full list of what to know. */
+const wchar_t kKnowWords[] = L"What to know";
+
+/* What the dialog is opened as: the About window, or the notice (modeless, so that a host
+   driven by scripts is never left waiting on it). */
+struct AboutArgs {
+    const StrokeMasterAboutTheme* theme;
+    bool notice;
+};
+
 struct AboutState {
+    bool   notice;      /* the notice, modeless: closed with DestroyWindow */
     HFONT  body;        /* the host's typeface for the controls; null keeps the template's */
     HFONT  title;
     HFONT  legal;
@@ -162,7 +178,7 @@ void OpenLink(HWND parent, const wchar_t* url)
     ShellExecuteW(parent, L"open", url, nullptr, nullptr, SW_SHOWNORMAL);
 }
 
-void FillBody(HWND dlg, const StrokeMasterAboutTheme& theme, bool hostFont)
+void FillBody(HWND dlg, const StrokeMasterAboutTheme& theme, bool hostFont, bool notice)
 {
     HWND body = GetDlgItem(dlg, IDC_ABOUT_BODY);
     if (body == nullptr) return;
@@ -171,6 +187,7 @@ void FillBody(HWND dlg, const StrokeMasterAboutTheme& theme, bool hostFont)
     SendMessageW(body, EM_SETMARGINS, EC_LEFTMARGIN | EC_RIGHTMARGIN, 0);
     SendMessageW(body, EM_EXLIMITTEXT, 0, 64 * 1024);
 
+    (void)notice;   /* the notice is the About text (kBodyRtf) */
     std::string rtf = kBodyRtf;
     if (hostFont) {
         const size_t face = rtf.find("Segoe UI;");
@@ -196,6 +213,25 @@ void FillBody(HWND dlg, const StrokeMasterAboutTheme& theme, bool hostFont)
     cf.crTextColor = theme.panelText;
     SendMessageW(body, EM_SETSEL, 0, static_cast<LPARAM>(-1));
     SendMessageW(body, EM_SETCHARFORMAT, SCF_SELECTION, reinterpret_cast<LPARAM>(&cf));
+
+    /* "What to know" is a link, in the link color: the rich edit reports a click on it
+       (EN_LINK), which opens the list in the repository. */
+    FINDTEXTEXW find;
+    ZeroMemory(&find, sizeof(find));
+    find.chrg.cpMin = 0;
+    find.chrg.cpMax = -1;
+    find.lpstrText = kKnowWords;
+    if (SendMessageW(body, EM_FINDTEXTEXW, FR_DOWN | FR_MATCHCASE, reinterpret_cast<LPARAM>(&find)) >= 0) {
+        CHARFORMAT2W link;
+        ZeroMemory(&link, sizeof(link));
+        link.cbSize      = sizeof(link);
+        link.dwMask      = CFM_COLOR | CFM_LINK;
+        link.dwEffects   = CFE_LINK;
+        link.crTextColor = theme.link;
+        SendMessageW(body, EM_EXSETSEL, 0, reinterpret_cast<LPARAM>(&find.chrgText));
+        SendMessageW(body, EM_SETCHARFORMAT, SCF_SELECTION, reinterpret_cast<LPARAM>(&link));
+        SendMessageW(body, EM_SETEVENTMASK, 0, ENM_LINK);
+    }
 
     /* Read-only edits still show a selection and a caret when focused. Neither
        belongs in a paragraph of prose, so keep the control out of the tab order
@@ -266,10 +302,11 @@ INT_PTR CALLBACK AboutProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
     switch (msg) {
     case WM_INITDIALOG: {
         st = new AboutState();
-        /* lParam is the theme, handed down from DialogBoxParamW. */
-        const StrokeMasterAboutTheme* passed =
-            reinterpret_cast<const StrokeMasterAboutTheme*>(lParam);
-        st->theme    = (passed != nullptr) ? *passed : StrokeMasterAboutTheme();
+        /* lParam is the theme and the kind of window, handed down from
+           DialogBoxParamW or CreateDialogParamW. */
+        const AboutArgs* passed = reinterpret_cast<const AboutArgs*>(lParam);
+        st->notice   = passed != nullptr && passed->notice;
+        st->theme    = (passed != nullptr && passed->theme != nullptr) ? *passed->theme : StrokeMasterAboutTheme();
         st->body     = DeriveFont(dlg, 100, false, true);
         st->title    = DeriveFont(dlg, 150, false);
         st->legal    = DeriveFont(dlg,  92, false);
@@ -296,7 +333,8 @@ INT_PTR CALLBACK AboutProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
         SetDlgItemTextW(dlg, IDC_ABOUT_TITLE,
             L"<a href=\"" SM_REPO_URL L"\">StrokeMaster " SM_WVERSION L"</a>");
 
-        FillBody(dlg, st->theme, st->body != nullptr);
+        FillBody(dlg, st->theme, st->body != nullptr, st->notice);
+        if (st->notice) SetWindowTextW(dlg, L"StrokeMaster");
 
         /* The author link lives on this name rather than on the one in the
            copyright below. The notice is a legal statement and reads better
@@ -415,6 +453,11 @@ INT_PTR CALLBACK AboutProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
             }
         }
 
+        if (hdr != nullptr && hdr->code == EN_LINK && hdr->idFrom == IDC_ABOUT_BODY) {
+            if (reinterpret_cast<const ENLINK*>(lParam)->msg == WM_LBUTTONUP) OpenLink(dlg, SM_KNOW_URL);
+            return TRUE;
+        }
+
         if (hdr != nullptr && (hdr->code == NM_CLICK || hdr->code == NM_RETURN) &&
             (hdr->idFrom == IDC_ABOUT_TITLE || hdr->idFrom == IDC_ABOUT_ATTRIB ||
              hdr->idFrom == IDC_ABOUT_LEGAL)) {
@@ -426,7 +469,8 @@ INT_PTR CALLBACK AboutProc(HWND dlg, UINT msg, WPARAM wParam, LPARAM lParam)
 
     case WM_COMMAND:
         if (LOWORD(wParam) == IDOK || LOWORD(wParam) == IDCANCEL) {
-            EndDialog(dlg, LOWORD(wParam));
+            if (st != nullptr && st->notice) DestroyWindow(dlg);
+            else EndDialog(dlg, LOWORD(wParam));
             return TRUE;
         }
         break;
@@ -468,12 +512,59 @@ bool StrokeMasterShowAboutDialog(HINSTANCE instance, HWND parent,
     HMODULE richEdit = LoadLibraryW(L"Msftedit.dll");
     if (richEdit == nullptr) return false;
 
+    AboutArgs args = { &theme, false };
     INT_PTR r = DialogBoxParamW(instance, MAKEINTRESOURCEW(IDD_STROKEMASTER_ABOUT),
                                 parent, AboutProc,
-                                reinterpret_cast<LPARAM>(&theme));
+                                reinterpret_cast<LPARAM>(&args));
 
     FreeLibrary(richEdit);
     return r != -1 && r != 0;
+}
+
+namespace {
+
+/* Where the version whose notice was shown is kept: one value per host, for the user. */
+const wchar_t kNoticeKey[] = L"Software\\StrokeMaster";
+#ifdef STROKEMASTER_ABOUT_ILLUSTRATOR
+const wchar_t kNoticeValue[] = L"IllustratorNotice";
+#else
+const wchar_t kNoticeValue[] = L"InDesignNotice";
+#endif
+
+} /* anonymous namespace */
+
+bool StrokeMasterNoticeDue()
+{
+    /* Test runs name their own switches' file: never shown there. */
+    if (GetEnvironmentVariableW(L"STROKEMASTER_SETTINGS", nullptr, 0) > 0) return false;
+    wchar_t seen[32] = L"";
+    DWORD size = sizeof(seen);
+    if (RegGetValueW(HKEY_CURRENT_USER, kNoticeKey, kNoticeValue, RRF_RT_REG_SZ, nullptr, seen, &size) != ERROR_SUCCESS)
+        return true;
+    return wcscmp(seen, SM_WVERSION) != 0;
+}
+
+void StrokeMasterNoticeShown()
+{
+    const DWORD bytes = static_cast<DWORD>((wcslen(SM_WVERSION) + 1) * sizeof(wchar_t));
+    RegSetKeyValueW(HKEY_CURRENT_USER, kNoticeKey, kNoticeValue, REG_SZ, SM_WVERSION, bytes);
+}
+
+bool StrokeMasterShowNotice(HINSTANCE instance, HWND parent, const StrokeMasterAboutTheme& theme)
+{
+    INITCOMMONCONTROLSEX icc;
+    icc.dwSize = sizeof(icc);
+    icc.dwICC  = ICC_LINK_CLASS | ICC_STANDARD_CLASSES;
+    if (!InitCommonControlsEx(&icc)) return false;
+    /* Kept loaded: the window outlives this call. */
+    if (LoadLibraryW(L"Msftedit.dll") == nullptr) return false;
+
+    AboutArgs args = { &theme, true };
+    HWND dlg = CreateDialogParamW(instance, MAKEINTRESOURCEW(IDD_STROKEMASTER_ABOUT), parent, AboutProc,
+                                  reinterpret_cast<LPARAM>(&args));
+    if (dlg == nullptr) return false;
+    ShowWindow(dlg, SW_SHOW);
+    return true;
 }
 
 #endif /* _WIN32 */

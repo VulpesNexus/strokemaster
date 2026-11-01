@@ -68,8 +68,13 @@ inline const std::vector<Row>& Rows() {
          L"When on, shapes and outlined text get the miter limit that removes the miters at their inner corners that would "
          L"poke out through their thin parts, and keeps the others. When off, Illustrator's miters.", &S::shapeMiter, &S::enabled},
         {"glyph_tips", L"Trim glyph tips",
-         L"When on, sharp outer tips, such as the ends of letters, are beveled instead of ending in a long miter, in live and "
-         L"outlined text and in shapes alike. When off, whole miters within the limit.", &S::glyphTips, &S::enabled},
+         L"When on, sharp outer tips, such as the ends of letters, stop at the stroke's width instead of ending in a long miter: "
+         L"rounded on live text, compound paths, and groups treated as outlined text; beveled on other shapes. "
+         L"Flat tips overrides rounding. When off, whole miters within the limit.", &S::glyphTips, &S::enabled},
+        {"flat_tips", L"Flat tips, as InDesign cuts them",
+         L"When on, live text's tips are cut flat at the stroke's width by a StrokeMaster effect. Without StrokeMaster, a document "
+         L"keeps them as they were last drawn but they no longer follow edits. When off, rounded tips, Illustrator's own.",
+         &S::flatTips, &S::glyphTips},
         {"whole_points", L"Whole points past the miter limit",
          L"When on, a shape's own sharp point between two straight edges keeps its whole point past the miter limit. When off, "
          L"it is cut flat as Illustrator bevels it. Other corners past the limit stay beveled.", &S::wholePoints, &S::enabled},
@@ -85,9 +90,9 @@ inline const std::vector<Row>& Rows() {
          L"inside the letters (as Create Outlines leaves decorative fonts). When off, Illustrator strokes every contour.",
          &S::overlaps, &S::enabled},
         {"close_holes", L"Close holes inside the outline",
-         L"When on, every hole the outline of a text stroke encloses is filled in the stroke's color: a letter's counters, "
-         L"and the gaps that touching letters' strokes close off. When off, they show what lies beneath.",
-         &S::closeHoles, &S::textBehind},
+         L"When on, every hole a stroke's outline encloses, on text, shapes, and outlined text, is filled in the stroke's color: "
+         L"a letter's counters, and the gaps that touching letters' strokes close off. When off, they show what lies beneath.",
+         &S::closeHoles, &S::enabled},
         {nullptr, L"Edits", nullptr, nullptr, nullptr},
         // Automatic since region-prep-31, as InDesign corrects whatever it draws (the owner,
         // 2026-10-30); the settings key keeps its name.
@@ -105,6 +110,8 @@ inline const std::vector<Row>& Rows() {
 }
 
 enum : int { kIdRowBase = 4100, kIdCorrect = 4090, kIdRestore = 4091, kIdNote = 4092 };
+// Posted by the panel's first paint: the notice, once for each new version (StrokeMasterShowNotice).
+constexpr UINT kNoticeMessage = WM_APP + 0x53;
 // The room a checkbox control keeps left of its box for the focus ring (2 px out, a 2 px pen).
 constexpr int kRingRoom = 3;
 enum : ai::uint32 { kFlyRestore = 1, kFlySeparator = 2, kFlyAbout = 3, kFlyOutside = 4, kFlyInside = 5, kFlyUnalign = 6,
@@ -152,6 +159,8 @@ struct Panel {
     int width = 0, height = 0;        // the client size last laid out
     int least = 270;                  // the narrowest width with no word cut off, 96-dpi pixels (Build)
     int layouts = 0;                  // Layout calls (ui-status)
+    bool noteShown = false;           // the note has something to say: the switches were not saved
+    bool noticeChecked = false;       // the notice was considered, at the panel's first paint
 };
 
 inline Panel& The() { static Panel p; return p; }
@@ -211,11 +220,28 @@ void Refresh() {
     RedrawWindow(p.window, nullptr, nullptr, RDW_INVALIDATE | RDW_ERASE | RDW_ALLCHILDREN);
 }
 
-inline void Save() { ai_settings::Save(region_probe::Switches()); Refresh(); }
+inline void Layout(int width, int height);   // below, with the rows
+
+// The switches saved for the next sessions. When the file cannot be written, they are in force
+// for this session only, and the note says so (it was silent: the second review of 2026-11-01).
+inline void Save() {
+    const bool saved = ai_settings::Save(region_probe::Switches());
+    Panel& p = The();
+    // The note says only that: what the corrections keep is in About and the notice (the
+    // owner's retest Z6, 2026-11-01: retire "Saved in the document."). Its row shows only then.
+    if (p.note) SetWindowTextW(p.note, saved ? L"" : L"Switches not saved: this session only.");
+    if (p.noteShown == saved) {
+        p.noteShown = !saved;
+        RECT rc{};
+        if (p.window && GetClientRect(p.window, &rc)) Layout(rc.right, rc.bottom);
+    }
+    Refresh();
+}
 
 inline void RestoreDefaults() { region_probe::Switches() = ai_settings::Settings{}; Save(); }
 
-inline void ShowAbout() {
+// Illustrator's dialog colors, for the About window and the notice.
+inline StrokeMasterAboutTheme AboutTheme() {
     Panel& p = The();
     StrokeMasterAboutTheme t;
     if (p.theme && p.theme->GetUIThemeColor) {
@@ -244,7 +270,12 @@ inline void ShowAbout() {
             t.darkTitleBar = dark;
         }
     }
-    StrokeMasterShowAboutDialog(p.module, GetAncestor(p.window, GA_ROOT), t);
+    return t;
+}
+
+inline void ShowAbout() {
+    Panel& p = The();
+    StrokeMasterShowAboutDialog(p.module, GetAncestor(p.window, GA_ROOT), AboutTheme());
 }
 
 // Owner-drawn controls in Illustrator's panel colors: stock checkboxes draw their labels in the
@@ -365,10 +396,19 @@ inline LRESULT CALLBACK WindowProc(HWND hwnd, UINT msg, WPARAM wp, LPARAM lp) {
             }
         }
         break;
+    case kNoticeMessage:
+        StrokeMasterShowNotice(p.module, GetAncestor(hwnd, GA_ROOTOWNER), AboutTheme());
+        return 0;
     case WM_ERASEBKGND:
     case WM_PRINTCLIENT: {
         RefreshTheme();
         EnsureTips();
+        // The caveats, once for each new version, when the panel is first seen; posted, so no
+        // window is made while the panel paints.
+        if (!p.noticeChecked && IsWindowVisible(hwnd)) {
+            p.noticeChecked = true;
+            if (StrokeMasterNoticeDue()) { StrokeMasterNoticeShown(); PostMessageW(hwnd, kNoticeMessage, 0, 0); }
+        }
         RECT rc;
         GetClientRect(hwnd, &rc);
         if (rc.right <= 0 || rc.bottom <= 0) { rc.right = 2000; rc.bottom = 2000; }
@@ -510,13 +550,15 @@ template <class Place> int LayoutRows(int width, int height, Place place) {
         place(static_cast<int>(i), x - kRingRoom, y - 1, width - 8 - x + kRingRoom, 20);
         y += 20;
     }
-    // The footer: at the bottom when the panel is taller than its content.
-    const int footer = 8 + 24 + 6 + 16 + 8;
+    // The footer: at the bottom when the panel is taller than its content; the note's row only
+    // when it has something to say (Save).
+    const bool note = The().noteShown;
+    const int footer = 8 + 24 + 8 + (note ? 6 + 16 : 0);
     const int top = (std::max)(y + 4, height - footer);
     place(-1, -1, top, 0, 0);
     place(-2, 8, top + 8, 124, 24);
     place(-3, 138, top + 8, 124, 24);
-    place(-4, 8, top + 8 + 24 + 6, width - 16, 16);
+    place(-4, 8, top + 8 + 24 + 6, width - 16, note ? 16 : 0);
     return y + 4 + footer;
 }
 
@@ -602,13 +644,13 @@ inline void Build() {
     tip(p.restore, L"Turns every switch back on, except Across other text objects, Strokes added through the Appearance panel, "
                    L"Dashed outside strokes, Close holes inside the outline, and Also documents as they open, which go back off.");
     // The owner's wording (2026-10-30): what Correct Selection applies to is its own name.
-    // Where corrections live, said plainly (the owner, 2026-10-31); SS_NOTIFY, or a static gets no
-    // mouse message and shows no tooltip.
-    p.note = CreateWindowExW(0, L"STATIC", L"Saved in the document.", WS_CHILD | WS_VISIBLE | SS_ENDELLIPSIS | SS_NOTIFY,
+    // The note, empty unless the switches could not be saved (Save); SS_NOTIFY, or a static gets
+    // no mouse message and shows no tooltip.
+    p.note = CreateWindowExW(0, L"STATIC", L"", WS_CHILD | WS_VISIBLE | SS_ENDELLIPSIS | SS_NOTIFY,
                              0, 0, 1, 1, p.window, reinterpret_cast<HMENU>(static_cast<INT_PTR>(kIdNote)), p.module, nullptr);
     SendMessageW(p.note, WM_SETFONT, reinterpret_cast<WPARAM>(p.font), FALSE);
-    tip(p.note, L"Corrections are persistent: saved in the document as Illustrator's own appearance, they stay when it is "
-                L"opened where StrokeMaster is not installed, and in every export.");
+    tip(p.note, L"The switches' file could not be written: the switches are in force until Illustrator quits, "
+                L"and the next session starts with the ones saved before.");
     // One separator before each heading and one above the footer.
     const size_t separators = 1 + static_cast<size_t>(std::count_if(rows.begin(), rows.end(), [](const Row& r) { return !r.field; }));
     for (size_t k = 0; k < separators; ++k)

@@ -97,6 +97,68 @@
         out.squareOn = sq.strokeWidth;
         stage('dashes-off', 'outside_dashes=0', [sq]);
         out.squareOff = sq.strokeWidth;
+        // The other switches, each turned off and back on, on an item of its own, its limit and
+        // effects read back: on, off, on again (only five switches were turned off here: the second
+        // review of 2026-11-01). Made after every export above, and removed, so those are unchanged.
+        at = 'switches-off';
+        send('settings', 'defaults');
+        function path(points) {
+            var q = doc.pathItems.add(); q.setEntirePath(points); q.closed = true;
+            q.filled = true; q.fillColor = rgb(30, 60, 200);
+            q.stroked = true; q.strokeColor = gray(40); q.strokeWidth = 8;
+            q.strokeJoin = StrokeJoin.MITERENDJOIN; q.strokeMiterLimit = 4;
+            return q;
+        }
+        function read(item) {
+            select([item]);
+            var dump = send('style-dump');
+            var lim = /limit ([0-9.]+)/.exec(dump);
+            var ord = /order '([^']*)'/.exec(dump), fx = /pre (\d+) post (\d+)/.exec(dump);
+            return 'limit ' + (lim ? Math.round(Number(lim[1]) * 100) / 100 : '-') + '; effects ' +
+                   ((dump.match(/EFFECT/g) || []).length) + '; dashAdj ' + (/BSDashAdj=T/.test(dump) ? 1 : 0) +
+                   '; order ' + (ord ? ord[1] : '-') + '; pre ' + (fx ? fx[1] : '-') + ' post ' + (fx ? fx[2] : '-');
+        }
+        function flip(key, item) {
+            select([item]); send('correct'); var on = read(item);
+            send('settings', key + '=0'); select([item]); send('correct'); var off = read(item);
+            send('settings', key + '=1'); select([item]); send('correct'); var back = read(item);
+            return [on, off, back];
+        }
+        var made = [];
+        var thin = path([[420, 380], [440, 300], [400, 300]]); made.push(thin);
+        // A bar and a block joined by a thin hinge, a narrow notch between them: the notch's inner
+        // miter runs out through the hinge, which No miter spikes in shapes and outlines removes.
+        var star = path([[30, 230], [250, 230], [250, 202], [38, 175], [250, 148], [250, 120], [30, 120]]);
+        star.strokeWidth = 10; star.strokeMiterLimit = 10; made.push(star);
+        var tipText = doc.textFrames.add(); tipText.position = [250, 240]; tipText.contents = 'W';
+        tipText.textRange.characterAttributes.textFont = app.textFonts.getByName('SegoeScript-Bold');
+        tipText.textRange.characterAttributes.size = 90;
+        var tipGroup = tipText.createOutline(); made.push(tipGroup);
+        // The letter as its group holds it (a path, or a compound path, whose first path carries its paint).
+        var tip = tipGroup.pageItems[0];
+        var tipPaint = tip.typename === 'CompoundPathItem' ? tip.pathItems[0] : tip;
+        tipPaint.stroked = true; tipPaint.strokeColor = gray(40); tipPaint.strokeWidth = 6;
+        tipPaint.strokeJoin = StrokeJoin.MITERENDJOIN; tipPaint.strokeMiterLimit = 10;
+        var ov = doc.compoundPathItems.add(); made.push(ov);
+        var r1 = doc.pathItems.rectangle(120, 300, 70, 70); r1.move(ov, ElementPlacement.PLACEATEND);
+        var r2 = doc.pathItems.rectangle(90, 330, 70, 70); r2.move(ov, ElementPlacement.PLACEATEND);
+        ov.pathItems[0].filled = true; ov.pathItems[0].fillColor = rgb(30, 60, 200);
+        ov.pathItems[0].stroked = true; ov.pathItems[0].strokeColor = gray(40); ov.pathItems[0].strokeWidth = 6;
+        // Nonzero: the overlap is filled, so its edges are inside the shape (a scripted compound path
+        // is even-odd, which makes the overlap a hole).
+        ov.pathItems[0].evenodd = false; ov.pathItems[1].evenodd = false;
+        ov.pathItems[0].filled = true; ov.pathItems[0].strokeDashes = [10, 5];
+        // A dashed Center stroke on overlapping contours: Overlapping contours get one outline unites
+        // them with Pathfinder Add, so the dashes follow one outline.
+        var dashTri = path([[470, 200], [500, 100], [440, 100]]); dashTri.strokeDashes = [10, 5]; made.push(dashTri);
+        out.switchesOff = {
+            whole_points: flip('whole_points', thin),
+            shape_miter: flip('shape_miter', star),
+            glyph_tips: flip('glyph_tips', tip),
+            overlaps: flip('overlaps', ov),
+            pattern_points: flip('pattern_points', dashTri)
+        };
+        for (var q = made.length - 1; q >= 0; q--) made[q].remove();
         send('settings', 'defaults');
         out.snapshot = lib.snapshot(doc);
         // The panel: Tab posted to its first row (KeyHook moves the focus; phase 2 reads it).

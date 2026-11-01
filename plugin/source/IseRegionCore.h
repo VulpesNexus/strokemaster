@@ -130,9 +130,23 @@ ise_miter::Contour FitCurves(const std::vector<ise_miter::Pt>& ring, double tol)
 /** The silhouette of a stroke that reaches `grow` beyond the nonzero fill of `fill`: that fill
     grown by `grow` with bevel joins (so it never passes the stroke, whatever its join), every hole
     dropped, as Close holes fills it beneath the stroke (the owner, 2026-10-31: "close all holes",
-    a letter's counters and the gaps the strokes of touching letters enclose alike). Contours of
-    cubic curves fitted within `tol`, wound for the nonzero rule; empty, and `ok` false, when
-    Clipper2 fails. */
-std::vector<ise_miter::Contour> Silhouette(const std::vector<ise_miter::Contour>& fill, double grow, double tol, bool* ok);
+    a letter's counters and the gaps the strokes of touching letters enclose alike), with the
+    holes that the stroke's own `join` encloses filled too, strokes within a twentieth of the
+    reach of each other counting as touching. `holesOnly`: those holes alone, for a dashed or
+    striped stroke, whose band must not be filled beneath it. `hollow`: without the fill's own
+    region, for letters nothing fills, which stay hollow. Contours of cubic curves fitted within
+    `tol`, wound for the nonzero rule; empty, and `ok` false, when Clipper2 fails. */
+std::vector<ise_miter::Contour> Silhouette(const std::vector<ise_miter::Contour>& fill, double grow, double tol, bool* ok,
+                                           BandJoin join = BandJoin::Bevel, double limit = 0, bool holesOnly = false,
+                                           bool hollow = false);
+
+/** The region an outward stroke of reach `h` paints around the nonzero fill of `fill`, its glyph
+    tips cut as InDesign's route cuts them with Trim glyph tips (the owner, 2026-11-01, for
+    Illustrator's flat-tips opt-in): the fill grown by `h` with bevel joins, and each exterior
+    corner's join added as route W fills it (FillJoins with tips, cut past the limit): a whole
+    miter within `limit`, trimmed near a tip (TipReach), flush at `h` for a tip past the limit,
+    beveled for any other corner past it. Without the fill's own region. Contours of cubic curves
+    fitted within `tol`; empty, and `ok` false, when Clipper2 fails. */
+std::vector<ise_miter::Contour> TippedOutline(const std::vector<ise_miter::Contour>& fill, double h, double limit, double tol, bool* ok);
 
 } // namespace ise_region

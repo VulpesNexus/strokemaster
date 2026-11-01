@@ -4,6 +4,9 @@
 //========================================================================================
 #pragma once
 #include "IseCrossFrameCore.h"
+#include "IseMiterCore.h"
+#include <cstdint>
+#include <vector>
 
 class GraphicsData;
 class IDataBase;
@@ -25,8 +28,16 @@ bool MiterCorrectionEnabled();
 bool TextTipsEnabled();
 // Close holes: route W fills the silhouette of a run's stroke beneath it (ise_region::Silhouette).
 bool CloseHolesEnabled();
+// Close holes across frames: the outlines, in `run`'s line coordinates, of glyphs other frames
+// painted earlier in this traversal within `box` (line coordinates) whose strokes reach `reach` in
+// the paint `paint` (a UID's value). Screen drawing reads earlier visible frames from a
+// parcel-scoped layout snapshot, since their item caches may replay without adornment visits.
+std::vector<ise_miter::Contour> NeighborOutlines(GraphicsData* gd, const IWaxRun* run, double x0, double y0, double x1, double y1,
+                                                 double reach, std::uint32_t paint);
 // A parcel is about to be drawn in the pass named by tag ('W' stroke pass, 'R' restore pass).
 void NoteParcel(const IParcelShape* parcel, char tag, int32 flags);
+// Release the screen snapshot's font references when the parcel pass ends.
+void EndParcel();
 // Stroke pass, every run: remember a fill this parcel is about to paint.
 void RecordPendingFill(GraphicsData* gd, const IWaxRun* run, const IWaxRenderData* data, const IWaxGlyphs* glyphs, IDataBase* db);
 // Restore pass, every run: the run's fill has been painted.

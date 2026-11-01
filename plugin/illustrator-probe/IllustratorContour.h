@@ -43,7 +43,8 @@ inline bool Convert(const std::vector<Node>& nodes, bool closed, Contour* result
         s.p = to.anchor;
         s.c1 = from.out;
         s.c2 = to.in;
-        s.curve = !Same(s.c1, from.anchor) || !Same(s.c2, to.anchor);
+        s.curve = (!Same(s.c1, from.anchor) || !Same(s.c2, to.anchor)) &&
+                  !ise_miter::StraightCubic(from.anchor, s.c1, s.c2, to.anchor);
         converted.segments.push_back(s);
     }
     *result = std::move(converted);

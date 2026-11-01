@@ -16,4 +16,8 @@ REGISTER_PMINTERFACE(IseStrokeRestoreAdornment, kIseStrokeRestoreAdornmentImpl)
 #ifdef ISE_ROUTE_X
 REGISTER_PMINTERFACE(IseXfDrawEvents, kIseXfDrawEventHandlerImpl)
 REGISTER_PMINTERFACE(IseXfDrawEventService, kIseXfDrawEventServiceImpl)
+REGISTER_PMINTERFACE(IseScreenObserver, kIseScreenObserverImpl)
+REGISTER_PMINTERFACE(IseScreenDocResponder, kIseScreenDocResponderImpl)
+REGISTER_PMINTERFACE(IseScreenDocService, kIseScreenDocServiceImpl)
+REGISTER_PMINTERFACE(IseScreenIdle, kIseScreenIdleImpl)
 #endif

@@ -210,7 +210,6 @@ resource StringTable (kSDKDefStringsResourceID + index_enUS)
         kIseUITransparencyKey,   "Objects with opacity or effects",
         kIseUICloseHolesKey,     "Close holes inside the outline",
         kIseUIRestoreKey,        "Restore Defaults",
-        kIseUINoteKey,           "Rendered live, not saved.",
         kIseUIEngineMissingKey,  "Engine not installed.",
         kIseUIAboutMenuKey,      "About StrokeMaster...",
 
@@ -219,19 +218,19 @@ resource StringTable (kSDKDefStringsResourceID + index_enUS)
         kIseUITextStoryTipKey,       "When on, strokes also stay beneath the fills across the columns and threaded frames of one story. When off, within each frame only.",
         kIseUITextStoriesTipKey,     "When on, strokes also go beneath the fills of other stories they overlap, which also removes a halo drawn on purpose over another frame. When off, separate stories keep InDesign's stacking.",
         kIseUITextMiterTipKey,       "When on, the miters at the inner corners of live text that would poke out through a letter's thin parts are removed, and the others kept. When off, InDesign's miters.",
-        kIseUIShapeMiterTipKey,      "When on, the miters at the inner corners of shapes, frames, and outlined text that would poke out through their thin parts are removed, and the others kept. When off, InDesign's miters.",
-        kIseUINoteTipKey,            "Corrections are rendered live: they are kept in exports (PDF and others), but a document saved, then opened where StrokeMaster is not installed, shows InDesign's own strokes.",
+        kIseUIShapeMiterTipKey,      "When on, the miters at the inner corners of shapes, frames, and outlined text that would poke out through their thin parts are removed, and the others kept. When off, InDesign's miters on center strokes.",
+        kIseUINoteTipKey,            "The switches need StrokeMaster's engine, installed beside this panel in InDesign's Plug-Ins folder.",
         kIseUIShapesTipKey,          "When on, StrokeMaster draws the strokes of shapes, frames, and outlined text, with the corrections in the sections below. When off, InDesign draws them, with its spilled fills and spikes.",
         kIseUIWholePointsTipKey,     "When on, a shape's own sharp point between two straight edges keeps its whole point past the miter limit. When off, it is cut flat as InDesign bevels it. Other corners past the limit stay beveled.",
         kIseUIPatternPointsTipKey,   "When on, dashed, dotted, and striped strokes also get a solid whole point at such corners. When off, the pattern's bevel.",
         kIseUIGlyphTipsTipKey,       "When on, sharp outer tips, such as the ends of letters, are cut flush with the stroke's edge instead of ending in a long miter, in live and outlined text and in shapes alike. When off, whole miters within the limit.",
         kIseUIEffectCornersTipKey,   "When on, the small corners a corner effect adds are beveled past the miter limit and trimmed within it, so they grow no long points. When off, they are treated as the outline's own corners.",
-        kIseUIWordOutlineTipKey,     "When on, outside dashes, dots, waves, and stripes run along one outline around touching letters, with dashes fitted between real corners. When off, InDesign's pattern on each contour, crossing where letters meet.",
+        kIseUIWordOutlineTipKey,     "When on, all the dashes, dots, waves, and stripes run along one outline around touching letters, with dashes fitted between real corners. When off, InDesign's pattern on each contour, crossing where letters meet.",
         kIseUIOverlapsTipKey,        "When on, outside and inside strokes go around the filled shape only, not along contour edges inside the letters (as Create Outlines leaves decorative fonts). When off, such outlines are left to InDesign.",
         kIseUIInsideTipKey,          "When on, StrokeMaster draws inside strokes and fills the outline itself, where InDesign's inward offset fill spills past curves. When off, InDesign draws them.",
         kIseUIOpenPathsTipKey,       "When on, open paths with a center miter stroke keep whole points past the miter limit, as closed shapes do. When off, InDesign draws them.",
         kIseUITransparencyTipKey,    "When on, objects with opacity, blend modes, or object-level effects are corrected too, and a translucent stroke is drawn as one piece. When off, such objects are left to InDesign.",
-        kIseUICloseHolesTipKey,      "When on, every hole the outline of a text stroke encloses is filled in the stroke's color: a letter's counters, and the gaps that touching letters' strokes close off. When off, they show what lies beneath.",
+        kIseUICloseHolesTipKey,      "When on, every hole a stroke's outline encloses, on text, shapes, and outlined text, is filled in the stroke's color: a letter's counters, and the gaps that touching letters' strokes close off. When off, they show what lies beneath.",
         kIseUIRestoreTipKey,         "Turns every switch back on, except Across separate stories and Close holes inside the outline, which go back off.",
     }
 };
@@ -314,7 +313,7 @@ resource IseUIPanelWidget(kSDKDefPanelResourceID + index_enUS)
 
         SeparatorWidget(kIseUIFooterSeparatorWidgetID, kPMRsrcID_None, kBindLeft | kBindRight | kBindBottom, Frame(8, 482, 262, 483) kTrue, kTrue),
         IseUIButtonWidget(kIseUIRestoreWidgetID, kSysButtonPMRsrcId, kBindLeft | kBindBottom, Frame(8, 490, 128, 512) kTrue, kTrue, kIseUIRestoreKey),
-        StaticTextWidget(kIseUINoteWidgetID, kSysStaticTextPMRsrcId, kBindRight | kBindBottom, Frame(136, 493, 266, 509) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, kIseUINoteKey, 0),
+        StaticTextWidget(kIseUINoteWidgetID, kSysStaticTextPMRsrcId, kBindRight | kBindBottom, Frame(136, 493, 266, 509) kTrue, kTrue, kAlignLeft, kEllipsizeEnd, kTrue, "", 0),
     }
     kIseUIInternalMenuNameKey
 };

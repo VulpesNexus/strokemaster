@@ -26,6 +26,14 @@ $ErrorActionPreference = 'Stop'
 if ([bool]$Variant -eq [bool]$Restore) { throw 'Give exactly one of -Variant or -Restore.' }
 $repo = Split-Path -Parent $PSScriptRoot
 $name = $Name
+# A backup restored without -Name: the plugin it holds names itself (a panel backup asked for
+# -Name StrokeMasterUI, and failed without it: the review of 2026-11-01).
+if ($Restore -and -not $PSBoundParameters.ContainsKey('Name')) {
+    $held = @(Get-ChildItem -LiteralPath $Restore -Filter '*.pln' -File -ErrorAction SilentlyContinue)
+    if ($held.Count -eq 1) { $name = $held[0].BaseName }
+    elseif ($held.Count -eq 0) { throw "No plugin in $Restore. A first install leaves an empty backup: to remove that plugin, delete its folder under Plug-Ins by hand, with InDesign closed." }
+    else { throw 'Backup contains several plugins; specify -Name explicitly.' }
+}
 $target = Join-Path $InDesign ('Plug-Ins\' + $name)
 $resourcesName = '(' + $name + ' Resources)'
 if (-not (Test-Path -LiteralPath (Join-Path $InDesign 'InDesign.exe'))) { throw "InDesign.exe not found under $InDesign" }

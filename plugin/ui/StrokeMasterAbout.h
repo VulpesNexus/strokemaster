@@ -80,6 +80,21 @@ struct StrokeMasterAboutTheme
 bool StrokeMasterShowAboutDialog(HINSTANCE instance, HWND parent,
                              const StrokeMasterAboutTheme& theme = StrokeMasterAboutTheme());
 
+/** Whether the notice is due: not yet shown for this version, for this user, and not in a run
+    that names its own switches' file (STROKEMASTER_SETTINGS, as every test does). */
+bool StrokeMasterNoticeDue();
+
+/** Records the notice as shown for this version, for this user. Called before showing it, so a
+    notice that cannot be shown, or that the host closes with itself, is not shown again. */
+void StrokeMasterNoticeShown();
+
+/** Shows the notice: the caveats, in the About window's frame, with a link to the repository's
+    full list (the owner, 2026-11-01). Modeless, so a host driven by scripts never waits on it.
+
+    @return false if it could not be shown. */
+bool StrokeMasterShowNotice(HINSTANCE instance, HWND parent,
+                            const StrokeMasterAboutTheme& theme = StrokeMasterAboutTheme());
+
 #endif /* _WIN32 */
 
 #endif /* __STROKEMASTERABOUT_H__ */

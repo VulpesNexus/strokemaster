@@ -41,7 +41,7 @@ def measure_case(folder, run, kind):
     fill, fill_text = render(folder / f"{run}-{kind}-fill.pdf")
     native, _ = render(folder / f"{run}-{kind}-native.pdf")
     route, route_text = render(folder / f"{run}-{kind}-route.pdf")
-    fill_recolor, _ = render(folder / f"{run}-{kind}-fill-recolor.pdf")
+    fill_recolor, fill_recolor_text = render(folder / f"{run}-{kind}-fill-recolor.pdf")
     recolor, recolor_text = render(folder / f"{run}-{kind}-recolor.pdf")
     if len({x.shape for x in (fill, native, route, fill_recolor, recolor)}) != 1:
         raise ValueError("page dimension mismatch")
@@ -56,6 +56,8 @@ def measure_case(folder, run, kind):
            "sourceCharacters": len(fill_text), "routeCharacters": len(route_text),
            "recolorCharacters": len(recolor_text)}
     out["textExact"] = route_text == fill_text
+    # The recolored route's text too (the third review of 2026-11-01).
+    out["recolorTextExact"] = recolor_text == fill_recolor_text
     fixed_path = folder / f"{run}-{kind}-fixed.pdf"
     if fixed_path.exists():
         fixed, _ = render(fixed_path)

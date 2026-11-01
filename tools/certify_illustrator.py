@@ -77,8 +77,30 @@ def receipt(out, job):
     return out / job["id"] / f"{job['id']}-host.txt"
 
 
+def installed_build_ok(build):
+    """Whether the installed plugin is the build named: every job checks it in the host but the
+    census and panel jobs, whose runners take no build (the review of 2026-11-01)."""
+    aip = Path(os.environ.get("LOCALAPPDATA", "")) / "Adobe Illustrator Plug-ins" / "30" / "StrokeMasterRegionProbe.aip"
+    return aip.is_file() and build.encode("ascii") + b"\0" in aip.read_bytes()
+
+
 def run(args):
     out = (ROOT / args.out).resolve() if not Path(args.out).is_absolute() else Path(args.out)
+    if not installed_build_ok(args.build):
+        print(f"the installed plugin is not {args.build}; install it first")
+        return 1
+    if not HIDDEN.is_file():
+        print(f"the hidden-desktop launcher is missing: {HIDDEN}")
+        return 1
+    # One build per folder: receipts left by another build would be measured as this one's (the
+    # second review of 2026-11-01).
+    out.mkdir(parents=True, exist_ok=True)
+    marker = out / "build.txt"
+    if marker.exists() and marker.read_text(encoding="utf-8").strip() != args.build:
+        print(f"{out} holds results of {marker.read_text(encoding='utf-8').strip()}; use another folder")
+        return 1
+    marker.write_text(args.build + "\n", encoding="utf-8")
+    failed = 0
     start = time.time()
     for job in jobs():
         if args.only and not fnmatch.fnmatch(job["id"], args.only):
@@ -100,10 +122,20 @@ def run(args):
         # read the owner's file with the master switch off and failed six lines.
         env = dict(os.environ, STROKEMASTER_SETTINGS=str(folder / f"{job['id']}-settings.txt"))
         t = time.time()
-        result = subprocess.run(cmd, capture_output=True, text=True, timeout=600, env=env)
+        # A job that times out or fails is reported and the run goes on; measure finds its receipt
+        # missing (the whole run stopped at a timeout, and exit codes went unread: the review of
+        # 2026-11-01).
+        try:
+            result = subprocess.run(cmd, capture_output=True, text=True, timeout=600, env=env)
+        except subprocess.TimeoutExpired:
+            print(f"{job['id']}: timed out after {round(time.time() - t)} s")
+            failed += 1
+            continue
         tail = (result.stdout or "").strip().splitlines()[-1:] or [""]
-        print(f"{job['id']}: {round(time.time() - t)} s, {tail[0][:120]}")
-    return 0
+        code = f", exit {result.returncode}" if result.returncode else ""
+        failed += 1 if result.returncode else 0
+        print(f"{job['id']}: {round(time.time() - t)} s{code}, {tail[0][:120]}")
+    return 1 if failed else 0
 
 
 def measure_story(folder, job):
@@ -115,6 +147,7 @@ def measure_story(folder, job):
     out = {"gate": gate, "damage": meas["routeDamagePt2"], "native": meas["nativeDamagePt2"],
            "halo": meas["haloChangedPt2"], "recolor": meas["recolorDamagePt2"],
            "text": [meas["routeCharacters"], meas["sourceCharacters"]],
+           "textExact": meas.get("textExact"), "recolorTextExact": meas.get("recolorTextExact"),
            "glyphs": [glyphs(folder / f"{job['id']}-{job['case']}-route.pdf"), glyphs(folder / f"{job['id']}-{job['case']}-fill.pdf")]}
     # After native-fix as well (the user's script runs both): the miter limits.
     if "fixedDamagePt2" in meas:
@@ -130,7 +163,13 @@ def measure_runs(folder, job):
     r, rt = render(folder / f"{job['id']}-{k}-route.pdf")
     core = core_of(f)
     outside = ~ndimage.binary_dilation(f.min(axis=2) < INK, iterations=ERODE)
-    return {"gate": row.get("gate"), "order": [row.get("before"), row.get("after")], "groups": row.get("groups"),
+    # The gate: the row's own, or Correct Selection's in its route record (-ViaCorrect writes no
+    # gate of its own, so the job's gate compared null with null: the second review of 2026-11-01).
+    gate = row.get("gate")
+    if gate is None and '"gate":"' in (row.get("route") or ""):
+        gate = row["route"].split('"gate":"', 1)[1].split('"', 1)[0]
+    return {"gate": gate, "order": [row.get("before"), row.get("after")], "groups": row.get("groups"),
+            "textSame": rt == ft,
             "damage": round(int((core & differs(r, f)).sum()) * PT2, 2), "native": round(int((core & differs(n, f)).sum()) * PT2, 2),
             "halo": round(int((outside & differs(r, n)).sum()) * PT2, 2), "text": [len(rt), len(ft)],
             "glyphs": [glyphs(folder / f"{job['id']}-{k}-route.pdf"), glyphs(folder / f"{job['id']}-{k}-fill.pdf")]}
@@ -145,7 +184,8 @@ def measure_refix(folder, job):
     core, rcore = core_of(fill), core_of(fr)
     px = lambda pt: int(pt * 600 / 72)
     bands = {"A": (0, 240), "B": (240, 480), "C": (480, 660), "D": (660, 840), "E": (840, 1100)}
-    out = {"text": [len(rt), len(rct), len(ft)],
+    # Counts, and the text itself compared (the second review of 2026-11-01).
+    out = {"text": [len(rt), len(rct), len(ft)], "textSame": [rt == ft, rct == ft],
            "glyphs": [glyphs(Path(f"{p}-route.pdf")), glyphs(Path(f"{p}-recolor.pdf")), glyphs(Path(f"{p}-fill.pdf"))]}
     for k, (a, b) in bands.items():
         sl = slice(px(a), px(b))
@@ -159,6 +199,7 @@ def measure_exports(folder, job):
     from PIL import Image
     p = folder / job["id"]
     out = {}
+    _, ft0 = render(Path(f"{p}-fill.pdf"))
     for ext in ["pdf", "png", "pdfx4.pdf", "pdfx1a.pdf", "jpg"]:
         if not Path(f"{p}-fill.{ext}" if "." not in ext else f"{p}-fill-{ext}").exists():
             continue
@@ -174,12 +215,14 @@ def measure_exports(folder, job):
         if ext.endswith(".pdf"):
             _, xt = render(Path(f"{p}-route-{ext}"))
             out[ext + ".text"] = len(xt)
+            out[ext + ".textSame"] = xt == ft0
             out[ext + ".glyphs"] = glyphs(Path(f"{p}-route-{ext}"))
         out[ext] = {"damage": round(int((core & differs(r, f)).sum()) * (72 / 300) ** 2, 2),
                     "native": round(int((core & differs(n, f)).sum()) * (72 / 300) ** 2, 2)}
     _, ft = render(Path(f"{p}-fill.pdf"))
     _, rt = render(Path(f"{p}-route.pdf"))
     out["text"] = [len(rt), len(ft)]
+    out["textSame"] = rt == ft
     out["glyphs"] = [glyphs(Path(f"{p}-route.pdf")), glyphs(Path(f"{p}-fill.pdf"))]
     return out
 
@@ -213,7 +256,7 @@ def measure_panel(folder, job):
             "masterOffEnabled": num(r["statusMasterOff"], "enabled"), "masterOffCorrect": num(r["statusMasterOff"], "correctEnabled"),
             "groups": r["groups"], "framesInGroup": r["framesInGroup"], "groupsAfterUndo": r["groupsAfterUndo"],
             "settingsLeft": not r.get("settingsRemoved", False) and not r.get("settingsExisted", False),
-            "damage": round(int((core & differs(rt_img, f)).sum()) * PT2, 2), "text": [len(rt), len(ft)],
+            "damage": round(int((core & differs(rt_img, f)).sum()) * PT2, 2), "text": [len(rt), len(ft)], "textSame": rt == ft,
             "glyphs": [glyphs(Path(f"{p}-route.pdf")), glyphs(Path(f"{p}-fill.pdf"))]}
 
 
@@ -227,12 +270,18 @@ def measure_switches(folder, job):
         return int(found.group(1)) if found else None
     out = {"tips": num(m.get("uiStatusAfterTab"), "tips"), "tabTo": num(m.get("uiStatusAfterTab"), "tabTo"),
            "square": [m.get("squareBefore"), m.get("squareOn"), m.get("squareOff")], "routeLimit": m.get("routeLimit"),
-           "glyphs": [m["stages"]["dashes-off"]["glyphsDrawn"], m["fillGlyphsDrawn"]], "stages": {}}
+           "glyphs": [m["stages"]["dashes-off"]["glyphsDrawn"], m["fillGlyphsDrawn"]], "stages": {},
+           # Five more switches turned off and back on (the second review of 2026-11-01); and for each,
+           # whether off changed the item and on again restored it, so that a switch doing nothing
+           # cannot pass by matching a baseline that recorded it doing nothing (the third review).
+           "switchesOff": m.get("switchesOff"),
+           "switchesOffWork": {k: v[1] != v[0] and v[2] == v[0] for k, v in (m.get("switchesOff") or {}).items()}}
     for name, st in m["stages"].items():
         if name == "native":
             continue
         c = st["correct"]
-        out["stages"][name] = {"damage": st["damagePt2"], "groups": st["groups"], "gate": c["gate"],
+        # Each stage's text compared with the fill's (the third review of 2026-11-01).
+        out["stages"][name] = {"damage": st["damagePt2"], "groups": st["groups"], "gate": c["gate"], "textSame": st.get("textSame"),
                                **{k: c[k] for k in ("stories", "frames", "paths", "unrouted", "dissolved", "undashed")}}
     return out
 
@@ -299,6 +348,11 @@ def measure(args):
             cert["missing"].append(job["id"])
             continue
         host = receipt(out, job).read_text(encoding="utf-8-sig", errors="replace")
+        # A job whose script reported a failure is a failed job, whatever results it left (the second
+        # review of 2026-11-01).
+        if "|FAIL|" in "|" + host or "WRAPPER ERROR" in host:
+            cert["jobs"][job["id"]] = {"error": "the job reported a failure", "hostTail": host[-200:]}
+            continue
         try:
             cert["jobs"][job["id"]] = MEASURES[job["kind"]](folder, job)
             cert["jobs"][job["id"]]["host"] = host.split("|")[0]
@@ -313,6 +367,12 @@ def compare(args):
     out = Path(args.out)
     cert = json.loads((out / "certification.json").read_text(encoding="utf-8"))
     if args.write_baseline:
+        # Only from a clean run: a failed or missing job written in would pass for good (the review
+        # of 2026-11-01).
+        bad = [j for j, v in cert["jobs"].items() if "error" in v] + cert.get("missing", [])
+        if bad:
+            print(f"not written: failed or missing jobs {', '.join(bad)}")
+            return 1
         Path(args.baseline).write_text(json.dumps(cert, indent=2) + "\n", encoding="utf-8")
         print(f"baseline written: {args.baseline}")
         return 0
@@ -321,13 +381,27 @@ def compare(args):
 
     def num(path, a, b, halo=False):
         slack = max(2.0, 0.10 * a) if halo else max(1.0, 0.05 * a)
-        if b > a + slack:
+        if b != b or b > a + slack:   # b != b: NaN, which compared as within any slack
             fails.append(f"{path}: {a} -> {b}")
 
     def walk(path, a, b):
+        # A value that came back empty, or of another kind, fails rather than matching no branch
+        # (the review of 2026-11-01: a measure returning None passed).
+        if a is None or b is None:
+            if a is not b:
+                fails.append(f"{path}: {a} -> {b}")
+            return
+        if isinstance(a, dict) != isinstance(b, dict) or isinstance(a, list) != isinstance(b, list):
+            fails.append(f"{path}: {type(a).__name__} -> {type(b).__name__}")
+            return
+        if isinstance(a, (int, float)) and not isinstance(a, bool) and not isinstance(b, (int, float)):
+            fails.append(f"{path}: {a} -> {b}")
+            return
         if isinstance(a, dict):
             for k, v in a.items():
-                if k in ("host", "native", "hostTail", "order") or k == "error":
+                # "order" compared too: the stacking that shows hidden art moved out from between
+                # frames, which no damage measure sees (the review of 2026-11-01).
+                if k in ("host", "native", "hostTail") or k == "error":
                     continue
                 if k not in b:
                     fails.append(f"{path}.{k}: missing")

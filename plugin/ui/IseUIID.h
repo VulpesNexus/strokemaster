@@ -101,7 +101,6 @@ DECLARE_PMID(kWidgetIDSpace, kIseUIShapeMiterWidgetID, kIseUIPrefix + 0x5C)
 #define kIseUICloseHolesKey          kIseUIStringPrefix "kIseUICloseHolesKey"
 #define kIseUIShapeMiterKey          kIseUIStringPrefix "kIseUIShapeMiterKey"
 #define kIseUIRestoreKey             kIseUIStringPrefix "kIseUIRestoreKey"
-#define kIseUINoteKey                kIseUIStringPrefix "kIseUINoteKey"
 #define kIseUIEngineMissingKey       kIseUIStringPrefix "kIseUIEngineMissingKey"
 #define kIseUIAboutMenuKey           kIseUIStringPrefix "kIseUIAboutMenuKey"
 

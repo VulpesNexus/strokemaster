@@ -38,8 +38,11 @@ That is a restriction GPL section 10 forbids anyone from imposing on a
 recipient, and section 5(c) requires the whole combined work to be licensed
 under the GPL, which no one but Adobe is in a position to do for Adobe's code.
 
-So the source in this repository is unambiguously GPL: it contains no Adobe
-code, and both SDKs are referenced by path rather than vendored. The *compiled
+So StrokeMaster's own source in this repository is unambiguously GPL: it
+contains no Adobe code, and both SDKs are referenced by path rather than
+vendored. The one third-party library it vendors, Clipper2 (in
+plugin/third_party/clipper2/), keeps its own Boost Software License 1.0, which
+is compatible with the GPL; see its LICENSE file. The *compiled
 plugins* would not be distributable under a bare GPL, because the license they
 purported to grant would cover code the copyright holder has no authority to
 relicense. Section 7 exists for exactly this situation, and this file uses it.
@@ -81,7 +84,8 @@ complying with whatever agreement Adobe attaches to it, remains entirely
 between you and Adobe. These exceptions only remove the GPL's objection to the
 combination; they do not create a right to the other half of it.
 
-They also do not weaken the GPL over StrokeMaster itself. The source in this
-repository, the ExtendScript in tools/jsx/ (which links nothing and never
-needed an exception in the first place), and any modification you make to
-either, stay GPL-3.0-or-later.
+They also do not weaken the GPL over StrokeMaster itself. Its source in this
+repository (all of it but the vendored Clipper2, which keeps its own license),
+the ExtendScript in tools/jsx/ (which links nothing and never needed an
+exception in the first place), and any modification you make to either, stay
+GPL-3.0-or-later.

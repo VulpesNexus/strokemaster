@@ -1,7 +1,7 @@
 ﻿# SPDX-License-Identifier: GPL-3.0-or-later
 # Copyright (C) 2026 Vixen420
 #
-# Photographs the About dialog in both themes without touching the screen the user works on:
+# Photographs the About dialog and the notice in both themes without touching the screen the user works on:
 # the harness runs on a desktop of its own, so its dialog takes no focus, and draws itself
 # into a BMP (/shot). Windows PowerShell 5.1.
 #
@@ -32,8 +32,10 @@ public static class OwnDesktop {
 '@
 New-Item -ItemType Directory -Force $Out | Out-Null
 $dir = Split-Path $Harness
-foreach ($theme in @(@('light', ''), @('dark', '/dark'))) {
-  $bmp = Join-Path $Out ("about-" + $theme[0] + ".bmp")
-  $ok = [OwnDesktop]::Run($Harness, ($theme[1] + ' /shot:"' + $bmp + '"').Trim(), $dir)
-  "{0}: started={1} written={2}" -f $theme[0], $ok, (Test-Path -LiteralPath $bmp)
+foreach ($kind in @(@('about', ''), @('notice', ' /notice'))) {
+  foreach ($theme in @(@('light', ''), @('dark', '/dark'))) {
+    $bmp = Join-Path $Out ($kind[0] + "-" + $theme[0] + ".bmp")
+    $ok = [OwnDesktop]::Run($Harness, ($theme[1] + $kind[1] + ' /shot:"' + $bmp + '"').Trim(), $dir)
+    "{0} {1}: started={2} written={3}" -f $kind[0], $theme[0], $ok, (Test-Path -LiteralPath $bmp)
+  }
 }

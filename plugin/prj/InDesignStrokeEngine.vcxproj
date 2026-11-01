@@ -97,7 +97,7 @@
              - odfrc writes each resource as idrc_<type>\<id>.idrc rather than into the .fres,
                which stays empty here, and InDesign reads them from a folder named
                "(<plugin> Resources)" beside the plugin, so the whole tree is copied. -->
-      <Command>set PATH=$(IseSdkDir)\devtools\bin;%PATH%
+      <Command>set "PATH=$(IseSdkDir)\devtools\bin;%PATH%"
 call "$(IseSdkDir)\devtools\bin\merge_res.cmd" "$(IntDir)" Ise
 if exist "$(TargetDir)($(TargetName) Resources)\" del /f /s /q "$(TargetDir)($(TargetName) Resources)\*.idrc" &gt;nul 2&gt;&amp;1
 xcopy /Q /E /Y "$(IntDir)*.idrc" "$(TargetDir)($(TargetName) Resources)\"</Command>

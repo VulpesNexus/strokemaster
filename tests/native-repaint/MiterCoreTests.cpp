@@ -40,6 +40,38 @@ static bool HasCornerAt(const std::vector<Stub>& s, Pt v)
 
 int main()
 {
+    // InDesign can emit a straight edge as curveto, just as Illustrator does.
+    {
+        Recorder r;
+        r.MoveTo({0, 0});
+        r.CurveTo({3, .00005}, {7, 0}, {10, 0});
+        r.CurveTo({10, 3}, {11, 7}, {10, 10});
+        r.Close();
+        const auto c = r.Contours()[0];
+        Check(!c.segments[0].curve, "recorder: straight cubic within tolerance is a line");
+        Check(c.segments[1].curve, "recorder: a real curve stays a curve");
+        Check(!StraightCubic({0, 0}, {-1, 0}, {7, 0}, {10, 0}), "overshooting controls stay curved");
+        Check(!StraightCubic({0, 0}, {3, 0}, {7, 0}, {0, 0}), "zero chord with displaced controls stays curved");
+        Check(!StraightCubic({0, 0}, {3, .001}, {7, 0}, {10, 0}), "a small real bend stays curved");
+        Check(FlatCubic({0, 0}, {3, .15}, {7, 0}, {10, 0}) && !FlatCubic({0, 0}, {3, .25}, {7, 0}, {10, 0}),
+              "a bend within 2% of the chord is flat, past it not");
+        Check(!FlatCubic({0, 0}, {-1, 0}, {7, 0}, {10, 0}), "an overshooting control is not flat");
+        const std::vector<Pt> triangle = {{347.9, 206.3}, {384.6, 130.3}, {386.6, 225.7}};
+        Recorder shape;
+        shape.MoveTo(triangle[0]);
+        for (size_t i = 0; i < triangle.size(); ++i) {
+            const Pt a = triangle[i], b = triangle[(i + 1) % triangle.size()];
+            shape.CurveTo(a + (b - a) * (1.0 / 3), a + (b - a) * (2.0 / 3), b);
+        }
+        shape.Close();
+        const auto outline = shape.Contours();
+        Check(std::none_of(outline[0].segments.begin(), outline[0].segments.end(),
+                           [](const Segment& s) { return s.curve; }), "recorder: the handled triangle has three straight edges");
+        const auto corners = ExteriorCorners(outline, With(5));
+        Check(corners.size() == 3 && std::any_of(corners.begin(), corners.end(),
+              [](const Stub& s) { return s.ratio > 4.28 && WholePoint(s, 5); }), "recorder: the triangle's apex stays whole");
+    }
+
     // A square keeps all four miters, wound either way.
     const Contour ccw = Poly({{0, 0}, {10, 0}, {10, 10}, {0, 10}});
     const Contour cw = Poly({{0, 0}, {0, 10}, {10, 10}, {10, 0}});
@@ -236,8 +268,53 @@ int main()
             // TipReach: flush beside a short edge, otherwise trimmed to the shorter edge past the stroke.
             Check(std::fabs(TipReach(tiny, 4) - 4) < 1e-12, "a tip beside a short edge: cut flush at h");
             Stub longTip = curved;
-            longTip.ratio = 4; longTip.edge = 3;
-            Check(std::fabs(TipReach(longTip, 2) - 5) < 1e-12, "a curved tip between long edges: h past the stroke's edge by the edge");
+            longTip.ratio = 4; longTip.edge = 5;
+            Check(std::fabs(TipReach(longTip, 2) - 7) < 1e-12, "a curved tip between long edges: h past the stroke's edge by the edge");
+            // Continuous where the edge crosses h and 2h (the review of 2026-11-01: a stroke 0.02 pt
+            // heavier halved a tip).
+            Stub band = curved;
+            band.ratio = 4;
+            band.edge = 2 - 1e-9;
+            const double below = TipReach(band, 2);
+            band.edge = 2 + 1e-9;
+            Check(std::fabs(TipReach(band, 2) - below) < 1e-6, "no jump where the edge crosses h");
+            band.edge = 4 - 1e-9;
+            const double under = TipReach(band, 2);
+            band.edge = 4 + 1e-9;
+            Check(std::fabs(TipReach(band, 2) - under) < 1e-6, "no jump where the edge crosses 2h");
+            band.edge = 3;
+            Check(TipReach(band, 2) > 2 && TipReach(band, 2) < 5, "between: from flush toward the whole reach");
+            // The reach InDesign draws within the limit: NearTip's TipReach, or the whole miter. No
+            // jump where the edge crosses h or 2h, on a straight corner of ratio 3 or a curved one of
+            // ratio 1.8, which TrimmedTip calls a tip only beside an edge shorter than h (the second
+            // review of 2026-11-01).
+            auto drawn = [](Stub s, double h) { return NearTip(s, h) ? TipReach(s, h) : s.ratio * h; };
+            for (int kind = 0; kind < 2; ++kind) {
+                Stub c = curved;
+                c.inCurve = c.outCurve = kind == 1;
+                c.ratio = kind == 1 ? 1.8 : 3;
+                for (double at : {2.0, 4.0}) {
+                    c.edge = at - 1e-9;
+                    const double lo = drawn(c, 2);
+                    c.edge = at + 1e-9;
+                    Check(std::fabs(drawn(c, 2) - lo) < 1e-6, kind ? "curved, ratio 1.8: no jump" : "straight, ratio 3: no jump");
+                }
+                c.edge = 1;
+                Check(std::fabs(drawn(c, 2) - 2) < 1e-12, "beside a short edge: flush at h");
+                c.edge = 5;
+                Check(std::fabs(drawn(c, 2) - c.ratio * 2) < 1e-12, "beside a long edge: the whole miter");
+            }
+        }
+        {
+            // A teardrop with one anchor: one closed curve that meets itself at a corner (it was
+            // skipped: the review of 2026-11-01).
+            Contour tear;
+            tear.start = {0, 0};
+            Segment loop; loop.curve = true; loop.c1 = {30, -60}; loop.c2 = {-30, -60}; loop.p = {0, 0};
+            tear.segments.push_back(loop);
+            Options o; o.halfWidth = 2;
+            const std::vector<Stub> st = ExteriorCorners({tear}, o);
+            Check(st.size() == 1 && Len(st[0].v - Pt{0, 0}) < 1e-9, "a one-curve teardrop has its corner");
         }
         Check(apex, "the wedge's apex is an exterior corner");
         const std::vector<Ring> one = Flatten({ccw}, 1e-3, 1e-9);
@@ -997,7 +1074,79 @@ int main()
         auto inPair = [&](Pt q) { return Winding(Flatten(pair, 1e-4, 1e-9), q) != 0; };
         Check(okS && inPair({4.75, 5}) && inPair({2.5, 5}), "Silhouette: the gap the touching strokes enclose is filled");
         Check(ise_region::Silhouette({left, right}, 0.5, 1e-3, &okS).size() == 2 && okS, "Silhouette: strokes that do not touch close nothing between them");
+        // Strokes of reach 0.75 that just meet across the 1.5 gap, the silhouette kept 2 tol short
+        // of their edge as the callers keep it: the gap is still closed, and nothing passes the edge.
+        auto inPair2 = [&](const std::vector<Contour>& s, Pt q) { return Winding(Flatten(s, 1e-4, 1e-9), q) != 0; };
+        const std::vector<Contour> touching = ise_region::Silhouette({left, right}, 0.75 - 2e-3, 1e-3, &okS);
+        auto inTouching = [&](Pt q) { return Winding(Flatten(touching, 1e-4, 1e-9), q) != 0; };
+        Check(okS && inTouching({4.75, 5}) && !inTouching({4.75, 10.8}) && !inTouching({-0.8, 5}),
+              "Silhouette: strokes that just touch close the gap between them");
+        // 1.44 across a 1.5 gap, 4% of the reach short: as touching. 1.2 across it: open.
+        Check(inPair2(ise_region::Silhouette({left, right}, 0.72, 1e-3, &okS), {4.75, 5}) && okS,
+              "Silhouette: strokes that nearly touch close the gap between them");
+        Check(!inPair2(ise_region::Silhouette({left, right}, 0.6, 1e-3, &okS), {4.75, 5}) && okS,
+              "Silhouette: strokes a twentieth of the reach apart or more close nothing");
+        // Holes alone (a dashed stroke): the gap between the U shapes, not the band around them.
+        const std::vector<Contour> holesOnly = ise_region::Silhouette({left, right}, 1, 1e-3, &okS, ise_region::BandJoin::Bevel, 0, true);
+        Check(okS && inPair2(holesOnly, {4.75, 5}) && !inPair2(holesOnly, {-0.5, 5}) && !inPair2(holesOnly, {0.5, 5}),
+              "Silhouette: holes only, without the stroke's band or the fill");
+        // Four separate bars leave a 1 pt square hole at reach 12. The wider field
+        // used to bridge near-touching strokes erases that hole before detection.
+        const std::vector<Contour> pinhole = {
+            Poly({{-20, -13.5}, {20, -13.5}, {20, -12.5}, {-20, -12.5}}),
+            Poly({{-20, 12.5}, {20, 12.5}, {20, 13.5}, {-20, 13.5}}),
+            Poly({{-13.5, -20}, {-12.5, -20}, {-12.5, 20}, {-13.5, 20}}),
+            Poly({{12.5, -20}, {13.5, -20}, {13.5, 20}, {12.5, 20}})};
+        for (const auto join : {ise_region::BandJoin::Bevel, ise_region::BandJoin::Round, ise_region::BandJoin::Miter}) {
+            const auto closed = ise_region::Silhouette(pinhole, 12, .01, &okS, join, 4, true);
+            Check(okS && inPair2(closed, {0, 0}) && inPair2(closed, {0.49, 0}) && !inPair2(closed, {0.55, 0}) &&
+                      !inPair2(closed, {13, 0}) && !inPair2(closed, {20, 0}),
+                  "Silhouette: preserve a small actual-stroke hole that wider detection erases");
+            auto reversed = pinhole;
+            for (auto& c : reversed) c = Reversed(c, 1e-9);
+            const auto reverseClosed = ise_region::Silhouette(reversed, 12, .01, &okS, join, 4, true);
+            Check(okS && reverseClosed.size() == 1 && inPair2(reverseClosed, {0.49, 0}) && !inPair2(reverseClosed, {0.55, 0}),
+                  "Silhouette: small actual-stroke hole with reversed winding");
+            const auto shared = ise_region::Silhouette(pinhole, 10, .01, &okS, join, 4, true);
+            Check(okS && shared.size() == 1 && Winding(Flatten(shared, 1e-4, 1e-9), {0, 0}) == 1 &&
+                      inPair2(shared, {2.49, 0}) && !inPair2(shared, {2.55, 0}),
+                  "Silhouette: overlapping actual and wider hole fields unite once");
+        }
+        // Hollow (letters nothing fills): the "o" keeps its body open, its counter and band filled.
+        const std::vector<Contour> hollowO = ise_region::Silhouette({outer, counter}, 1, 1e-3, &okS, ise_region::BandJoin::Bevel, 0, false, true);
+        Check(okS && !inPair2(hollowO, {1.5, 5}) && inPair2(hollowO, {5, 5}) && inPair2(hollowO, {-0.5, 5}),
+              "Silhouette: hollow, without the letters' own region");
+        // TippedOutline: a 20-degree spike beside edges shorter than the reach (a tip, past a limit
+        // of 4) cut flush at the reach; a square's corners whole, within the limit.
+        const Contour spike = Poly({{0, 0}, {0.9, 0.159}, {0, 0.317}});
+        const std::vector<Contour> tipped = ise_region::TippedOutline({spike}, 1, 4, 1e-3, &okS);
+        Check(okS && inPair2(tipped, {1.85, 0.159}) && !inPair2(tipped, {1.95, 0.159}) && !inPair2(tipped, {0.3, 0.159}),
+              "TippedOutline: a spike's tip cut flush at the reach, the fill left out");
+        const std::vector<Contour> square = ise_region::TippedOutline({outer}, 1, 4, 1e-3, &okS);
+        Check(okS && inPair2(square, {10.9, 10.9}) && inPair2(square, {-0.9, -0.9}), "TippedOutline: a square's corners mitered whole");
         Check(ise_region::Silhouette({}, 1, 1e-3, &okS).empty(), "Silhouette: nothing to fill");
+        // A frame whose right wall has a slot, closed only by two points facing each other 2.2
+        // apart (55 degrees, a miter 2.15 times the reach): a mitered stroke of reach 1 closes the
+        // frame, a round or beveled one leaves it open (the owner's retest Z3, 2026-11-01).
+        auto frame = [](double half) {
+            return std::vector<Contour>{
+                Poly({{-10, -10}, {10, -10}, {10, -8}, {-10, -8}}), Poly({{-10, 8}, {10, 8}, {10, 10}, {-10, 10}}),
+                Poly({{-10, -10}, {-8, -10}, {-8, 10}, {-10, 10}}), Poly({{9, half}, {10, half + 1.9}, {10, 10}, {8, 10}, {8, half + 1.9}}),
+                Poly({{8, -10}, {10, -10}, {10, -half - 1.9}, {9, -half}, {8, -half - 1.9}})};
+        };
+        auto inFrame = [&](double half, ise_region::BandJoin join, double limit, Pt q) {
+            const std::vector<Contour> s = ise_region::Silhouette(frame(half), 1, 1e-3, &okS, join, limit);
+            return okS && Winding(Flatten(s, 1e-4, 1e-9), q) != 0;
+        };
+        Check(inFrame(1.1, ise_region::BandJoin::Miter, 4, {0, 0}), "Silhouette: a hole that mitered points close is filled");
+        Check(!inFrame(1.1, ise_region::BandJoin::Round, 0, {0, 0}) && okS && !inFrame(1.1, ise_region::BandJoin::Bevel, 0, {0, 0}) && okS,
+              "Silhouette: round and beveled strokes leave the slot open");
+        // 1.8 apart, past a limit of 2: beveled as the stroke draws them, not squared off a reach
+        // out, which would close the slot.
+        Check(!inFrame(0.9, ise_region::BandJoin::Miter, 2, {0, 0}) && okS && inFrame(0.9, ise_region::BandJoin::Miter, 4, {0, 0}),
+              "Silhouette: points past the miter limit stay beveled and close nothing");
+        Check(inFrame(1.1, ise_region::BandJoin::Miter, 4, {10.4, 10.4}) && !inFrame(1.1, ise_region::BandJoin::Miter, 4, {10.6, 10.6}),
+              "Silhouette: its outline stays beveled under a mitered stroke");
     }
 
     std::printf("miter core: %d checks passed\n", checks);

@@ -12,10 +12,17 @@ def main():
     # A fresh environment mapping removes duplicate PATH/Path entries inherited from
     # some supervisors; MSBuild/.NET cannot accept both. Values are never logged.
     env = dict(os.environ)
+    # Visual Studio's optional vcpkg initializer uses an unquoted PATH assignment.
+    # Start this compiler-only child with Windows tools; vcvars adds the toolchain.
+    # This avoids interpreting shell metacharacters in unrelated inherited paths.
+    system_root = Path(env["SYSTEMROOT"])
+    env["PATH"] = os.pathsep.join(str(p) for p in (
+        system_root / "System32", system_root, system_root / "System32/Wbem"))
     vswhere = Path(env["ProgramFiles(x86)".upper()]) / "Microsoft Visual Studio/Installer/vswhere.exe"
     installations = subprocess.check_output(
         [str(vswhere), "-all", "-products", "*", "-requires", "Microsoft.VisualStudio.Component.VC.Tools.x86.x64",
          "-property", "installationPath"], env=env, text=True,
+        creationflags=subprocess.CREATE_NO_WINDOW,
     ).splitlines()
     vcvars = None
     for installation in installations:
@@ -62,6 +69,7 @@ def main():
     result = subprocess.run(
         'cmd.exe /d /s /c "' + command + '"', cwd=repo, env=env,
         text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
+        creationflags=subprocess.CREATE_NO_WINDOW,
     )
     (out / "tests.log").write_text(result.stdout, encoding="utf-8")
     print(result.stdout, end="")

@@ -24,6 +24,9 @@ int main()
     const std::wstring root = std::wstring(temp) + L"ise-settings-test-" + std::to_wstring(GetCurrentProcessId());
     CreateDirectoryW(root.c_str(), nullptr);
     _wputenv_s(L"APPDATA", root.c_str());
+    // A file named by STROKEMASTER_SETTINGS would be the one written and deleted below: never
+    // the test's (the review of 2026-11-01).
+    _wputenv_s(L"STROKEMASTER_SETTINGS", L"");
 
     Settings s;
     FILETIME stamp;
@@ -54,6 +57,19 @@ int main()
     Check(ise_settings::Load(&s) && !s.shapes && s.textStories && s.enabled && s.wholePoints, "hand-edited file");
 
     DeleteFileW(ise_settings::FilePath().c_str());
+    {
+        // true and false read as 1 and 0; anything else keeps the default (any value but 0 read
+        // as on: the review of 2026-11-01).
+        FILE* words = _wfopen(ise_settings::FilePath().c_str(), L"wb");
+        std::fputs("enabled=false\ntext_behind=maybe\nclose_holes=TRUE\n", words);
+        std::fclose(words);
+        Settings w;
+        ise_settings::Load(&w);
+        Check(!w.enabled, "enabled=false is off");
+        Check(w.textBehind, "an unknown value keeps the default");
+        Check(w.closeHoles, "TRUE is on");
+        DeleteFileW(ise_settings::FilePath().c_str());
+    }
     RemoveDirectoryW(ise_settings::Folder().c_str());
     RemoveDirectoryW(root.c_str());
     if (gFailures) { std::printf("settings: %d of %d checks failed\n", gFailures, gChecks); return 1; }

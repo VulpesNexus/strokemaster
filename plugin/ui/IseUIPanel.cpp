@@ -66,7 +66,7 @@ const Box kBoxes[] = {
     {kIseUIInsideWidgetID, &Settings::inside, &Settings::shapes, nullptr},
     {kIseUIOpenPathsWidgetID, &Settings::openPaths, &Settings::shapes, nullptr},
     {kIseUITransparencyWidgetID, &Settings::transparency, &Settings::shapes, nullptr},
-    {kIseUICloseHolesWidgetID, &Settings::closeHoles, &Settings::textBehind, nullptr},
+    {kIseUICloseHolesWidgetID, &Settings::closeHoles, nullptr, nullptr},
 };
 
 void SetChecked(IPanelControlData* panel, const WidgetID& id, bool on, bool enabled)
@@ -96,14 +96,25 @@ void ShowSettings(IPanelControlData* panel, const Settings& s)
     const bool engine = EngineInstalled();
     SetChecked(panel, kIseUIEnabledWidgetID, s.enabled, engine);
     for (const Box& b : kBoxes) {
-        const bool enabled = engine && s.enabled && (b.parent == nullptr || s.*(b.parent)) && (b.parent2 == nullptr || s.*(b.parent2));
+        bool enabled = engine && s.enabled && (b.parent == nullptr || s.*(b.parent)) && (b.parent2 == nullptr || s.*(b.parent2));
+        // Trim glyph tips acts on live text (Strokes behind other letters' fills) or on shapes and
+        // outlines: grayed when neither is drawn (the second review of 2026-11-01).
+        if (b.widget == kIseUIGlyphTipsWidgetID) enabled = enabled && (s.textBehind || s.shapes);
+        // Close holes too: live text, or shapes and outlined text (the owner's retest notes, 2026-11-01).
+        if (b.widget == kIseUICloseHolesWidgetID) enabled = enabled && (s.textBehind || s.shapes);
         SetChecked(panel, b.widget, s.*(b.field), enabled);
     }
+    // The note says only that the engine is missing: what the corrections keep is in About and
+    // the notice (the owner's retest Z6, 2026-11-01: "retire 'Rendered live, not saved.'").
     IControlView* note = panel->FindWidget(kIseUINoteWidgetID);
     InterfacePtr<ITextControlData> text(note, UseDefaultIID());
     if (text != nil) {
-        PMString line(engine ? kIseUINoteKey : kIseUIEngineMissingKey);
-        line.Translate();
+        PMString line;
+        if (!engine) {
+            line = PMString(kIseUIEngineMissingKey);
+            line.Translate();
+        }
+        line.SetTranslatable(kFalse);
         text->SetString(line);
     }
 }
@@ -117,8 +128,8 @@ COLORREF InterfaceColor(IInterfaceColors* colors, int32 id, COLORREF fallback)
     return RGB(byte(c.red), byte(c.green), byte(c.blue));
 }
 
-/** The About window, in InDesign's own interface colors, centered on InDesign's window. */
-void ShowAbout()
+/** InDesign's own interface colors, for the About window and the notice. */
+StrokeMasterAboutTheme Theme()
 {
     InterfacePtr<IInterfaceColors> colors(static_cast<IInterfaceColors*>(GetExecutionContextSession()->QueryInterface(IID_IINTERFACECOLORS)));
     StrokeMasterAboutTheme t;
@@ -133,12 +144,29 @@ void ShowAbout()
     t.buttonText = t.panelText;
     t.buttonBorder = InterfaceColor(colors, kInterfaceBorder, t.buttonBorder);
     t.darkTitleBar = GetRValue(t.panel) * 299 + GetGValue(t.panel) * 587 + GetBValue(t.panel) * 114 < 128 * 1000;
+    return t;
+}
+
+/** This plugin's module, which holds the window's resources. */
+HMODULE Module()
+{
     HMODULE module = nullptr;
     GetModuleHandleExW(GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS | GET_MODULE_HANDLE_EX_FLAG_UNCHANGED_REFCOUNT,
-                       reinterpret_cast<LPCWSTR>(&ShowAbout), &module);
+                       reinterpret_cast<LPCWSTR>(&Module), &module);
+    return module;
+}
+
+/** InDesign's window, which owns the About window and the notice and centers them. */
+HWND Owner()
+{
     HWND active = ::GetActiveWindow();
-    HWND owner = active != nullptr ? ::GetAncestor(active, GA_ROOTOWNER) : nullptr;
-    StrokeMasterShowAboutDialog(module, owner, t);
+    return active != nullptr ? ::GetAncestor(active, GA_ROOTOWNER) : nullptr;
+}
+
+/** The About window, in InDesign's own interface colors, centered on InDesign's window. */
+void ShowAbout()
+{
+    StrokeMasterShowAboutDialog(Module(), Owner(), Theme());
 }
 
 /** Every open document is drawn again, with the switches just written. A layout view keeps
@@ -206,6 +234,11 @@ void IseUIPanelObserver::AutoAttach()
     ise_settings::Load(&s);
     ShowSettings(panel, s);
     AttachAll(true);
+    // The caveats, once for each new version, when the panel first shows (StrokeMasterShowNotice).
+    if (StrokeMasterNoticeDue()) {
+        StrokeMasterNoticeShown();
+        StrokeMasterShowNotice(Module(), Owner(), Theme());
+    }
 }
 
 void IseUIPanelObserver::AutoDetach()
@@ -236,7 +269,9 @@ void IseUIPanelObserver::Update(const ClassID& theChange, ISubject* theSubject, 
             if (!found) return;
         }
     }
-    ise_settings::Save(s);
+    // The engine reads the file: when it cannot be written, the panel shows what the file holds,
+    // not a state the engine never got (the review of 2026-11-01).
+    if (!ise_settings::Save(s)) ise_settings::Load(&s);
     ShowSettings(panel, s);
     Redraw();
 }
@@ -255,8 +290,10 @@ void IseUIActionComponent::DoAction(IActiveContext*, ActionID actionID, GSysPoin
 {
     if (actionID == kIseUIAboutActionID) { ShowAbout(); return; }
     if (actionID != kIseUIRestoreActionID) return;
-    const Settings s;
-    ise_settings::Save(s);
+    Settings s;
+    // As the button: when the file cannot be written, what it holds (the second review of
+    // 2026-11-01).
+    if (!ise_settings::Save(s)) ise_settings::Load(&s);
     InterfacePtr<IApplication> app(GetExecutionContextSession()->QueryApplication());
     InterfacePtr<IPanelMgr> panels(app ? app->QueryPanelManager() : nil);
     IControlView* view = panels ? panels->GetPanelFromWidgetID(kIseUIPanelWidgetID) : nil;

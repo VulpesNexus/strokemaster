@@ -29,7 +29,7 @@ struct Settings {
     // Live text
     bool textBehind = true;      // strokes behind the fills of other letters (route W)
     bool textStory = true;       // ... across a story's threaded frames (route X)
-    bool textStories = false;    // ... and across separate stories (experimental; Q26)
+    bool textStories = false;    // ... and across separate stories (off by default; Q26)
     bool textMiter = true;       // no miter spikes on text strokes (needs textBehind)
     // Shapes, frames, and outlined text
     bool shapes = true;          // the plugin draws page-item strokes
@@ -116,8 +116,12 @@ inline bool Load(Settings* out)
     while (std::fgets(line, sizeof line, f)) {
         char key[64] = {0}, value[64] = {0};
         if (std::sscanf(line, " %63[^= ] = %63s", key, value) != 2) continue;
+        // 1 or 0 (true, on, false, off too); anything else keeps the default (any value but 0
+        // read as on, so "enabled=false" turned it on: the review of 2026-11-01).
+        const bool on = !std::strcmp(value, "1") || !_stricmp(value, "true") || !_stricmp(value, "on");
+        const bool off = !std::strcmp(value, "0") || !_stricmp(value, "false") || !_stricmp(value, "off");
         for (size_t i = 0; i < count; ++i)
-            if (std::strcmp(key, keys[i].name) == 0) out->*(keys[i].field) = std::strcmp(value, "0") != 0;
+            if (std::strcmp(key, keys[i].name) == 0 && (on || off)) out->*(keys[i].field) = on;
     }
     std::fclose(f);
     return true;
@@ -129,7 +133,10 @@ inline bool Save(const Settings& s)
 {
     const std::wstring path = FilePath(), temp = path + L".tmp";
     if (path.empty()) return false;
-    CreateDirectoryW(path.substr(0, path.find_last_of(L'\\')).c_str(), nullptr);
+    // Its folder, cut at the last separator of either kind (a path with forward slashes made a
+    // folder named after the file: the review of 2026-11-01).
+    const size_t cut = path.find_last_of(L"\\/");
+    if (cut != std::wstring::npos) CreateDirectoryW(path.substr(0, cut).c_str(), nullptr);
     FILE* f = _wfopen(temp.c_str(), L"wb");
     if (f == nullptr) return false;
     size_t count = 0;

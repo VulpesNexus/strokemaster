@@ -56,6 +56,55 @@ int main() {
           "closed path needs three anchors");
     Check(!illustrator_contour::Convert(square, true, nullptr), "null output refused");
 
+    // A straight triangle can acquire nonzero handles during Appearance conversion.
+    {
+        std::vector<Node> triangle = {
+            {{347.9,206.3},{347.9,206.3},{347.9,206.3}},
+            {{384.6,130.3},{384.6,130.3},{384.6,130.3}},
+            {{386.6,225.7},{386.6,225.7},{386.6,225.7}}};
+        for (size_t i = 0; i < triangle.size(); ++i) {
+            Node& a = triangle[i];
+            Node& b = triangle[(i + 1) % triangle.size()];
+            a.out = a.anchor + (b.anchor - a.anchor) * (1.0 / 3);
+            b.in = a.anchor + (b.anchor - a.anchor) * (2.0 / 3);
+        }
+        Check(illustrator_contour::Convert(triangle, true, &contour), "handled triangle converts");
+        Check(std::none_of(contour.segments.begin(), contour.segments.end(),
+                           [](const ise_miter::Segment& s) { return s.curve; }), "collinear handles remain straight");
+        for (bool interior : {false, true}) {
+            const auto choice = native_miter::ChooseLimitForOutline({contour}, 5, 4, interior, true);
+            Check(choice.limit > 4.29 && choice.limit < 4.31 && choice.kept == 3 && choice.cut == 0,
+                  "handled triangle keeps its whole point with interior joins on or off");
+        }
+        // A real bend: the handle 5 pt off its 84 pt chord, past FlatCubic's 2%.
+        triangle[0].out.x += 6;
+        Check(illustrator_contour::Convert(triangle, true, &contour) && contour.segments[0].curve,
+              "a real curve keeps its curve classification");
+        const auto curvedChoice = native_miter::ChooseLimitForOutline({contour}, 5, 4, false);
+        Check(curvedChoice.cut >= 1 && curvedChoice.limit <= 4, "the real curve does not acquire whole-point protection");
+    }
+
+    // The owner's triangle as drawn (CC3): its first point kept a short handle, so its first edge
+    // is a curve 0.75 pt off its chord. It keeps its whole point, at the limit its tangent needs
+    // (ratio 4.377; the chord's 4.289 would still bevel it).
+    {
+        std::vector<Node> drawn = {
+            {{347.901967005078, -206.348755640166}, {347.901967005078, -206.348755640166}, {350.124189227301, -203.459866751277}},
+            {{384.568633671745, -130.348755640166}, {384.568633671745, -130.348755640166}, {384.568633671745, -130.348755640166}},
+            {{386.568633671745, -225.6820889735}, {386.568633671745, -225.6820889735}, {386.568633671745, -225.6820889735}}};
+        Check(illustrator_contour::Convert(drawn, true, &contour) && contour.segments[0].curve, "the drawn edge is a curve");
+        for (bool interior : {false, true}) {
+            const auto choice = native_miter::ChooseLimitForOutline({contour}, 5, 4, interior, true);
+            Check(choice.limit > 4.377 && choice.limit < 4.4 && choice.kept == 3 && choice.cut == 0,
+                  "the drawn triangle keeps its whole point past its tangent's ratio");
+        }
+    }
+
+    Check(!ise_miter::FlatCubic({0, 0}, {-1, 0.1}, {70, 0}, {100, 0}),
+          "a near-chord reversed start tangent remains curved");
+    Check(!ise_miter::FlatCubic({0, 0}, {30, 0}, {101, -0.1}, {100, 0}),
+          "a near-chord reversed end tangent remains curved");
+
     // native_miter::ChooseLimit: the owner's rulings as one native limit.
     {
         // The census thorn: a 10-degree tip between straight 20 pt sides on a 30 pt square

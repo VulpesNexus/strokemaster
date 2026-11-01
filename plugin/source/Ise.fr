@@ -20,6 +20,7 @@
 #include "TextID.h"
 #ifdef ISE_ROUTE_X
 #include "GraphicsID.h"
+#include "DocumentID.h"
 #endif
 #include "PlugInModel_UIAttributes.h"
 
@@ -121,6 +122,22 @@ resource ClassDescriptionTable(kSDKDefClassDescriptionTableResourceID)
         {
             IID_IK2SERVICEPROVIDER, kIseXfDrawEventServiceImpl,
             IID_IDRWEVTHANDLER, kIseXfDrawEventHandlerImpl,
+        }
+    },
+    AddIn
+    {
+        kDocBoss, kInvalidClass,
+        {
+            IID_ISESCREENOBSERVER, kIseScreenObserverImpl,
+            IID_ISESCREENIDLE, kIseScreenIdleImpl,
+        }
+    },
+    Class
+    {
+        kIseScreenDocResponderBoss, kInvalidClass,
+        {
+            IID_IK2SERVICEPROVIDER, kIseScreenDocServiceImpl,
+            IID_IRESPONDER, kIseScreenDocResponderImpl,
         }
     },
 #endif

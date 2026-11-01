@@ -32,13 +32,14 @@
 
 // The release, shown in the window's title line. The plugin's file version follows it.
 #define SM_VERSION_MAJOR    1
-#define SM_VERSION_MINOR    0
+#define SM_VERSION_MINOR    2
 #define SM_VERSION_PATCH    0
-#define SM_WVERSION         L"1.0.0"
+#define SM_WVERSION         L"1.2.0"
 
 #define SM_COPY             L"\x00A9"   /* U+00A9 copyright sign */
 #define SM_REPO_URL         L"https://github.com/VulpesNexus/strokemaster"
 #define SM_AUTHOR_URL       L"https://github.com/VulpesNexus"
+#define SM_KNOW_URL         SM_REPO_URL L"/blob/main/docs/WHAT_TO_KNOW.md"
 
 #endif // RC_INVOKED
 

@@ -20,16 +20,21 @@
 //      between, or the later frame's own frame fill): then the stroke is left to cover it,
 //      as InDesign draws it, because that content is above the glyph in any order.
 //
-// Only observed paint counts: a frame that was hidden, nonprinting, clipped out of the update
+// For output, only observed paint counts: a frame that was hidden, nonprinting, clipped out of the update
 // area, or not drawn for any other reason records nothing and withholds nothing. Records live
 // for one traversal (a spread draw, or a partial draw), bracketed by draw events, and belong
 // to the port they were drawn into; outside a bracket nothing is recorded.
+//
+// The glue uses a separate tracker for screen snapshots of earlier visible layout content,
+// since cached items can replay without fresh paint callbacks. Output traversal records stay
+// isolated from those snapshots.
 //
 // No host pointer stored here is ever dereferenced: runs and ports are compared only.
 // This header runs under the pure test shim.
 //========================================================================================
 #pragma once
 #include <algorithm>
+#include <cmath>
 #include <cstdint>
 #include <memory>
 #include <vector>
@@ -55,6 +60,51 @@ struct Box {
     }
 };
 
+struct FrameBounds {
+    std::uint32_t frame = 0, story = 0;
+    Box box;
+};
+
+// Only frames whose painted bounds meet can depend on one another. Sweep by x so a spread
+// of disjoint frames does not pay for every possible pair during invalidation.
+inline std::vector<std::uint32_t> RelatedFrames(std::vector<FrameBounds> frames, bool overlapDomain)
+{
+    frames.erase(std::remove_if(frames.begin(), frames.end(), [](const FrameBounds& f) {
+        return f.frame == 0 || f.box.Empty();
+    }), frames.end());
+    std::sort(frames.begin(), frames.end(), [](const FrameBounds& a, const FrameBounds& b) { return a.box.x0 < b.box.x0; });
+    std::vector<bool> related(frames.size(), false);
+    // Dense layouts must not allocate one entry per pair or stall a redraw indefinitely.
+    // On exhaustion, extra cache invalidations are safe; omitted dependencies are not.
+    constexpr std::size_t maxComparisons = 1000000;
+    std::size_t comparisons = 0;
+    bool exhausted = false;
+    for (std::size_t i = 0; i < frames.size() && !exhausted; ++i) {
+        const FrameBounds& a = frames[i];
+        for (std::size_t j = i + 1; j < frames.size() && frames[j].box.x0 <= a.box.x1; ++j) {
+            if (++comparisons > maxComparisons) { exhausted = true; break; }
+            const FrameBounds& b = frames[j];
+            if (a.frame == b.frame || (!overlapDomain && (a.story == 0 || a.story != b.story)) || !a.box.Meets(b.box)) continue;
+            related[i] = related[j] = true;
+        }
+    }
+    std::vector<std::uint32_t> out;
+    for (std::size_t i = 0; i < frames.size(); ++i)
+        if (related[i] || exhausted) out.push_back(frames[i].frame);
+    std::sort(out.begin(), out.end());
+    out.erase(std::unique(out.begin(), out.end()), out.end());
+    return out;
+}
+
+// Every drawn frame may gain a neighbor after an edit, even if it never overlapped before.
+// Keep identities only; callers prune deleted UIDs and discard the document on close.
+inline void RememberScreenFrames(std::vector<std::uint32_t>& history, const std::vector<FrameBounds>& frames)
+{
+    for (const auto& frame : frames) if (frame.frame) history.push_back(frame.frame);
+    std::sort(history.begin(), history.end());
+    history.erase(std::unique(history.begin(), history.end()), history.end());
+}
+
 // One path operator of a glyph outline, in pasteboard coordinates.
 struct Seg {
     enum Op : std::uint8_t { Move, Line, Curve, Close } op;
@@ -79,6 +129,10 @@ struct FillRecord {
     Box box;
     bool resolved = true;
     std::shared_ptr<void> source;
+    // The run's stroke, for Close holes across frames (Neighbors): how far it reaches beyond the
+    // glyphs (0: none route W draws) and its paint's UID.
+    double reach = 0;
+    std::uint32_t strokePaint = 0;
 };
 
 // Content drawn during the traversal that may lie above an earlier fill: a page item's
@@ -101,10 +155,17 @@ struct StrokeContext {
     Box strokeBox;                         // the stroke's ink, pasteboard
 };
 
+struct NeighborStats {
+    std::size_t pending = 0, otherPort = 0, otherStory = 0, ownParcel = 0, stroke = 0, bounds = 0, covered = 0;
+};
+
 class Tracker {
 public:
     static constexpr std::size_t kMaxRecords = 65536;
     static constexpr std::size_t kMaxEvents = 65536;
+    // Deeper than any real draw nests (a partial draw inside a spread draw, a placed page inside a
+    // frame): ends were missed, and the traversal starts over (the review of 2026-11-01).
+    static constexpr int kMaxDepth = 8;
 
     std::uint64_t Next() { return ++seq_; }
     std::uint64_t Seq() const { return seq_; }
@@ -112,15 +173,20 @@ public:
     // Traversal brackets. Records survive nested brackets (a partial draw inside a spread
     // draw) and are dropped when the outermost bracket closes, or when a new outermost
     // bracket opens (an end that never came).
-    void Begin()
+    // `spread`: a spread draw, the outermost bracket. One opening on the port of the spread draw
+    // still open is the next one, its end missed: the bookkeeping starts over (a single missed end
+    // left the depth at 1 for good, and the records with it: the second review of 2026-11-01).
+    void Begin(bool spread = false, const void* port = nullptr)
     {
-        if (depth_ == 0) Clear();
+        if (depth_ >= kMaxDepth || (spread && depth_ > 0 && port != nullptr && port == spreadPort_)) { depth_ = 0; ++resets; }
+        if (depth_ == 0) { Clear(); spreadPort_ = nullptr; }
+        if (spread && spreadPort_ == nullptr) spreadPort_ = port;
         ++depth_;
     }
     void End()
     {
         if (depth_ > 0) --depth_;
-        if (depth_ == 0) Clear();
+        if (depth_ == 0) { Clear(); spreadPort_ = nullptr; }
     }
     bool Active() const { return depth_ > 0; }
     int Depth() const { return depth_; }
@@ -131,6 +197,8 @@ public:
     {
         if (!Active() || (rec.resolved ? rec.glyphs.empty() : rec.box.Empty())) return false;
         Drop(rec.run);
+        // Full: refused. The records of the traversal under way stay (starting over dropped them,
+        // and a missed end is recovered in Begin: the second review of 2026-11-01).
         if (records_.size() >= kMaxRecords) { ++overflow; return false; }
         rec.paintedSeq = 0;
         records_.push_back(std::move(rec));
@@ -186,12 +254,47 @@ public:
     {
         return Withheld(s, overlapDomain, skippedCovered, [](FillRecord&) {});
     }
+
+    // Close holes across frames (the owner's retest BB1, 2026-11-01): the glyphs of other parcels
+    // painted earlier in this traversal near the stroking frame (as Withheld), whose runs' strokes
+    // reach as far in the same paint, so that the holes their strokes and the frame's close off
+    // together can be filled.
+    template <class Resolve>
+    std::vector<const Glyph*> Neighbors(const StrokeContext& s, bool overlapDomain, double reach, std::uint32_t paint, Resolve resolve, NeighborStats* stats = nullptr)
+    {
+        std::vector<const Glyph*> out;
+        if (!Active() || s.strokeBox.Empty() || !(reach > 0)) return out;
+        for (auto& r : records_) {
+            if (r.paintedSeq == 0) { if (stats) ++stats->pending; continue; }
+            if (r.port != s.port) { if (stats) ++stats->otherPort; continue; }
+            if (!overlapDomain && (r.story == 0 || r.story != s.story)) { if (stats) ++stats->otherStory; continue; }
+            if (r.frame == s.frame && r.parcelKey == s.parcelKey) { if (stats) ++stats->ownParcel; continue; }
+            if (r.strokePaint != paint || std::fabs(r.reach - reach) > 1e-6) { if (stats) ++stats->stroke; continue; }
+            if (!r.box.Meets(s.strokeBox)) { if (stats) ++stats->bounds; continue; }
+            if (!r.resolved) {
+                r.resolved = true;
+                resolve(r);
+                ++resolvedRecords;
+                if (!r.box.Meets(s.strokeBox)) continue;
+            }
+            for (const auto& g : r.glyphs) {
+                if (!g.box.Meets(s.strokeBox)) continue;
+                if (CoveredSince(g.box, r.paintedSeq, s)) { if (stats) ++stats->covered; continue; }
+                out.push_back(&g);
+            }
+        }
+        return out;
+    }
     std::size_t resolvedRecords = 0;
 
     std::size_t Records() const { return records_.size(); }
     std::size_t PaintedRecords() const { return painted_; }   // asked at every draw event: kept, not counted
     std::size_t Events() const { return events_.size(); }
     std::size_t overflow = 0;
+    std::size_t resets = 0;   // traversals started over because their ends were missed
+private:
+    const void* spreadPort_ = nullptr;   // the port of the spread draw open, if any
+public:
 
 private:
     // Content drawn after the glyph was painted, into the same port, that meets it. The

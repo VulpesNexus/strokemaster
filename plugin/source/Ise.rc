@@ -7,8 +7,8 @@
 #include "IseID.h"
 
 VS_VERSION_INFO VERSIONINFO
-FILEVERSION    1,0,0,0
-PRODUCTVERSION 1,0,0,0
+FILEVERSION    1,2,0,0
+PRODUCTVERSION 1,2,0,0
 FILEFLAGSMASK  VS_FFI_FILEFLAGSMASK
 FILEFLAGS      0
 FILEOS         VOS__WINDOWS32
@@ -21,11 +21,11 @@ BEGIN
         BEGIN
             VALUE "CompanyName",      kIseCompanyValue "\0"
             VALUE "FileDescription",  "Repaints text fills after the text pass so strokes do not cover neighbouring fills\0"
-            VALUE "FileVersion",      "1.0.0.0\0"
+            VALUE "FileVersion",      "1.2.0.0\0"
             VALUE "InternalName",     kIsePluginName "\0"
             VALUE "OriginalFilename", kIsePluginName ".pln\0"
             VALUE "ProductName",      kIseCompanyValue "\0"
-            VALUE "ProductVersion",   "1.0.0.0\0"
+            VALUE "ProductVersion",   "1.2.0.0\0"
         END
     END
     BLOCK "VarFileInfo"

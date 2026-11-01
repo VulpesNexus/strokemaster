@@ -453,7 +453,7 @@ std::vector<std::vector<Pt>> StrokeSideJoins(const std::vector<Stub>& stubs, con
         if (join == kPMMiterJoin && !PastLimit(s, limit)) {
             double reach = s.ratio * h;
             if (i < effect.size() && effect[i]) reach = ise_miter::EffectMiterReach(s, h);
-            if (tip) reach = std::min(reach, ise_miter::TipReach(s, h));
+            if (coverage.glyphTips && ise_miter::NearTip(s, h)) reach = std::min(reach, ise_miter::TipReach(s, h));
             out.push_back(ise_miter::JoinPolygon(s, h, reach));
         } else if (join == kPMMiterJoin && align != Align::Inside && coverage.wholePoints && ise_miter::WholePoint(s, h) &&
                    bounds.Fit(s, h, ise_miter::WholePointReach(s, h, kLongestMiter)) > 0) {
@@ -984,11 +984,21 @@ std::vector<ise_region::BandCorner> BandCorners(const Prepared& p, double h, dou
         if (s.interior) continue;
         ise_region::BandCorner c;
         c.stub = s;
-        const bool tip = coverage.glyphTips && ise_miter::TrimmedTip(s, h);
         if (!PastLimit(s, limit)) {
-            if (tip && s.edge < h) continue;   // flush: the squared offset
-            if ((i < p.effect.size() && p.effect[i]) || tip) { c.cap = 1; c.extra = s.edge; }
+            if (i < p.effect.size() && p.effect[i]) { c.cap = 1; c.extra = s.edge; }
             else c.cap = s.ratio;
+            // A glyph tip, or a corner near one (NearTip): the reach TipReach gives at h, as solid
+            // strokes have it, cut at the same offset at the inner bands' distances; flush is the
+            // squared offset. Stripes jumped from flush to the whole miter at edge = h (the third
+            // review of 2026-11-01).
+            if (coverage.glyphTips && ise_miter::NearTip(s, h)) {
+                const double reach = ise_miter::TipReach(s, h);
+                if (reach < std::min(s.ratio * h, c.cap * h + c.extra)) {
+                    if (reach <= h * (1 + 1e-9)) continue;
+                    c.cap = 1;
+                    c.extra = reach - h;
+                }
+            }
         } else {
             if ((i < p.crossing.size() && p.crossing[i]) || !coverage.wholePoints || !coverage.patternPoints ||
                 !ise_miter::WholePoint(s, h)) continue;
@@ -1586,6 +1596,99 @@ bool DrawFill(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     return true;
 }
 
+/** Close holes on a shape or outlined text (the owner's retest notes, 2026-11-01: live text only
+    left an outlined script's counters and gaps open): the silhouette of the stroke's outer reach
+    `h` beyond the closed outline (ise_region::Silhouette, with the stroke's join and limit), clipped
+    to outside the outline's nonzero fill, filled in the stroke's paint before the stroke is drawn
+    over it. Prepared once per outline and stroke (cached as the strokes are). Nothing for open
+    paths, Inside strokes, or a fill rule other than nonzero. `solid`: else a dashed or striped
+    stroke, beneath which only the holes are filled, so its gaps stay open. */
+void FillPageHoles(IGraphicsPort* port, const std::vector<Contour>& contours, double h, int32 join, double limit, bool solid,
+                   IRenderingObject* paint, IGraphicStyleDescriptor* style, bool16 overprint)
+{
+    if (port == nil || paint == nil || contours.empty() || !(h > 0)) return;
+    for (const Contour& c : contours) if (!c.closed) return;
+    Hash key;
+    key.Add(static_cast<int32>(0x484f4c45));   // 'HOLE': not a stroke's key
+    for (const Contour& c : contours) {
+        key.Add(c.start);
+        for (const ise_miter::Segment& sg : c.segments) {
+            key.Add(static_cast<int32>(sg.curve));
+            if (sg.curve) { key.Add(sg.c1); key.Add(sg.c2); }
+            key.Add(sg.p);
+        }
+        key.Add(static_cast<int32>(-1));
+    }
+    key.Add(h); key.Add(limit); key.Add(join); key.Add(static_cast<int32>(solid));
+    std::shared_ptr<const Prepared> holes = Cache().Find(key.Value());
+    if (!holes) {
+        std::shared_ptr<Prepared> made = std::make_shared<Prepared>();
+        // Short of the stroke's edge by twice the tolerance, so the fitted curves never show past it.
+        const double tol = std::max(1e-4, std::min(0.01, 0.005 * h));
+        const ise_region::BandJoin joined = join == kPMMiterJoin   ? ise_region::BandJoin::Miter
+                                          : join == kPMRoundJoin ? ise_region::BandJoin::Round
+                                                                 : ise_region::BandJoin::Bevel;
+        bool ok = false;
+        made->stroked = ise_region::Silhouette(contours, std::max(0.0, h - 2 * tol), tol, &ok, joined, limit, !solid);
+        const std::vector<Contour> region = ok && !made->stroked.empty() ? ise_region::NonzeroRegion(contours, tol) : std::vector<Contour>();
+        if (!region.empty()) made->outsideClip = ise_miter::OutsideClip(region, 2 * h + 10, tol, tol, true, false);
+        made->ok = !made->stroked.empty() && !made->outsideClip.empty();
+        Cache().Keep(key.Value(), made, Segments(made->stroked) + Segments(made->outsideClip));
+        holes = made;
+    }
+    if (!holes->ok) return;
+    AutoGSave save(port);
+    port->newpath();
+    EmitContours(port, holes->outsideClip);
+    port->clip();
+    paint->Install(port, style, IRenderingObject::kInstallStroke);
+    if (overprint) port->setoverprint(kTrue);
+    port->newpath();
+    EmitContours(port, holes->stroked);
+    port->fill();
+}
+
+/** Close holes on an item whose stroke InDesign draws (DrawStroke does not take it): beneath its
+    stroke, which InDesign draws next. Items with transparency are left as they are, as InDesign
+    composites their stroke on its own. */
+void PageHolesOnly(IGraphicsPort* port, IPMUnknown* item)
+{
+    InterfacePtr<IPathPageItem> pathItem(item, UseDefaultIID());
+    InterfacePtr<IPathGeometry> geometry(item, UseDefaultIID());
+    InterfacePtr<IGraphicStyleDescriptor> style(item, UseDefaultIID());
+    InterfacePtr<IShape> shape(item, UseDefaultIID());
+    IDataBase* db = ::GetDataBase(item);
+    if (pathItem == nil || geometry == nil || style == nil || shape == nil || db == nil) return;
+    for (int32 i = 0, n = geometry->GetNumPaths(); i < n; ++i) if (!geometry->IsPathClosed(i)) return;
+    Utils<IGraphicAttributeUtils> attrs;
+    const UID none = Utils<ISwatchUtils>()->GetNoneSwatchUID(db);
+    UID strokePaint = kInvalidUID;
+    PMReal weight = 0, limit = 0;
+    int32 alignment = 0, join = 0;
+    bool16 evenOdd = kFalse, overprint = kFalse;
+    ClassID stroker = kInvalidClass;
+    UID strokerUID = kInvalidUID;
+    if (attrs->GetStrokeRenderingUID(strokePaint, style) != kSuccess || strokePaint == kInvalidUID || strokePaint == none ||
+        attrs->GetStrokeWeight(weight, style) != kSuccess || attrs->GetJoinType(join, style) != kSuccess ||
+        attrs->GetStrokeAlignment(alignment, style) != kSuccess || attrs->GetMiterLimit(limit, style) != kSuccess ||
+        attrs->GetOverprintStroke(overprint, style) != kSuccess || attrs->GetLineImplementation(stroker, strokerUID, style) != kSuccess)
+        return;
+    if (!(ToDouble(weight) > 0) || ToDouble(weight) > 10000 || (alignment != kStrokeAlignCenter && alignment != kStrokeAlignOutside)) return;
+    if (attrs->GetEvenOdd(evenOdd, style) == kSuccess && evenOdd) return;
+    InterfacePtr<IXPManager> xp(Utils<IXPUtils>()->QueryXPManager(db));
+    if (xp == nil || xp->ItemHasTransparency(shape) != 0) return;
+    if (!Invertible(item)) return;
+    InterfacePtr<IRenderingObject> paint(db, strokePaint, UseDefaultIID());
+    if (paint == nil) return;
+    ise_miter::Recorder recorder(false);
+    Recording writer(&recorder);
+    pathItem->GetOutlineInfo(&writer);
+    std::vector<Contour> contours = recorder.Contours();
+    for (Contour& c : contours) c.closed = true;
+    const double h = alignment == kStrokeAlignCenter ? ToDouble(weight) / 2 : ToDouble(weight);
+    FillPageHoles(port, contours, h, join, std::max(1.0, ToDouble(limit)), stroker == kSolidPathStrokerBoss, paint, style, overprint);
+}
+
 bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
 {
     IGraphicsPort* port = gd ? gd->GetGraphicsPort() : nil;
@@ -1595,10 +1698,15 @@ bool DrawStroke(GraphicsData* gd, IPMUnknown* item, const Coverage& coverage)
     if (coverage.probeNative)
         return taken && StrokeNatively(port, plan.pathItem.get(), plan.style.get(), plan.paint.get(), {}, plan.weight, plan.join,
                                        plan.limit, plan.cap, plan.overprint);
-    if (!taken) return false;
+    if (!taken) {
+        if (coverage.closeHoles) PageHolesOnly(port, item);
+        return false;
+    }
     const BlendedStroke blended(port, plan.db, plan.blending,
                                 StrokeBounds(plan.contours, plan.prepared->stubs, plan.weight, plan.h, plan.limit),
                                 plan.overprint || plan.overprintGap);
+    if (coverage.closeHoles && plan.align != Align::Inside)
+        FillPageHoles(port, plan.contours, plan.h, plan.join, plan.limit, plan.solid, plan.paint.get(), plan.style.get(), plan.overprint);
     IGraphicStyleDescriptor* style = plan.style.get();
     IRenderingObject* paint = plan.paint.get();
     const Align align = plan.align;

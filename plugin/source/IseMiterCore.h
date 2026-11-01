@@ -46,6 +46,43 @@ struct Segment {
     Pt c1, c2, p;   // control points (curves only) and end point
 };
 
+// Whether a cubic's controls lie within `off` of its chord, between its ends (give or take
+// `off`). Loops and overshooting controls fail, since their tangents and extent differ from the
+// chord's.
+inline bool CubicNearChord(Pt from, Pt c1, Pt c2, Pt to, double off)
+{
+    const Pt d = to - from;
+    const double length = Len(d);
+    if (!(length > 1e-4) || !std::isfinite(length) || !(off >= 0)) return false;
+    for (Pt p : {c1, c2}) {
+        const Pt v = p - from;
+        const double along = Dot(v, d), span = Dot(d, d), offset = Cross(v, d);
+        if (!std::isfinite(along) || along < -off * length || along > span + off * length ||
+            !std::isfinite(offset) || std::fabs(offset) > off * length) return false;
+    }
+    return true;
+}
+
+// Straight cubics can carry handles after host conversion: a line, drawn as one.
+inline bool StraightCubic(Pt from, Pt c1, Pt c2, Pt to) { return CubicNearChord(from, c1, c2, to, 1e-4); }
+
+// A curve that bulges no more than 2% of its chord: drawn as the curve it is (its tangent sets
+// the miter), but judged as a straight edge where whole points and glyph tips are told apart. A
+// triangle drawn with the Pen tool whose first point kept a short handle (an edge 0.75 pt off
+// its 84 pt chord) lost its whole point as a corner beside a curve (the owner's CC3, 2026-11-01).
+inline bool FlatCubic(Pt from, Pt c1, Pt c2, Pt to)
+{
+    const Pt d = to - from;
+    const double span = Dot(d, d);
+    // Off-chord tolerance must not admit handles behind either endpoint: those
+    // reverse the endpoint tangent even when their perpendicular offset is tiny.
+    for (Pt p : {c1, c2}) {
+        const double along = Dot(p - from, d);
+        if (!(along >= 0 && along <= span)) return false;
+    }
+    return CubicNearChord(from, c1, c2, to, 0.02 * Len(d));
+}
+
 struct Contour {
     Pt start;
     std::vector<Segment> segments;
@@ -65,7 +102,8 @@ public:
     void CurveTo(Pt c1, Pt c2, Pt p)
     {
         if (!fOpen) MoveTo(c1);
-        Segment s; s.curve = true; s.c1 = c1; s.c2 = c2; s.p = p;
+        const Pt from = fCurrent.segments.empty() ? fCurrent.start : fCurrent.segments.back().p;
+        Segment s; s.curve = !StraightCubic(from, c1, c2, p); s.c1 = c1; s.c2 = c2; s.p = p;
         fCurrent.segments.push_back(s);
     }
     void Close() { fCurrent.closed = true; Finish(); }
@@ -288,6 +326,7 @@ struct Stub {
     Pt u, w;         // unit tangents arriving at and leaving v: the miter's edges are their offsets
     double edge = 0; // length of the shorter of the two segments meeting at v
     bool inCurve = false, outCurve = false;
+    bool inFlat = false, outFlat = false;   // a curve judged as a straight edge (FlatCubic)
     Pt in1, in2;     // controls of a -> v when inCurve
     Pt out1, out2;   // controls of v -> b when outCurve
 };
@@ -358,7 +397,9 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
     for (const Contour& c : contours) {
         const std::vector<Segment> segs = Stroked(c, eps);
         const size_t n = segs.size();
-        if (n < 2) continue;
+        // A closed contour of one curve (a teardrop with one anchor) has a corner where the curve
+        // meets itself; it was skipped (the review of 2026-11-01).
+        if (n < 2 && !(n == 1 && c.closed && segs[0].curve)) continue;
         // Vertex i is the end of segment i and the start of segment i + 1 (wrapping on a closed
         // contour; an open one's ends are capped, not joined).
         for (size_t i = 0; i < (c.closed ? n : n - 1); ++i) {
@@ -379,9 +420,11 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
             const Pt q = v + outward * (probe / lo);
             const bool interior = grid.Winding(q) != 0;   // the join points into the fill
             if (interior && !includeInterior) continue;
-            const double din = std::min(stub, 0.5 * Len(v - inFrom));
+            // Along each piece, not across its chord, which is zero for a curve that loops back to
+            // its start (its corner was skipped: the review of 2026-11-01).
+            const double din = std::min(stub, 0.5 * SegmentLength(inFrom, in));
             const Pt nextEnd = next.p;
-            const double dout = std::min(stub, 0.5 * Len(nextEnd - v));
+            const double dout = std::min(stub, 0.5 * SegmentLength(v, next));
             if (din <= eps || dout <= eps) continue;
             Stub st;
             st.v = v;
@@ -392,12 +435,14 @@ inline std::vector<Stub> Corners(const std::vector<Contour>& contours, const Opt
             st.edge = std::min(SegmentLength(inFrom, in), SegmentLength(v, next));
             if (in.curve) {
                 st.inCurve = true;
+                st.inFlat = FlatCubic(inFrom, in.c1, in.c2, v);
                 CubicTail(inFrom, in.c1, in.c2, v, 1 - PieceParameter(inFrom, in.c1, in.c2, v, din), &st.a, &st.in1, &st.in2);
             } else {
                 st.a = v - u * din;
             }
             if (next.curve) {
                 st.outCurve = true;
+                st.outFlat = FlatCubic(v, next.c1, next.c2, nextEnd);
                 CubicHead(v, next.c1, next.c2, nextEnd, PieceParameter(v, next.c1, next.c2, nextEnd, dout), &st.out1, &st.out2, &st.b);
             } else {
                 st.b = v + w * dout;
@@ -732,6 +777,9 @@ inline double EffectMiterReach(const Stub& s, double h)
     return std::min(s.ratio * h, h + s.edge);
 }
 
+/** Whether a curve meets the corner, as whole points and glyph tips are judged: not a flat one. */
+inline bool BesideCurve(const Stub& s) { return (s.inCurve && !s.inFlat) || (s.outCurve && !s.outFlat); }
+
 /** Whether an exterior corner past the miter limit keeps its whole point, for half width h (the
     owner's rule, 2026-10-05): both edges straight, the shorter at least h long, and the whole
     miter (ratio * h) no longer than five times that edge. Such a corner is a shape's own point
@@ -744,7 +792,7 @@ inline double EffectMiterReach(const Stub& s, double h)
     2 or 3 of about 3,000 at 300 pt). */
 inline bool WholePoint(const Stub& s, double h)
 {
-    return !s.inCurve && !s.outCurve && s.edge >= h && s.ratio * h <= 5 * s.edge;
+    return !BesideCurve(s) && s.edge >= h && s.ratio * h <= 5 * s.edge;
 }
 
 /** How far past its vertex a whole point reaches: the whole miter, up to `longest` half widths
@@ -766,7 +814,7 @@ inline double WholePointReach(const Stub& s, double h, double longest)
     corner between straight edges at least h long. */
 inline bool TrimmedTip(const Stub& s, double h)
 {
-    const bool curve = s.inCurve || s.outCurve;
+    const bool curve = BesideCurve(s);
     return (s.ratio >= 2 && (curve || s.edge < h)) || (s.ratio >= 1.5 && curve && s.edge < h);
 }
 
@@ -779,7 +827,26 @@ inline bool TrimmedTip(const Stub& s, double h)
     of their own on Great Vibes' n). */
 inline double TipReach(const Stub& s, double h)
 {
-    return s.edge < h ? std::min(s.ratio * h, h) : EffectMiterReach(s, h);
+    // Beside an edge between h and 2h, the reach grows with the edge from h: to h + edge for a glyph
+    // tip, to the whole miter for a corner that is a tip only beside a shorter edge (NearTip), so
+    // a tip does not jump from flush to a point when its edge, or the stroke, changes by a hair
+    // (the reviews of 2026-11-01: a stroke 0.02 pt heavier halved a tip).
+    if (s.edge < h) return std::min(s.ratio * h, h);
+    if (s.edge < 2 * h) {
+        const double whole = TrimmedTip(s, h) ? std::min(s.ratio * h, 3 * h) : s.ratio * h;
+        return std::min(s.ratio * h, h + (s.edge - h) / h * (whole - h));
+    }
+    return EffectMiterReach(s, h);
+}
+
+/** A glyph tip (TrimmedTip), or a corner that would be one beside an edge shorter than h and lies
+    beside one between h and 2h: within the limit, its miter's reach grows from flush to whole
+    across that range (TipReach), rather than jumping at h. InDesign only; Illustrator's limits
+    keep TrimmedTip's line. */
+inline bool NearTip(const Stub& s, double h)
+{
+    const bool curve = BesideCurve(s);
+    return TrimmedTip(s, h) || ((s.ratio >= 2 || (s.ratio >= 1.5 && curve)) && s.edge < 2 * h);
 }
 
 /** Where InDesign strokes an offset of the outline (an Outside stroke strokes it offset outward

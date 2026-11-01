@@ -491,3 +491,182 @@ Restart Illustrator and InDesign once both are installed.
 Results (2026-11-01): X1 works; X2 correct.
 
 **X3. The two tooltips (InDesign).** Shortened by a few characters, as you suggested, so their last line no longer ends where InDesign adds a line: *Also on dashed and striped strokes* now ends "When off, the pattern's bevel.", and *One outline per word* says "around touching letters". Expected: no blank line at the bottom of either tooltip.
+
+Result (2026-11-01): X3 correct.
+
+## Retests after the review of 2026-11-01
+
+Region-prep-41 in Illustrator and a new engine and panel in InDesign, both installed: restart both. What each fix is, and how it was tested, is in *docs/REVIEW_2026-11-01.md*.
+
+**Z1. Trim glyph tips without No miter spikes (InDesign).** On live text in Eagle Lake with a Miter stroke, turn *No miter spikes in live text* off and keep *Trim glyph tips* on. Expected: the tips are still cut, where they used to come back whole; the spikes at inner corners come back, as without StrokeMaster.
+
+Result: Correct.
+
+**Z2. The One outline per word tooltip (InDesign).** It now begins "When on, all the dashes", at the same length as before. Expected: no blank line at its bottom, as in X3.
+
+Result: Correct.
+
+**Z3. A story split by artwork (Illustrator).** Thread text across three frames with a filled shape between the second and third, let it correct, give the group of the first two frames 50% opacity, then change any switch. Expected: the group keeps its opacity (it used to be rebuilt without it).
+
+Result: Correct. I do want to point out that the first frame doesn't have its stroke merged with the other threaded frames, even with "Across other text objects" enabled—is that expected? The screenshot below shows this, and also shows the close hole option doesn't close gaps between words (see for example bottom "dolor" closing the gap between "nonummy" and "nibh")—also expected?
+
+(screenshot kept with the private notes, outside the repository)
+
+**Z4. A hand change while Correct automatically is off (Illustrator).** Turn *Correct automatically* off, change a corrected shape's miter limit in the Stroke panel, turn it back on, then change any switch. Expected: your limit stays.
+
+Result: Correct.
+
+**Z5. Close holes on hollow text (InDesign).** Text with no fill and a thin Outside stroke, *Close holes inside the outline* on. Expected: the counters fill with the stroke's color, the letters stay hollow (they used to fill too).
+
+Result: (screenshot kept with the private notes, outside the repository)
+
+**Z6. Trim glyph tips grayed (InDesign).** Turn off both *Strokes behind other letters' fills* and *Shapes, frames, and outlined text*. Expected: *Trim glyph tips* grays out, since nothing is left for it to act on.
+
+Result: (screenshot kept with the private notes, outside the repository)
+
+Also, it may be best to just retire "Rendered lived, not saved." and the Illustrator equivalent text. from the panel itself and simply have the about section explicit about the limitations. It may even be appropriate to show a pop-up upon installing to lay out the caveats, with a GitHub link to the full list of known limitations and such.
+
+**Z7. The No miter spikes in shapes and outlines tooltip (InDesign).** It now ends "When off, InDesign's miters on center strokes." Expected: no blank line at its bottom.
+
+Result: Correct.
+
+Side note: Is it expected that the very narrow spikes in Illustrator still wedge flat like so? That's something we mitigated yesterday in InDesign:
+
+(screenshot kept with the private notes, outside the repository)
+
+This should be the Illustrator defaults:
+
+(screenshot kept with the private notes, outside the repository)
+
+And InDesign's:
+
+(screenshot kept with the private notes, outside the repository)
+
+## Answers to the review's retests (2026-11-01)
+
+- **Z3, the first frame apart: expected.** In your file the rectangle is stacked between the first frame and the other two (the Layers panel lists the group, then the rectangle, then that frame). Merging their strokes would lift the frame's fill above the rectangle, so StrokeMaster leaves artwork between frames where it is, and the frame on the other side stays a group of its own. *What to know* now says so.
+- **Z3, the gap between "nonummy" and "nibh": a real gap, now fixed.** Close holes found holes with beveled corners, so a gap that only the stroke's mitered corners close off (here the *y*'s and *n*'s corners and the *d* below) counted as open. It now finds them with the stroke's own join and miter limit, beveled past the limit as the stroke is, while the fill's outline stays inside the stroke. A host test rebuilds your file (*tools/jsx/ai-p44.jsx*: three overlapping threaded frames and a paragraph, Myriad Pro 12 pt, a 3 pt stroke). Region-prep-43 left 13 enclosed white gaps (9 pt²), your one included, and region-prep-44 leaves none. Nothing else changes: 0.03 pt² differs elsewhere, all of it antialiasing. The same change is in InDesign's engine, where Close holes works line by line on live text: a gap closed off only by the line above or below stays open there. *What to know* says so.
+- **Z5: correct**, as your screenshot shows: the counters are filled, and the letters stay hollow.
+- **Z6, your suggestion: done.** The panels drop *Rendered live, not saved.* and *Saved in the document.* InDesign's note now says only *Engine not installed.* when the engine is missing. Illustrator's says *Switches not saved: this session only.* when the switches can't be saved, and its row takes no room otherwise. About now spells out the caveat and links to *What to know*. A notice in the About window's frame lays out the caveats, with the same link, once for each new version, when the panel first shows. It is modeless, so it never holds up a script, and it is never shown in test runs.
+- **Z7, the side note: expected with *Trim glyph tips* off, as in both default sets.** Past the miter limit, both apps then bevel a script letter's tip at its point, as without StrokeMaster. What we did yesterday in InDesign is part of *Trim glyph tips*: on, InDesign cuts a sharp tip flush at the stroke's reach. Illustrator can only bevel a trimmed tip at its point, since it keeps one miter limit per letter (*What to know*). A flush cut in Illustrator would mean StrokeMaster drawing the stroke itself through an effect, and the stroke would no longer be Illustrator's own appearance. Not done; say if you want it.
+
+## Retests after the answers (2026-11-01)
+
+Illustrator region-prep-45, and InDesign engine `BADD3CBB` with panel `289D198B`, once installed: restart both.
+
+**AA1. Close holes between lines (Illustrator).** Open your Z3 file and change any switch, then change it back, or select the frames and choose *Correct Selection*. Expected: the gap between "nonummy" and "nibh" is filled in the stroke's color, and no other part of the outline grows.
+
+Result: Works.
+
+**AA2. Close holes within a line (InDesign).** Live text with touching letters, an Outside Miter stroke, *Close holes inside the outline* on. Expected: the same as before, except that gaps closed off only by the letters' corners are now filled too.
+
+Result: Some cases where it appears to fail:
+
+(screenshot kept with the private notes, outside the repository)
+
+See here, first one works, but not the next two:
+
+(screenshot kept with the private notes, outside the repository)
+
+**AA3. The notice and About (both apps).** Open the StrokeMaster panel. Expected: once, a *StrokeMaster* window with the caveats and a *What to know* link; it doesn't come back at the next launch. *About StrokeMaster* now ends on the caveat and the same link. The panels no longer show *Rendered live, not saved.* or *Saved in the document.*
+
+Question: I noticed that turning "Trim glyph tips" off kept some tips trimmed (i.e. the miter limit remains low)—is that on purpose because it's impossible to assume the right value when there was no known one (e.g. on a document that's just been opened), or is that a gap (known or otherwise)?
+
+Notes: Since you're bringing up the about window frame at first launch to list some important facts, is there any reason to have different text than the regular about window one can bring up manually? I personally dislike having things labeled as research only when the purpose is that this enters production, with the limitations clearly listed. Also, version has been 1.0.0 for both plugins, but it's stopped being true long ago, so if you kept track internally, you'll have to bump those up.
+
+As for Illustrator's trimmed tips that differ from those InDesign now draws, see if there's any way to draw that natively, then if all options fail, implement it as an opt-in option that is clearly listed in docs as an option that won't survive saving and reopening without the plugin (or will survive this, but not editing, if that's the relevant description).
+
+Lastly, I noticed one case with trimmed tips off where the hole closing doesn't work:
+
+(screenshot kept with the private notes, outside the repository)
+
+## Answers to the AA notes (2026-11-01)
+
+- **AA1: works.**
+- **AA2, the Stroke/Master logo (InDesign): fixed.** InDesign closed holes one line at a time, so the gaps between the two lines stayed white. Close holes now takes a frame's lines together when their strokes are alike (paint, weight, alignment, join, and limit), beneath every stroke of the frame. Otherwise each line still fills its own. In a host test of the same logo, the enclosed white goes from 37 pt² to 0.1 pt².
+- **AA2, the script and Bahnschrift samples (InDesign): outlined text, which Close holes did not touch at all.** It now acts on shapes and outlined text too, with Outside and Center strokes, beneath the stroke and outside the fill. Beneath a dashed or striped stroke it fills only the holes, so the gaps between dashes stay open. On outlined Great Vibes the enclosed white goes from 1,170 pt² to 0.2 pt². The thin blue lines in your two screenshots are InDesign's selection outline of the outlined paths, not drawing. The switch now grays out only when both *Strokes behind other letters' fills* and *Shapes, frames, and outlined text* are off.
+- **Your AVMW case with Trim glyph tips off (Illustrator): fixed.** Those gaps were not quite enclosed: the strokes stop 0.1 to 0.3 pt short of each other, which shows as closed on screen. Close holes now counts strokes within a twentieth of their reach as touching, and fills the slit along with the hole. On your hand-test file, the A–V wedges and slivers fill, and nothing else changes. Illustrator also keeps an effect's last result in the file until its parameters change, so the effect now carries a revision: any correction (a switch change, *Correct Selection*) refreshes Close holes made by an older build.
+- **AA3, tips staying trimmed with Trim glyph tips off (Illustrator): a known gap, not a missing original value.** With *No miter spikes in live text* on, a threaded story's stroke is one Appearance stroke for the whole story, with one miter limit, set below the sharpest interior spike anywhere in the story. Every letter's tip above that limit is beveled, whatever *Trim glyph tips* says: your hand-test file's story has limit 1.906 while its letters' own limits run from 1.906 to 4. No native construction cuts a tip flat at the stroke's reach as InDesign does. The closest native one draws the stroke as two outward Offset Path fills, one mitered and one round; it needs no spike limit at all, so it removes this gap, with rounded instead of flat tips. You chose that, plus an opt-in effect for the exact flat cut; both are next.
+- **About and the notice:** one text for both, without "research" wording, and the third paragraph ends "Every limit is in *What to know*" (a link). Both plugins are now version 1.2.0, so the notice shows once more for 1.2.0.
+
+## Retests after the AA answers (2026-11-01)
+
+InDesign engine `4DB92A26` and panel `A4E3997E` are installed; Illustrator region-prep-46 is installed. Restart both.
+
+**BB1. The Stroke/Master logo (InDesign).** Your AA2 logo, *Close holes inside the outline* on. Expected: the gaps between the two lines are filled.
+
+Result: First off, it required unticking and ticking the option again for it to take effect:
+
+(screenshot kept with the private notes, outside the repository)
+
+(screenshot kept with the private notes, outside the repository) Second, as you can see, gaps aren't filled between stories, and the gap closing appears partial in certain instances even when both lines are in the same frame:
+
+(screenshot kept with the private notes, outside the repository)
+
+**BB2. Outlined text and dashed shapes (InDesign).** Your outlined script and Bahnschrift samples, Close holes on; then a dashed stroke on outlined text. Expected: the counters and the gaps between letters are filled; the gaps between dashes stay open.
+
+Result: Unsure if I did the right thing:
+
+(screenshot kept with the private notes, outside the repository)
+
+**BB3. AVMW with Trim glyph tips off (Illustrator).** Your case from the AA notes: change a switch and back, or *Correct Selection*. Expected: the near-closed gaps between the letters fill.
+
+Result: Doesn't BB5 answer it?
+
+**BB4. About (both apps).** Expected: *StrokeMaster 1.2.0*; the notice shows once, with the same text as About.
+
+Result: Confirmed.
+
+**Illustrator region-prep-48** replaces prep-46 (installed; restart Illustrator). It adds:
+
+**BB5. Close holes on outlined text (Illustrator).** Outline some stroked text (*Type > Create Outlines*), Close holes on, *Correct Selection*. Expected: as in InDesign, the counters and the gaps between touching letters fill, across lines too, on the group of outlined letters. Letters with no fill stay hollow; a dashed stroke keeps its gaps.
+
+Result:
+
+(screenshot kept with the private notes, outside the repository)
+
+**BB6. Glyph tips (Illustrator), the choice you made.** Live text in a script or serif font, a Miter stroke, *No miter spikes in live text* on.
+
+- *Trim glyph tips* on: sharp tips end at the stroke's width with a rounded end, instead of a bevel at the letter's point.
+- Off: each letter keeps whole miters up to your own miter limit; the story's lower limit no longer bevels them (your AA3).
+- *Flat tips, as InDesign cuts them* (new, under Trim glyph tips, off by default): glyph tips cut flat at the stroke's width, as InDesign cuts them. The rounded mode rounds every corner sharper than 60 degrees, a straight-edged point like an *A*'s apex included; the flat mode tells glyph tips apart from such points as InDesign does, so the *A* keeps its whole miter. Both modes are Appearance fills beneath the letters: the rounded one is Illustrator's own Offset Path and needs nothing; the flat one is a StrokeMaster effect, which without the plugin keeps its last result but no longer follows edits.
+
+Result: It does work, just not on outlined text.
+
+## Answers to the BB notes (2026-11-01)
+
+- **BB1, toggling needed:** Close holes across a frame's lines ran only inside a bracket InDesign opens with *StartOfParcelDraw*, which its first screen draw apparently skipped; each line then filled only its own holes until a redraw. The bracket now also opens where InDesign asks whether to draw a frame (*GetIsActive*), which it does for every frame it draws.
+- **BB1, between stories:** reproduced (a two-line frame and a separate "gakak" story: everything closes but the gap between the two stories). Now, when a frame is drawn, the glyphs of other frames already drawn nearby, with the same stroke (paint and reach), are taken with its own, and the holes they close off together are filled; only holes, so nothing is painted over a letter already drawn. A gap between stories with different strokes stays open.
+- **BB1, partial within a frame:** most likely the same bracket: the line-by-line fill. Please check again with the next engine.
+- **BB2:** right test. The shot shows dashed outlined text with its gaps kept; whether its counters fill is hard to see in it, so the next host test measures it.
+- **BB3:** yes: the live text at the top of your BB5 shot shows its near-closed gaps filled.
+- **BB4:** confirmed.
+- **BB5:** your outlined "Lorem" carries its stroke on the group (an Appearance stroke on the type object, which Create Outlines moves to the group), where Close holes only looked at the letters' own strokes. The group's own stroke now counts: Close holes goes on that group.
+- **BB6:** the tips were only for live text. Outlined text now gets them too: a compound path, a letter in a group of outlined letters, or the group whose stroke it is; other shapes keep their own points.
+
+## Retests after the BB answers (2026-11-01)
+
+InDesign engine `A3D7DC02` and Illustrator region-prep-49 are installed: restart both.
+
+**CC1. Close holes between stories, and the first draw (InDesign).** Your BB1 document, opened fresh, without toggling anything. Expected: the gaps between the two lines fill at once, and so does the gap between the two stories (strokes alike: same paint and weight). A host test of the same setup: enclosed background 2,249 pt² off, 14 pt² on (it was 226 pt² before).
+
+Result: Still doesn't close all gaps, and it once again required unticking and reticking each relevant option for them to take effect. (screenshot kept with the private notes, outside the repository)
+
+**CC2. Outlined text whose stroke is the group's (Illustrator).** Your BB5 "Lorem", *Correct Selection*. Expected: its counters and the gaps between touching letters fill.
+
+Result: Yes, though not across frames.
+
+(screenshot kept with the private notes, outside the repository)
+
+**CC3. Tips on outlined text (Illustrator).** Outlined text with a Miter stroke, *No miter spikes in shapes and outlines* on, *Trim glyph tips* on. Expected: sharp tips end at the stroke's width, rounded (flat with the opt-in only on live text); other shapes, such as a star, keep their own points.
+
+Result: Works. Disabling both options changes nothing that disabling a single one doesn't do, but that was on a single sample, and maybe that's expected, so no biggie.
+
+Also, is this still supposed to never end with a whole-miter spike now, the way triangles work in InDesign? (screenshot kept with the private notes, outside the repository)
+
+## Answers to the CC notes (2026-11-01)
+
+- **CC1, a toggle still needed (InDesign):** so the bracket wasn't the whole story: on screen the first draws don't reach the frame-wide fill, though exports do (they fill completely in the hidden tests). The frame-wide fill no longer depends on it: without the bracket, the frame's first stroking run in text order fills the whole frame, and every other run still fills its own line. Engine `5ABFD186` still failed your retest: that fallback told the frame's first run apart by pointer, and the run being drawn need not be the same object as the one its line hands out, so it never filled. Engine `6B9E422F` compares where the runs start in the story; with the fallback forced in a hidden export, it fills as the normal path does (enclosed background 2,249 pt² off, 14 pt² on, both ways). Please retest CC1.
+- **CC2, not across frames (Illustrator):** in your shot one "Lorem ipsum" is outlined text and the other live text. They are separate objects of different kinds, and Close holes works within one object or one story group (*Across other text objects* groups live text only). Holes closed off between a live text object and outlined text stay open: a known limit for now.
+- **CC3:** works. Turning off both switches changes nothing beyond turning off one, as expected: in Illustrator a path has one miter limit, which both switches set.
+- **The triangle's point:** it should keep its whole point, as in InDesign: its apex (27 degrees, past your limit of 4 at 4.29, between long straight edges) is a whole point by the rule, and the shared core computes 4.29 for it. Region-prep-45 and -50 both leave its Appearance stroke at 4, so this is an older gap, not a regression; tracking down why the fix leaves that stroke's limit is next. Region-prep-50 also adds an outward mitered fill at a shape's outer corners' own limit wherever its interior spikes force the stroke's one limit lower, as the tips do for letters.

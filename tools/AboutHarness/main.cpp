@@ -17,6 +17,9 @@
  *   AboutHarness.exe /dark        InDesign's medium-dark interface colors
  *   AboutHarness.exe /exit3000    close by itself after three seconds
  *   AboutHarness.exe /shot:x.bmp  photograph the dialog into x.bmp, then close
+ *   AboutHarness.exe /notice      the notice instead (modeless; nothing is recorded as shown)
+ *
+ * AboutHarnessAI.exe is the same with the Illustrator plugin's prose.
  *
  * Run on a desktop of its own (tools/AboutHarness/shoot.ps1), it takes no one's focus.
  *
@@ -32,7 +35,7 @@
 #pragma comment(lib, "advapi32.lib")
 
 namespace {
-const wchar_t* const kDialogCaption = L"About StrokeMaster";
+const wchar_t* kDialogCaption = L"About StrokeMaster";
 wchar_t gShot[MAX_PATH] = { 0 };
 
 DWORD WINAPI CloseAfter(LPVOID ms)
@@ -136,6 +139,24 @@ int WINAPI wWinMain(HINSTANCE instance, HINSTANCE, LPWSTR cmdLine, int)
     } else if (cmdLine != nullptr && wcsstr(cmdLine, L"/exit") != nullptr) {
         const int ms = _wtoi(wcsstr(cmdLine, L"/exit") + 5);
         CloseHandle(CreateThread(nullptr, 0, CloseAfter, reinterpret_cast<LPVOID>(static_cast<UINT_PTR>(ms > 0 ? ms : 3000)), 0, nullptr));
+    }
+
+    if (cmdLine != nullptr && wcsstr(cmdLine, L"/notice") != nullptr) {
+        kDialogCaption = L"StrokeMaster";
+        if (!StrokeMasterShowNotice(instance, nullptr, theme)) {
+            MessageBoxW(nullptr, L"StrokeMasterShowNotice returned false: the notice could not be created.",
+                        L"About harness", MB_ICONERROR | MB_OK);
+            return 1;
+        }
+        // Modeless: pumped here until it closes.
+        for (HWND dlg = FindWindowW(nullptr, kDialogCaption); dlg != nullptr && IsWindow(dlg);) {
+            MsgWaitForMultipleObjects(0, nullptr, FALSE, 50, QS_ALLINPUT);
+            MSG msg;
+            while (PeekMessageW(&msg, nullptr, 0, 0, PM_REMOVE)) {
+                if (!IsDialogMessageW(dlg, &msg)) { TranslateMessage(&msg); DispatchMessageW(&msg); }
+            }
+        }
+        return 0;
     }
 
     if (!StrokeMasterShowAboutDialog(instance, nullptr, theme)) {

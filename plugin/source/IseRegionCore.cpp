@@ -937,24 +937,161 @@ std::vector<Contour> Uncovered(const std::vector<Contour>& fill, const std::vect
 }
 
 
-std::vector<Contour> Silhouette(const std::vector<Contour>& fill, double grow, double tol, bool* ok)
+std::vector<Contour> Silhouette(const std::vector<Contour>& fill, double grow, double tol, bool* ok, BandJoin join, double limit,
+                                bool holesOnly, bool hollow)
 {
     *ok = tol > 0 && grow >= 0;
     if (!*ok) return {};
     const int precision = kBandPrecision;
     const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
     if (!*ok || region.empty()) return {};
+    auto tree = [&](const Clipper2Lib::PathsD& paths, Clipper2Lib::PolyTreeD& out) {
+        Clipper2Lib::ClipperD clipper(precision);
+        clipper.AddSubject(paths);
+        *ok = clipper.Execute(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::NonZero, out) && *ok;
+    };
     const Clipper2Lib::PathsD grown = grow > 0 ? Clipper2Lib::InflatePaths(region, grow, Clipper2Lib::JoinType::Bevel,
                                                                            Clipper2Lib::EndType::Polygon, 2.0, precision, tol)
                                                : region;
-    Clipper2Lib::ClipperD clipper(precision);
-    clipper.AddSubject(grown);
-    Clipper2Lib::PolyTreeD tree;
-    *ok = clipper.Execute(Clipper2Lib::ClipType::Union, Clipper2Lib::FillRule::NonZero, tree) && *ok;
+    Clipper2Lib::PolyTreeD shape;
+    tree(grown, shape);
     if (!*ok) return {};
     // The outer polygons only: their holes, and whatever lies within those, are dropped.
     Clipper2Lib::PathsD outer;
-    for (const auto& child : tree) outer.push_back(child->Polygon());
+    for (const auto& child : shape) outer.push_back(child->Polygon());
+    // The holes the stroke's own join encloses, filled too: a gap that mitered corners close off
+    // is a hole, where the bevel left it open (the owner's retest Z3, 2026-11-01: the space
+    // between two words, closed by the lines above and below, stayed open). A Miter join is the
+    // bevel with each corner's miter added within the limit; past it the corner stays beveled, as
+    // the stroke draws it (Clipper2's own miter squares it off a whole reach out). The holes are
+    // found a twentieth of the reach past `grow` (which callers keep short of the stroke's edge):
+    // strokes that nearly touch enclose a hole as the eye sees it (the owner's retest notes,
+    // 2026-11-01: gaps between Minion's 7 pt serif strokes, open by slits of 0.1 to 0.3 pt, stayed
+    // white: 74 pt^2 in one story). The slits are filled with the holes (grown back below).
+    if (grow > 0) {
+        const double wide = grow + std::max(3 * tol, 0.05 * grow);
+        // Keep holes at the real reach too: widening can erase small cavities.
+        auto holesAt = [&](double distance, double overlap) {
+            Clipper2Lib::PathsD joined;
+            if (join != BandJoin::Miter) {
+                joined = Clipper2Lib::InflatePaths(region, distance,
+                                                   join == BandJoin::Round ? Clipper2Lib::JoinType::Round : Clipper2Lib::JoinType::Bevel,
+                                                   Clipper2Lib::EndType::Polygon, 2.0, precision, tol);
+            } else {
+                joined = Clipper2Lib::InflatePaths(region, distance, Clipper2Lib::JoinType::Bevel, Clipper2Lib::EndType::Polygon, 2.0,
+                                                   precision, tol);
+                // The side the region lies on, from its largest polygon's winding (an outer one).
+                double largest = 0;
+                for (const auto& p : region) {
+                    const double a = Clipper2Lib::Area(p);
+                    if (std::fabs(a) > std::fabs(largest)) largest = a;
+                }
+                const double side = largest < 0 ? -1 : 1;
+                for (const auto& p : region) {
+                    const size_t n = p.size();
+                    if (n < 3) continue;
+                    for (size_t i = 0; i < n; ++i) {
+                        const Clipper2Lib::PointD& a = p[(i + n - 1) % n];
+                        const Clipper2Lib::PointD& b = p[i];
+                        const Clipper2Lib::PointD& c = p[(i + 1) % n];
+                        const double l1 = std::hypot(b.x - a.x, b.y - a.y), l2 = std::hypot(c.x - b.x, c.y - b.y);
+                        if (!(l1 > 0) || !(l2 > 0)) continue;
+                        const double d1x = (b.x - a.x) / l1, d1y = (b.y - a.y) / l1, d2x = (c.x - b.x) / l2, d2y = (c.y - b.y) / l2;
+                        if (side * (d1x * d2y - d1y * d2x) <= 0) continue;   // not a corner the stroke goes around
+                        // Outward normals, the miter's tip where the offset edges meet, and its length
+                        // in reaches (the miter limit's measure).
+                        const double n1x = side * d1y, n1y = -side * d1x, n2x = side * d2y, n2y = -side * d2x;
+                        const double cosine = n1x * n2x + n1y * n2y;
+                        if (!(cosine > -1 + 1e-9)) continue;
+                        const double ratio = std::sqrt(2 / (1 + cosine));
+                        // Within the limit, and longer than the bevel by more than the tolerance.
+                        if (ratio > limit || distance * (ratio - 1 / ratio) <= tol) continue;
+                        const double k = distance / (1 + cosine);
+                        joined.push_back({b, {b.x + distance * n1x, b.y + distance * n1y}, {b.x + k * (n1x + n2x), b.y + k * (n1y + n2y)},
+                                          {b.x + distance * n2x, b.y + distance * n2y}});
+                        if (Clipper2Lib::Area(joined.back()) * side < 0) std::reverse(joined.back().begin(), joined.back().end());
+                    }
+                }
+            }
+            Clipper2Lib::PolyTreeD enclosed;
+            tree(joined, enclosed);
+            if (!*ok) return Clipper2Lib::PathsD{};
+            Clipper2Lib::PathsD found;
+            for (const auto& child : enclosed) {
+                for (const auto& hole : *child) {
+                    Clipper2Lib::PathD p = hole->Polygon();
+                    if (Clipper2Lib::Area(p) < 0) std::reverse(p.begin(), p.end());
+                    found.push_back(std::move(p));
+                }
+            }
+            if (!found.empty()) {
+                // Grown back under the stroke, so no hairline shows between the stroke and the fill
+                // (holes alone too: a hairline showed around a hole filled between two stories).
+                found = Clipper2Lib::InflatePaths(found, overlap, Clipper2Lib::JoinType::Round, Clipper2Lib::EndType::Polygon,
+                                                  2.0, precision, tol);
+            }
+            return found;
+        };
+        Clipper2Lib::PathsD found = holesAt(grow, tol);
+        if (!*ok) return {};
+        const Clipper2Lib::PathsD nearTouching = holesAt(wide, wide - grow + tol);
+        if (!*ok) return {};
+        found.insert(found.end(), nearTouching.begin(), nearTouching.end());
+        found = Union(found, Clipper2Lib::FillRule::NonZero, ok, precision);
+        if (!*ok) return {};
+        if (!found.empty()) {
+            if (holesOnly) return Fitted(found, tol);
+            outer.insert(outer.end(), found.begin(), found.end());
+            for (Clipper2Lib::PathD& p : outer) if (Clipper2Lib::Area(p) < 0) std::reverse(p.begin(), p.end());
+            Clipper2Lib::PolyTreeD merged;
+            tree(outer, merged);
+            if (!*ok) return {};
+            outer.clear();
+            for (const auto& child : merged) outer.push_back(child->Polygon());
+        }
+    }
+    if (holesOnly) return {};   // no hole: nothing to fill (never the band)
+    if (hollow) {
+        outer = Run(Clipper2Lib::ClipType::Difference, outer, region, precision, ok);
+        if (!*ok) return {};
+    }
     return Fitted(outer, tol);
+}
+
+std::vector<Contour> TippedOutline(const std::vector<Contour>& fill, double h, double limit, double tol, bool* ok)
+{
+    *ok = tol > 0 && h > 0;
+    if (!*ok) return {};
+    const int precision = kBandPrecision;
+    const Clipper2Lib::PathsD region = Union(Paths(fill, tol), Clipper2Lib::FillRule::NonZero, ok, precision);
+    if (!*ok || region.empty()) return {};
+    Clipper2Lib::PathsD all = Clipper2Lib::InflatePaths(region, h, Clipper2Lib::JoinType::Bevel, Clipper2Lib::EndType::Polygon, 2.0,
+                                                       precision, tol);
+    // The corners on the filled region's own outline, rebuilt from the outline's segments, so
+    // that a tip beside a curve is told apart as the route tells it (overlapping contours resolved).
+    const std::vector<Contour> outline = NonzeroRegion(fill, tol);
+    if (outline.empty()) { *ok = false; return {}; }
+    ise_miter::Options options;
+    options.halfWidth = h;
+    for (const ise_miter::Stub& s : ise_miter::Corners(outline, options, false)) {
+        if (s.interior) continue;
+        double reach = s.ratio * h;
+        const bool tip = ise_miter::TrimmedTip(s, h);
+        if (s.ratio > limit) {
+            if (!tip) continue;   // beveled, as the stroke draws it
+            reach = h;
+        } else if (ise_miter::NearTip(s, h)) {
+            reach = std::min(reach, ise_miter::TipReach(s, h));
+        }
+        Clipper2Lib::PathD poly;
+        for (const Pt& q : ise_miter::JoinPolygon(s, h, reach)) poly.push_back(Clipper2Lib::PointD(q.x, q.y));
+        if (Clipper2Lib::Area(poly) < 0) std::reverse(poly.begin(), poly.end());
+        all.push_back(std::move(poly));
+    }
+    Clipper2Lib::PathsD united = Union(all, Clipper2Lib::FillRule::NonZero, ok, precision);
+    if (!*ok) return {};
+    united = Run(Clipper2Lib::ClipType::Difference, united, region, precision, ok);
+    if (!*ok) return {};
+    return Fitted(united, tol);
 }
 } // namespace ise_region
