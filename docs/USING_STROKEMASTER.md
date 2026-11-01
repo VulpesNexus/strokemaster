@@ -81,9 +81,9 @@ powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-R
 powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-UI -Name StrokeMasterUI
 ```
 
-It backs up the installed plugin first, verifies the copy by hash, and prints the backup folder; `-Restore <that folder>` puts the previous plugin back, and `-ValidateOnly` with either form shows the plan without writing anything. Start InDesign to load the new plugin. The ID prefix is a development placeholder, so this build is for your own machine, not for distribution ([distribution notes](PLUGIN_DISTRIBUTION.md)).
+It backs up the installed plugin first, verifies the copy by hash, and prints the backup folder; `-Restore <that folder>` puts the previous plugin back, and `-ValidateOnly` with either form shows the plan without writing anything. Start InDesign to load the new plugin. The ID prefix remains a development placeholder; see the [release notes](RELEASE_1.2.0.md) and [distribution notes](PLUGIN_DISTRIBUTION.md) for the identity limitation.
 
-Native development details are in [the load report](../ILLUSTRATOR_NATIVE_LOAD_REPORT.md), [the InDesign root-cause report](../UNSTROKED_VICTIM_ROOT_CAUSE.md), and [the cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md). Illustrator's plugin is a separate diagnostic, not a release.
+Native development details are in [the load report](../ILLUSTRATOR_NATIVE_LOAD_REPORT.md), [the InDesign root-cause report](../UNSTROKED_VICTIM_ROOT_CAUSE.md), and [the cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md). The Illustrator plugin is a separate download in the [same release](RELEASE_1.2.0.md).
 
 ## Installing the scripts
 

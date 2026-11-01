@@ -270,7 +270,7 @@ resource PanelList (kSDKDefPanelResourceID)
 
 resource IseUIPanelWidget(kSDKDefPanelResourceID + index_enUS)
 {
-    __FILE__, __LINE__,
+    "IseUI.fr", __LINE__,
     kIseUIPanelWidgetID,
     kPMRsrcID_None,
     kBindNone,
