@@ -4,7 +4,7 @@ Phase D of the InDesign stroke engine investigation: the InDesign SDK surfaces t
 
 The map cites public SDK headers by file name and line so each claim can be checked. It reproduces no SDK code or documentation. "Verified" means the cited lines were read during this investigation; "SDK census" means the item comes from a broad read-only survey of the SDK and was not re-read line by line.
 
-Takeover qualification, 2026-09-12: reading an interface proves that the declaration exists, not that a proposed intervention works in the host. Source-only architecture claims remain proposals until a controlled host test. The sampled transparency-group observations do not establish universal repaint idempotence; the original glyph-core measurement mask was invalid for that purpose. See [the takeover audit](../PROJECT_TAKEOVER_AUDIT.md).
+Takeover qualification, 2026-09-12: reading an interface proves that the declaration exists, not that a proposed intervention works in the host. Source-only architecture claims remain proposals until a controlled host test. The sampled transparency-group observations do not establish universal repaint idempotence; the original glyph-core measurement mask was invalid for that purpose. See [the takeover audit](PROJECT_TAKEOVER_AUDIT.md).
 
 ## Version and tooling
 

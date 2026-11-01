@@ -48,6 +48,7 @@ For workflows and optional InDesign scripts, see the [usage guide](docs/USING_ST
 - [What each switch fixes](docs/FEATURES.md)
 - [Usage guide](docs/USING_STROKEMASTER.md)
 - [Technical background, build routes, and verification](docs/TECHNICAL_BACKGROUND.md)
+- [Research archive and relocated documents](docs/RELOCATIONS.md)
 - [Report an issue](https://github.com/VulpesNexus/strokemaster/issues) — include the host version, relevant switches, and a minimal example you can share.
 
 ## License

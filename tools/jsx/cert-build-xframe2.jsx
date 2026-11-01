@@ -1,7 +1,7 @@
 // cert-build-xframe2.jsx - build the cross-frame extension census (cert-X2.indd) and its manifest.
 // Requires ise-lib.jsx. Argument: ISE_ARGS.dir, the corpus folder; an existing file is refused.
 //
-// The cases the cross-frame research (CROSS_FRAME_RESEARCH_2026-09-26.md, section 12) left
+// The cases the cross-frame research (docs/CROSS_FRAME_RESEARCH_2026-09-26.md, section 12) left
 // untested, and neighbors of them. Every case uses the cert-X victim (Minion Pro 30 pt, 14 pt
 // leading, 12 pt Paper Outside stroke over Black) and the E00 geometry unless stated: one story
 // threaded through two frames, the downstream frame's first line stroking over the upstream

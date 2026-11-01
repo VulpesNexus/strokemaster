@@ -1,6 +1,6 @@
 # Route X on InDesign 21.6, 2026-10-03
 
-Route X (`1e7c417e…`) was certified on InDesign 21.5.1.73 ([cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md), [route W certification](../ROUTE_W_CERTIFICATION_2026-09-25.md)). The host is now 21.6.0.57. This pass recertifies route X on 21.6 against same-day controls, adds an extension census for the cases the research left untested, fixes the one route X gap that census found, validates the miter-spike model against InDesign's output, corrects the spikes in route W's stroke pass, and takes over plain page-item strokes.
+Route X (`1e7c417e…`) was certified on InDesign 21.5.1.73 ([cross-frame research](CROSS_FRAME_RESEARCH_2026-09-26.md), [route W certification](ROUTE_W_CERTIFICATION_2026-09-25.md)). The host is now 21.6.0.57. This pass recertifies route X on 21.6 against same-day controls, adds an extension census for the cases the research left untested, fixes the one route X gap that census found, validates the miter-spike model against InDesign's output, corrects the spikes in route W's stroke pass, and takes over plain page-item strokes.
 
 ## Verdict
 

@@ -1,6 +1,6 @@
 # Route W certification, 2026-09-25
 
-Route W is StrokeMaster's InDesign plugin route that draws each Outside-stroked text run's stroke in an adornment pass of its own before the frame's text, so a line's stroke no longer covers another line's fill. This document certifies what it does, where, and where it stops. The machine-readable matrix is [route_w_certification.json](tests/audit/results/route_w_certification.json), built by `tools/certify_routew.py summarize` from the session records in [tests/audit/results/routew-cert](tests/audit/results/routew-cert).
+Route W is StrokeMaster's InDesign plugin route that draws each Outside-stroked text run's stroke in an adornment pass of its own before the frame's text, so a line's stroke no longer covers another line's fill. This document certifies what it does, where, and where it stops. The machine-readable matrix is [route_w_certification.json](../tests/audit/results/route_w_certification.json), built by `tools/certify_routew.py summarize` from the session records in [tests/audit/results/routew-cert](../tests/audit/results/routew-cert).
 
 Statuses: **CERTIFIED** (repeated in two route W sessions, with the native control damaged in the same output), **CERTIFIED_WITH_VARIANCE** (functionally correct, measurably different from native at edges), **CERTIFIED_FOR_APPEARANCE** (correct pixels in an output that keeps no live text, with or without route W), **PASS** (0 damage where the control or the second session was not run), **MANUAL_PASS**, **UNSUPPORTED**, **FAILED**, **BLOCKED**, **UNTESTED**, **INCONCLUSIVE**.
 
@@ -42,7 +42,7 @@ Sessions: **A1**, route W in the InDesign process the owner had open since 17:50
 
 ## 3. Corpus identity
 
-Frozen in [tests/certification/corpus](tests/certification/corpus/README.md); every job copies a fixture before opening it.
+Frozen in *tests/certification/corpus* in the historical test checkout; every job copies a fixture before opening it. That corpus is not included in the public repository.
 
 | Fixture | Cases | SHA-256 |
 | --- | --- | --- |
@@ -130,7 +130,7 @@ From *tools/routew_measure.py* `pdf_structure` (pikepdf content-stream census an
 
 ## 8. Interactive-redraw persistence
 
-- **MANUAL_PASS (owner, earlier today):** VC00 at 400% on screen showed the first line whole, and repeated zooming and scrolling interrupted redraws. That check was by eye, with no capture ([screen record](tests/audit/results/indesign-routew-screen.json)). The document's exports and a saved copy afterward matched the pre-screen census export pixel for pixel.
+- **MANUAL_PASS (owner, earlier today):** VC00 at 400% on screen showed the first line whole, and repeated zooming and scrolling interrupted redraws. That check was by eye, with no capture ([screen record](../tests/audit/results/indesign-routew-screen.json)). The document's exports and a saved copy afterward matched the pre-screen census export pixel for pixel.
 - **PASS (scripted, A2):** *tools/cert-redraw.ps1* opened a copy of the census in a window of the InDesign session it launched. It sent 60 separate scripting calls (zoom 12.5–3200%, fit, zoom in, display quality, preview mode, minimize and restore, and a VC05 stroke-weight toggle), each followed by 0–150 ms, so the next call arrives while drawing may be in progress. One call returned no value and is logged. Every 15 steps it saved a copy with no pause.
   - All four copies, one saved while VC05 stood at 8 pt, reopened without a window and exported. Each is pixel-identical to the export of its intended state, with 0 damage.
   - The exports from the window itself are pixel-identical to the direct export.
@@ -196,7 +196,7 @@ Illustrator 30.7.0, launched under the workspace guard and quit afterward, with 
 
 The ring is **rasterization, not geometry** (DERIVED):
 
-1. **Geometry is identical.** Route W's stroke points equal the font outline to 0.00002 pt, at exactly double weight with the run's own join and cap ([ring.json](tests/audit/results/routew-cert/ring.json)).
+1. **Geometry is identical.** Route W's stroke points equal the font outline to 0.00002 pt, at exactly double weight with the run's own join and cap ([ring.json](../tests/audit/results/routew-cert/ring.json)).
 2. **The difference stays in the edge pixel.** Against the corrected split reference (A2), over 16 levels, by distance from the nearest reference edge:
 
 | Rendering | Differing px | Over 64 | Max | 0 px / 1 px / 2 px / ≥ 3 px from an edge | Over 64 beyond 2 px |
@@ -217,7 +217,7 @@ Correcting an earlier record: the census noted the ring on the benign frames VC1
 
 ## 15. Performance
 
-Median export times in milliseconds, 15 timed repetitions after two warm-ups, interleaved ([bench.json](tests/audit/results/routew-cert/bench.json)):
+Median export times in milliseconds, 15 timed repetitions after two warm-ups, interleaved ([bench.json](../tests/audit/results/routew-cert/bench.json)):
 
 | Session | Census PDF | PNG 300 | PNG 600 | 20-page PDF | 20-page PNG 150 |
 | --- | --- | --- | --- | --- | --- |

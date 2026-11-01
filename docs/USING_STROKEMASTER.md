@@ -2,7 +2,7 @@
 
 Before relying on either plugin, read [what to know](WHAT_TO_KNOW.md): one page on what each does to your files, and its limits.
 
-Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`e2c96147`, certified and installed with the StrokeMaster panel `5f4f5bab` on 2026-10-06; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). Those reports certify their dated binaries. Later switches and fixes have narrower coverage, recorded in the [current review](REVIEW_2026-11-02.md); the guide below describes current source behavior. The scripts below remain the document-level alternative. [The support matrix](../HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
+Status, 2026-10-03: the InDesign plugin corrects Outside text strokes as InDesign draws them, certified on InDesign 21.6 ([report](ROUTE_X_21_6_RECERTIFICATION_2026-10-03.md)) and confirmed by the owner on *cert-X.indd* and on a real document. Since 2026-10-05 it also covers more page-item strokes (`e2c96147`, certified and installed with the StrokeMaster panel `5f4f5bab` on 2026-10-06; [census follow-up](COVERAGE_CENSUS_2026-10-04.md#follow-up-extended-coverage-2026-10-04-to-10-05)). Those reports certify their dated binaries. Later switches and fixes have narrower coverage, recorded in the [current review](REVIEW_2026-11-02.md); the guide below describes current source behavior. The scripts below remain the document-level alternative. [The support matrix](HOST_SUPPORT_MATRIX.md) records the older tested boundaries. Keep an original copy when evaluating a new revision.
 
 Which correction to use depends on one question: **does the file have to look right somewhere other than this machine?**
 
@@ -83,7 +83,7 @@ powershell -NoProfile -File tools\install-indesign-plugin.ps1 -Variant Release-U
 
 It backs up the installed plugin first, verifies the copy by hash, and prints the backup folder; `-Restore <that folder>` puts the previous plugin back, and `-ValidateOnly` with either form shows the plan without writing anything. Start InDesign to load the new plugin. The ID prefix remains a development placeholder; see the [release notes](RELEASE_1.2.0.md) and [distribution notes](PLUGIN_DISTRIBUTION.md) for the identity limitation.
 
-Native development details are in [the load report](../ILLUSTRATOR_NATIVE_LOAD_REPORT.md), [the InDesign root-cause report](../UNSTROKED_VICTIM_ROOT_CAUSE.md), and [the cross-frame research](../CROSS_FRAME_RESEARCH_2026-09-26.md). The Illustrator plugin is a separate download in the [same release](RELEASE_1.2.0.md).
+Native development details are in [the load report](ILLUSTRATOR_NATIVE_LOAD_REPORT.md), [the InDesign root-cause report](UNSTROKED_VICTIM_ROOT_CAUSE.md), and [the cross-frame research](CROSS_FRAME_RESEARCH_2026-09-26.md). The Illustrator plugin is a separate download in the [same release](RELEASE_1.2.0.md).
 
 ## Installing the scripts
 

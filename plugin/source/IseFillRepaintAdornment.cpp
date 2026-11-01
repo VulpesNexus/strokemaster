@@ -11,7 +11,7 @@
 // are therefore refused too; none is assumed safe from the run's color alone.
 //
 // Native output and composition remain unchanged; the underlying overlap is NOT fixed.
-// See UNSTROKED_VICTIM_ROOT_CAUSE.md. The refusal has no opt-in bypass in this build.
+// See docs/UNSTROKED_VICTIM_ROOT_CAUSE.md. The refusal has no opt-in bypass in this build.
 //========================================================================================
 #include "VCPlugInHeaders.h"
 #ifndef ISE_REPAINT_UNIT_TEST

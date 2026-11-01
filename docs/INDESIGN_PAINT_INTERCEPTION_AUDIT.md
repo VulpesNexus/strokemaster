@@ -6,7 +6,7 @@ SDK and source investigation, September 12–13, 2026. The supervisor independen
 
 “Not established” is a finite conclusion about the inspected SDK, not proof that Adobe has no other extension or private implementation. The smallest unresolved public lead is the dispatch behavior of `kBeforeFrameText`. Its name alone does not establish that returning true suppresses text, much less only its stroke.
 
-**Resolved 2026-09-26 in the host:** InDesign 21.5.1 never dispatches `kBeforeFrameText` or `kBeforeFrameForeground`, in screen, PDF, PNG, EPS, print, or background export, and returning handled for them changes nothing. `kDrawShapeMessage` does veto a whole page item. See [CROSS_FRAME_RESEARCH_2026-09-26.md](../CROSS_FRAME_RESEARCH_2026-09-26.md#4-candidate-host-apis).
+**Resolved 2026-09-26 in the host:** InDesign 21.5.1 never dispatches `kBeforeFrameText` or `kBeforeFrameForeground`, in screen, PDF, PNG, EPS, print, or background export, and returning handled for them changes nothing. `kDrawShapeMessage` does veto a whole page item. See [CROSS_FRAME_RESEARCH_2026-09-26.md](CROSS_FRAME_RESEARCH_2026-09-26.md#4-candidate-host-apis).
 
 ## Evidence boundary
 

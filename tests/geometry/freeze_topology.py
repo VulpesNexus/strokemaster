@@ -133,7 +133,7 @@ def render(data):
 def snapshot():
     data = verify_evidence()
     render(data)
-    names = [*data["source_hashes_sha256"], "TOPOLOGY_GEOMETRY_DESIGN.md",
+    names = [*data["source_hashes_sha256"], "docs/TOPOLOGY_GEOMETRY_DESIGN.md",
              "tests/geometry/freeze_topology.py", "tests/geometry/topology_evidence.json",
              "tests/geometry/topology_oracle.svg", "tests/geometry/topology_oracle.png",
              "tests/geometry/topology_build/.gitignore"]

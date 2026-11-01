@@ -8,7 +8,7 @@ Route W draws a text frame's Outside strokes beneath that frame's fills. This sp
   - Route W's scope is the parcel (a column), not the frame.
   - Its certified build is not loaded on InDesign's background PDF export thread, which File > Export > Adobe PDF uses by default, so that export is drawn natively. Route X is declared a model plugin and runs there too.
 
-The machine-readable matrix is [cross_frame_census.json](tests/audit/results/cross_frame_census.json), built by *tools/certify_routex.py summarize*. The session records are in [tests/audit/results/routex](tests/audit/results/routex).
+The machine-readable matrix is [cross_frame_census.json](../tests/audit/results/cross_frame_census.json), built by *tools/certify_routex.py summarize*. The session records are in [tests/audit/results/routex](../tests/audit/results/routex).
 
 ## 1. Baseline identity
 
@@ -66,7 +66,7 @@ Route W's remaining damage in a threaded case is exactly the part that crosses t
 
 ## 3. Callback and draw-order traces
 
-The research build logged every draw event it registered for (all of *DocumentContextID.h*'s draw messages), every adornment question and visit, and every record and decision. The condensed traces are in [tests/audit/results/routex](tests/audit/results/routex) (*trace-\*.json*, from *tools/routex_trace.py*). In every output:
+The research build logged every draw event it registered for (all of *DocumentContextID.h*'s draw messages), every adornment question and visit, and every record and decision. The condensed traces are in [tests/audit/results/routex](../tests/audit/results/routex) (*trace-\*.json*, from *tools/routex_trace.py*). In every output:
 
 1. **The traversal is a spread draw.** A traversal opens with `kBeginSpreadMessage`, visits layers and page items in stacking order, and closes with `kEndSpreadMessage`, all into one graphics port. Route W's adornments draw into the same port. The export kinds:
    - A PDF export makes two traversals: the PDF itself, and a screen-kind one with flags 0x1000.

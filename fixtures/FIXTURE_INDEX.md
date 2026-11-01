@@ -2,7 +2,7 @@
 
 Registry snapshot: September 13, 2026, baseline `c4596837a5e0ea10a68f7b94e2dd368032341334`. This index points to existing files; it does not relocate or regenerate them. All original Adobe fixtures remain preserved. The load report records the user's saved benchmark and preservation-copy hash 7ced363138cca7a1a75f2cfc1cf66acca09f89c4ca6cbe3d5c5d5f77ce2485ee in the native load report; the preserved source remains separate from generated fixtures.
 
-[The census](<../STROKE_DEFECT_AND_LIMITATION_CENSUS.md>) owns issue classification; [the support matrix](<../HOST_SUPPORT_MATRIX.md>) owns bounded support claims. [The JSON registry](<../fixtures/stroke-evidence-registry.json>) contains all fixture IDs, planned cases, raw per-artifact SHA-256 values, optional canonical LF hashes for text, and manifest subcase names/application flags.
+[The census](<../docs/STROKE_DEFECT_AND_LIMITATION_CENSUS.md>) owns issue classification; [the support matrix](<../docs/HOST_SUPPORT_MATRIX.md>) owns bounded support claims. [The JSON registry](<../fixtures/stroke-evidence-registry.json>) contains all fixture IDs, planned cases, raw per-artifact SHA-256 values, optional canonical LF hashes for text, and manifest subcase names/application flags.
 
 **Preservation verified:** *tests/indesign-stroke/corpus/pristine/fixture-pristine.indd* still hashes to `3797ba73746cd6bac8cf55b689f0347e77cb622257651ac4afa5f4430ba3a783`. A current artifact hash identifies bytes; it does not prove the historical tested source or a new host execution. Raw hashes identify locally collected bytes and can differ after a checkout converts text line endings. Optional `canonical_lf_sha256` values decode strict UTF-8, replace CRLF with LF, and re-encode UTF-8; they retain any BOM and all other content. Embedded observed source/output hashes and binary hashes remain raw. The current registry contains 156 artifacts, including 113 text artifacts with this additional portable hash.
 
@@ -13,7 +13,7 @@ Reproduction descriptions below are experiment specifications, not newly tested 
 | ID | Application / host version | Issue | Minimal reproduction | Expected native/reference result | Expected StrokeMaster result | Oracle type | Last verified build / confidence |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | <a id="fx-corpus"></a>FX-CORPUS | InDesign / 21.5.1.73 | Original A/B/C/D corpus | Inspect a disposable working copy; preserve duplicate A frames as historical input. | Retain historical native output; classify B as conventional miter. | Only intentionally corrected contributions may change. | Historical screen images + PDF/PS operators + raster + IDML comparison | 21.5.1.73; PROVEN |
-| <a id="fx-a"></a>FX-A | InDesign / 21.5.1.73 | Inter-line, cross-frame and benign controls | Use the A manifest variant in an owned copy; compare original-order control and strokes-first PDF. | Preserve Center/z-order semantics; measured Outside overlap remains the baseline. | Fix selected same-frame halo without claiming cross-frame or unstroked-victim coverage. | HQ Print PDF → MuPDF 720 dpi and 300 ppi InDesign PNG | 21.5.1.73; PROVEN |
+| <a id="fx-a"></a>FX-A | InDesign / 21.5.1.73 | Inter-line, cross-frame and benign controls | Use the A manifest variant in an owned copy; compare original-order control and strokes-first PDF. | Preserve Center/z-order semantics; measured Outside overlap remains the baseline. | Fix selected same-frame halo without claiming cross-frame or unstroked-victim coverage. | HQ Print PDF rendered with MuPDF 720 dpi and 300 ppi InDesign PNG | 21.5.1.73; PROVEN |
 | <a id="fx-b"></a>FX-B | InDesign / 21.5.1.73 | Native joins, limit and weight sweep | Vary only manifest parameter; retain native conventional-miter control. | Miter within limit; bevel beyond it; round/bevel separate. | Protected native joins remain; custom envelope tested separately. | PDF operators + synthetic analytic wedge + raster | 21.5.1.73; PROVEN |
 | <a id="fx-c"></a>FX-C | InDesign / 21.5.1.73 | 50 run-attribute variants including controls | One fourth-character attribute differs; use named fi/st/Bahnschrift controls. | Record actual paint interleaving; language object splitting is not automatically run splitting. | Preserve independent formatting and glyph placement; eliminate targeted occlusion only. | PDF paint order + reordered control + raster | 21.5.1.73; PROVEN |
 | <a id="fx-d"></a>FX-D | InDesign / 21.5.1.73 | Native Create Outlines width/alignment | Use the named D variant; outline disposable source copies only. | Record finite conversion output, not an inferred untouched original. | Preserve fill/width/holes; fidelity and editability checked separately. | Path attributes + PDF/raster | 21.5.1.73; PROVEN |
@@ -219,7 +219,7 @@ Existing generator/probe: [*tools/jsx/probe-outline-paint.jsx*](<../tools/jsx/pr
 
 ### FX-AI-OUTLINE artifacts
 
-- [*PROJECT_TAKEOVER_AUDIT.md*](<../PROJECT_TAKEOVER_AUDIT.md>)
+- [*PROJECT_TAKEOVER_AUDIT.md*](<../docs/PROJECT_TAKEOVER_AUDIT.md>)
 - [*tests/README.md*](<../tests/README.md>)
 
 Existing generator/probe: [*tools/jsx/ai-probe-outline-dom.jsx*](<../tools/jsx/ai-probe-outline-dom.jsx>). This source snapshot is not automatically the historical tested revision.
@@ -275,7 +275,7 @@ Manifest: [*build/host-census/victims-baseline/manifest.json*](<../build/host-ce
 
 - [*tests/audit/results/illustrator-first-native-load.json*](<../tests/audit/results/illustrator-first-native-load.json>) — portable candidate evidence; read counters alongside retained stage/crash interpretation.
 
-- [*ILLUSTRATOR_NATIVE_LOAD_REPORT.md*](<../ILLUSTRATOR_NATIVE_LOAD_REPORT.md>)
+- [*ILLUSTRATOR_NATIVE_LOAD_REPORT.md*](<../docs/ILLUSTRATOR_NATIVE_LOAD_REPORT.md>)
 - [*build/host-census/native-install.json*](<../build/host-census/native-install.json>) — local ignored artifact.
 - [*build/host-census/ai-native-1/host.json*](<../build/host-census/ai-native-1/host.json>) — local ignored artifact.
 - [*build/host-census/ai-native-1/first-load-stages.jsonl*](<../build/host-census/ai-native-1/first-load-stages.jsonl>) — local ignored artifact.
@@ -295,7 +295,7 @@ Existing generator/probe: [*tools/jsx/ai-probe-native-stroke.jsx*](<../tools/jsx
 - [*build/host-census/persistence-noplugin/roundtrip.idml*](<../build/host-census/persistence-noplugin/roundtrip.idml>) — local supporting artifact.
 - [*build/host-census/persistence-noplugin/reopened.indd*](<../build/host-census/persistence-noplugin/reopened.indd>) — local supporting artifact.
 
-Existing probe: [*tools/jsx/probe-census-persistence.jsx*](<../tools/jsx/probe-census-persistence.jsx>). **Native persistence: PROVEN, finite scope.** Without the plugin, all 20 frames preserve eight sampled character fields through INDD → IDML → INDD save/reopen. PNG at 300 ppi has 0 changed pixels; PDF/X-4:2008 raster comparison has 0 differing channels, and extracted text is equal. The portable record identifies MuPDF via PyMuPDF 1.28.2 at 288 ppi with alpha disabled, PNG at 300 ppi, NumPy 2.5.3, and Pillow 12.3.0. The PDFs have different file hashes, so this is render/text equality, not byte identity. This does not test script-pair creation, metadata, synchronization, or script-pair round-trip. Fourteen PDF preference fields and one EPS field remain unverified by the restoration logger.
+Existing probe: [*tools/jsx/probe-census-persistence.jsx*](<../tools/jsx/probe-census-persistence.jsx>). **Native persistence: PROVEN, finite scope.** Without the plugin, all 20 frames preserve eight sampled character fields through INDD to IDML to INDD save/reopen. PNG at 300 ppi has 0 changed pixels; PDF/X-4:2008 raster comparison has 0 differing channels, and extracted text is equal. The portable record identifies MuPDF via PyMuPDF 1.28.2 at 288 ppi with alpha disabled, PNG at 300 ppi, NumPy 2.5.3, and Pillow 12.3.0. The PDFs have different file hashes, so this is render/text equality, not byte identity. This does not test script-pair creation, metadata, synchronization, or script-pair round-trip. Fourteen PDF preference fields and one EPS field remain unverified by the restoration logger.
 
 ### FX-PAIR-RENDER artifacts
 
@@ -320,7 +320,7 @@ Existing probe: [*tools/jsx/probe-pair-persistence-render.jsx*](<../tools/jsx/pr
 
 Existing probe: [*tools/jsx/probe-victim-census.jsx*](<../tools/jsx/probe-victim-census.jsx>).
 
-**Split-pair persistence: PROVEN for two pairs.** On InDesign 21.5.1.73 with safe-refusal binary `15b802ebfb38f567eb3aa586e995c0a1afff47efd078f3e2a0443596b54df4c4`, uniform and varied Outside-stroke pairs preserve `ISE_SPLIT` labels, `ISE3` identities, fill/stroke roles, sampled character positions, sampled paint attributes including fillTint, and None/zero top strokes through INDD save/reopen → IDML → INDD save/reopen. Pre-save and final opaque RGB PNGs at 600 ppi have identical hashes and 0 changed pixels. The final checked rerun verifies that the lower fill matches the source stroke color and tint. The harness had incorrectly required a None lower fill; correcting that assertion changes no product behavior. The final image hash remains `1d79f5a038dc21163b9510a9f32064fb8111d54ef81969967dd9a7a6467e69df`, matching the earlier finite render proof. This separately closes the two-pair rendered persistence gap; arbitrary edits, idle resync, PDF/SVG/print, other builds, and full lifecycle remain unverified. [FX-PAIR-RENDER]
+**Split-pair persistence: PROVEN for two pairs.** On InDesign 21.5.1.73 with safe-refusal binary `15b802ebfb38f567eb3aa586e995c0a1afff47efd078f3e2a0443596b54df4c4`, uniform and varied Outside-stroke pairs preserve `ISE_SPLIT` labels, `ISE3` identities, fill/stroke roles, sampled character positions, sampled paint attributes including fillTint, and None/zero top strokes through INDD save/reopen, IDML conversion, and INDD save/reopen. Pre-save and final opaque RGB PNGs at 600 ppi have identical hashes and 0 changed pixels. The final checked rerun verifies that the lower fill matches the source stroke color and tint. The harness had incorrectly required a None lower fill; correcting that assertion changes no product behavior. The final image hash remains `1d79f5a038dc21163b9510a9f32064fb8111d54ef81969967dd9a7a6467e69df`, matching the earlier finite render proof. This separately closes the two-pair rendered persistence gap; arbitrary edits, idle resync, PDF/SVG/print, other builds, and full lifecycle remain unverified. [FX-PAIR-RENDER]
 
 **Safe refusal: PROVEN for the 20-frame PNG census.** The same binary records `correction_active: false`. All three whole-page PNGs—native output, independent reference, and mask—match the absent-plugin hashes at 600 ppi, with 0 changed pixels. This establishes finite no-harm output while correction is disabled. It does not repair the target failure or erase old binary `d476f565…` failures. Screen, PDF/print, active correction, and full document-state/lifecycle safety remain unverified. [FX-ID-REFUSAL]
 
@@ -420,7 +420,7 @@ For a new result, append the fixture/subcase ID, host version/build, source/bina
 - [*tests/geometry/topology_api_equivalence.json*](<../tests/geometry/topology_api_equivalence.json>)
 - [*tests/geometry/topology_union_regression.json*](<../tests/geometry/topology_union_regression.json>)
 - [*tests/geometry/topology_freeze_rejected_6e7d8faf.json*](<../tests/geometry/topology_freeze_rejected_6e7d8faf.json>)
-- [*TOPOLOGY_GEOMETRY_DESIGN.md*](<../TOPOLOGY_GEOMETRY_DESIGN.md>)
+- [*TOPOLOGY_GEOMETRY_DESIGN.md*](<../docs/TOPOLOGY_GEOMETRY_DESIGN.md>)
 - [*tests/geometry/freeze_topology.py*](<../tests/geometry/freeze_topology.py>)
 - [*tests/geometry/topology_evidence.json*](<../tests/geometry/topology_evidence.json>)
 - [*tests/geometry/topology_oracle.svg*](<../tests/geometry/topology_oracle.svg>)
@@ -439,7 +439,7 @@ The rejected freeze remains historical evidence. The independent review and fuzz
 ### FX-AI-PREP5 artifacts
 
 - [*illustrator-native-lifecycle.json*](<../tests/audit/results/illustrator-native-lifecycle.json>)
-- [Native load report](<../ILLUSTRATOR_NATIVE_LOAD_REPORT.md>)
+- [Native load report](<../docs/ILLUSTRATOR_NATIVE_LOAD_REPORT.md>)
 - [Prep-5 lifetime audit](<../plugin/illustrator-probe/PREP5_LIFETIME_AUDIT.md>)
 - [Frozen prep-5 binary, local only](<../plugin/illustrator-probe/build/native-prep5-frozen.aip>)
 

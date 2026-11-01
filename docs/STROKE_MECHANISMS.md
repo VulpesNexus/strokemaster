@@ -2,7 +2,7 @@
 
 Phase E of the InDesign stroke engine investigation: what produces each defect, with the controls that establish it. Evidence labels follow the investigation's ladder: PROVEN, STRONGLY SUPPORTED, PLAUSIBLE, DISPROVEN, and UNKNOWN.
 
-Takeover qualification, 2026-09-12: historical labels below describe finite fixture evidence. [The takeover audit](../PROJECT_TAKEOVER_AUDIT.md) supersedes universal claims, identifies the clipping implementation error, and distinguishes output-level observations from host internals. A second paint pass is not mathematically equivalent to a single reordered fill pass under all compositing conditions.
+Takeover qualification, 2026-09-12: historical labels below describe finite fixture evidence. [The takeover audit](PROJECT_TAKEOVER_AUDIT.md) supersedes universal claims, identifies the clipping implementation error, and distinguishes output-level observations from host internals. A second paint pass is not mathematically equivalent to a single reordered fill pass under all compositing conditions.
 
 Unless stated otherwise, measurements come from *tools/stroke_probe.py* on the minimal reproducers in *tests/indesign-stroke/*. They use MuPDF renders at 720 dpi (10 px per point) of InDesign's *[High Quality Print]* PDF export, after removing every text object and path that doesn't belong to the entry being measured. "Hidden fill" counts pixels that are solid fill when strokes are removed but white in the render being measured. "Strokes first" is the same content with the entry's stroke objects moved before its fill objects and nothing else changed. Re-emitting content in its original order is the control for every edit, and the controls rendered identically to the original.
 
